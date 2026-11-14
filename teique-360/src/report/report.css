@@ -32,7 +32,7 @@ body { font-family: Inter, 'Segoe UI', Arial, sans-serif; color: #000; -webkit-p
 .wm { position: absolute; z-index: 0; inset: 70pt 0 40pt 0; display: grid; grid-template-columns: repeat(3, 1fr); align-content: space-around; pointer-events: none; }
 .wm span { font: 500 11pt/13pt Manrope, sans-serif; color: #000; opacity: .07; text-align: center; transform: rotate(-24deg); }
 
-.body { position: absolute; z-index: 1; top: 62pt; bottom: 34pt; left: 0; right: 0; padding: 26pt 40pt 0; display: flex; flex-direction: column; gap: 16pt; overflow: hidden; }
+.body { position: absolute; z-index: 1; top: 62pt; bottom: 28pt; left: 0; right: 0; padding: 26pt 40pt 6pt; display: flex; flex-direction: column; gap: 16pt; overflow: hidden; }
 .body > * { flex: none; }
 
 h1.title { font: 500 26pt/32pt Manrope, sans-serif; color: var(--c); margin: 0; }
@@ -119,7 +119,11 @@ table.coach td.gap { color: #6B7380; }
 p.tight + p.tight { margin-top: 2pt; }
 p.note.mid { text-align: center; font-style: italic; }
 .stack { display: flex; flex-direction: column; align-items: center; gap: 6pt; }
-.chart + .card { margin-top: 8pt; }
+.chart + .card, .scores + .card { margin-top: 8pt; }
+/* a scale's score wheel beside its rater-group strip */
+.scores { display: flex; gap: 16pt; align-items: center; }
+.scores .wheel { width: 116pt; flex: none; }
+.scores .strip { flex: 1; min-width: 0; }
 .list2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20pt; padding: 12pt 15pt; }
 .list2 li + li { margin-top: 3pt; }
 

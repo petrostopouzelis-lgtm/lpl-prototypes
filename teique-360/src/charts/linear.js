@@ -24,9 +24,10 @@
     const groups = v.shownGroups.map(gr => ({ label: gr.label, n: gr.responded, s: gr.scores[id] }));
     // with no group to show (all too small to name), the strip still shows you and all others
     const has = groups.length > 0, lo = has ? Math.min(...groups.map(q => q.s)) : oth, hi = has ? Math.max(...groups.map(q => q.s)) : oth;
-    const W = 460, gap = 5;
-    // variant A puts the group labels in one row; when they cannot fit, in two
-    const two = variant === 'A' && groups.reduce((s, q) => s + S.tw(`${S.fit(q.label, 8.4, 112)} ${q.s}`, 8.4) + 9, 0) > W - 4;
+    // opt.width: a narrower drawing, for the strip that sits next to the small score wheel
+    const W = variant === 'B' ? 460 : opt.width || 460, gap = 5;
+    // variant A puts the group labels in one row; when they cannot fit, in as many rows as they need
+    const nRows = variant === 'A' ? Math.max(1, Math.ceil(groups.reduce((s, q) => s + S.tw(`${S.fit(q.label, 8.4, 112)} ${q.s}`, 8.4) + 9, 0) / (W - 4))) : 1;
 
     if (variant === 'B') {
       const lx = 124, x0 = 132, w = 286, rows = [{ label: 'You', s: self, kind: 'you' }, { label: `All others (${v.responded})`, s: oth, kind: 'others' }].concat(groups.map(q => ({ label: `${q.label} (${q.n})`, s: q.s, kind: 'group' })));
@@ -44,7 +45,7 @@
       return S.root(W, H, out, `${T.nameOf(id)} by rater group`);
     }
 
-    const x0 = 20, w = 420, ty = variant === 'C' ? 26 : two ? 53 : 40, th = 12, cyT = ty + th / 2;
+    const x0 = 20, w = W - 40, ty = variant === 'C' ? 26 : 40 + (nRows - 1) * 13, th = 12, cyT = ty + th / 2;
     let out = defs + S.tracks(x0, ty, w, th, gap);
     // pale bar from the lowest to the highest group, drawn per track so it never covers a gap
     const xl = T.trackX(lo, x0, w, gap) - 6, xh = T.trackX(hi, x0, w, gap) + 6, tw3 = (w - 2 * gap) / 3;
@@ -76,7 +77,7 @@
     // each joined to its marker by a leader line; you and all-others below
     const items = groups.map(q => ({ ...q, x: T.trackX(q.s, x0, w, gap), text: `${S.fit(q.label, 8.4, 112)} ${q.s}` })).sort((a, b) => a.x - b.x);
     items.forEach(q => { q.w = S.tw(q.text, 8.4); q.c = q.x; });
-    const labelRows = two ? [items.filter((q, i) => i % 2 === 0), items.filter((q, i) => i % 2 === 1)] : [items];
+    const labelRows = Array.from({ length: nRows }, (_, r) => items.filter((q, i) => i % nRows === r));
     labelRows.forEach((row, ri) => {
       row.forEach(q => { q.up = ri * 13; });
       for (let pass = 0; pass < 60; pass++) {
@@ -89,9 +90,10 @@
     });
     // you first, so a group marker at the same score still shows on top of it
     out += dotYou(xs, cyT, 6.4, Y, gY, `You: ${self}`);
+    // every leader line first, then every label, so a line never runs over another group's label
+    items.forEach(q => { out += S.el('path', { d: `M${n(q.x)} ${ty}V${ty - 6}L${n(q.c)} ${ty - 17 - q.up}V${ty - 20 - q.up}`, fill: 'none', stroke: g.light, 'stroke-width': 0.8 }); });
     items.forEach(q => {
-      out += S.el('path', { d: `M${n(q.x)} ${ty}V${ty - 6}L${n(q.c)} ${ty - 17 - q.up}V${ty - 20 - q.up}`, fill: 'none', stroke: g.light, 'stroke-width': 0.8 });
-      out += S.text(q.c, ty - 24 - q.up, q.text, { 'text-anchor': 'middle', 'font-size': 8.4, 'font-weight': 500, fill: T.MUTED, stroke: '#fff', 'stroke-width': 2.2, 'paint-order': 'stroke' });
+      out += S.text(q.c, ty - 24 - q.up, q.text, { 'text-anchor': 'middle', 'font-size': 8.4, 'font-weight': 500, fill: T.MUTED, stroke: '#fff', 'stroke-width': 2.6, 'paint-order': 'stroke', 'stroke-linejoin': 'round' });
       out += S.el('circle', { cx: n(q.x), cy: cyT, r: 3.7, fill: '#fff', stroke: g.fill, 'stroke-width': 1.5 }, S.title(`${q.label} (${q.n}): ${q.s}`));
     });
     const by = ty + th + 2;

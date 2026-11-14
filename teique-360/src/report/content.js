@@ -114,8 +114,9 @@
     }
 
     // ---- one section per factor: the factor, then each of its facets, each with its chart and its text
+    // every scale shows its score wheel (you and others) next to its rater-group strip
     const scaleBlock = (id, heading) => ({ split: '.card',
-      html: `<div>${heading ? `<h4 class="sub">${esc(T.nameOf(id))}</h4>` : ''}${chart(C.strip(v, id))}<div class="card">${interpretation(id)}</div></div>` });
+      html: `<div>${heading ? `<h4 class="sub">${esc(T.nameOf(id))}</h4>` : ''}<div class="scores"><div class="chart wheel">${C.gauge(v, id, { compact: true })}</div><div class="chart strip">${C.strip(v, id, { width: 342 })}</div></div><div class="card">${interpretation(id)}</div></div>` });
     T.GROUPS.forEach(g => {
       const blocks = [head(pg.section_results, g.name)];
       if (g.scored) {

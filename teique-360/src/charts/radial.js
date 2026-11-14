@@ -120,12 +120,13 @@
       bands += S.text(cx, y + 2.4, t, { 'text-anchor': 'middle', 'font-size': 6.6, 'font-weight': 600, fill: T.MUTED });
     });
 
-    // hub: others' Global score is the headline, yours sits under it in its own shade
+    // hub: both Global scores at the same size, others in the factor colour and you in its deeper shade
     const YG = T.youStyle(opt.you, T.GLOBAL);
+    const hubRow = (y, name, val, col) => S.text(cx - 2, y, name, { 'text-anchor': 'end', 'font-size': 7, 'font-weight': 700, fill: col }) +
+      `<text x="${cx + 2}" y="${y}" font-family="${S.FONT_T}" font-size="13" font-weight="700" fill="${col}">${val}<tspan font-size="8" font-weight="500">%</tspan></text>`;
     const hub = S.el('circle', { cx, cy, r: R.hub, fill: '#fff', filter: `url(#${uid}-sh)` }) +
-      S.text(cx, cy - 14, 'GLOBAL', { 'text-anchor': 'middle', 'font-size': 5.6, 'font-weight': 700, fill: T.MUTED, 'letter-spacing': 0.6 }) +
-      `<text x="${cx}" y="${cy + 6}" text-anchor="middle" font-family="${S.FONT_T}" font-size="19" font-weight="700" fill="${T.GLOBAL.text}">${v.others.global}<tspan font-size="11" font-weight="500">%</tspan></text>` +
-      S.text(cx, cy + 20, `You ${v.self.global}%`, { 'text-anchor': 'middle', 'font-size': 8, 'font-weight': 700, fill: YG.text, 'font-family': S.FONT_B });
+      S.text(cx, cy - 17, 'GLOBAL', { 'text-anchor': 'middle', 'font-size': 5.6, 'font-weight': 700, fill: T.MUTED, 'letter-spacing': 0.6 }) +
+      hubRow(cy - 1, 'Others', v.others.global, T.GLOBAL.text) + hubRow(cy + 15, 'You', v.self.global, YG.text);
 
     // legend: both swatches run through the five factor colours, each drawn the way this variant draws it
     const ly = 618, yx = 318, stops = fn => T.GROUPS.map((g, i) => `<stop offset="${i / (T.GROUPS.length - 1)}" stop-color="${fn(g)}"/>`).join('');
@@ -144,27 +145,31 @@
   // ---------------------------------------------------------------- score wheel
   // Clockwise from 12 o'clock, linear, with dividers at 30% and 70% (Figma 505:754).
   // Variants:
-  //   D  two rings: a wide outer ring for others, a slimmer inner ring for you
+  //   D  two rings of the same width with a clear gap: the outer ring is others, the inner ring is you;
+  //      both scores sit in the centre at the same size (Petros, 2026-11-14)
   //   E  ring with a core: the ring is others, a stripe along its middle is you
   //   F  ring with a score chip: the ring is others, a white chip sitting on it is you
+  // opt.compact: no band labels and a tighter frame, for the small wheel next to each scale's strip.
   C.gauge = (v, id, opt = {}) => {
     // D picked by Petros, 2026-11-11
     const variant = 'DEF'.includes(opt.variant) ? opt.variant : 'D', g = id === 'global' ? T.GLOBAL : T.groupOf(id), Y = T.youStyle(opt.you, g);
     const self = v.self[id], oth = v.others[id];
-    const W = 240, H = 240, cx = 120, cy = 116, uid = S.id('gauge');
+    const compact = !!opt.compact, W = compact ? 196 : 240, H = W, cx = W / 2, cy = compact ? 98 : 116, uid = S.id('gauge');
     const ang = s => T.clamp(s, 0, 100) * 3.6, aS = ang(self), aO = ang(oth);
     const defs = shadow(`${uid}-sh`, 6, 0.14);
-    const rIn = variant === 'D' ? 46 : 50, rOut = 92;
+    const rIn = variant === 'D' ? 49 : 50, rOut = 92;
     let body = S.el('circle', { cx, cy, r: (rIn + rOut) / 2, fill: 'none', stroke: '#fff', 'stroke-width': rOut - rIn, filter: `url(#${uid}-sh)` });
     const dividers = (r0, r1) => [108, 252].map(d => { const p0 = S.pt(cx, cy, r0, d), p1 = S.pt(cx, cy, r1, d); return S.el('line', { x1: n(p0[0]), y1: n(p0[1]), x2: n(p1[0]), y2: n(p1[1]), stroke: '#fff', 'stroke-width': 1.3 }) + S.el('line', { x1: n(p0[0]), y1: n(p0[1]), x2: n(p1[0]), y2: n(p1[1]), stroke: '#00000014', 'stroke-width': 0.5 }); }).join('');
 
     if (variant === 'D') {
-      body += S.arcGrad(cx, cy, 66, rOut, 0, aO, g.light, g.fill);
-      body += S.el('circle', { cx, cy, r: 53.5, fill: 'none', stroke: '#EEF0F3', 'stroke-width': 13 });
-      body += Y.hollow ? S.el('path', { d: S.ring(cx, cy, 47.8, 59.2, 0, Math.max(aS, 0.5)), fill: '#fff', stroke: Y.edge, 'stroke-width': 1.6, 'stroke-linejoin': 'round' })
-        : S.arcGrad(cx, cy, 47, 60, 0, aS, Y.light, Y.fill);
-      body += S.el('circle', { cx, cy, r: 63, fill: 'none', stroke: '#fff', 'stroke-width': 6 });
-      body += dividers(47, rOut);
+      // two rings, 19 wide each, 5 apart: others 73 to 92, you 49 to 68
+      const track = (r0, r1) => S.el('circle', { cx, cy, r: (r0 + r1) / 2, fill: 'none', stroke: '#F1F2F4', 'stroke-width': r1 - r0 });
+      body += track(73, rOut) + track(rIn, 68);
+      body += S.arcGrad(cx, cy, 73, rOut, 0, aO, g.light, g.fill);
+      body += Y.hollow ? S.el('path', { d: S.ring(cx, cy, rIn + 0.8, 67.2, 0, Math.max(aS, 0.5)), fill: '#fff', stroke: Y.edge, 'stroke-width': 1.6, 'stroke-linejoin': 'round' })
+        : S.arcGrad(cx, cy, rIn, 68, 0, aS, Y.light, Y.fill);
+      body += S.el('circle', { cx, cy, r: 70.5, fill: 'none', stroke: '#fff', 'stroke-width': 5 });
+      body += dividers(rIn, rOut);
     } else if (variant === 'E') {
       body += S.arcGrad(cx, cy, rIn, rOut, 0, aO, g.light, g.fill) + dividers(rIn, rOut);
       const rm = (rIn + rOut) / 2, e = S.pt(cx, cy, rm, aS), d = S.arc(cx, cy, rm, 0, Math.max(aS, 0.5));
@@ -178,11 +183,18 @@
     }
     body += S.el('title', {}, `${T.nameOf(id)}: others ${oth}, you ${self}`);
 
-    // centre: others is the headline number in the factor colour, you sits beneath it in its own shade
-    const small = variant === 'D';
-    body += S.text(cx, cy - (small ? 14 : 16), 'OTHERS', { 'text-anchor': 'middle', 'font-size': small ? 7.4 : 8.2, 'font-weight': 700, fill: T.MUTED, 'letter-spacing': 0.7 });
-    body += `<text x="${cx}" y="${cy + (small ? 8 : 9)}" text-anchor="middle" font-family="${S.FONT_T}" font-size="${small ? 24 : 28}" font-weight="600" fill="${g.text}">${oth}<tspan font-weight="300">%</tspan></text>`;
-    body += S.text(cx, cy + (small ? 22 : 25), `You ${self}%`, { 'text-anchor': 'middle', 'font-size': small ? 10 : 11.5, 'font-weight': 700, fill: Y.text, 'font-family': S.FONT_B });
+    // centre. D: both scores at the same size, each in its ring's colour. E and F: others is the
+    // headline number, you sits beneath it.
+    if (variant === 'D') {
+      const row = (y, name, val, col) => S.text(cx - 3, y, name, { 'text-anchor': 'end', 'font-size': 11.5, 'font-weight': 700, fill: col }) +
+        `<text x="${cx + 2}" y="${y}" font-family="${S.FONT_T}" font-size="21" font-weight="700" fill="${col}">${val}<tspan font-size="12" font-weight="500">%</tspan></text>`;
+      body += row(cy - 4, 'Others', oth, g.text) + row(cy + 19, 'You', self, Y.text);
+    } else {
+      body += S.text(cx, cy - 16, 'OTHERS', { 'text-anchor': 'middle', 'font-size': 8.2, 'font-weight': 700, fill: T.MUTED, 'letter-spacing': 0.7 });
+      body += `<text x="${cx}" y="${cy + 9}" text-anchor="middle" font-family="${S.FONT_T}" font-size="28" font-weight="600" fill="${g.text}">${oth}<tspan font-weight="300">%</tspan></text>`;
+      body += S.text(cx, cy + 25, `You ${self}%`, { 'text-anchor': 'middle', 'font-size': 11.5, 'font-weight': 700, fill: Y.text, 'font-family': S.FONT_B });
+    }
+    if (compact) return S.root(W, H, `<defs>${defs}</defs>${body}`, `${T.nameOf(id)} score wheel: others ${oth}, you ${self}`);
 
     // band labels, placed as in Figma
     const rl = 108, lo = S.pt(cx, cy, rl, 60), hi = S.pt(cx, cy, rl, 300);

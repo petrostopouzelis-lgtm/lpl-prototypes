@@ -46,13 +46,17 @@ The whole site's design system is in `../design-system/`.
 1. **Contents:** only the 2010 TEIQue 360 report's pages and wording, copied word for word, in its order. Petros objected to wording Claude had drafted (an introduction): "only include the old report contents for now nothing else". **Do not write new report copy**; where wording is missing, show the yellow "Text needed" marker.
 2. **Exception, at his request:** the summary graph, perception map and gap chart pages stay in (after the profile page). Their titles and captions are Claude's draft, kept under `extras` in the library.
 3. **Score text follows the person's own score**, not the raters' average (as the 2010 report appears to). `settings.textFollows` in the data can switch it.
-4. **Final chart picks:** 1D split petals (petal chart), 2D two rings (score wheel), 3A labelled rater-group strip, 4C summary bar + marker, 5A gap bars, 6A perception map with four quarters, 7A raters cards.
+4. **Final chart picks:** 1D split petals (petal chart), 2D two rings (score wheel; since 2026-11-14 the rings are equal in width, clearly separated, with both scores the same size in the centre), 3A labelled rater-group strip, 4C summary bar + marker, 5A gap bars, 6A perception map with four quarters, 7A raters cards.
 5. **"You" vs "others" styling:** others = the factor colour gradient; **you = a deeper shade of the same factor colour**. No grey ("random gray, doesn't match the vibe"), no black lines or dark marks in any chart.
 6. **Gradients as in Figma:** bars and dots run from full colour (top) to light colour (bottom); petals from full colour at the hub to light at the tip; score wheel from light at 12 o'clock to full colour. Tracks are white pills with a soft inner shadow.
 7. **Summary bars keep equal-width Low / Average / High tracks** (Low 1–30, Average 31–70, High 71–99 each fill their own third).
 8. The wheel is the Figma "3 tiered" wheel (node 249:19485). Note: its rings are a plain quarter grid in Figma; the code uses a linear 0–100 scale with dashed rings at 30 and 70. Not yet confirmed by Petros.
 
+9. **Every factor and facet shows its score wheel as well as its bar** (Petros, 2026-11-14): a small wheel sits to the left of each rater-group strip.
+
 ## Current state
+
+- Second session (2026-11-14, in the cloud from this repo): equal-ring score wheel and a wheel on every scale, see the README's "Changed 2026-11-14". The page viewer is also published as a private claude.ai page for Petros to review.
 
 - All seven brief steps have a working version: data format and sample, chart options, final charts, A4 pages, PDF generator, web view, integration notes (`INTEGRATION.md`).
 - Seven PDFs build without layout warnings: the sample, a long-text run with the watermark, and stress tests (one rater, missing groups, scores of 1 and 99, many groups with long names, big self/rater gaps).

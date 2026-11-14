@@ -104,7 +104,7 @@
     { key: 'gauge', title: 'Score wheel', sub: 'round 2: on the Global page and wherever one score is shown',
       lead: "The Figma score wheel with a second value. Others' average is the large number in the factor colour; your score sits under it in its own shade.",
       opts: [
-        { k: 'D', name: 'Two rings', note: 'A wide outer ring for others and a slimmer inner ring for you. Both are lengths, so they compare directly. The centre numbers get smaller.', draw: () => pair(id => C.gauge(v, id, { variant: 'D', you }), GAUGE_IDS) },
+        { k: 'D', name: 'Two rings', note: 'Two rings of the same width with a clear gap: the outer ring is others, the inner ring is you. Both are lengths, so they compare directly, and both numbers sit in the centre at the same size.', draw: () => pair(id => C.gauge(v, id, { variant: 'D', you }), GAUGE_IDS) },
         { k: 'E', name: 'Ring with a core', note: 'The ring is others; a stripe along its middle is you. Matches "Petal with a core". Slightly harder to read where the stripe lies on the coloured ring.', draw: () => pair(id => C.gauge(v, id, { variant: 'E', you }), GAUGE_IDS) },
         { k: 'F', name: 'Ring with a score chip', rec: true, note: 'The Figma wheel unchanged, plus a white chip sitting on the ring at your score with the number inside. Matches "Petal with a score chip".', draw: () => pair(id => C.gauge(v, id, { variant: 'F', you }), GAUGE_IDS) }
       ] },

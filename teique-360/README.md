@@ -16,6 +16,13 @@ For the dashboard team: `INTEGRATION.md`.
 | 6. Web view | First version done, with a stand-in shell |
 | 7. Integration notes | Draft done (`INTEGRATION.md`) |
 
+## Changed 2026-11-14
+
+- **Score wheel (2D):** the two rings are now the same width with a clear gap (outer = others, inner = you), and both scores sit in the centre at the same size. Before, others had a wide ring and a large number, you a slim ring and a small number. The petal chart's hub shows both Global scores at the same size too.
+- **Every factor and facet shows its score wheel** next to its rater-group strip (before, only the Global page had a wheel). The small wheel is `C.gauge(v, id, { compact: true })`; the strip beside it is drawn narrower with `C.strip(v, id, { width: 342 })`.
+- Strip labels wrap onto as many rows as they need, and leader lines are drawn under the labels.
+- The sample is still 30 pages; all seven builds pass without layout warnings.
+
 ## Look at it
 
 - `report.html`: **the page viewer.** It shows every PDF page as it will print, page by page or all at once, with a bar to switch the data file, the filler, the watermark and the zoom. "Save as PDF" prints exactly what is shown.
@@ -82,7 +89,6 @@ Differences from the 2010 report that remain: scale names and factor order follo
 
 ## Assumptions to confirm
 
-- In the charts, others' average is the filled shape and the self score is the dark mark.
 - Development suggestions appear for facets in the Low or High band (the 2010 sample shows them for exactly those).
 - The sample data shows every rater group, including groups of one and two, and names the raters, as the 2010 report does. The anonymity rule still exists in the data format but is off in the sample.
 - The wheel's scale (linear with rings at 30 and 70; Figma has plain quarter rings).

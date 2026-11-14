@@ -25,7 +25,7 @@ for (const f of fs.readdirSync(path.join(__dirname, '..', 'data')).filter(f => f
   const view = T.view(JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', f), 'utf8')));
   files++;
   const all = [['wheel', () => C.wheel(view)], ...'DEG'.split('').map(k => ['wheel ' + k, () => C.wheel(view, { variant: k })]), ...'DE'.split('').map(k => ['gauge ' + k, () => C.gauge(view, 'global', { variant: k })]), ['summary', () => C.summary(view)], ['gap', () => C.gap(view)], ['map', () => C.map(view)], ['raters', () => C.raters(view)]];
-  ['global'].concat(T.GROUPS.filter(g => g.scored).map(g => g.id), T.FACET_ORDER).forEach(id => { all.push(['gauge ' + id, () => C.gauge(view, id)]); all.push(['strip ' + id, () => C.strip(view, id)]); });
+  ['global'].concat(T.GROUPS.filter(g => g.scored).map(g => g.id), T.FACET_ORDER).forEach(id => { all.push(['gauge ' + id, () => C.gauge(view, id)]); all.push(['strip ' + id, () => C.strip(view, id)]); all.push(['small gauge ' + id, () => C.gauge(view, id, { compact: true })]); all.push(['narrow strip ' + id, () => C.strip(view, id, { width: 342 })]); });
   for (const [name, fn] of all) {
     let svg = '';
     try { svg = fn(); } catch (e) { console.log('THROW', f, name, e.message); bad++; continue; }
