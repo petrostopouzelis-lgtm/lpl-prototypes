@@ -48,10 +48,15 @@ Petros asked for better readability throughout, larger chart text, larger Low/Hi
 - The artwork is one image, `assets/cover-2026.jpg`; `tools/cover-artwork.py` says how it was made. The template is CMYK with no colour profile, so the script converts ink by ink and was checked against the brand blue of the logo.
 - The earlier Figma cover (chess pieces) is kept as `reference/earlier-prototypes/cover-chess-figma.jpg`.
 
+### Contents page and the name "TEIQue 360°" (2026-11-14, last edits)
+
+- **Contents page** after the cover: every section with its page number, in its factor colour, facets listed under their factor. It is not numbered itself, so the page numbers of the rest are unchanged; the sample is now **37 pages**. The 2010 report has no such page, so it carries the "Added page" tag. `toc: false` in `T.report.build` leaves it out.
+- **The report's name is "TEIQue 360°"** with the degree sign (Petros): cover, page header, the Summary Graph title, the web page and the browser tab. The acknowledgement page title is now "TEIQue 360° (multi-rater feedback)"; the 2010 report prints it without the sign. Body text is untouched.
+
 ## Look at it
 
 - `report.html`: **the page viewer.** It shows every PDF page as it will print, page by page or all at once, with a bar to switch the data file, the filler, the watermark and the zoom. "Save as PDF" prints exactly what is shown.
-- `out/sample-360.pdf`: the sample report (36 pages), the only build kept in git.
+- `out/sample-360.pdf`: the sample report (37 pages), the only build kept in git.
 - The stress tests (`edge-*.pdf`, `sample-long-text.pdf`; `edge-big-gaps` shows self and raters disagreeing): build them with `node tools/build-pdf.js data/<file>.json`, or open the data file in the page viewer.
 - `web.html`: the web report. `chart-options.html`: the options Petros chose from. All open by double-click.
 

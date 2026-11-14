@@ -81,10 +81,12 @@ h1.title .added { vertical-align: middle; margin-left: 12pt; position: relative;
 .cover .who i { flex: none; width: .56em; height: .56em; border-radius: 50%; background: #fff; margin: .17em .82em 0; }
 
 /* contents */
-.toc { padding: 18pt 20pt; }
-.toc .it { display: flex; justify-content: space-between; font: 400 11.5pt/15pt Inter, sans-serif; color: var(--c); margin-top: 9pt; }
-.toc .it:first-child { margin-top: 0; }
-.toc .subs { font: 300 10.5pt/13.5pt Inter, sans-serif; color: var(--c); padding-left: 18pt; }
+.toc { padding: 17pt 22pt; }
+.toc .grp + .grp { margin-top: 7pt; }
+.toc .it { display: flex; justify-content: space-between; gap: 12pt; font: 400 11.5pt/14.5pt Inter, sans-serif; color: var(--c); }
+.toc .it span:last-child { font-weight: 500; font-variant-numeric: tabular-nums; }
+.toc .it.sub { font: 300 10.5pt/13.2pt Inter, sans-serif; padding-left: 18pt; }
+.toc .it.sub span:last-child { font-weight: 300; }
 
 /* structure diagram */
 .tree { display: flex; flex-direction: column; align-items: center; gap: 12pt; }

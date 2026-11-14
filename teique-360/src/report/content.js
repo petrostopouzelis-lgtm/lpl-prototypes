@@ -57,9 +57,16 @@
     const nameLen = String(data.subject.name).length, whoSize = nameLen > 24 ? Math.max(14, Math.round(22 * 24 / nameLen * 10) / 10) : 22;
     sections.push({ id: 'cover', kind: 'cover', title: 'Cover',
       html: `<img class="bg" src="assets/cover-2026.jpg" alt=""><div class="cr">${esc(fmt(lib.footer.copyright, { year }))}</div>
-        <div class="ttl"><div>TEIQ<i>ue</i></div><div>${esc(cv.report || '360 Report')}</div>${formLine ? `<div class="form">${esc(formLine)}</div>` : ''}</div>
+        <div class="ttl"><div>TEIQ<i>ue</i></div><div>${esc(cv.report || '360° Report')}</div>${formLine ? `<div class="form">${esc(formLine)}</div>` : ''}</div>
         <div class="who" style="font-size:${whoSize}pt"><span>${esc(data.subject.name)}</span>${coverDate ? `<i></i><span>${esc(coverDate)}</span>` : ''}</div>
         <div class="legal">${esc(lib.footer.legal)}</div>` });
+
+    // ---- contents page: filled in by the paginator once the page numbers are known. Its entries are the
+    // page titles; a section's tocSubs are entries without a page of their own.
+    if (opt.toc !== false) {
+      const tocTitle = (lib.toc && lib.toc.title) || 'Contents';
+      sections.push({ id: 'toc', kind: 'contents', title: tocTitle, color: T.BLUE, headHtml: head('', tocTitle, 'Added page') });
+    }
 
     // ---- about trait emotional intelligence
     const half = Math.ceil(pg.about.list.length / 2), ul = items => `<ul>${items.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`;
@@ -145,11 +152,11 @@
         // the independent facets have no factor score, so their first facet opens the section
         const own = g.scored ? g.facets : g.facets.slice(1);
         if (!g.scored) blocks.push(scaleBlock(g.facets[0], true), scorers(g.facets[0]));
-        add(g.id, g.name, g.text, blocks);
+        add(g.id, g.name, g.text, blocks, g.scored ? {} : { tocSubs: [{ title: T.nameOf(g.facets[0]), numbered: true }] });
         own.forEach(f => add(f, T.nameOf(f), g.text, [head(g.name, T.nameOf(f)), scaleBlock(f, false), scorers(f)], { parent: g.id }));
       } else {
         g.facets.forEach(f => blocks.push(scaleBlock(f, true), scorers(f)));
-        add(g.id, g.name, g.text, blocks);
+        add(g.id, g.name, g.text, blocks, { tocSubs: g.facets.map(f => ({ title: T.nameOf(f) })) });
       }
     });
 
@@ -194,7 +201,7 @@
 
     return {
       sections,
-      meta: { product: 'TEIQ<i>ue</i> 360', name: data.subject.name, date: data.report.date, copyright: fmt(lib.footer.copyright, { year }),
+      meta: { product: 'TEIQ<i>ue</i> 360°', name: data.subject.name, date: data.report.date, copyright: fmt(lib.footer.copyright, { year }),
         watermark: !!st.watermark || opt.watermark, watermarkText: 'London Psychometric Laboratory Sample' }
     };
   };

@@ -96,16 +96,20 @@
     let num = 0;
     pages.forEach(p => { if (p.numbered) { p.num = ++num; p.el.querySelector('.pg').innerHTML = `page <b>${p.num}</b>`; } });
 
-    // contents page
+    // contents page: one numbered entry per section, in the section's colour, with the page it starts
+    // on. Under a factor: its facets, each with its own page number when it has a page of its own.
     const toc = sections.find(s => s.kind === 'contents');
     if (toc) {
+      const esc = T.svg.esc;
       let items = '', i = 0;
       sections.forEach(s => {
-        if (!s.toc || s.kind !== 'flow') return;
-        const subs = sections.filter(x => x.parent === s.id && x.tocSub).map(x => x.tocSub);
-        items += `<div style="--c:${s.color || T.BLUE}"><div class="it"><span>${++i}. ${T.svg.esc(s.toc)}</span><span>${s.page.num || ''}</span></div>${subs.length ? `<div class="subs">${subs.map(T.svg.esc).join('<br>')}</div>` : ''}</div>`;
+        if (s.kind !== 'flow' || s.parent) return;
+        const subs = (s.tocSubs || []).map(q => ({ title: q.title, num: q.numbered ? s.page.num : '' }))
+          .concat(sections.filter(x => x.parent === s.id).map(x => ({ title: x.title, num: x.page.num })));
+        items += `<div class="grp" style="--c:${s.color || T.BLUE}"><div class="it"><span>${++i}. ${esc(s.title)}</span><span>${s.page.num || ''}</span></div>` +
+          subs.map(q => `<div class="it sub"><span>${esc(q.title)}</span><span>${q.num || ''}</span></div>`).join('') + '</div>';
       });
-      toc.page.body.innerHTML = `<h1 class="title">Contents</h1><div class="card toc">${items}</div>`;
+      toc.page.body.innerHTML = `${toc.headHtml || `<h1 class="title">${esc(toc.title || 'Contents')}</h1>`}<div class="card toc">${items}</div>`;
       if (over(toc.page)) warnings.push('Contents list is taller than its page');
     }
     return { pages: pages.length, numbered: num, warnings };

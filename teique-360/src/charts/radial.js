@@ -140,7 +140,7 @@
       : S.el('rect', { x: yx, y: ly - (variant === 'E' ? 5.5 : 7), width: 24, height: variant === 'E' ? 8 : 11, rx: 5.5, fill: hollow ? '#fff' : yEdge, stroke: hollow ? yEdge : null, 'stroke-width': hollow ? 1.5 : null });
     legend += S.text(yx + 30, ly + 2.8, tY, { 'font-size': 11.5, 'font-weight': 600, fill: T.INK });
 
-    return S.root(W, H, `<defs>${defs}</defs>${ring}${grid}${dividers}${petals}${bands}${marks}${labels}${hub}${legend}`, 'TEIQue 360 petal chart: you compared with others');
+    return S.root(W, H, `<defs>${defs}</defs>${ring}${grid}${dividers}${petals}${bands}${marks}${labels}${hub}${legend}`, 'TEIQue 360° petal chart: you compared with others');
   };
 
   // ---------------------------------------------------------------- score wheel

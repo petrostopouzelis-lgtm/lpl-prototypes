@@ -493,16 +493,20 @@
     "legal": "A product of London Psychometric Laboratory Ltd.",
     "status": "copied from the 2025 reports; confirm for the 360"
   },
+  "toc": {
+    "title": "Contents",
+    "status": "A contents page with page numbers; not in the 2010 report (its 'Report contents' page describes the sections instead). Entries are the page titles."
+  },
   "cover": {
-    "report": "360 Report",
+    "report": "360° Report",
     "forms": {
       "TEIQue-360": "Full Form",
       "TEIQue-360-S": "Short Form"
     },
-    "status": "Layout and lines follow Petros's cover template (brief/cover-template-2026-11.pdf: TEIQue / Personal Report / Full Form). '360 Report' and the form names are this build's reading of it for the 360; confirm."
+    "status": "Layout and lines follow Petros's cover template (brief/cover-template-2026-11.pdf: TEIQue / Personal Report / Full Form). '360° Report' and the form names are this build's reading of it for the 360; confirm."
   },
   "pages": {
-    "status": "All wording copied from the 2010 TEIQue 360 sample report.",
+    "status": "All wording copied from the 2010 TEIQue 360 sample report. One change: the report's name is written TEIQue 360° (Petros, 2026-11-14), so ack.title has the degree sign; the 2010 title is 'TEIQue 360 (multi-rater feedback)'.",
     "section_intro": "Introduction and background",
     "section_results": "Interpreting your results",
     "about": {
@@ -617,7 +621,7 @@
       ]
     },
     "ack": {
-      "title": "TEIQue 360 (multi-rater feedback)",
+      "title": "TEIQue 360° (multi-rater feedback)",
       "paragraphs": [
         "This multi-rater 360° report is an interpretation based on rater responses to the question items from the TEIQue on-line administration system. It will be a reflection of how you are perceived in relation to the emotional intelligence traits."
       ],
@@ -648,7 +652,7 @@
   "extras": {
     "status": "Draft wording written for this build, not from any LPL report. Not shown unless extras are switched on.",
     "summary": {
-      "title": "Your TEIQue 360 Summary Graph"
+      "title": "Your TEIQue 360° Summary Graph"
     },
     "map": {
       "title": "Perception Map",

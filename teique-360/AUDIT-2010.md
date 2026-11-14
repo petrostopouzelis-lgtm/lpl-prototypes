@@ -23,6 +23,7 @@ Only content and visuals that are wholly new carry the "+ Added" tag. A 2010 cha
 | Where | What | Tag |
 |---|---|---|
 | Summary Graph, Perception Map, Where the Views Differ | Three whole pages: titles, captions, charts and chart labels. The wording is Claude's draft (`extras` in the library) | "Added page" |
+| Contents | A contents page with page numbers, after the cover. Its entries are the page titles | "Added page" |
 | Rater Groups | The response cards above the rater list ("9 of 9 raters responded", one card per group) | "Added chart" |
 | Every factor and facet page | The score wheel (the 2010 report has only the rater-group chart there) | "Added chart" |
 
@@ -61,6 +62,7 @@ Switch the tags off for a finished report: untick "Mark additions" in the page v
 | Each factor's charts on one page, its texts on the facing page | One page per factor and per facet, chart and text together | new layout |
 | Coach data: "Participant ID:", "Norm:", "Administration date:" | Same labels without the colon, as small headings | styling |
 | Rater names, participant id, dates | Made-up sample values | sample data |
+| Last page title "TEIQue 360 (multi-rater feedback)" | "TEIQue 360° (multi-rater feedback)" | the report's name carries the degree sign (Petros, 2026-11-14) |
 
 ## Changed during the audit, to match the 2010 wording
 

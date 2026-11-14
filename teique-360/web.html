@@ -8,13 +8,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TEIQue 360 Report</title>
+<title>TEIQue 360° Report</title>
 <script>document.write('<link rel="stylesheet" href="src/web/web.css?v=' + Date.now() + '">');</script>
 </head>
 <body>
 <div class="topbar">
   <div class="in">
-    <div class="prod">TEIQ<i>ue</i> 360</div>
+    <div class="prod">TEIQ<i>ue</i> 360°</div>
     <div class="who" id="who"></div>
     <a class="btn" id="pdf" target="_blank" rel="noopener">Download PDF</a>
   </div>
@@ -46,7 +46,7 @@
   const SKIP = ['plan'];             // print-only sections
   const WIDE = ['summary', 'gap'];   // charts that scroll sideways on a phone instead of shrinking
 
-  document.title = 'TEIQue 360 Report: ' + data.subject.name;
+  document.title = 'TEIQue 360° Report: ' + data.subject.name;
   document.getElementById('who').innerHTML = '<b>' + esc(data.subject.name) + '</b> · ' + esc(data.report.date || '');
   const pdf = document.getElementById('pdf');
   pdf.href = q.get('pdf') || 'report.html?print=1' + (q.get('data') ? '&data=' + encodeURIComponent(q.get('data')) : '');
