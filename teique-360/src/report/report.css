@@ -55,6 +55,15 @@ h4.sub { font: 500 14pt/17pt Inter, sans-serif; color: var(--c); margin: 0 0 10p
 .row .txt { flex: 1; min-width: 0; }
 .row .gauge { width: 155pt; flex: none; margin-top: -6pt; }
 
+/* "Added" tag: marks what the 2010 report did not have. Small, brand blue, never part of the layout flow
+   inside a chart, so switching the tags off moves nothing. */
+.added { display: inline-flex; align-items: center; gap: 3pt; font: 700 6.5pt/1 Manrope, sans-serif; letter-spacing: .07em; text-transform: uppercase; white-space: nowrap;
+  color: #2B86BF; background: #EEF6FB; border: .6pt solid #A9D3EC; border-radius: 20pt; padding: 2.6pt 6pt 2.6pt 4.5pt; }
+.added::before { content: '+'; font-size: 8.5pt; font-weight: 700; line-height: .7; margin-top: -.5pt; }
+h1.title .added { vertical-align: middle; margin-left: 10pt; position: relative; top: -2pt; }
+.chart, .scores { position: relative; }
+.chart > .added, .scores > .added { position: absolute; top: 0; right: 0; z-index: 2; }
+
 /* cover and back cover */
 .page.full img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .cover .legal { position: absolute; top: 14.5pt; left: 0; right: 0; text-align: center; font: 300 10pt/14.5pt Inter, sans-serif; color: #B7B6B7; }

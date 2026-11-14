@@ -129,15 +129,16 @@
       hubRow(cy - 2, 'Others', v.others.global, T.GLOBAL.text) + hubRow(cy + 17, 'You', v.self.global, YG.text);
 
     // legend: both swatches run through the five factor colours, each drawn the way this variant draws it
-    const ly = 620, yx = 322, stops = fn => T.GROUPS.map((g, i) => `<stop offset="${i / (T.GROUPS.length - 1)}" stop-color="${fn(g)}"/>`).join('');
-    defs += `<linearGradient id="${uid}-lg" gradientUnits="userSpaceOnUse" x1="156" x2="190" y1="0" y2="0">${stops(g => g.fill)}</linearGradient>`;
-    defs += `<linearGradient id="${uid}-lgy" gradientUnits="userSpaceOnUse" x1="${yx}" x2="${yx + 24}" y1="0" y2="0">${stops(g => T.youStyle(opt.you, g).edge)}</linearGradient>`;
+    const tO = opt.legendOthers || "Others' average", tY = opt.legendYou || 'How you rated yourself', wO = S.tw(tO, 11.5);
+    const ox = Math.max(8, (W - (40 + wO + 26 + 30 + S.tw(tY, 11.5))) / 2), ly = 620, yx = ox + 40 + wO + 26, stops = fn => T.GROUPS.map((g, i) => `<stop offset="${i / (T.GROUPS.length - 1)}" stop-color="${fn(g)}"/>`).join('');
+    defs += `<linearGradient id="${uid}-lg" gradientUnits="userSpaceOnUse" x1="${n(ox)}" x2="${n(ox + 34)}" y1="0" y2="0">${stops(g => g.fill)}</linearGradient>`;
+    defs += `<linearGradient id="${uid}-lgy" gradientUnits="userSpaceOnUse" x1="${n(yx)}" x2="${n(yx + 24)}" y1="0" y2="0">${stops(g => T.youStyle(opt.you, g).edge)}</linearGradient>`;
     const yEdge = `url(#${uid}-lgy)`, hollow = T.youStyle(opt.you, T.GLOBAL).hollow;
-    let legend = S.el('rect', { x: 156, y: ly - 7, width: 34, height: 11, rx: 5.5, fill: `url(#${uid}-lg)` }) + S.text(196, ly + 2.8, "Others' average", { 'font-size': 11.5, 'font-weight': 600, fill: T.INK });
+    let legend = S.el('rect', { x: n(ox), y: ly - 7, width: 34, height: 11, rx: 5.5, fill: `url(#${uid}-lg)` }) + S.text(ox + 40, ly + 2.8, tO, { 'font-size': 11.5, 'font-weight': 600, fill: T.INK });
     legend += variant === 'F' ? S.el('circle', { cx: yx + 12, cy: ly - 1.5, r: 7, fill: '#fff', stroke: yEdge, 'stroke-width': 1.8 })
       : variant === 'G' ? S.el('rect', { x: yx, y: ly - 2.8, width: 24, height: 2.6, rx: 1.3, fill: yEdge }) + S.el('circle', { cx: yx + 12, cy: ly - 1.5, r: 4.2, fill: '#fff', stroke: yEdge, 'stroke-width': 2.2 })
       : S.el('rect', { x: yx, y: ly - (variant === 'E' ? 5.5 : 7), width: 24, height: variant === 'E' ? 8 : 11, rx: 5.5, fill: hollow ? '#fff' : yEdge, stroke: hollow ? yEdge : null, 'stroke-width': hollow ? 1.5 : null });
-    legend += S.text(yx + 30, ly + 2.8, 'How you rated yourself', { 'font-size': 11.5, 'font-weight': 600, fill: T.INK });
+    legend += S.text(yx + 30, ly + 2.8, tY, { 'font-size': 11.5, 'font-weight': 600, fill: T.INK });
 
     return S.root(W, H, `<defs>${defs}</defs>${ring}${grid}${dividers}${petals}${bands}${marks}${labels}${hub}${legend}`, 'TEIQue 360 petal chart: you compared with others');
   };

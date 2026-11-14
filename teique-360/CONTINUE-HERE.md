@@ -54,6 +54,7 @@ The whole site's design system is in `../design-system/`.
 
 9. **Every factor and facet shows its score wheel as well as its bar** (Petros, 2026-11-14): a small wheel sits to the left of each rater-group strip.
 10. **Readability pass** (Petros, 2026-11-14): larger text in every chart and card, and negative space that looks intended. Claude's answer was one score per page with a large wheel (36 pages); two per page (31 pages) stays available as `scales=pair`. **Not yet confirmed by Petros**: he may prefer the shorter layout.
+11. **Additions are tagged** (Petros, 2026-11-14): whatever the 2010 report did not have carries a small "+ Added" tag. The tags are on by default for review and must be switched off for a finished report. `AUDIT-2010.md` has the full wording audit.
 
 ## Current state
 

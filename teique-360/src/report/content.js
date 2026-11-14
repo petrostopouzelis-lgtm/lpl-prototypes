@@ -24,7 +24,12 @@
     const bandFor = id => T.bandOf(follows === 'others' ? v.others[id] : v.self[id]);
     const sections = [];
     const add = (id, title, color, blocks, extra) => sections.push(Object.assign({ id, title, color, blocks: blocks.filter(Boolean), kind: 'flow' }, extra));
-    const head = (eyebrow, title) => `<div>${eyebrow ? `<div class="eyebrow">${esc(eyebrow)}</div>` : ''}<h1 class="title">${esc(title)}</h1></div>`;
+    // A small "Added" tag on whatever the 2010 report did not have: the three extra pages, charts
+    // with no counterpart there, and data a redrawn chart shows on top of the original.
+    // opt.marks === false leaves the tags out (the finished report, the web view).
+    const mark = what => opt.marks === false ? '' : `<span class="added">${esc(what)}</span>`;
+    const head = (eyebrow, title, tag) => `<div>${eyebrow ? `<div class="eyebrow">${esc(eyebrow)}</div>` : ''}<h1 class="title">${esc(title)}${tag ? mark(tag) : ''}</h1></div>`;
+    const chartTag = (svg, tag, width, cls) => `<div class="chart${cls ? ' ' + cls : ''}"${width ? ` style="width:${width}pt"` : ''}>${svg}${mark(tag)}</div>`;
 
     // wording the library does not have yet is shown as a visible marker plus filler
     const needed = (what, n) => {
@@ -84,19 +89,19 @@
     add('raters', pg.raters.title, T.BLUE, [
       head(pg.section_intro, pg.raters.title),
       you.length ? `<div><h4 class="sub">${esc(pg.raters.you)}</h4>${you.map(t => P(t, 'tight')).join('')}</div>` : '',
-      chart(C.raters(v)),
+      chartTag(C.raters(v), 'Added chart'),
       `<div><h4 class="sub">${esc(fmt(pg.raters.all, { n: v.responded }))}</h4><div class="card rgs">${groupList}</div></div>`
     ]);
 
     // ---- global score
     add('global', pg.global.title, T.GLOBAL.text, [
       head(pg.section_results, pg.global.title),
-      `<div class="stack">${chart(C.gauge(v, 'global'), 236, 'center')}<p class="note mid">${esc(fmt(pg.global.caption, { n: v.responded }))}</p></div>`,
+      `<div class="stack">${chartTag(C.gauge(v, 'global'), 'Added: your own score', 236, 'center')}<p class="note mid">${esc(fmt(pg.global.caption, { n: v.responded }))}</p></div>`,
       { html: `<div><div class="card">${interpretation('global')}</div></div>`, split: '.card' }
     ]);
 
     // ---- profile
-    add('profile', pg.profile.title, T.BLUE, [head(pg.section_results, pg.profile.title), chart(C.wheel(v)), P(pg.profile.paragraph)]);
+    add('profile', pg.profile.title, T.BLUE, [head(pg.section_results, pg.profile.title), chartTag(C.wheel(v, { legendOthers: pg.profile.legend_others && fmt(pg.profile.legend_others, { n: v.responded }), legendYou: pg.profile.legend_self }), 'Added: Global scores in the centre'), P(pg.profile.paragraph)]);
 
     // ---- pages the 2010 report did not have: summary graph, perception map, gap chart
     // (kept at Petros's request, 2026-11-11; opt.extras === false leaves them out)
@@ -107,10 +112,10 @@
       const strengths = facets.filter(f => f.self >= 71 && f.oth >= 71).sort((a, b) => b.oth - a.oth).slice(0, 4);
       const hiddenS = facets.filter(f => f.gap > agree).sort((a, b) => b.gap - a.gap).slice(0, 4);
       const blind = facets.filter(f => f.gap < -agree).sort((a, b) => a.gap - b.gap).slice(0, 4);
-      add('summary', ex.summary.title, T.BLUE, [head('', ex.summary.title), chart(C.summary(v))]);
-      add('map', ex.map.title, T.BLUE, [head('', ex.map.title), chart(C.map(v), 460, 'center'), P(ex.map.caption, 'note'),
+      add('summary', ex.summary.title, T.BLUE, [head('', ex.summary.title, 'Added page'), chart(C.summary(v))]);
+      add('map', ex.map.title, T.BLUE, [head('', ex.map.title, 'Added page'), chart(C.map(v), 460, 'center'), P(ex.map.caption, 'note'),
         `<div class="cols3"><div class="card mini"><h5>${esc(ex.map.strengths)}</h5>${list(strengths, ex.map.none)}</div><div class="card mini"><h5>${esc(ex.map.hidden)}</h5>${list(hiddenS, ex.map.none)}</div><div class="card mini"><h5>${esc(ex.map.blind)}</h5>${list(blind, ex.map.none)}</div></div>`]);
-      add('gap', ex.gap.title, T.BLUE, [head('', ex.gap.title), P(ex.gap.caption), chart(C.gap(v, { agree }))]);
+      add('gap', ex.gap.title, T.BLUE, [head('', ex.gap.title, 'Added page'), P(ex.gap.caption), chart(C.gap(v, { agree }))]);
     }
 
     // ---- one section per factor: the factor, then each of its facets, each with its chart and its text
@@ -120,8 +125,8 @@
     // scales share a page (the web view uses it).
     const single = opt.scales !== 'pair';
     const scoreCharts = id => single
-      ? `<div class="scores big"><div class="chart wheel">${C.gauge(v, id)}</div><div class="chart strip">${C.strip(v, id)}</div></div>`
-      : `<div class="scores"><div class="chart wheel">${C.gauge(v, id, { compact: true })}</div><div class="chart strip">${C.strip(v, id, { width: 324 })}</div></div>`;
+      ? `<div class="scores big">${mark('Added: score wheel, all-others average')}<div class="chart wheel">${C.gauge(v, id)}</div><div class="chart strip">${C.strip(v, id)}</div></div>`
+      : `<div class="scores">${mark('Added: score wheel, all-others average')}<div class="chart wheel">${C.gauge(v, id, { compact: true })}</div><div class="chart strip">${C.strip(v, id, { width: 324 })}</div></div>`;
     const scaleBlock = (id, heading) => ({ split: '.card',
       html: `<div>${heading ? `<h4 class="sub">${esc(T.nameOf(id))}</h4>` : ''}${scoreCharts(id)}<div class="card">${interpretation(id)}</div></div>` });
     T.GROUPS.forEach(g => {
@@ -174,7 +179,7 @@
     const meta = [[pg.coach.id, data.report.id], [pg.coach.norm, data.report.norm], [pg.coach.date, date]];
     add('coach', pg.coach.title, T.BLUE, [head('', pg.coach.title),
       data.report.valid ? `<p class="valid">${esc(pg.coach.valid)}</p>` : '',
-      `<div class="coachrow"><div class="card"><table class="coach"><thead><tr><th>${esc(pg.coach.scale)}</th>${cols}</tr></thead><tbody>${rows}</tbody></table></div>
+      `<div class="coachrow"><div class="card"><table class="coach"><thead><tr><th>${esc(pg.coach.scale || '')}</th>${cols}</tr></thead><tbody>${rows}</tbody></table></div>
         <div class="card meta">${meta.map(([k, val]) => `<div><b>${esc(k)}</b>${esc(val == null ? '' : val)}</div>`).join('')}</div></div>`]);
 
     sections.push({ id: 'back', kind: 'back', title: 'Back cover', html: '<img class="bg" src="assets/back-cover.jpg" alt="">' });

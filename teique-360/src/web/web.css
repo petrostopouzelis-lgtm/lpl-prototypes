@@ -141,3 +141,6 @@ table.coach tr.sep th { padding-top: 16px; }
   .fmap .r { grid-template-columns: 130px 1fr; }
   .rl { grid-template-columns: 1fr; gap: 0; }
 }
+
+/* the report's "Added" review tags are not shown on the web page */
+.added { display: none; }

@@ -591,6 +591,8 @@ window.TEIQ_TEXT = {
     },
     "profile": {
       "title": "Your TEIQue profile",
+      "legend_others": "Average rating across all coworkers ({n})",
+      "legend_self": "How you rated yourself",
       "paragraph": "The profile above is designed to give you a visual representation of the four factors and fifteen facets of trait emotional intelligence as perceived by your rating group i.e. your reputation with colleagues, compared to how you rate yourself."
     },
     "independent": {
@@ -626,7 +628,7 @@ window.TEIQ_TEXT = {
     "coach": {
       "title": "Coach Data",
       "valid": "This report is Valid and Interpretable.",
-      "scale": "Scale",
+      "scale": "",
       "facets": "Facets",
       "raw": "Raw Score",
       "self": "Self %",

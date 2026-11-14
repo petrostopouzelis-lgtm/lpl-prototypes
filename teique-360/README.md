@@ -35,6 +35,12 @@ Petros asked for better readability throughout, larger chart text, larger Low/Hi
 - **Spacing:** the paginator shares a page's spare height between its blocks (up to 22pt more per gap, `paginate.js`), so pages read as evenly spaced. A page whose large wheel would push something onto the next page first switches to a smaller wheel (`.page.tight`).
 - All seven builds pass without layout warnings in both layouts.
 
+### Wording audit and "Added" tags (2026-11-14, later still)
+
+- `AUDIT-2010.md`: the report's wording checked against the 2010 sample report, both ways. All running text is the 2010 wording; nothing from it is missing except the listed differences (names, cover, footer, chart furniture). `node tools/audit-text.js` re-runs the check.
+- Everything the 2010 report did not have carries a small blue **"+ Added"** tag: the three extra pages, the raters cards, the score wheels, your own score on the Global page. Off with "Mark additions" in the viewer, `marks=0`, `--no-marks`, or `marks: false` in `T.report.build`. **Switch them off for a finished report.**
+- The profile legend now uses the 2010 wording; the coach table's "Scale" heading is gone.
+
 ## Look at it
 
 - `report.html`: **the page viewer.** It shows every PDF page as it will print, page by page or all at once, with a bar to switch the data file, the filler, the watermark and the zoom. "Save as PDF" prints exactly what is shown.
@@ -45,8 +51,9 @@ Petros asked for better readability throughout, larger chart text, larger Low/Hi
 ## Commands
 
 ```
-node tools/build-pdf.js [data.json] [out.pdf] [--fill=none|typical|long] [--watermark] [--no-extras] [--scales=pair] [--png]
+node tools/build-pdf.js [data.json] [out.pdf] [--fill=none|typical|long] [--watermark] [--no-extras] [--scales=pair] [--no-marks] [--png]
 node tools/check-charts.js       # draw every chart from every data file; exit 1 on broken output
+node tools/audit-text.js         # compare the report's wording with the 2010 report, both ways
 node tools/make-sample.js        # rebuild data/sample-360.json
 node tools/make-edge-cases.js    # rebuild data/edge-*.json
 node tools/wrap-json.js          # after editing text/library.json or any data file: refresh the .js copies
