@@ -494,6 +494,14 @@ window.TEIQ_TEXT = {
     "legal": "A product of London Psychometric Laboratory Ltd.",
     "status": "copied from the 2025 reports; confirm for the 360"
   },
+  "cover": {
+    "report": "360 Report",
+    "forms": {
+      "TEIQue-360": "Full Form",
+      "TEIQue-360-S": "Short Form"
+    },
+    "status": "Layout and lines follow Petros's cover template (brief/cover-template-2026-11.pdf: TEIQue / Personal Report / Full Form). '360 Report' and the form names are this build's reading of it for the 360; confirm."
+  },
   "pages": {
     "status": "All wording copied from the 2010 TEIQue 360 sample report.",
     "section_intro": "Introduction and background",

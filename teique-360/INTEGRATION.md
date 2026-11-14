@@ -57,7 +57,7 @@ const svg = TEIQ.charts.gauge(TEIQ.view(data), 'empathy');
 ## Fonts and images
 
 - `fonts/` holds Inter and Manrope (variable fonts, SIL Open Font License), copied from this machine. Both pages load them from there, so no network access is needed.
-- `assets/` holds the cover, back cover and header logo exported from the Figma file. There is no 360-specific cover yet; the TEIQue cover is used.
+- `assets/` holds the cover artwork (`cover-2026.jpg`, from the cover template), and the back cover and header logo exported from the Figma file. The cover's title lines, name and date are live text.
 
 ## Not done, and decisions that change the integration
 

@@ -115,7 +115,7 @@
     let data;
     if (q.get('data')) data = await (await fetch(q.get('data'))).json();
     else { await script('data/' + file + '.js?v=' + Date.now()); data = window.TEIQ_FILES[file]; }
-    const images = ['assets/cover.jpg', 'assets/back-cover.jpg', 'assets/logo-monogram.png'].map(src => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = src; }));
+    const images = ['assets/cover-2026.jpg', 'assets/back-cover.jpg', 'assets/logo-monogram.png'].map(src => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = src; }));
     await Promise.all([document.fonts.load('300 12pt Inter'), document.fonts.load('500 26pt Manrope'), ...images]);
     await document.fonts.ready;
     const built = T.report.build(data, window.TEIQ_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', extras: q.get('extras') !== '0', scales: q.get('scales') === 'pair' ? 'pair' : 'single', marks: q.get('marks') !== '0' });

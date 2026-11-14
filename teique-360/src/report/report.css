@@ -68,14 +68,17 @@ h1.title .added { vertical-align: middle; margin-left: 12pt; position: relative;
 
 /* cover and back cover */
 .page.full img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.cover .legal { position: absolute; top: 14.5pt; left: 0; right: 0; text-align: center; font: 300 10pt/14.5pt Inter, sans-serif; color: #B7B6B7; }
-.cover .box { position: absolute; top: 326pt; left: 0; right: 0; display: flex; justify-content: center; padding: 0 40pt; }
-.cover .box > div { background: #fff; border-radius: 15pt; box-shadow: 0 0 10pt rgba(0, 0, 0, .15); padding: 16pt 24pt; text-align: center; max-width: 100%; }
-.cover .box .t { font: 300 21pt/24pt Inter, sans-serif; }
-.cover .box .t b { font-weight: 500; color: #42A2DA; }
-.cover .box .t b i { font-style: normal; color: #E47C2D; }
-.cover .box .n { font: 300 16pt/20pt Inter, sans-serif; margin-top: 10pt; }
-.cover .cr { position: absolute; left: 0; right: 0; top: 812pt; text-align: center; font: 300 10pt/14.5pt Inter, sans-serif; color: #fff; }
+/* cover, after the template in brief/cover-template-2026-11.pdf. Positions and sizes are the template's,
+   in points. The artwork image already holds the ribbon, the logo and the blue name bar. */
+.cover .cr, .cover .legal { position: absolute; left: 0; right: 0; text-align: center; font: 400 10.6pt/14.5pt Manrope, sans-serif; color: #6B7380; }
+.cover .cr { top: 8.8pt; }
+.cover .legal { top: 816.3pt; }
+.cover .ttl { position: absolute; left: 28.1pt; top: 217.4pt; font: 700 28.5pt/35.4pt Manrope, sans-serif; color: #2B9CD6; }
+.cover .ttl i { font-style: normal; color: #E47C2D; }
+.cover .ttl .form { font-weight: 300; }
+.cover .who { position: absolute; left: 54.3pt; right: 54.3pt; top: 565.1pt; height: 30pt; display: flex; align-items: center; font: 300 22pt/30pt Manrope, sans-serif; color: #fff; white-space: nowrap; }
+.cover .who span:first-child { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.cover .who i { flex: none; width: .56em; height: .56em; border-radius: 50%; background: #fff; margin: .17em .82em 0; }
 
 /* contents */
 .toc { padding: 18pt 20pt; }

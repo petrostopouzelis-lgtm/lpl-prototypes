@@ -38,7 +38,7 @@ Only content and visuals that are wholly new carry the "+ Added" tag. A 2010 cha
 
 | Where | What |
 |---|---|
-| Cover | "A product of London Psychometric Laboratory Ltd." (from the current LPL reports) |
+| Cover | "A product of London Psychometric Laboratory Ltd." (from the current LPL reports); the form line "Full Form" (from the cover template) |
 | Every page | Footer "© K. V. Petrides 2026. All rights reserved." (from the current LPL reports) |
 | Where wording is missing | The yellow "Text needed" marker and grey filler, which mark themselves. Not in the sample: its scores all fall in bands the 2010 report has wording for |
 
@@ -50,7 +50,7 @@ Switch the tags off for a finished report: untick "Mark additions" in the page v
 
 | 2010 report | New report | Why |
 |---|---|---|
-| Cover: "Multi Rater (360) Report", "SAMPLE REPORT", the date, APS logo and strapline | "TEIQue 360 Report" and the person's name. The date is in every page header; "sample" is the optional watermark | Figma cover |
+| Cover: "Multi Rater (360) Report", "SAMPLE REPORT", the date, APS logo and strapline | "TEIQue / 360 Report / Full Form", the person's name and the date, Psychometric Laboratory logo. "Sample" is the optional watermark | cover template (2026-11) |
 | Footer "© Copyright 2010 - APS & K.V. Petrides", "Page 5 / 22" | "© K. V. Petrides 2026. All rights reserved.", "page 5" (no total) | current LPL reports |
 | "Emotional Management / Perception / Expression / Regulation" | "Emotion Management / Perception / Expression / Regulation" | scale names follow the Figma file |
 | "Auxiliary Facets" | "Independent Facets" | Figma |

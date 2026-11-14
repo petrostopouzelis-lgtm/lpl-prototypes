@@ -41,6 +41,13 @@ Petros asked for better readability throughout, larger chart text, larger Low/Hi
 - What is wholly new compared with the 2010 report carries a small blue **"+ Added"** tag: the three extra pages, the raters cards and the score wheel on each factor and facet page. Charts the 2010 report already had and that were only redrawn (petal chart, Global score, rater-group strip) are not tagged. Off with "Mark additions" in the viewer, `marks=0`, `--no-marks`, or `marks: false` in `T.report.build`. **Switch them off for a finished report.**
 - The profile legend now uses the 2010 wording; the coach table's "Scale" heading is gone.
 
+### New cover (2026-11-14, evening)
+
+- The cover follows Petros's template (`brief/cover-template-2026-11.pdf`): ribbon artwork, Psychometric Laboratory logo, three title lines, and a blue bar with the name and the date.
+- Title lines: "TEIQue" / "360 Report" / "Full Form". The last two come from `cover` in the text library; the form line follows `report.form` in the data ("TEIQue-360" gives "Full Form", "TEIQue-360-S" gives "Short Form"). **To confirm with Petros.**
+- The artwork is one image, `assets/cover-2026.jpg`; `tools/cover-artwork.py` says how it was made. The template is CMYK with no colour profile, so the script converts ink by ink and was checked against the brand blue of the logo.
+- The earlier Figma cover (chess pieces) is kept as `reference/earlier-prototypes/cover-chess-figma.jpg`.
+
 ## Look at it
 
 - `report.html`: **the page viewer.** It shows every PDF page as it will print, page by page or all at once, with a bar to switch the data file, the filler, the watermark and the zoom. "Save as PDF" prints exactly what is shown.
@@ -73,7 +80,7 @@ src/       model.js      facets, factors, colours, score scales, the anonymity r
            charts/       radial.js (wheel, gauge), linear.js (strip, summary, gap), overview.js (map, raters)
            report/       content.js (pages as blocks), paginate.js (A4 layout), report.css
            web/          web.css
-assets/    cover, back cover, header logo (from Figma)
+assets/    cover artwork (cover-2026.jpg, from the cover template), back cover and header logo (from Figma)
 fonts/     Inter and Manrope
 tools/     build-pdf.js and the scripts above; extract_definitions.py read the 2025 definitions (not shown in the 360 report)
 out/       built PDFs (only sample-360.pdf is kept in git)

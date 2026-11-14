@@ -49,11 +49,17 @@
       return sc.low_scorers || sc.high_scorers ? `<div class="scorers">${sc.low_scorers ? box(sc.low_scorers) : ''}${sc.high_scorers ? box(sc.high_scorers) : ''}</div>` : '';
     };
 
-    // ---- cover
+    // ---- cover: Petros's cover template (brief/cover-template-2026-11.pdf). The artwork (ribbon, logo,
+    // name bar) is one image; the title lines, name, date and the two small lines are live text.
+    const cv = lib.cover || {}, formLine = (cv.forms || {})[data.report.form] || '';
+    const cd = String(data.report.date || '').split('-'), coverDate = cd.length === 3 ? `${cd[2]}/${cd[1]}/${cd[0]}` : data.report.date || '';
+    // a long name gets smaller type so name and date always fit the bar
+    const nameLen = String(data.subject.name).length, whoSize = nameLen > 24 ? Math.max(14, Math.round(22 * 24 / nameLen * 10) / 10) : 22;
     sections.push({ id: 'cover', kind: 'cover', title: 'Cover',
-      html: `<img class="bg" src="assets/cover.jpg" alt=""><div class="legal">${esc(lib.footer.legal)}</div>
-        <div class="box"><div><div class="t"><b>TEIQ<i>ue</i> 360</b> Report</div><div class="n">${esc(data.subject.name)}</div></div></div>
-        <div class="cr">${esc(fmt(lib.footer.copyright, { year }))}</div>` });
+      html: `<img class="bg" src="assets/cover-2026.jpg" alt=""><div class="cr">${esc(fmt(lib.footer.copyright, { year }))}</div>
+        <div class="ttl"><div>TEIQ<i>ue</i></div><div>${esc(cv.report || '360 Report')}</div>${formLine ? `<div class="form">${esc(formLine)}</div>` : ''}</div>
+        <div class="who" style="font-size:${whoSize}pt"><span>${esc(data.subject.name)}</span>${coverDate ? `<i></i><span>${esc(coverDate)}</span>` : ''}</div>
+        <div class="legal">${esc(lib.footer.legal)}</div>` });
 
     // ---- about trait emotional intelligence
     const half = Math.ceil(pg.about.list.length / 2), ul = items => `<ul>${items.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`;

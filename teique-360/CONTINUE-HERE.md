@@ -68,7 +68,7 @@ The whole site's design system is in `../design-system/`.
 
 1. **Missing wording (needs LPL):** the 2010 sample shows one band per scale, so 40 of 60 interpretation texts are missing, and development suggestions exist only for Empathy (low), Emotion Expression (low) and Self-Motivation (high).
 2. Petros has not compared the pages with Figma yet.
-3. No 360-specific cover; the TEIQue cover is reused with "TEIQue 360 Report".
+3. Cover: done 2026-11-14 from Petros's template (`brief/cover-template-2026-11.pdf`). Its title lines ("TEIQue / 360 Report / Full Form") are still to be confirmed by him.
 4. Anonymity rule (minimum group size) and whether rater names appear: undecided. The sample shows all groups and names, as the 2010 report does.
 5. The wheel's scale (see decision 8).
 6. The dashboard's real app shell and stack are unknown; `web.html` has a stand-in.
