@@ -38,7 +38,7 @@ Petros asked for better readability throughout, larger chart text, larger Low/Hi
 ### Wording audit and "Added" tags (2026-11-14, later still)
 
 - `AUDIT-2010.md`: the report's wording checked against the 2010 sample report, both ways. All running text is the 2010 wording; nothing from it is missing except the listed differences (names, cover, footer, chart furniture). `node tools/audit-text.js` re-runs the check.
-- Everything the 2010 report did not have carries a small blue **"+ Added"** tag: the three extra pages, the raters cards, the score wheels, your own score on the Global page. Off with "Mark additions" in the viewer, `marks=0`, `--no-marks`, or `marks: false` in `T.report.build`. **Switch them off for a finished report.**
+- What is wholly new compared with the 2010 report carries a small blue **"+ Added"** tag: the three extra pages, the raters cards and the score wheel on each factor and facet page. Charts the 2010 report already had and that were only redrawn (petal chart, Global score, rater-group strip) are not tagged. Off with "Mark additions" in the viewer, `marks=0`, `--no-marks`, or `marks: false` in `T.report.build`. **Switch them off for a finished report.**
 - The profile legend now uses the 2010 wording; the coach table's "Scale" heading is gone.
 
 ## Look at it

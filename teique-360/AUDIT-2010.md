@@ -12,20 +12,35 @@ Re-run it any time: `node tools/audit-text.js`.
 
 - **All running text is the 2010 wording, word for word**: the introduction pages, the 20 interpretation texts, the Low/High Scorers boxes, the ten development suggestions, the action plan headings, the acknowledgement and the coach data labels. The 2010 typos are kept too ("recommedations", "understand , process").
 - **Nothing from the 2010 text is missing**, apart from the items in "Differences" below. None of them is body text.
-- **What the new report adds** is listed under "Additions". On the pages, these carry a small blue "+ Added" tag.
+- **What the new report adds** is listed under "Additions". What is wholly new carries a small blue "+ Added" tag on the page.
 
 ## Additions (not in the 2010 report)
 
-| Where | What | Tag on the page |
+Only content and visuals that are wholly new carry the "+ Added" tag. A 2010 chart that was redrawn is not tagged, even where it now shows more (Petros, 2026-11-14).
+
+**New, tagged on the page**
+
+| Where | What | Tag |
 |---|---|---|
 | Summary Graph, Perception Map, Where the Views Differ | Three whole pages: titles, captions, charts and chart labels. The wording is Claude's draft (`extras` in the library) | "Added page" |
 | Rater Groups | The response cards above the rater list ("9 of 9 raters responded", one card per group) | "Added chart" |
-| Global score page | The 2010 chart is one bar for the raters' average. The wheel also shows the person's own score | "Added: your own score" |
-| Profile page | The two Global scores in the centre of the wheel (the 2010 wheel has a logo there) | "Added: Global scores in the centre" |
-| Every factor and facet page | The score wheel. On the rater-group chart: the "All others" average marker, the pale bar from the lowest to the highest group, and the exact score beside each group name (the 2010 chart shows positions only) | "Added: score wheel, all-others average" |
-| Cover | "A product of London Psychometric Laboratory Ltd." (from the current LPL reports) | not tagged |
-| Every page | Footer "© K. V. Petrides 2026. All rights reserved." (from the current LPL reports) | not tagged |
-| Where wording is missing | The yellow "Text needed" marker and grey filler. Not in the sample: its scores all fall in bands the 2010 report has wording for | already marked |
+| Every factor and facet page | The score wheel (the 2010 report has only the rater-group chart there) | "Added chart" |
+
+**Existing in 2010, redrawn; not tagged**
+
+| Where | What the redrawn chart shows on top of the 2010 one |
+|---|---|
+| Global score page | The 2010 chart is one bar for the raters' average. The wheel also shows the person's own score |
+| Profile page (petal chart) | The two Global scores in the centre (the 2010 wheel has a logo there); each facet's two scores as numbers |
+| Rater-group chart on every factor and facet page | The "All others" average marker, the pale bar from the lowest to the highest group, and the exact score beside each group name (the 2010 chart shows positions only) |
+
+**New wording, not tagged**
+
+| Where | What |
+|---|---|
+| Cover | "A product of London Psychometric Laboratory Ltd." (from the current LPL reports) |
+| Every page | Footer "© K. V. Petrides 2026. All rights reserved." (from the current LPL reports) |
+| Where wording is missing | The yellow "Text needed" marker and grey filler, which mark themselves. Not in the sample: its scores all fall in bands the 2010 report has wording for |
 
 The cover line and the footer are not tagged because a tag on the cover and on every footer would be noise; they are wording to confirm with LPL.
 

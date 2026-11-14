@@ -24,8 +24,10 @@
     const bandFor = id => T.bandOf(follows === 'others' ? v.others[id] : v.self[id]);
     const sections = [];
     const add = (id, title, color, blocks, extra) => sections.push(Object.assign({ id, title, color, blocks: blocks.filter(Boolean), kind: 'flow' }, extra));
-    // A small "Added" tag on whatever the 2010 report did not have: the three extra pages, charts
-    // with no counterpart there, and data a redrawn chart shows on top of the original.
+    // A small "Added" tag on whatever the 2010 report did not have at all: the three extra pages and
+    // the charts with no counterpart there (the raters cards, the score wheel on each factor and
+    // facet page). A 2010 chart that was redrawn (petal chart, Global score, rater-group strip) is
+    // not tagged, even where it now shows more (Petros, 2026-11-14).
     // opt.marks === false leaves the tags out (the finished report, the web view).
     const mark = what => opt.marks === false ? '' : `<span class="added">${esc(what)}</span>`;
     const head = (eyebrow, title, tag) => `<div>${eyebrow ? `<div class="eyebrow">${esc(eyebrow)}</div>` : ''}<h1 class="title">${esc(title)}${tag ? mark(tag) : ''}</h1></div>`;
@@ -96,12 +98,12 @@
     // ---- global score
     add('global', pg.global.title, T.GLOBAL.text, [
       head(pg.section_results, pg.global.title),
-      `<div class="stack">${chartTag(C.gauge(v, 'global'), 'Added: your own score', 236, 'center')}<p class="note mid">${esc(fmt(pg.global.caption, { n: v.responded }))}</p></div>`,
+      `<div class="stack">${chart(C.gauge(v, 'global'), 236, 'center')}<p class="note mid">${esc(fmt(pg.global.caption, { n: v.responded }))}</p></div>`,
       { html: `<div><div class="card">${interpretation('global')}</div></div>`, split: '.card' }
     ]);
 
     // ---- profile
-    add('profile', pg.profile.title, T.BLUE, [head(pg.section_results, pg.profile.title), chartTag(C.wheel(v, { legendOthers: pg.profile.legend_others && fmt(pg.profile.legend_others, { n: v.responded }), legendYou: pg.profile.legend_self }), 'Added: Global scores in the centre'), P(pg.profile.paragraph)]);
+    add('profile', pg.profile.title, T.BLUE, [head(pg.section_results, pg.profile.title), chart(C.wheel(v, { legendOthers: pg.profile.legend_others && fmt(pg.profile.legend_others, { n: v.responded }), legendYou: pg.profile.legend_self })), P(pg.profile.paragraph)]);
 
     // ---- pages the 2010 report did not have: summary graph, perception map, gap chart
     // (kept at Petros's request, 2026-11-11; opt.extras === false leaves them out)
@@ -125,8 +127,8 @@
     // scales share a page (the web view uses it).
     const single = opt.scales !== 'pair';
     const scoreCharts = id => single
-      ? `<div class="scores big">${mark('Added: score wheel, all-others average')}<div class="chart wheel">${C.gauge(v, id)}</div><div class="chart strip">${C.strip(v, id)}</div></div>`
-      : `<div class="scores">${mark('Added: score wheel, all-others average')}<div class="chart wheel">${C.gauge(v, id, { compact: true })}</div><div class="chart strip">${C.strip(v, id, { width: 324 })}</div></div>`;
+      ? `<div class="scores big"><div class="chart wheel">${C.gauge(v, id)}${mark('Added chart')}</div><div class="chart strip">${C.strip(v, id)}</div></div>`
+      : `<div class="scores"><div class="chart wheel">${C.gauge(v, id, { compact: true })}${mark('Added chart')}</div><div class="chart strip">${C.strip(v, id, { width: 324 })}</div></div>`;
     const scaleBlock = (id, heading) => ({ split: '.card',
       html: `<div>${heading ? `<h4 class="sub">${esc(T.nameOf(id))}</h4>` : ''}${scoreCharts(id)}<div class="card">${interpretation(id)}</div></div>` });
     T.GROUPS.forEach(g => {
