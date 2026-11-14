@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TEIQue Results Wheel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --accent: #F3792A; /* default orange */
+        --bg: #fbfbfc;
+        --text: #111827;
+        --muted: #6b7280;
+        --track: #eeeeef;
+      }
+
+      html, body {
+        margin: 0;
+        padding: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: Manrope, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      .wrap {
+        max-width: 960px;
+        margin: 32px auto 48px;
+        padding: 0 20px;
+      }
+
+      h1 {
+        font-size: 20px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin: 0 0 16px 0;
+      }
+
+      .panel {
+        background: #fff;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      @media (min-width: 720px) {
+        .controls { grid-template-columns: 1.1fr 0.9fr 0.9fr; }
+      }
+
+      .field { display: grid; gap: 8px; align-content: start; }
+      .label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+      .row { display: flex; gap: 10px; align-items: center; }
+
+      input[type="range"] { width: 100%; }
+      input[type="number"], select, input[type="text"] {
+        width: 100%;
+        box-sizing: border-box;
+        height: 36px;
+        border-radius: 10px;
+        border: 1px solid #e6e7eb;
+        padding: 0 10px;
+        background: #fff;
+        font-size: 14px;
+      }
+
+      .swatches { display: grid; grid-template-columns: repeat(6, 28px); gap: 10px; }
+      .swatch {
+        width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff;
+        box-shadow: 0 4px 10px rgba(0,0,0,.08);
+        cursor: pointer;
+      }
+      .swatch[aria-selected="true"] { outline: 2px solid var(--accent); }
+
+      .board {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      @media (min-width: 900px) {
+        .board { grid-template-columns: 1fr 1fr; align-items: center; }
+      }
+
+      .chart-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 18px;
+        display: grid;
+        place-items: center;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+      }
+
+      .chart {
+        position: relative;
+        width: 420px; height: 420px; max-width: 86vw; max-height: 86vw;
+      }
+      .chart svg { width: 100%; height: 100%; display: block; }
+
+      .hint { color: var(--muted); font-size: 12px; }
+
+      /* Subtle tilt labels (optional) */
+      .ring-labels {
+        position: absolute; inset: 0; pointer-events: none;
+        display: grid; place-items: center;
+        font-weight: 600; color: #111;
+      }
+      .ring-labels span { position: absolute; font-size: 14px; color: #808080; white-space: nowrap; }
+      .lbl-high { font-weight: 400; }
+      .lbl-low { font-weight: 400; }
+      .lbl-avg { font-weight: 400; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>TEIQue Wheel Chart</h1>
+      <div class="panel">
+        <div class="controls">
+          <div class="field">
+            <div class="label">Percentage</div>
+            <div class="row">
+              <input id="percentRange" type="range" min="0" max="100" step="1" value="25" />
+            </div>
+            <div class="row">
+              <input id="percentNumber" type="number" min="0" max="100" step="1" value="25" />
+              <span class="hint">%</span>
+            </div>
+          </div>
+
+          <div class="field">
+            <div class="label">Preset color</div>
+            <select id="colorSelect"></select>
+            <div class="swatches" id="swatches"></div>
+          </div>
+
+          <div class="field">
+            <div class="label">Custom hex</div>
+            <input id="hexInput" type="text" placeholder="#E58D59" />
+            <small class="hint">If set, overrides preset color</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="board">
+        <div class="chart-card">
+          <div class="chart">
+            <svg viewBox="0 0 420 420" role="img" aria-label="Wheel chart">
+              <defs>
+                <filter id="drop" x="-25%" y="-25%" width="150%" height="150%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="18" flood-color="#000" flood-opacity="0.14"/>
+                </filter>
+                <mask id="donutMask" maskUnits="userSpaceOnUse" x="0" y="0" width="420" height="420">
+                  <rect x="0" y="0" width="420" height="420" fill="#000"/>
+                  <!-- Outer circle shows -->
+                  <circle cx="210" cy="210" r="175" fill="#fff"/>
+                  <!-- Inner hole hides -->
+                  <circle cx="210" cy="210" r="89" fill="#000"/>
+                </mask>
+              </defs>
+
+              <!-- Base ring -->
+              <g filter="url(#drop)">
+                <!-- Thicker ring toward inside: keep outer radius at 175 (132 + 86/2) -->
+                <circle id="track" class="ring-track" cx="210" cy="210" r="132" fill="none" stroke="#ffffff" stroke-width="86" />
+
+                <!-- Angular gradient wedge rendered via foreignObject and masked to donut -->
+                <foreignObject id="wedgeFO" x="0" y="0" width="420" height="420" mask="url(#donutMask)">
+                  <div id="gradLayer" xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%;"></div>
+                </foreignObject>
+
+                <!-- Percentage text -->
+                <text id="percentText" x="210" y="210" dy="6" text-anchor="middle" dominant-baseline="middle" font-family="Manrope, sans-serif" font-size="64" fill="var(--accent)"><tspan id="percentNum" font-weight="600">25</tspan><tspan id="percentSign" font-weight="300">%</tspan></text>
+              </g>
+            </svg>
+            <div class="ring-labels">
+              <!-- Position labels using exact polar coordinates around the center -->
+              <span class="lbl-high" id="lblHigh" style="left:0;top:0;">High</span>
+              <span class="lbl-low" id="lblLow" style="left:0;top:0;">Low</span>
+              <span class="lbl-avg" id="lblAvg" style="left:50%;bottom:4px;transform:translateX(-50%);">Average</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="field">
+            <div class="label">Share preset</div>
+            <div class="row">
+              <button id="copyUrl">Copy URL with current settings</button>
+              <button id="downloadPng" style="margin-left:8px;">Download PNG</button>
+              <span class="hint" id="copyHint"></span>
+            </div>
+          </div>
+          <div style="margin-top:14px; color:var(--muted); font-size:13px; line-height:1.5;">
+            Use URL params: <code>?p=25&amp;c=orange</code> or <code>?p=25&amp;hex=%23E58D59</code>.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function() {
+        const COLOR_GRADIENTS = {
+          orange: { label: 'Orange', start: '#EBA97C', end: '#F3792A' },
+          blue:   { label: 'Blue',   start: '#66BAE2', end: '#0093D8' },
+          red:    { label: 'Red',    start: '#F26065', end: '#EC1C24' },
+          magenta:{ label: 'Magenta',start: '#C99BBF', end: '#B271A4' },
+          purple: { label: 'Purple', start: '#9E96BD', end: '#7569A1' },
+          green:  { label: 'Green',  start: '#75C188', end: '#3AA756' },
+          yellow: { label: 'Yellow', start: '#F1CF77', end: '#EBBB3D' }
+        };
+        const COLOR_PRESETS = [
+          { key: 'orange', label: 'Orange', value: COLOR_GRADIENTS.orange.end },
+          { key: 'blue', label: 'Blue', value: COLOR_GRADIENTS.blue.end },
+          { key: 'red', label: 'Red', value: COLOR_GRADIENTS.red.end },
+          { key: 'magenta', label: 'Magenta', value: COLOR_GRADIENTS.magenta.end },
+          { key: 'purple', label: 'Purple', value: COLOR_GRADIENTS.purple.end },
+          { key: 'green', label: 'Green', value: COLOR_GRADIENTS.green.end },
+          { key: 'yellow', label: 'Yellow', value: COLOR_GRADIENTS.yellow.end }
+        ];
+
+        const percentRange = document.getElementById('percentRange');
+        const percentNumber = document.getElementById('percentNumber');
+        const colorSelect = document.getElementById('colorSelect');
+        const hexInput = document.getElementById('hexInput');
+        const swatches = document.getElementById('swatches');
+        const copyUrlBtn = document.getElementById('copyUrl');
+        let downloadBtn = document.getElementById('downloadPng');
+        const copyHint = document.getElementById('copyHint');
+
+        const gradLayer = document.getElementById('gradLayer');
+        const percentText = document.getElementById('percentText');
+        const percentNum = document.getElementById('percentNum');
+        const percentSign = document.getElementById('percentSign');
+        const lblHigh = document.getElementById('lblHigh');
+        const lblLow = document.getElementById('lblLow');
+        const lblAvg = document.getElementById('lblAvg');
+
+        const OUTER_R = 175;  // track outer radius stays the same
+        const INNER_R = 89;   // updated inner radius to match thicker base ring
+        const CX = 210, CY = 210;
+        const LABEL_RADIUS = 200; // around the outer edge for hugging the ring
+
+        // Build select and swatches
+        const fragment = document.createDocumentFragment();
+        COLOR_PRESETS.forEach((c, idx) => {
+          const opt = document.createElement('option');
+          opt.value = c.key; opt.textContent = c.label; if (idx === 0) opt.selected = true;
+          fragment.appendChild(opt);
+        });
+        colorSelect.appendChild(fragment);
+
+        COLOR_PRESETS.forEach((c, idx) => {
+          const el = document.createElement('button');
+          el.type = 'button';
+          el.className = 'swatch';
+          el.style.background = c.value;
+          el.title = c.label;
+          el.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+          el.addEventListener('click', () => {
+            colorSelect.value = c.key;
+            hexInput.value = '';
+            Array.from(swatches.children).forEach(n => n.setAttribute('aria-selected', 'false'));
+            el.setAttribute('aria-selected', 'true');
+            applyColor(c.value);
+          });
+          swatches.appendChild(el);
+        });
+
+        function clampPct(v) { return Math.max(0, Math.min(100, Number(v) || 0)); }
+
+        function polarToXY(cx, cy, r, angleDeg) {
+          const rad = (angleDeg - 90) * Math.PI / 180; // SVG 0° at 3 o'clock; we want 0 at 12
+          return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+        }
+
+        function makeDonutPath(cx, cy, rOuter, rInner, startDeg, sweepDeg) {
+          const endDeg = startDeg + sweepDeg;
+          const largeArc = sweepDeg > 180 ? 1 : 0;
+          const sweepFlag = 1; // clockwise
+
+          const p1 = polarToXY(cx, cy, rOuter, startDeg);
+          const p2 = polarToXY(cx, cy, rOuter, endDeg);
+          const p3 = polarToXY(cx, cy, rInner, endDeg);
+          const p4 = polarToXY(cx, cy, rInner, startDeg);
+
+          // If sweep is 0, return empty path
+          if (sweepDeg <= 0.0001) return '';
+
+          return [
+            `M ${p1.x} ${p1.y}`,
+            `A ${rOuter} ${rOuter} 0 ${largeArc} ${sweepFlag} ${p2.x} ${p2.y}`,
+            `L ${p3.x} ${p3.y}`,
+            `A ${rInner} ${rInner} 0 ${largeArc} ${sweepFlag ^ 1} ${p4.x} ${p4.y}`,
+            'Z'
+          ].join(' ');
+        }
+
+        function applyPercent(p) {
+          const pct = clampPct(p);
+          const sweep = 360 * (pct / 100);
+          const { start, end } = getCurrentGradientStops();
+          renderConicGradient(sweep, start, end);
+          percentNum.textContent = String(pct);
+          positionLabels();
+        }
+
+        function applyColor(hex) {
+          if (!/^#?[0-9A-Fa-f]{6}$/.test(hex)) return; // simple validation
+          const norm = hex.startsWith('#') ? hex : '#' + hex;
+          document.documentElement.style.setProperty('--accent', norm);
+          percentText.setAttribute('fill', norm);
+          // Re-render gradient using current color scale
+          applyPercent(percentRange.value);
+          positionLabels();
+        }
+
+        // Conic gradient using CSS in a foreignObject, masked to the donut
+        function renderConicGradient(sweepDeg, start, end) {
+          const stop = Math.max(0, Math.min(360, sweepDeg));
+          // Clean slate: no rotation applied here yet
+          const css = `background: conic-gradient(from 0deg, ${start} 0deg, ${end} ${stop}deg, transparent ${stop}deg 360deg);`;
+          gradLayer.setAttribute('style', `width:100%;height:100%;${css}`);
+        }
+
+        function positionLabels(){
+          const high = polarToXY(CX, CY, LABEL_RADIUS, 300);
+          const low = polarToXY(CX, CY, LABEL_RADIUS, 60);
+          lblHigh.style.left = (high.x - 14) + 'px';
+          lblHigh.style.top = (high.y - 8) + 'px';
+          lblHigh.style.transform = 'rotate(300deg)';
+          lblLow.style.left = (low.x - 12) + 'px';
+          lblLow.style.top = (low.y - 8) + 'px';
+          lblLow.style.transform = 'rotate(60deg)';
+        }
+
+        function getCurrentGradientStops() {
+          const custom = hexInput.value.trim();
+          if (custom && /^#?[0-9A-Fa-f]{6}$/.test(custom)) {
+            const base = custom.startsWith('#') ? custom : '#' + custom;
+            return { start: adjustLightness(base, 0.18), end: adjustLightness(base, -0.06) };
+          }
+          const preset = COLOR_GRADIENTS[colorSelect.value] || COLOR_GRADIENTS.orange;
+          return { start: preset.start, end: preset.end };
+        }
+
+        // Color utilities for custom hex gradients
+        function hexToRgb(hex) {
+          const n = hex.replace('#','');
+          return { r: parseInt(n.slice(0,2),16), g: parseInt(n.slice(2,4),16), b: parseInt(n.slice(4,6),16) };
+        }
+        function rgbToHex(r,g,b){
+          return '#' + [r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('');
+        }
+        function hexToHsl(hex) {
+          const { r, g, b } = hexToRgb(hex);
+          const rn=r/255, gn=g/255, bn=b/255;
+          const max=Math.max(rn,gn,bn), min=Math.min(rn,gn,bn);
+          let h=0,s=0,l=(max+min)/2;
+          if(max!==min){
+            const d=max-min;
+            s=l>0.5? d/(2-max-min) : d/(max+min);
+            switch(max){
+              case rn: h=(gn-bn)/d+(gn<bn?6:0); break;
+              case gn: h=(bn-rn)/d+2; break;
+              default: h=(rn-gn)/d+4;
+            }
+            h/=6;
+          }
+          return { h, s, l };
+        }
+        function hslToHex(h,s,l){
+          function hue2rgb(p,q,t){
+            if(t<0) t+=1; if(t>1) t-=1;
+            if(t<1/6) return p+(q-p)*6*t;
+            if(t<1/2) return q;
+            if(t<2/3) return p+(q-p)*(2/3 - t)*6;
+            return p;
+          }
+          let r,g,b;
+          if(s===0){ r=g=b=l; }
+          else {
+            const q=l<0.5? l*(1+s) : l+s-l*s;
+            const p=2*l - q;
+            r=hue2rgb(p,q,h+1/3);
+            g=hue2rgb(p,q,h);
+            b=hue2rgb(p,q,h-1/3);
+          }
+          return rgbToHex(Math.round(r*255), Math.round(g*255), Math.round(b*255));
+        }
+        function adjustLightness(hex, delta) {
+          const { h, s, l } = hexToHsl(hex);
+          let nl = Math.max(0, Math.min(1, l + delta));
+          return hslToHex(h, s, nl);
+        }
+
+        // Events
+        percentRange.addEventListener('input', (e) => {
+          const v = e.target.value;
+          percentNumber.value = v;
+          applyPercent(v);
+          updateUrl(false);
+        });
+        percentNumber.addEventListener('input', (e) => {
+          const v = clampPct(e.target.value);
+          percentRange.value = v;
+          applyPercent(v);
+          updateUrl(false);
+        });
+        colorSelect.addEventListener('change', () => {
+          const key = colorSelect.value;
+          const preset = COLOR_PRESETS.find(c => c.key === key);
+          if (preset) {
+            hexInput.value = '';
+            applyColor(preset.value);
+            Array.from(swatches.children).forEach((n, i) => n.setAttribute('aria-selected', COLOR_PRESETS[i].key === key ? 'true' : 'false'));
+          }
+          updateUrl(false);
+        });
+        hexInput.addEventListener('input', () => {
+          const val = hexInput.value.trim();
+          if (val.length >= 3) applyColor(val);
+          Array.from(swatches.children).forEach(n => n.setAttribute('aria-selected', 'false'));
+          updateUrl(false);
+        });
+
+        copyUrlBtn.addEventListener('click', async () => {
+          const url = updateUrl(true);
+          try {
+            await navigator.clipboard.writeText(url);
+            copyHint.textContent = 'Copied';
+            setTimeout(() => copyHint.textContent = '', 1500);
+          } catch (_) {
+            copyHint.textContent = url;
+          }
+        });
+
+        // Download PNG of the chart
+        downloadBtn = document.getElementById('downloadPng');
+        if (downloadBtn) {
+          downloadBtn.addEventListener('click', exportChartAsPng);
+        }
+
+        function exportChartAsPng() {
+          // 1) Create a gradient wedge bitmap on a canvas (use conic gradient when available)
+          const { start, end } = getCurrentGradientStops();
+          const sweepDeg = 360 * (clampPct(percentRange.value) / 100);
+          const gradCanvas = document.createElement('canvas');
+          gradCanvas.width = 420; gradCanvas.height = 420;
+          const gctx = gradCanvas.getContext('2d');
+          const centerX = CX, centerY = CY;
+
+          gctx.save();
+          // Clip to donut wedge
+          gctx.beginPath();
+          gctx.arc(centerX, centerY, OUTER_R, 0, sweepDeg * Math.PI / 180, false);
+          gctx.arc(centerX, centerY, INNER_R, sweepDeg * Math.PI / 180, 0, true);
+          gctx.closePath();
+          gctx.clip();
+
+          if (typeof gctx.createConicGradient === 'function') {
+            const grad = gctx.createConicGradient(-Math.PI/2, centerX, centerY); // start at top
+            grad.addColorStop(0, start);
+            grad.addColorStop(Math.max(0, Math.min(1, sweepDeg/360)), end);
+            gctx.fillStyle = grad;
+            gctx.fillRect(0,0,420,420);
+          } else {
+            // Fallback: many thin slices to minimize banding
+            const steps = Math.max(180, Math.ceil(sweepDeg*2));
+            const startRad = -Math.PI/2; // start at top
+            const endRad = startRad + sweepDeg * Math.PI / 180;
+            for (let i = 0; i < steps; i++) {
+              const a0 = startRad + (i/steps) * (endRad - startRad);
+              const a1 = startRad + ((i+1)/steps) * (endRad - startRad);
+              const t = (i + 0.5) / steps;
+              gctx.beginPath();
+              gctx.arc(centerX, centerY, OUTER_R, a0, a1, false);
+              gctx.arc(centerX, centerY, INNER_R, a1, a0, true);
+              gctx.closePath();
+              gctx.fillStyle = mixHex(start, end, t);
+              gctx.fill();
+            }
+          }
+          gctx.restore();
+
+          // 2) Clone the SVG and replace the foreignObject with an <image> that uses the bitmap
+          const svgEl = document.querySelector('.chart svg');
+          const clone = svgEl.cloneNode(true);
+          const fo = clone.querySelector('#wedgeFO');
+          if (fo) {
+            const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+            const dataUrl = gradCanvas.toDataURL('image/png');
+            img.setAttribute('x', '0');
+            img.setAttribute('y', '0');
+            img.setAttribute('width', '420');
+            img.setAttribute('height', '420');
+            img.setAttribute('mask', 'url(#donutMask)');
+            img.setAttributeNS('http://www.w3.org/1999/xlink', 'href', dataUrl);
+            img.setAttribute('href', dataUrl);
+            fo.replaceWith(img);
+          }
+
+          // 3) Serialize to blob and draw to canvas, then save as PNG
+          const serializer = new XMLSerializer();
+          // Ensure explicit width/height on root for correct raster sizing
+          clone.setAttribute('width','420');
+          clone.setAttribute('height','420');
+          const svgString = serializer.serializeToString(clone);
+          const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+          const url = URL.createObjectURL(svgBlob);
+          const outCanvas = document.createElement('canvas');
+          const scale = 2; // 2x export
+          const outW = 420 * scale;
+          const outH = 420 * scale;
+          outCanvas.width = outW;
+          outCanvas.height = outH;
+          const ctx = outCanvas.getContext('2d');
+          const imgEl = new Image();
+          imgEl.onload = function () {
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, outW, outH);
+            ctx.drawImage(imgEl, 0, 0, outW, outH);
+            // Draw labels on top (export includes them)
+            ctx.fillStyle = '#808080';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.font = (14*scale) + 'px Manrope, sans-serif';
+            // High at 300°
+            const high = polarToXY(CX, CY, LABEL_RADIUS, 300);
+            ctx.save();
+            ctx.translate(high.x*scale, high.y*scale);
+            ctx.rotate(300 * Math.PI/180);
+            ctx.fillText('High', 0, 0);
+            ctx.restore();
+            // Low at 60°
+            const low = polarToXY(CX, CY, LABEL_RADIUS, 60);
+            ctx.save();
+            ctx.translate(low.x*scale, low.y*scale);
+            ctx.rotate(60 * Math.PI/180);
+            ctx.fillText('Low', 0, 0);
+            ctx.restore();
+            // Average centered near bottom (match preview bottom: 4px)
+            const avgY = (420 - 12) * scale; // approx. accounts for font height
+            ctx.fillText('Average', CX*scale, avgY);
+            URL.revokeObjectURL(url);
+            const a = document.createElement('a');
+            a.download = `teique-wheel-${colorSelect.value}-${percentRange.value}.png`;
+            a.href = outCanvas.toDataURL('image/png');
+            a.click();
+          };
+          imgEl.src = url;
+        }
+
+        function mixHex(a, b, t) {
+          const ca = hexToRgb(a), cb = hexToRgb(b);
+          const r = Math.round(ca.r + (cb.r - ca.r) * t);
+          const g = Math.round(ca.g + (cb.g - ca.g) * t);
+          const bl = Math.round(ca.b + (cb.b - ca.b) * t);
+          return rgbToHex(r, g, bl);
+        }
+
+        // ensure only one handler is attached above
+
+        function updateUrl(returnOnly) {
+          const p = clampPct(percentRange.value);
+          const params = new URLSearchParams();
+          params.set('p', String(p));
+          const hex = hexInput.value.trim();
+          if (hex) params.set('hex', hex.startsWith('#') ? hex : '#' + hex);
+          else params.set('c', colorSelect.value);
+          const url = location.origin + location.pathname + '?' + params.toString();
+          if (!returnOnly && history && history.replaceState) history.replaceState({}, '', url);
+          return url;
+        }
+
+        function initFromUrl() {
+          const q = new URLSearchParams(location.search);
+          const p = q.get('p');
+          if (p !== null) {
+            const v = clampPct(p);
+            percentRange.value = String(v);
+            percentNumber.value = String(v);
+          }
+          const hex = q.get('hex');
+          const key = q.get('c');
+          if (hex) {
+            hexInput.value = hex;
+            applyColor(hex);
+            Array.from(swatches.children).forEach(n => n.setAttribute('aria-selected', 'false'));
+          } else if (key) {
+            const preset = COLOR_PRESETS.find(c => c.key === key) || COLOR_PRESETS[0];
+            colorSelect.value = preset.key;
+            applyColor(preset.value);
+            Array.from(swatches.children).forEach((n, i) => n.setAttribute('aria-selected', COLOR_PRESETS[i].key === preset.key ? 'true' : 'false'));
+          } else {
+            // defaults
+            applyColor(COLOR_PRESETS[0].value);
+          }
+          applyPercent(percentRange.value);
+          positionLabels();
+          applyPercent(percentRange.value);
+          positionLabels();
+          applyPercent(percentRange.value);
+          positionLabels();
+          applyPercent(percentRange.value);
+          positionLabels();
+          updateUrl(false);
+        }
+
+        initFromUrl();
+        positionLabels();
+        
+        // duplicate export function removed; single implementation above
+      })();
+    </script>
+  </body>
+</html>
+
+

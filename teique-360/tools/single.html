@@ -1,0 +1,23 @@
+<!doctype html>
+<!-- Dev viewer: one chart, large. Example: single.html?chart=wheel&variant=A  or  ?chart=gauge&variant=B&id=empathy&w=400 -->
+<html lang="en"><head><meta charset="utf-8"><title>Chart viewer</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#fff;padding:16px}#c svg{max-width:none!important}</style></head>
+<body><div id="c"></div>
+<script>
+  // Always fetch the current files: the preview server sends no cache headers, and a new page
+  // running old cached scripts draws nothing.
+  (function () {
+    var v = '?v=' + Date.now();
+    ["../data/sample-360.js", "../data/edge-big-gaps.js", "../src/model.js", "../src/svg.js", "../src/charts/radial.js", "../src/charts/linear.js", "../src/charts/overview.js"].forEach(function (src) { document.write('<script src="' + src + v + '"><\/script>'); });
+  })();
+</script>
+<script>
+const q = new URLSearchParams(location.search), T = TEIQ, v = T.view(q.get('data') === 'gaps' ? TEIQ_FILES['edge-big-gaps'] : TEIQ_SAMPLE);
+const chart = q.get('chart') || 'wheel', opt = { variant: q.get('variant') || 'A', you: q.get('you') };
+const ids = (q.get('id') || 'empathy').split(',');
+const needsId = chart === 'gauge' || chart === 'strip';
+const el = document.getElementById('c');
+el.style.width = (q.get('w') || 900) + 'px';
+el.innerHTML = needsId ? (q.get('row') ? '<div style="display:flex;gap:10px">' + ids.map(id => '<div style="flex:1">' + T.charts[chart](v, id, opt) + '</div>').join('') + '</div>' : ids.map(id => T.charts[chart](v, id, opt)).join('<div style="height:14px"></div>')) : T.charts[chart](v, opt);
+</script></body></html>

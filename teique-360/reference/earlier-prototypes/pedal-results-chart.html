@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pedal Results Chart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root { --bg:#fbfbfc; --text:#111827; --muted:#808080; --ring:#fff; }
+      html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:Manrope,system-ui,Segoe UI,Roboto,Helvetica,Arial}
+      .wrap{max-width:1200px;margin:24px auto 48px;padding:0 20px}
+      h1{margin:0 0 12px;font-size:20px;font-weight:600}
+      .grid{display:grid;grid-template-columns:1fr;gap:16px}
+      @media(min-width:1024px){.grid{grid-template-columns:600px 1fr}}
+      .panel{background:#fff;border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
+      textarea{width:100%;height:280px;resize:vertical;border:1px solid #e5e7eb;border-radius:10px;padding:10px;font-family:ui-monospace,Consolas,monospace;font-size:13px}
+      button{height:36px;border-radius:10px;border:1px solid #d1d5db;background:#fff;padding:0 12px;cursor:pointer}
+      .chart-card{background:#fff;border-radius:24px;padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.08);display:grid;place-items:center}
+      .chart{position:relative;width:100%;max-width:560px;aspect-ratio:1/1}
+      .chart svg{width:100%;height:100%;display:block}
+      .legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+      .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:#f5f6f8;border:1px solid #eceff3;color:#333}
+      .dot{width:12px;height:12px;border-radius:50%}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Pedal Results Chart</h1>
+      <div class="grid">
+        <div class="chart-card">
+          <div class="chart">
+            <svg id="pedalSvg" viewBox="0 0 640 640" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Pedal chart">
+              <defs>
+                <filter id="ringShadow" x="-25%" y="-25%" width="150%" height="150%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="18" flood-color="#000" flood-opacity="0.14"/>
+                </filter>
+              </defs>
+              <g id="pedalRoot" transform="translate(320,320)"></g>
+            </svg>
+          </div>
+          <div id="legend" class="legend"></div>
+        </div>
+
+        <div class="panel">
+          <div style="display:flex;justify-content:flex-end;gap:8px;margin-bottom:10px">
+            <button id="downloadPngBtn">Download PNG</button>
+            <button id="addFactorBtnTop">+ Add Factor</button>
+          </div>
+          <div style="display:grid;gap:16px" id="factorPanel">
+            <div>
+              <label style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Preset</label>
+              <div style="display:flex;align-items:center;gap:10px">
+                <select id="presetSelect" style="height:36px;border:1px solid #e5e7eb;border-radius:10px;padding:0 8px">
+                  <option value="">Custom</option>
+                  <option value="teiQue">TEIQue pedal chart</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Global score</label>
+              <div style="display:flex;align-items:center;gap:10px">
+                <input id="globalRange" type="range" min="0" max="100" step="1" value="50" style="width:100%" />
+                <input id="globalNum" type="number" min="0" max="100" step="1" value="50" style="width:70px;height:36px;border:1px solid #e5e7eb;border-radius:10px;padding:0 8px" />
+              </div>
+            </div>
+            <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Factor 1</div>
+            <div style="display:grid;grid-template-columns:1fr 200px;gap:10px">
+              <input id="factorName" type="text" value="Factor 1" style="height:36px;border:1px solid #e5e7eb;border-radius:10px;padding:0 10px" />
+              <select id="factorColor" style="height:36px;border:1px solid #e5e7eb;border-radius:10px;padding:0 8px"></select>
+            </div>
+            <div style="font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em">Facets</div>
+            <div id="facetsList" style="display:grid;gap:8px"></div>
+            <div>
+              <button id="addFacetBtn">+ Add Facet</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function(){
+        const root = document.getElementById('pedalRoot');
+        const factorName = document.getElementById('factorName');
+        const factorColor = document.getElementById('factorColor');
+        const facetsList = document.getElementById('facetsList');
+        const addFacetBtn = document.getElementById('addFacetBtn');
+        const addFactorBtn = document.getElementById('addFactorBtnTop');
+        const downloadPngBtn = document.getElementById('downloadPngBtn');
+        const globalRange = document.getElementById('globalRange');
+        const globalNum = document.getElementById('globalNum');
+        const presetSelect = document.getElementById('presetSelect');
+
+        const OUTER_R = 280;
+        function deg2rad(d){return d*Math.PI/180}
+        function polar(cx,cy,r,deg){const rad=deg2rad(deg-90);return {x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)}}
+        function clear(el){while(el.firstChild) el.removeChild(el.firstChild)}
+        function elNS(name,attrs){const n=document.createElementNS('http://www.w3.org/2000/svg',name);for(const k in attrs){n.setAttribute(k,attrs[k])}return n}
+        function hexToRgb(hex){const n=hex.replace('#','');return {r:parseInt(n.slice(0,2),16),g:parseInt(n.slice(2,4),16),b:parseInt(n.slice(4,6),16)}}
+        function rgbToHex(r,g,b){return '#'+[r,g,b].map(v=>v.toString(16).padStart(2,'0')).join('')}
+        function hexToHsl(hex){const {r,g,b}=hexToRgb(hex);const rn=r/255,gn=g/255,bn=b/255;const max=Math.max(rn,gn,bn),min=Math.min(rn,gn,bn);let h=0,s=0,l=(max+min)/2; if(max!==min){const d=max-min; s=l>0.5? d/(2-max-min): d/(max+min); switch(max){case rn:h=(gn-bn)/d+(gn<bn?6:0);break;case gn:h=(bn-rn)/d+2;break;default:h=(rn-gn)/d+4;} h/=6;} return {h,s,l}}
+        function hslToHex(h,s,l){function f(p,q,t){if(t<0)t+=1;if(t>1)t-=1;if(t<1/6)return p+(q-p)*6*t;if(t<1/2)return q;if(t<2/3)return p+(q-p)*(2/3-t)*6;return p;} let r,g,b; if(s===0){r=g=b=l;} else {const q=l<0.5? l*(1+s): l+s-l*s; const p=2*l-q; r=f(p,q,h+1/3); g=f(p,q,h); b=f(p,q,h-1/3);} return rgbToHex(Math.round(r*255),Math.round(g*255),Math.round(b*255))}
+        function adjustLightness(hex,delta){const {h,s,l}=hexToHsl(hex); let nl=Math.max(0,Math.min(1,l+delta)); return hslToHex(h,s,nl)}
+        function donutPath(rOuter,rInner,startDeg,sweepDeg){
+          if(sweepDeg<=0) return '';
+          const large = sweepDeg>180?1:0; const sw=1;
+          const p1=polar(0,0,rOuter,startDeg), p2=polar(0,0,rOuter,startDeg+sweepDeg);
+          const q1=polar(0,0,rInner,startDeg+sweepDeg), q2=polar(0,0,rInner,startDeg);
+          return `M ${p1.x} ${p1.y} A ${rOuter} ${rOuter} 0 ${large} ${sw} ${p2.x} ${p2.y} L ${q1.x} ${q1.y} A ${rInner} ${rInner} 0 ${large} ${sw^1} ${q2.x} ${q2.y} Z`;
+        }
+
+        function drawCircleAndDivisions(total){
+          clear(root);
+          const svgEl = document.getElementById('pedalSvg');
+          const defs = svgEl.querySelector('defs');
+          
+          // Build factor gradient fills on the OUTERMOST ring only
+          const START = -90;
+          const ringBandInner = OUTER_R - 4;            // equals RING_OUTER
+          const ringBandOuter = OUTER_R - 4 + 36;       // equals RING_OUTER + RING_WIDTH
+          // Collect factors: first panel and any extra blocks
+          const factors = [];
+          factors.push({ color: factorColor.value, facets: facetsList.children.length, name: (factorName.value || 'Factor 1') });
+          document.querySelectorAll('.factor-block').forEach(b=>{
+            const cSel = b.querySelector('select');
+            const list = b.querySelector('.factor-list');
+            const nameInp = b.querySelector('input');
+            factors.push({ color: cSel.value, facets: list.children.length, name: (nameInp?.value || 'Factor') });
+          });
+          const totalFacets = Math.max(1, factors.reduce((a,f)=>a+f.facets,0));
+          let accFacets = 0;
+          // Add fills group first so outlines draw on top
+          const fillsG = elNS('g',{}); root.appendChild(fillsG);
+          const labelsG = elNS('g',{}); root.appendChild(labelsG);
+          factors.forEach((f,idx)=>{
+            const startAng = START + (accFacets/totalFacets)*360;
+            const endAng = START + ((accFacets + f.facets)/totalFacets)*360;
+            let sweep = endAng - startAng;
+            const sweepDraw = Math.min(359.9, Math.max(0, sweep));
+            accFacets += f.facets;
+            // Radial gradient fill for sector (darker at inner edge -> lighter at outer)
+            const light = adjustLightness(f.color, 0.18); const dark = adjustLightness(f.color, -0.06);
+            const gradId = `frad-${idx}`;
+            const existingGrad = defs.querySelector(`#${gradId}`); if(existingGrad) existingGrad.remove();
+            const grad = elNS('radialGradient',{id:gradId, gradientUnits:'userSpaceOnUse', cx:'0', cy:'0', r:String(ringBandOuter)});
+            const innerOffset = String(Math.max(0, Math.min(1, ringBandInner / ringBandOuter)));
+            const s1 = elNS('stop',{offset:innerOffset, 'stop-color':dark});
+            const s2 = elNS('stop',{offset:'1', 'stop-color':light});
+            grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad);
+            const sector = elNS('path',{d: donutPath(ringBandOuter, ringBandInner, startAng, sweepDraw), fill:`url(#${gradId})`});
+            sector.setAttribute('filter','url(#ringShadow)');
+            fillsG.appendChild(sector);
+
+            // Label path at mid-radius of the band
+            const midR = (ringBandInner + ringBandOuter) / 2;
+            const pathId = `labelPath-${idx}`;
+            const existingPath = defs.querySelector(`#${pathId}`); if(existingPath) existingPath.remove();
+            const large = (sweepDraw>180)?1:0; 
+            const p1 = polar(0,0,midR,startAng); const p2 = polar(0,0,midR,startAng+sweepDraw);
+            // If label midpoint is on lower half (90..270deg), reverse the path direction for readability
+            let midAngle = startAng + sweepDraw/2; while(midAngle<0) midAngle+=360; while(midAngle>=360) midAngle-=360;
+            const onBottom = (midAngle>90 && midAngle<270);
+            const swf = onBottom ? 0 : 1;
+            const d = onBottom 
+              ? `M ${p2.x} ${p2.y} A ${midR} ${midR} 0 ${large} ${swf} ${p1.x} ${p1.y}`
+              : `M ${p1.x} ${p1.y} A ${midR} ${midR} 0 ${large} ${swf} ${p2.x} ${p2.y}`;
+            const labelPath = elNS('path',{id:pathId, d});
+            defs.appendChild(labelPath);
+            const text = elNS('text',{fill:'#ffffff','font-family':'Manrope, sans-serif','font-size':'14','font-weight':'700'});
+            const textPath = elNS('textPath',{href:`#${pathId}`, startOffset:'50%'});
+            textPath.setAttribute('text-anchor','middle');
+            textPath.textContent = f.name || '';
+            text.appendChild(textPath);
+            labelsG.appendChild(text);
+          });
+
+          // (inset facet strokes temporarily removed while we refine geometry)
+          // two thin-stroke rings
+          const RING_WIDTH = 36;                 // visual band
+          const RING_OUTER = OUTER_R - 4;
+          const RING_INNER = RING_OUTER - RING_WIDTH;
+          const OUTLINE_W = 2;
+          const HUB_R = 38;
+          const ringOuter = elNS('circle',{ cx:'0', cy:'0', r:String(RING_OUTER), fill:'none', stroke:'#e5e7eb','stroke-width':String(OUTLINE_W) });
+          const ringInner = elNS('circle',{ cx:'0', cy:'0', r:String(RING_INNER), fill:'none', stroke:'#e5e7eb','stroke-width':String(OUTLINE_W) });
+          const ringOuter2 = elNS('circle',{ cx:'0', cy:'0', r:String(RING_OUTER + RING_WIDTH), fill:'none', stroke:'#e5e7eb','stroke-width':String(OUTLINE_W) });
+
+          const step = 360/total; const start = -90; const rEnd = RING_OUTER;
+          for(let i=0;i<total;i++){
+            const a = start + i*step;
+            const p0 = polar(0,0, HUB_R, a);
+            const p1 = polar(0,0, rEnd, a);
+            const line = elNS('line',{x1:String(p0.x),y1:String(p0.y),x2:String(p1.x),y2:String(p1.y),stroke:'#d1d5db','stroke-width':'2'});
+            root.appendChild(line);
+          }
+          // Draw donut inset sectors with zero gap
+          const cellsG = elNS('g',{}); root.appendChild(cellsG);
+          const regionThickness = (RING_INNER - HUB_R);
+          const margin = Math.max(2, regionThickness * 0.05); // even closer to rings
+          const rInnerCell = HUB_R + margin;
+          const rOuterCell = RING_INNER - margin;
+          const facetColors = []; factors.forEach(f=>{ for(let k=0;k<f.facets;k++){ facetColors.push(f.color); } });
+          // Gather facet percents in order across all factors
+          const facetPercents = [];
+          Array.from(facetsList.children).forEach(row=>{
+            const num = row.querySelector('input[type="number"]');
+            facetPercents.push(Math.max(0, Math.min(100, Number(num?.value)||0)));
+          });
+          document.querySelectorAll('.factor-block').forEach(b=>{
+            b.querySelectorAll('.factor-list > div').forEach(row=>{
+              const num = row.querySelector('input[type="number"]');
+              facetPercents.push(Math.max(0, Math.min(100, Number(num?.value)||0)));
+            });
+          });
+          for (let i=0; i<total; i++){
+            const startAng = start + i*step;
+            const sweep = step;
+            const col = facetColors[i] || '#cccccc';
+            const pct = (facetPercents[i] ?? 100) / 100;
+            const rStart = rInnerCell; // near hub side stays fixed
+            const rEnd = rInnerCell + (rOuterCell - rInnerCell) * pct; // scale outward toward outer ring
+            // per-facet radial gradient: dark at inner → light at outer
+            const gid = `cellgrad-${i}`; const exist = defs.querySelector(`#${gid}`); if(exist) exist.remove();
+            const g = elNS('radialGradient',{id:gid, gradientUnits:'userSpaceOnUse', cx:'0', cy:'0', r:String(rEnd)});
+            const light = adjustLightness(col, 0.18); const dark = adjustLightness(col, -0.06);
+            const off = String(Math.max(0, Math.min(1, rStart / rEnd)));
+            g.appendChild(elNS('stop',{offset:off,'stop-color':dark}));
+            g.appendChild(elNS('stop',{offset:'1','stop-color':light}));
+            defs.appendChild(g);
+            const d = donutPath(rEnd, rStart, startAng, sweep);
+            const shape = elNS('path',{ d, fill: `url(#${gid})`, stroke:'none' });
+            cellsG.appendChild(shape);
+          }
+
+          // Percentage labels handled at the very end (top-most layer)
+          // white overlay dividers for the visual gap
+          const whiteLines = elNS('g',{}); root.appendChild(whiteLines);
+          const whiteWidth = Math.max(6, regionThickness * 0.07); // half the previous thickness
+          for(let i=0;i<total;i++){
+            const a = start + i*step;
+            // Restrict overlay only across the inner pedal band to avoid hiding outer ring shadows
+            const p0 = polar(0,0, rInnerCell, a);
+            const p1 = polar(0,0, rOuterCell, a);
+            const wLine = elNS('line',{
+              x1:String(p0.x), y1:String(p0.y), x2:String(p1.x), y2:String(p1.y),
+              stroke:'#ffffff','stroke-width':String(whiteWidth), 'stroke-linecap':'round'
+            });
+            whiteLines.appendChild(wLine);
+          }
+          // append ring outlines after white overlays so rings are on top
+          const ringsTop = elNS('g',{}); root.appendChild(ringsTop);
+          ringsTop.appendChild(ringOuter); ringsTop.appendChild(ringInner); ringsTop.appendChild(ringOuter2);
+
+          // redraw thin gray lines on top
+          const topLines = elNS('g',{}); root.appendChild(topLines);
+          for(let i=0;i<total;i++){
+            const a = start + i*step;
+            const p0 = polar(0,0, HUB_R, a);
+            const p1 = polar(0,0, RING_OUTER, a);
+            const gLine = elNS('line',{x1:String(p0.x),y1:String(p0.y),x2:String(p1.x),y2:String(p1.y),stroke:'#d1d5db','stroke-width':'2'});
+            topLines.appendChild(gLine);
+          }
+
+          // Factor separators on the most outer ring if there are extra factor blocks
+          const blocks = Array.from(document.querySelectorAll('.factor-block'));
+          if (blocks.length > 0){
+            // total facets across all factors defines how divisions are distributed
+            let counts = [facetsList.children.length, ...blocks.map(b=>b.querySelectorAll('.factor-list > div').length)];
+            const totalFacets = counts.reduce((a,b)=>a+b,0);
+            let acc = 0;
+            for (let i=0;i<counts.length;i++){
+              acc += counts[i];
+              const angle = start + (acc/totalFacets)*360;
+              const p0 = polar(0,0, RING_OUTER, angle);
+              const p1 = polar(0,0, RING_OUTER + RING_WIDTH, angle);
+              const sep = elNS('line',{x1:String(p0.x),y1:String(p0.y),x2:String(p1.x),y2:String(p1.y),stroke:'#d1d5db','stroke-width':'2'});
+              root.appendChild(sep);
+            }
+          }
+          const hub = elNS('circle',{ cx:'0', cy:'0', r:String(HUB_R), fill:'#ffffff', stroke:'none' });
+          hub.setAttribute('filter','url(#ringShadow)');
+          root.appendChild(hub);
+          // global score text at center (largest)
+          const gVal = Math.max(0, Math.min(100, Number(globalNum.value)||0));
+          const gText = elNS('text',{x:'0', y:'8', 'text-anchor':'middle','font-family':'Manrope, sans-serif','font-size':'24','font-weight':'800', fill:'#111827'});
+          gText.textContent = `${gVal}%`;
+          root.appendChild(gText);
+
+          // Facet labels (inner ring) - color matches factor color
+          const facetEntries = [];
+          // gather from first factor
+          Array.from(facetsList.children).forEach((row)=>{
+            const inp = row.querySelector('input');
+            facetEntries.push({ name: (inp && inp.value) ? inp.value : 'Facet', color: factorColor.value });
+          });
+          // subsequent factors
+          document.querySelectorAll('.factor-block').forEach(b=>{
+            const cSel = b.querySelector('select');
+            const list = b.querySelector('.factor-list');
+            Array.from(list.children).forEach((row)=>{
+              const inp = row.querySelector('input');
+              facetEntries.push({ name: (inp && inp.value) ? inp.value : 'Facet', color: cSel.value });
+            });
+          });
+          const facetLabelsG = elNS('g',{}); root.appendChild(facetLabelsG);
+          const midInner = (RING_INNER + RING_OUTER) / 2;
+          for (let i=0;i<total;i++){
+            const startAng = start + i*step;
+            const sweep = step;
+            const pid = `facetLabelPath-${i}`;
+            const existingP = defs.querySelector(`#${pid}`); if(existingP) existingP.remove();
+            const pA = polar(0,0,midInner,startAng), pB = polar(0,0,midInner,startAng+sweep);
+            let midA = startAng + sweep/2; while(midA<0) midA+=360; while(midA>=360) midA-=360;
+            const bottom = (midA>90 && midA<270);
+            const swf2 = bottom ? 0 : 1; const large2 = (sweep>180)?1:0;
+            const d2 = bottom ? `M ${pB.x} ${pB.y} A ${midInner} ${midInner} 0 ${large2} ${swf2} ${pA.x} ${pA.y}` : `M ${pA.x} ${pA.y} A ${midInner} ${midInner} 0 ${large2} ${swf2} ${pB.x} ${pB.y}`;
+            const path2 = elNS('path',{id:pid, d:d2}); defs.appendChild(path2);
+            const entry = facetEntries[i] || { name: `Facet ${i+1}`, color: '#808080' };
+            const t = elNS('text',{fill: entry.color,'font-family':'Manrope, sans-serif','font-size':'11','font-weight':'600'});
+            const tp = elNS('textPath',{href:`#${pid}`, startOffset:'50%'})
+            // enable 2-line wrap by adding zero-width space separators when text is too long
+            ;
+            tp.setAttribute('text-anchor','middle'); tp.textContent = entry.name;
+            t.appendChild(tp); facetLabelsG.appendChild(t);
+          }
+
+          // Top-most: pedal percentage labels
+          const pedalLabelsTop = elNS('g',{}); root.appendChild(pedalLabelsTop);
+          for (let i=0; i<total; i++){
+            const startAng = start + i*step;
+            const sweep = step;
+            const pctVal = (facetPercents[i] ?? 100);
+            const rStartL = rInnerCell;
+            // Freeze label radial travel once value drops below 25%
+            const pctForLabel = Math.max(0.25, (pctVal)/100);
+            const rEndL = rInnerCell + (rOuterCell - rInnerCell) * pctForLabel;
+            const thickL = Math.max(1, rEndL - rStartL);
+            const rLabel = rStartL + Math.max(8, thickL * 0.82);
+            const midA = startAng + sweep/2;
+            const pos = polar(0,0, rLabel, midA);
+            const bottom = ((midA%360+360)%360) > 90 && ((midA%360+360)%360) < 270;
+            const t = elNS('text',{
+              x:String(pos.x), y:String(pos.y), 'text-anchor':'middle', 'dominant-baseline':'middle',
+              fill:'#111827','font-family':'Manrope, sans-serif','font-size':'15','font-weight':'700',
+              transform: `rotate(${bottom ? midA+180 : midA} ${pos.x} ${pos.y})`
+            });
+            t.textContent = `${Math.round(pctVal)}%`;
+            pedalLabelsTop.appendChild(t);
+          }
+        }
+
+        function totalDivisions(){
+          let count = facetsList.children.length;
+          document.querySelectorAll('.factor-block').forEach(b=>{
+            const list = b.querySelector('.factor-list');
+            count += list ? list.children.length : 0;
+          });
+          return Math.max(2, count);
+        }
+        function refresh(){ drawCircleAndDivisions(totalDivisions()); }
+
+        function addFacetRowTo(listEl, label){
+          const wrap = document.createElement('div');
+          wrap.style.display='grid'; wrap.style.gridTemplateColumns='1fr 120px 48px'; wrap.style.gap='6px';
+          // name
+          const inp = document.createElement('input'); inp.type='text'; inp.value=label; inp.style.cssText='height:36px;border:1px solid #e5e7eb;border-radius:10px;padding:0 10px';
+          // percent controls
+          const pctWrap = document.createElement('div'); pctWrap.style.cssText='display:flex;align-items:center;gap:6px';
+          const range = document.createElement('input'); range.type='range'; range.min='0'; range.max='100'; range.step='1'; range.value='100'; range.style.width='92px';
+          const pctNum = document.createElement('input'); pctNum.type='number'; pctNum.min='0'; pctNum.max='100'; pctNum.step='1'; pctNum.value='100'; pctNum.style.cssText='width:48px;height:36px;border:1px solid #e5e7eb;border-radius:10px;padding:0 6px';
+          range.addEventListener('input', ()=>{ pctNum.value = range.value; refresh(); });
+          pctNum.addEventListener('input', ()=>{ const v=Math.max(0,Math.min(100,Number(pctNum.value)||0)); range.value=String(v); refresh(); });
+          pctWrap.appendChild(range); pctWrap.appendChild(pctNum);
+          // delete
+          const del = document.createElement('button'); del.textContent='−'; del.title='Remove facet'; del.style.cssText='height:36px;border:1px solid #e5e7eb;border-radius:10px';
+          del.addEventListener('click',()=>{ if(listEl.children.length>2){ wrap.remove(); refresh(); } });
+          inp.addEventListener('input', refresh);
+          wrap.appendChild(inp); wrap.appendChild(pctWrap); wrap.appendChild(del); listEl.appendChild(wrap);
+        }
+
+        addFacetBtn.addEventListener('click', ()=>{ addFacetRowTo(facetsList, `Facet ${facetsList.children.length+1}`); refresh(); });
+        function syncGlobal(fromRange){
+          let v = fromRange ? Number(globalRange.value) : Number(globalNum.value);
+          if(!Number.isFinite(v)) v = 50; v = Math.max(0, Math.min(100, Math.round(v)));
+          globalRange.value = String(v); globalNum.value = String(v); refresh();
+        }
+        globalRange.addEventListener('input', ()=>syncGlobal(true));
+        globalNum.addEventListener('input', ()=>syncGlobal(false));
+
+        // Preset application
+        function clearExtraFactors(){
+          document.querySelectorAll('.factor-block').forEach(el=>el.remove());
+        }
+        function setFirstFactor(name, colorHex, facetNames){
+          factorName.value = name;
+          factorColor.value = colorHex;
+          // rebuild first facets
+          facetsList.innerHTML = '';
+          facetNames.forEach((n,idx)=>{ addFacetRowTo(facetsList, n); });
+        }
+        function addFactorBlock(name, colorHex, facetNames){
+          const panel = document.getElementById('factorPanel');
+          const idx = document.querySelectorAll('.factor-block').length + 2;
+          const block = document.createElement('div'); block.className='factor-block'; block.style.display='grid'; block.style.gap='12px'; block.style.marginTop='16px';
+          const head = document.createElement('div'); head.textContent = `Factor ${idx}`; head.style.cssText='font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em';
+          const row = document.createElement('div'); row.style.cssText='display:grid;grid-template-columns:1fr 200px 120px;gap:10px;align-items:center';
+          const nameInp = document.createElement('input'); nameInp.type='text'; nameInp.value=name; nameInp.style.cssText='height:36px;border:1px solid #e5e7eb;border-radius:10px;padding:0 10px'; nameInp.addEventListener('input', refresh);
+          const colorSel = document.createElement('select'); colorSel.style.cssText='height:36px;border:1px solid #e5e7eb;border-radius:10px;padding:0 8px';
+          const PALETTE = [ {label:'Orange',value:'#F3792A'},{label:'Yellow',value:'#EBBB3D'},{label:'Green',value:'#3AA756'},{label:'Blue',value:'#0093D8'},{label:'Purple',value:'#7569A1'},{label:'Magenta',value:'#B271A4'},{label:'Red',value:'#EC1C24'} ];
+          PALETTE.forEach(c=>{ const o=document.createElement('option'); o.value=c.value; o.textContent=c.label; colorSel.appendChild(o); });
+          colorSel.value = colorHex; colorSel.addEventListener('change', refresh);
+          const addBtn = document.createElement('button'); addBtn.textContent='+ Add Facet';
+          row.appendChild(nameInp); row.appendChild(colorSel); row.appendChild(addBtn);
+          const subHead = document.createElement('div'); subHead.textContent='Facets'; subHead.style.cssText='font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em';
+          const list = document.createElement('div'); list.className='factor-list'; list.style.cssText='display:grid;gap:8px';
+          addBtn.addEventListener('click',()=>{ addFacetRowTo(list, `Facet ${list.children.length+1}`); refresh(); });
+          facetNames.forEach(n=> addFacetRowTo(list, n));
+          block.appendChild(head); block.appendChild(row); block.appendChild(subHead); block.appendChild(list);
+          panel.appendChild(block);
+        }
+
+        function applyPresetTeiQue(){
+          clearExtraFactors();
+          setFirstFactor('Wellbeing', '#F3792A', ['Happiness','Optimism','Self Esteem']);
+          addFactorBlock('Self Control', '#EBBB3D', ['Emotion Regulation','Impulse Control','Stress Management']);
+          addFactorBlock('Emotionality', '#3AA756', ['Relationships','Emotion Expression','Emotion Perception','Empathy']);
+          addFactorBlock('Sociability', '#7569A1', ['Emotion Management','Assertiveness','Social Awareness']);
+          addFactorBlock('Independent facets', '#B271A4', ['Adaptability','Self Motivation']);
+          refresh();
+        }
+
+        presetSelect.addEventListener('change', ()=>{
+          if (presetSelect.value === 'teiQue') applyPresetTeiQue();
+        });
+
+        // PNG export (rasterize SVG at 2x scale)
+        downloadPngBtn.addEventListener('click', ()=>{
+          const svgEl = document.getElementById('pedalSvg');
+          const clone = svgEl.cloneNode(true);
+          // ensure fixed size for rasterization
+          clone.setAttribute('width','640');
+          clone.setAttribute('height','640');
+          const serializer = new XMLSerializer();
+          const svgString = serializer.serializeToString(clone);
+          const blob = new Blob([svgString], {type:'image/svg+xml;charset=utf-8'});
+          const url = URL.createObjectURL(blob);
+          const img = new Image();
+          img.onload = function(){
+            const scale = 2; const w = 640*scale, h = 640*scale;
+            const canvas = document.createElement('canvas'); canvas.width=w; canvas.height=h;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = getComputedStyle(document.body).backgroundColor || '#ffffff';
+            ctx.fillRect(0,0,w,h);
+            ctx.drawImage(img,0,0,w,h);
+            URL.revokeObjectURL(url);
+            const a = document.createElement('a'); a.download = 'pedal-chart.png'; a.href = canvas.toDataURL('image/png'); a.click();
+          };
+          img.src = url;
+        });
+        factorName.addEventListener('input', refresh);
+        factorColor.addEventListener('change', refresh);
+
+        // Add Factor: create new block with name/color and facets list (min 2)
+        addFactorBtn.addEventListener('click', ()=>{
+          const panel = document.getElementById('factorPanel');
+          const idx = document.querySelectorAll('.factor-block').length + 2;
+          const block = document.createElement('div'); block.className='factor-block'; block.style.display='grid'; block.style.gap='12px'; block.style.marginTop='16px';
+          const head = document.createElement('div'); head.textContent = `Factor ${idx}`; head.style.cssText='font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em';
+          const row = document.createElement('div'); row.style.cssText='display:grid;grid-template-columns:1fr 200px 120px;gap:10px;align-items:center';
+          const name = document.createElement('input'); name.type='text'; name.value=`Factor ${idx}`; name.style.cssText='height:36px;border:1px solid #e5e7eb;border-radius:10px;padding:0 10px';
+          const colorSel = document.createElement('select'); colorSel.style.cssText='height:36px;border:1px solid #e5e7eb;border-radius:10px;padding:0 8px';
+          const addBtn = document.createElement('button'); addBtn.textContent='+ Add Facet';
+          const PALETTE = [ {label:'Orange',value:'#F3792A'},{label:'Yellow',value:'#EBBB3D'},{label:'Green',value:'#3AA756'},{label:'Blue',value:'#0093D8'},{label:'Purple',value:'#7569A1'},{label:'Magenta',value:'#B271A4'},{label:'Red',value:'#EC1C24'} ];
+          PALETTE.forEach(c=>{ const o=document.createElement('option'); o.value=c.value; o.textContent=c.label; colorSel.appendChild(o); });
+          row.appendChild(name); row.appendChild(colorSel); row.appendChild(addBtn);
+          name.addEventListener('input', refresh);
+          colorSel.addEventListener('change', refresh);
+          const subHead = document.createElement('div'); subHead.textContent='Facets'; subHead.style.cssText='font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.08em';
+          const list = document.createElement('div'); list.className='factor-list'; list.style.cssText='display:grid;gap:8px';
+          addBtn.addEventListener('click',()=>{ addFacetRowTo(list, `Facet ${list.children.length+1}`); refresh(); });
+          // initial two facets
+          addFacetRowTo(list, 'Facet 1');
+          addFacetRowTo(list, 'Facet 2');
+          block.appendChild(head); block.appendChild(row); block.appendChild(subHead); block.appendChild(list);
+          panel.appendChild(block);
+          refresh();
+        });
+
+        // populate colors from previous palette
+        const COLORS = [
+          { label:'Orange', value:'#F3792A' },
+          { label:'Yellow', value:'#EBBB3D' },
+          { label:'Green', value:'#3AA756' },
+          { label:'Blue', value:'#0093D8' },
+          { label:'Purple', value:'#7569A1' },
+          { label:'Magenta', value:'#B271A4' },
+          { label:'Red', value:'#EC1C24' }
+        ];
+        COLORS.forEach(c=>{ const o=document.createElement('option'); o.value=c.value; o.textContent=c.label; factorColor.appendChild(o); });
+        factorColor.value = COLORS[0].value;
+
+        // initial state: 1 factor with 2 facets => 2 divisions
+        addFacetRowTo(facetsList, 'Facet 1');
+        addFacetRowTo(facetsList, 'Facet 2');
+        refresh();
+      })();
+    </script>
+  </body>
+ </html>
+
+

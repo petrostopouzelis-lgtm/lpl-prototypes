@@ -1,0 +1,99 @@
+<!doctype html>
+<!--
+  TEIQue 360 report as a web page (the dashboard's "View report" page).
+  Query options:  data=<url of report data JSON>   pdf=<url of the finished PDF for the download button>
+  Without data= it shows the built-in sample. Without pdf= the button opens the print layout.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TEIQue 360 Report</title>
+<script>document.write('<link rel="stylesheet" href="src/web/web.css?v=' + Date.now() + '">');</script>
+</head>
+<body>
+<div class="topbar">
+  <div class="in">
+    <div class="prod">TEIQ<i>ue</i> 360</div>
+    <div class="who" id="who"></div>
+    <a class="btn" id="pdf" target="_blank" rel="noopener">Download PDF</a>
+  </div>
+  <div class="groups" id="groups" role="group" aria-label="Rater groups shown in the charts"></div>
+</div>
+<div class="layout">
+  <nav class="nav" id="nav" aria-label="Report sections"></nav>
+  <main id="main"></main>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+  // Always fetch the current files: the preview server sends no cache headers, and a new page
+  // running old cached scripts draws nothing.
+  (function () {
+    var v = '?v=' + Date.now();
+    ["data/sample-360.js", "text/library.js", "src/model.js", "src/svg.js", "src/charts/radial.js", "src/charts/linear.js", "src/charts/overview.js", "src/report/content.js"].forEach(function (src) { document.write('<script src="' + src + v + '"><\/script>'); });
+  })();
+</script>
+<script>
+(async function () {
+  const q = new URLSearchParams(location.search), T = window.TEIQ, esc = T.svg.esc;
+  const main = document.getElementById('main'), nav = document.getElementById('nav'), tip = document.getElementById('tip');
+  let data = window.TEIQ_SAMPLE;
+  try { if (q.get('data')) data = await (await fetch(q.get('data'))).json(); }
+  catch (e) { main.innerHTML = '<section class="sec"><h1 class="title">The report could not be loaded</h1><p>' + esc(String(e)) + '</p></section>'; return; }
+
+  const hidden = new Set();          // rater groups the reader has switched off
+  const SKIP = ['plan'];             // print-only sections
+  const WIDE = ['summary', 'gap'];   // charts that scroll sideways on a phone instead of shrinking
+
+  document.title = 'TEIQue 360 Report: ' + data.subject.name;
+  document.getElementById('who').innerHTML = '<b>' + esc(data.subject.name) + '</b> · ' + esc(data.report.date || '');
+  const pdf = document.getElementById('pdf');
+  pdf.href = q.get('pdf') || 'report.html?print=1' + (q.get('data') ? '&data=' + encodeURIComponent(q.get('data')) : '');
+
+  function render() {
+    const built = T.report.build(data, window.TEIQ_TEXT, { fill: 'typical', view: { hideGroups: [...hidden] } });
+    const secs = built.sections.filter(s => s.kind === 'flow' && !SKIP.includes(s.id));
+    main.innerHTML = secs.map(s => `<section class="sec" id="s-${s.id}" style="--c:${s.color || ''}">${s.blocks.map(b => typeof b === 'string' ? b : b.html).join('')}</section>`).join('');
+    nav.innerHTML = secs.map(s => `<a href="#s-${s.id}" class="${s.parent ? 'sub' : ''}" style="--c:${s.parent || s.id === 'global' || T.GROUPS.some(g => g.id === s.id) ? s.color : ''}">${esc(s.toc || s.tocSub || s.title)}</a>`).join('');
+    // hover values: move each chart's <title> text into a data attribute for the custom tooltip
+    main.querySelectorAll('svg title').forEach(t => { t.parentNode.setAttribute('data-tip', t.textContent); t.remove(); });
+    secs.forEach(s => { if (WIDE.includes(s.id)) main.querySelectorAll(`#s-${s.id} .chart`).forEach(c => c.classList.add('wide')); });
+    main.querySelectorAll('.chart.wide, .card:has(table)').forEach(c => { c.tabIndex = 0; }); // sideways-scrolling areas reachable by keyboard
+  }
+
+  // rater-group switches
+  const view = T.view(data), groupsEl = document.getElementById('groups');
+  const usable = view.shownGroups;
+  groupsEl.innerHTML = usable.length ? '<span>Rater groups in the charts:</span>' + usable.map(g => `<button class="chipbtn" type="button" data-g="${esc(g.id)}" aria-pressed="true">${esc(g.label)} (${g.responded})</button>`).join('') : '';
+  groupsEl.addEventListener('click', e => {
+    const b = e.target.closest('.chipbtn');
+    if (!b) return;
+    const id = b.dataset.g, on = hidden.has(id);
+    if (on) hidden.delete(id); else hidden.add(id);
+    b.setAttribute('aria-pressed', on);
+    const y = scrollY;
+    render();
+    scrollTo(0, y);
+  });
+
+  // tooltip
+  function showTip(target, x, y) {
+    const el = target && target.closest && target.closest('[data-tip]');
+    if (!el) { tip.classList.remove('on'); return; }
+    tip.textContent = el.getAttribute('data-tip');
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.max(8, Math.min(innerWidth - w - 8, x + 14)) + 'px';
+    tip.style.top = (y + h + 24 > innerHeight ? y - h - 12 : y + 16) + 'px';
+    tip.classList.add('on');
+  }
+  main.addEventListener('pointermove', e => showTip(e.target, e.clientX, e.clientY));
+  main.addEventListener('pointerleave', () => tip.classList.remove('on'));
+  main.addEventListener('pointerdown', e => showTip(e.target, e.clientX, e.clientY));
+
+  render();
+  document.documentElement.dataset.ready = '1';
+})();
+</script>
+</body>
+</html>

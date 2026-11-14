@@ -1,0 +1,161 @@
+/* TEIQue 360 report pages. Units are points: the Figma frames are 595 x 842, which is A4 in points,
+   so every Figma number can be used as-is. */
+@font-face { font-family: 'Inter'; src: url('../../fonts/Inter-Variable.ttf') format('truetype'); font-weight: 100 900; }
+@font-face { font-family: 'Manrope'; src: url('../../fonts/Manrope-Variable.ttf') format('truetype'); font-weight: 200 800; }
+
+@page { size: 595pt 842pt; margin: 0; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: Inter, 'Segoe UI', Arial, sans-serif; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+.page { --c: #42A2DA; width: 595pt; height: 842pt; position: relative; overflow: hidden; background: #fff; break-after: page; }
+.page:last-child { break-after: auto; }
+@media screen {
+  body { background: #E9EBEF; padding: 16pt 0; }
+  .page { margin: 0 auto 16pt; box-shadow: 0 2pt 14pt rgba(0, 0, 0, .18); }
+}
+
+/* running header and footer */
+.hdr { position: absolute; z-index: 3; top: 0; left: 0; right: 0; height: 62pt; background: #fff; box-shadow: 0 0 15.5pt rgba(0, 0, 0, .10);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 40pt; }
+.hdr .prod { font: 500 18pt Inter, sans-serif; color: #42A2DA; }
+.hdr .prod i { font-style: normal; color: #E47C2D; }
+.hdr .logo { position: absolute; left: 50%; top: 10pt; height: 42pt; transform: translateX(-50%); }
+.hdr .who { font: 300 12pt/15pt Inter, sans-serif; text-align: right; max-width: 190pt; }
+.hdr .who div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ftr { position: absolute; z-index: 3; left: 0; right: 0; bottom: 0; height: 30pt; text-align: center; font: 300 11pt/14.5pt Inter, sans-serif; }
+.ftr .pg { font-weight: 100; }
+.ftr .pg b { font-weight: 300; color: var(--c); }
+.ftr .cr { font-size: 10pt; color: #B7B6B7; }
+
+/* sample watermark: sits behind the content, never over text cards or the footer */
+.wm { position: absolute; z-index: 0; inset: 70pt 0 40pt 0; display: grid; grid-template-columns: repeat(3, 1fr); align-content: space-around; pointer-events: none; }
+.wm span { font: 500 11pt/13pt Manrope, sans-serif; color: #000; opacity: .07; text-align: center; transform: rotate(-24deg); }
+
+.body { position: absolute; z-index: 1; top: 62pt; bottom: 34pt; left: 0; right: 0; padding: 26pt 40pt 0; display: flex; flex-direction: column; gap: 16pt; overflow: hidden; }
+.body > * { flex: none; }
+
+h1.title { font: 500 26pt/32pt Manrope, sans-serif; color: var(--c); margin: 0; }
+.eyebrow { font: 700 8pt/10pt Manrope, sans-serif; letter-spacing: .09em; text-transform: uppercase; color: #808080; margin-bottom: 1pt; }
+p { font: 300 12pt/14.5pt Inter, sans-serif; text-align: justify; hyphens: auto; margin: 0; }
+p + p { margin-top: 8pt; }
+p.lead { font-weight: 500; color: var(--c); margin-bottom: 10pt; }
+p.note { font-size: 10pt; line-height: 13pt; color: #555; text-align: left; }
+h4.sub { font: 500 14pt/17pt Inter, sans-serif; color: var(--c); margin: 0 0 10pt; }
+.card { background: #fff; border-radius: 15pt; padding: 15pt; box-shadow: 0 0 10pt rgba(0, 0, 0, .15); }
+.card ul { margin: 0; padding-left: 16pt; font: 300 12pt/14.5pt Inter, sans-serif; }
+.card li + li { margin-top: 6pt; }
+.cmp { font-weight: 500; }
+.needed { border: 1pt dashed #C9A227; background: #FFF9E5; border-radius: 8pt; padding: 5pt 9pt; font: 500 9pt/12pt Inter, sans-serif; color: #7A5B00; margin-bottom: 8pt; text-align: left; }
+.filler { color: #8A8F98; }
+
+.chart svg { display: block; width: 100%; max-width: none !important; height: auto; }
+.chart.center { align-self: center; }
+.row { display: flex; gap: 37pt; align-items: flex-start; }
+.row .txt { flex: 1; min-width: 0; }
+.row .gauge { width: 155pt; flex: none; margin-top: -6pt; }
+
+/* cover and back cover */
+.page.full img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.cover .legal { position: absolute; top: 14.5pt; left: 0; right: 0; text-align: center; font: 300 10pt/14.5pt Inter, sans-serif; color: #B7B6B7; }
+.cover .box { position: absolute; top: 326pt; left: 0; right: 0; display: flex; justify-content: center; padding: 0 40pt; }
+.cover .box > div { background: #fff; border-radius: 15pt; box-shadow: 0 0 10pt rgba(0, 0, 0, .15); padding: 16pt 24pt; text-align: center; max-width: 100%; }
+.cover .box .t { font: 300 21pt/24pt Inter, sans-serif; }
+.cover .box .t b { font-weight: 500; color: #42A2DA; }
+.cover .box .t b i { font-style: normal; color: #E47C2D; }
+.cover .box .n { font: 300 16pt/20pt Inter, sans-serif; margin-top: 10pt; }
+.cover .cr { position: absolute; left: 0; right: 0; top: 812pt; text-align: center; font: 300 10pt/14.5pt Inter, sans-serif; color: #fff; }
+
+/* contents */
+.toc { padding: 18pt 20pt; }
+.toc .it { display: flex; justify-content: space-between; font: 400 11.5pt/15pt Inter, sans-serif; color: var(--c); margin-top: 9pt; }
+.toc .it:first-child { margin-top: 0; }
+.toc .subs { font: 300 10.5pt/13.5pt Inter, sans-serif; color: var(--c); padding-left: 18pt; }
+
+/* structure diagram */
+.tree { display: flex; flex-direction: column; align-items: center; gap: 12pt; }
+.chip { border-radius: 8pt; color: #fff; font: 600 8.5pt/10.5pt Manrope, sans-serif; text-align: center; padding: 6pt 6pt; background: linear-gradient(180deg, var(--l), var(--f)); }
+.tree .top { --f: #42A2DA; --l: #6FB9E4; padding: 7pt 16pt; }
+.tree .cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8pt; width: 100%; align-items: start; }
+.tree .col { display: flex; flex-direction: column; gap: 6pt; }
+.tree .col .chip.f { font-weight: 500; opacity: .88; }
+.read { display: flex; gap: 18pt; align-items: center; }
+.read .gauge { width: 132pt; flex: none; }
+
+/* highlight lists */
+.cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12pt; }
+.mini { padding: 11pt 12pt; }
+.mini h5 { font: 700 8.5pt/11pt Manrope, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #6B7380; margin: 0 0 6pt; }
+.mini .li { display: flex; gap: 6pt; align-items: baseline; font: 400 9.5pt/13pt Inter, sans-serif; }
+.mini .li i { width: 6pt; height: 6pt; border-radius: 50%; flex: none; background: var(--c); transform: translateY(-1pt); }
+.mini .li span { color: #6B7380; margin-left: auto; white-space: nowrap; font-size: 8.5pt; }
+.mini .none { font: 300 9.5pt/13pt Inter, sans-serif; color: #6B7380; }
+
+/* development suggestions */
+.dev-head { display: flex; align-items: baseline; gap: 10pt; }
+.dev-head h3 { font: 500 18pt/22pt Manrope, sans-serif; color: var(--c); margin: 0; }
+.tag { font: 600 8.5pt/11pt Inter, sans-serif; color: #fff; background: var(--c); border-radius: 20pt; padding: 2.5pt 8pt; }
+h5.caps { font: 500 11pt/14pt Inter, sans-serif; text-transform: uppercase; color: var(--c); margin: 0 0 7pt; }
+
+/* action plan */
+.plan { display: grid; grid-template-columns: 1fr 1.25fr .7fr; gap: 10pt; }
+.plan .h { font: 500 13pt/16pt Manrope, sans-serif; color: #42A2DA; }
+.plan .cell { height: 148pt; border-radius: 15pt; background: #fff; box-shadow: 0 0 10pt rgba(0, 0, 0, .15); }
+
+/* coach data */
+.meta { display: flex; flex-direction: column; gap: 8pt; font: 300 10pt/13pt Inter, sans-serif; }
+.meta b { font-weight: 600; display: block; font-size: 8pt; color: #6B7380; text-transform: uppercase; letter-spacing: .05em; }
+table.coach { width: 100%; border-collapse: collapse; font: 400 9.5pt/12pt Inter, sans-serif; }
+table.coach th { font: 700 8pt/10pt Manrope, sans-serif; color: #6B7380; text-align: right; padding: 0 5pt 6pt; vertical-align: bottom; }
+table.coach th:first-child, table.coach td:first-child { text-align: left; padding-left: 0; }
+table.coach td { text-align: right; padding: 3.6pt 5pt; border-top: .5pt solid #E3E5E9; }
+table.coach td:first-child { color: var(--c); }
+table.coach tr.head td { font-weight: 700; border-top: 1pt solid #C9CDD3; }
+table.coach td.you { color: #1F2733; font-weight: 600; }
+table.coach td.oth { font-weight: 700; }
+table.coach td.gap { color: #6B7380; }
+
+/* ---- pages that follow the 2010 report ---- */
+p.tight + p.tight { margin-top: 2pt; }
+p.note.mid { text-align: center; font-style: italic; }
+.stack { display: flex; flex-direction: column; align-items: center; gap: 6pt; }
+.chart + .card { margin-top: 8pt; }
+.list2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20pt; padding: 12pt 15pt; }
+.list2 li + li { margin-top: 3pt; }
+
+/* what the TEIQue measures: factor, its facets, one line each */
+.fmap { display: flex; flex-direction: column; gap: 12pt; }
+.fmap .grp { display: grid; grid-template-columns: 100pt 1fr; gap: 10pt; align-items: center; }
+.fmap .grp > .chip { padding: 9pt 6pt; font-size: 9.5pt; }
+.fmap .rows { display: flex; flex-direction: column; gap: 5pt; }
+.fmap .r { display: grid; grid-template-columns: 112pt 1fr; gap: 10pt; align-items: center; }
+.fmap .chip.f { font-weight: 600; color: #1F2733; background: color-mix(in srgb, var(--l) 38%, #fff); }
+.fmap .r span { font: italic 300 9.5pt/12pt Inter, sans-serif; }
+
+/* report contents list */
+.items { display: flex; flex-direction: column; gap: 8pt; }
+.items .card { padding: 10pt 15pt; }
+.items h5 { font: 500 12pt/15pt Inter, sans-serif; color: var(--c); margin: 0 0 3pt; }
+.items p { font-size: 10.5pt; line-height: 13.5pt; }
+
+/* rater groups */
+.rg + .rg { margin-top: 12pt; }
+.rg h5 { font: 500 12pt/15pt Inter, sans-serif; color: var(--c); margin: 0 0 3pt; }
+.rl { display: grid; grid-template-columns: 130pt 1fr; gap: 10pt; font: 300 10.5pt/15pt Inter, sans-serif; }
+
+/* low scorers / high scorers */
+.scorers { display: grid; grid-template-columns: 1fr 1fr; gap: 12pt; align-items: start; }
+.scorers .card { padding: 11pt 13pt; background: color-mix(in srgb, var(--c) 9%, #fff); }
+.scorers p { font-size: 10.5pt; line-height: 13.5pt; text-align: left; }
+.scorers b, .dev b { font-weight: 600; }
+.dev-head { margin-bottom: 10pt; }
+
+/* acknowledgement */
+.ack h5 { font: 600 9pt/12pt Inter, sans-serif; margin: 0 0 3pt; }
+.ack p { font-size: 9pt; line-height: 12pt; text-align: left; }
+.ack p + h5 { margin-top: 10pt; }
+
+/* coach data */
+p.valid { font: 400 11pt/14pt Inter, sans-serif; text-align: center; background: #F2F3F5; border-radius: 8pt; padding: 6pt; }
+.coachrow { display: grid; grid-template-columns: 1fr 170pt; gap: 14pt; align-items: start; }
+table.coach tr.sep th { padding-top: 14pt; }

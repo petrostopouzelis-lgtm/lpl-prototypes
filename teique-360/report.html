@@ -1,0 +1,130 @@
+<!doctype html>
+<!--
+  TEIQue 360 report, laid out on A4 pages. This is also the page viewer: on screen it shows every
+  page exactly as it goes into the PDF, with a bar to switch the data file and the zoom.
+  Printing this page gives the PDF (tools/build-pdf.js does it); the bar never prints.
+  Query options:
+    file=<name>       one of the data files in data/ (default: sample-360)
+    data=<url>        report data JSON from any address (needs a server; used by build-pdf.js)
+    fill=none|typical|long   how much filler to show where text is still missing (default typical)
+    watermark=1       force the sample watermark on
+    extras=0          leave out the three pages the 2010 report did not have (summary graph, perception map, gap chart)
+    view=grid         start in the all-pages overview
+    print=1           open the browser's print dialog once the pages are ready
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TEIQue 360 Report</title>
+<script>document.write('<link rel="stylesheet" href="src/report/report.css?v=' + Date.now() + '">');</script>
+<style>
+  .viewer { display: none; }
+  @media screen {
+    .viewer { display: flex; position: sticky; top: 0; z-index: 50; gap: 8px 14px; align-items: center; flex-wrap: wrap; padding: 8px 14px; margin: -16pt 0 16pt;
+      background: #1F2733; color: #fff; font: 500 13px/1.2 Inter, 'Segoe UI', Arial, sans-serif; }
+    .viewer label { display: inline-flex; gap: 6px; align-items: center; color: #C5CAD3; }
+    .viewer select, .viewer button { font: inherit; color: #fff; background: #2E3948; border: 1px solid #485568; border-radius: 7px; padding: 5px 9px; cursor: pointer; }
+    .viewer button[aria-pressed="true"] { background: #42A2DA; border-color: #42A2DA; }
+    .viewer button:focus-visible, .viewer select:focus-visible, .viewer input:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+    .viewer .seg { display: inline-flex; gap: 4px; align-items: center; }
+    .viewer .status { margin-left: auto; color: #C5CAD3; }
+    .viewer .status.warn { color: #FFD166; }
+    #report { zoom: var(--zoom, 1); }
+    #report.grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 14pt; padding: 0 14pt; }
+    #report.grid .page { margin: 0; cursor: zoom-in; }
+  }
+</style>
+</head>
+<body>
+<div class="viewer" id="viewer" hidden>
+  <label>Report <select id="v-file"></select></label>
+  <label>Missing text <select id="v-fill"><option value="none">marker only</option><option value="typical">with filler</option><option value="long">long filler</option></select></label>
+  <label><input type="checkbox" id="v-wm"> Watermark</label>
+  <label><input type="checkbox" id="v-extras"> Summary, map and gap pages</label>
+  <span class="seg"><button type="button" id="v-single" aria-pressed="true">Page by page</button><button type="button" id="v-grid" aria-pressed="false">All pages</button></span>
+  <span class="seg"><button type="button" id="v-out" aria-label="Zoom out">−</button><span id="v-zoom">100%</span><button type="button" id="v-in" aria-label="Zoom in">+</button></span>
+  <button type="button" id="v-print">Save as PDF</button>
+  <span class="status" id="v-status" role="status">Laying out pages…</span>
+</div>
+<div id="report"></div>
+<script>
+  // Always fetch the current files: the preview server sends no cache headers, and a new page
+  // running old cached scripts draws nothing.
+  (function () {
+    var v = '?v=' + Date.now();
+    ["data/files.js", "text/library.js", "src/model.js", "src/svg.js", "src/charts/radial.js", "src/charts/linear.js", "src/charts/overview.js", "src/report/content.js", "src/report/paginate.js"].forEach(function (src) { document.write('<script src="' + src + v + '"><\/script>'); });
+  })();
+</script>
+<script>
+(async function () {
+  const q = new URLSearchParams(location.search), T = window.TEIQ, $ = id => document.getElementById(id);
+  const mount = $('report'), list = window.TEIQ_FILE_LIST || ['sample-360'];
+  const file = list.includes(q.get('file')) ? q.get('file') : 'sample-360';
+  const script = src => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = () => rej(new Error('Could not load ' + src)); document.head.appendChild(s); });
+
+  // ---- viewer bar (screen only)
+  const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, val) => { try { localStorage.setItem(k, val); } catch (e) {} } };
+  const go = (key, val) => { if (val) q.set(key, val); else q.delete(key); location.search = q.toString(); };
+  let grid = q.get('view') === 'grid', zoom = { single: +store.get('teique360-zoom') || Math.max(0.3, Math.min(1, Math.floor((innerWidth - 40) / 794 * 20) / 20)), grid: 0.32 };
+  function applyView() {
+    mount.classList.toggle('grid', grid);
+    const z = grid ? zoom.grid : zoom.single;
+    mount.style.setProperty('--zoom', z);
+    $('v-zoom').textContent = Math.round(z * 100) + '%';
+    $('v-single').setAttribute('aria-pressed', !grid); $('v-grid').setAttribute('aria-pressed', grid);
+  }
+  function setZoom(step) {
+    const k = grid ? 'grid' : 'single';
+    zoom[k] = Math.max(0.15, Math.min(2.5, Math.round((zoom[k] + step) * 100) / 100));
+    if (!grid) store.set('teique360-zoom', zoom.single);
+    applyView();
+  }
+  if (!q.get('data')) {
+    $('viewer').hidden = false;
+    $('v-file').innerHTML = list.map(n => `<option value="${n}"${n === file ? ' selected' : ''}>${n}</option>`).join('');
+    $('v-fill').value = q.get('fill') || 'typical';
+    $('v-wm').checked = q.get('watermark') === '1'; $('v-extras').checked = q.get('extras') !== '0';
+    $('v-file').onchange = e => go('file', e.target.value === 'sample-360' ? '' : e.target.value);
+    $('v-fill').onchange = e => go('fill', e.target.value === 'typical' ? '' : e.target.value);
+    $('v-wm').onchange = e => go('watermark', e.target.checked ? '1' : '');
+    $('v-extras').onchange = e => go('extras', e.target.checked ? '' : '0');
+    $('v-single').onclick = () => { grid = false; applyView(); };
+    $('v-grid').onclick = () => { grid = true; applyView(); };
+    $('v-out').onclick = () => setZoom(grid ? -0.04 : -0.1);
+    $('v-in').onclick = () => setZoom(grid ? 0.04 : 0.1);
+    $('v-print').onclick = () => window.print();
+    // in the overview, a click on a page opens it at reading size
+    mount.addEventListener('click', e => {
+      const page = e.target.closest('.page');
+      if (!grid || !page) return;
+      grid = false; applyView(); page.scrollIntoView({ block: 'start' });
+    });
+  }
+
+  // ---- build the pages
+  try {
+    let data;
+    if (q.get('data')) data = await (await fetch(q.get('data'))).json();
+    else { await script('data/' + file + '.js?v=' + Date.now()); data = window.TEIQ_FILES[file]; }
+    const images = ['assets/cover.jpg', 'assets/back-cover.jpg', 'assets/logo-monogram.png'].map(src => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = src; }));
+    await Promise.all([document.fonts.load('300 12pt Inter'), document.fonts.load('500 26pt Manrope'), ...images]);
+    await document.fonts.ready;
+    const built = T.report.build(data, window.TEIQ_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', extras: q.get('extras') !== '0' });
+    document.title = 'TEIQue 360 Report: ' + data.subject.name;
+    const r = window.__REPORT = T.report.paginate(built, mount);   // measured at 100%, before any zoom
+    const missing = mount.querySelectorAll('.needed').length;
+    $('v-status').textContent = `${r.pages} pages` + (missing ? ` · ${missing} texts missing` : '') + (r.warnings.length ? ` · ${r.warnings.length} layout warning${r.warnings.length > 1 ? 's' : ''}: ${r.warnings[0]}` : '');
+    $('v-status').classList.toggle('warn', r.warnings.length > 0);
+    applyView();
+    if (q.get('print') === '1') setTimeout(() => window.print(), 300);
+  } catch (e) {
+    window.__REPORT = { error: String(e && e.stack || e) };
+    mount.textContent = 'Report failed: ' + e;
+    $('v-status').textContent = 'Failed';
+  }
+  document.documentElement.dataset.ready = '1';
+})();
+</script>
+</body>
+</html>

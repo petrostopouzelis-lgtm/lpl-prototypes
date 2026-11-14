@@ -1,0 +1,260 @@
+{
+  "schema": "teique-360/1",
+  "report": {
+    "form": "TEIQue-360",
+    "language": "en",
+    "norm": "UK",
+    "date": "2026-10-14",
+    "id": "EDGE-EXTREMES",
+    "sample": true,
+    "valid": true,
+    "note": "Scores of 1 and 99, maximum gaps and exact ties."
+  },
+  "subject": {
+    "name": "Alex Morgan",
+    "role": "Sales Manager",
+    "time_in_role_years": 3
+  },
+  "settings": {
+    "minGroupSize": 1,
+    "alwaysShowGroups": [],
+    "textFollows": "self",
+    "watermark": false
+  },
+  "self": {
+    "global": 99,
+    "wellbeing": 1,
+    "sociability": 1,
+    "emotionality": 99,
+    "self_control": 50,
+    "optimism": 99,
+    "happiness": 1,
+    "self_esteem": 1,
+    "emotion_management": 99,
+    "assertiveness": 50,
+    "social_awareness": 99,
+    "empathy": 1,
+    "emotion_perception": 1,
+    "emotion_expression": 99,
+    "relationships": 50,
+    "emotion_regulation": 99,
+    "impulse_control": 1,
+    "stress_management": 1,
+    "self_motivation": 99,
+    "adaptability": 50
+  },
+  "self_raw": {
+    "wellbeing": 5,
+    "sociability": 4,
+    "emotionality": 4,
+    "self_control": 4,
+    "optimism": 5,
+    "happiness": 5,
+    "self_esteem": 5,
+    "emotion_management": 4,
+    "assertiveness": 5,
+    "social_awareness": 4,
+    "empathy": 4,
+    "emotion_perception": 4,
+    "emotion_expression": 4,
+    "relationships": 5,
+    "emotion_regulation": 4,
+    "impulse_control": 5,
+    "stress_management": 4,
+    "self_motivation": 5,
+    "adaptability": 4
+  },
+  "others": {
+    "responded": 9,
+    "invited": 9,
+    "scores": {
+      "global": 1,
+      "wellbeing": 99,
+      "sociability": 1,
+      "emotionality": 99,
+      "self_control": 50,
+      "optimism": 1,
+      "happiness": 99,
+      "self_esteem": 1,
+      "emotion_management": 99,
+      "assertiveness": 50,
+      "social_awareness": 1,
+      "empathy": 99,
+      "emotion_perception": 1,
+      "emotion_expression": 99,
+      "relationships": 50,
+      "emotion_regulation": 1,
+      "impulse_control": 99,
+      "stress_management": 1,
+      "self_motivation": 99,
+      "adaptability": 50
+    }
+  },
+  "groups": [
+    {
+      "id": "boss",
+      "label": "Boss",
+      "invited": 1,
+      "responded": 1,
+      "raters": [
+        {
+          "name": "Jordan Ellis",
+          "known_years": 2,
+          "contact": "very regular"
+        }
+      ],
+      "scores": {
+        "global": 1,
+        "wellbeing": 99,
+        "sociability": 1,
+        "emotionality": 99,
+        "self_control": 50,
+        "optimism": 1,
+        "happiness": 99,
+        "self_esteem": 1,
+        "emotion_management": 99,
+        "assertiveness": 50,
+        "social_awareness": 1,
+        "empathy": 99,
+        "emotion_perception": 1,
+        "emotion_expression": 99,
+        "relationships": 50,
+        "emotion_regulation": 1,
+        "impulse_control": 99,
+        "stress_management": 1,
+        "self_motivation": 99,
+        "adaptability": 50
+      }
+    },
+    {
+      "id": "other_superiors",
+      "label": "Other Superiors",
+      "invited": 2,
+      "responded": 2,
+      "raters": [
+        {
+          "name": "Priya Nair",
+          "known_years": 0,
+          "contact": "rare"
+        },
+        {
+          "name": "Tomas Weber",
+          "known_years": 1,
+          "contact": "irregular"
+        }
+      ],
+      "scores": {
+        "global": 1,
+        "wellbeing": 1,
+        "sociability": 1,
+        "emotionality": 1,
+        "self_control": 1,
+        "optimism": 1,
+        "happiness": 1,
+        "self_esteem": 1,
+        "emotion_management": 1,
+        "assertiveness": 1,
+        "social_awareness": 1,
+        "empathy": 1,
+        "emotion_perception": 1,
+        "emotion_expression": 1,
+        "relationships": 1,
+        "emotion_regulation": 1,
+        "impulse_control": 1,
+        "stress_management": 1,
+        "self_motivation": 1,
+        "adaptability": 1
+      }
+    },
+    {
+      "id": "direct_reports",
+      "label": "Direct Reports",
+      "invited": 3,
+      "responded": 3,
+      "raters": [
+        {
+          "name": "Sam Okafor",
+          "known_years": 1,
+          "contact": "very regular"
+        },
+        {
+          "name": "Lena Fischer",
+          "known_years": 1,
+          "contact": "very regular"
+        },
+        {
+          "name": "Daniel Reyes",
+          "known_years": 5,
+          "contact": "very regular"
+        }
+      ],
+      "scores": {
+        "global": 99,
+        "wellbeing": 99,
+        "sociability": 99,
+        "emotionality": 99,
+        "self_control": 99,
+        "optimism": 99,
+        "happiness": 99,
+        "self_esteem": 99,
+        "emotion_management": 99,
+        "assertiveness": 99,
+        "social_awareness": 99,
+        "empathy": 99,
+        "emotion_perception": 99,
+        "emotion_expression": 99,
+        "relationships": 99,
+        "emotion_regulation": 99,
+        "impulse_control": 99,
+        "stress_management": 99,
+        "self_motivation": 99,
+        "adaptability": 99
+      }
+    },
+    {
+      "id": "peers",
+      "label": "Peers",
+      "invited": 3,
+      "responded": 3,
+      "raters": [
+        {
+          "name": "Maya Lindqvist",
+          "known_years": 3,
+          "contact": "very regular"
+        },
+        {
+          "name": "Chris Abara",
+          "known_years": 1,
+          "contact": "very regular"
+        },
+        {
+          "name": "Hana Sato",
+          "known_years": 1,
+          "contact": "regular"
+        }
+      ],
+      "scores": {
+        "global": 1,
+        "wellbeing": 99,
+        "sociability": 1,
+        "emotionality": 99,
+        "self_control": 50,
+        "optimism": 1,
+        "happiness": 99,
+        "self_esteem": 1,
+        "emotion_management": 99,
+        "assertiveness": 50,
+        "social_awareness": 1,
+        "empathy": 99,
+        "emotion_perception": 1,
+        "emotion_expression": 99,
+        "relationships": 50,
+        "emotion_regulation": 1,
+        "impulse_control": 99,
+        "stress_management": 1,
+        "self_motivation": 99,
+        "adaptability": 50
+      }
+    }
+  ]
+}

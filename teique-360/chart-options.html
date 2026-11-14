@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TEIQue 360 chart options</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#F5F6F8; --card:#fff; --ink:#1F2733; --muted:#6B7380; --rule:#E3E5E9; --blue:#42A2DA; --orange:#E47C2D; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:Inter, 'Segoe UI', Arial, sans-serif; font-size:14px; line-height:1.5; padding-bottom:84px; }
+  header.top { background:#fff; box-shadow:0 0 15.5px rgba(0,0,0,.10); padding:20px 32px; }
+  header.top h1 { font-family:Manrope, sans-serif; font-weight:600; font-size:24px; margin:0 0 4px; color:var(--blue); }
+  header.top h1 span { color:var(--orange); }
+  header.top p { margin:0; color:var(--muted); max-width:78ch; }
+  .legend { display:flex; flex-wrap:wrap; gap:8px 22px; margin-top:12px; font-size:13px; }
+  .legend b { font-weight:600; }
+  .sw { display:inline-block; vertical-align:-2px; margin-right:6px; }
+  .sw.others { width:22px; height:11px; border-radius:6px; background:#F3792A; }
+  .switches { display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:14px; }
+  .sg { display:inline-flex; gap:6px; align-items:center; }
+  .sg em { font-style:normal; font-weight:600; font-size:13px; margin-right:4px; }
+  .sg button { font:500 13px Inter, sans-serif; color:var(--ink); background:#fff; border:1px solid #CBD0D8; border-radius:20px; padding:5px 12px; cursor:pointer; }
+  .sg button[aria-pressed="true"] { background:var(--ink); border-color:var(--ink); color:#fff; }
+  .sg button:focus-visible, button.pick:focus-visible, button.zoom:focus-visible { outline:2px solid var(--blue); outline-offset:2px; }
+  main { max-width:1500px; margin:0 auto; padding:8px 32px 24px; }
+  section { margin-top:36px; }
+  section > h2 { font-family:Manrope, sans-serif; font-weight:600; font-size:20px; margin:0 0 2px; }
+  section > h2 small { font-weight:500; color:var(--muted); font-size:13px; margin-left:8px; }
+  section > p.lead { margin:0 0 14px; color:var(--muted); max-width:86ch; }
+  .opts { display:grid; gap:16px; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); align-items:start; }
+  .opts.wide { grid-template-columns:repeat(auto-fit, minmax(430px, 1fr)); }
+  .opt { background:var(--card); border-radius:16px; box-shadow:0 0 10px rgba(0,0,0,.10); padding:16px; border:2px solid transparent; min-width:0; }
+  .opt.picked { border-color:var(--blue); }
+  .opt .head { display:flex; align-items:center; gap:10px; margin-bottom:6px; }
+  .opt .letter { font-family:Manrope, sans-serif; font-weight:700; width:28px; height:28px; border-radius:50%; background:var(--bg); display:grid; place-items:center; flex:none; }
+  .opt.picked .letter { background:var(--blue); color:#fff; }
+  .opt h3 { font-family:Manrope, sans-serif; font-size:15px; font-weight:600; margin:0; flex:1; }
+  .tag { font-size:11px; font-weight:600; color:#2D7FB3; background:#E9F4FB; border-radius:20px; padding:2px 9px; white-space:nowrap; }
+  .opt p.note { margin:0 0 12px; color:var(--muted); font-size:13px; }
+  .chart { display:flex; flex-wrap:wrap; gap:8px 16px; justify-content:center; align-items:flex-start; }
+  .chart > div { flex:1 1 200px; min-width:0; display:flex; flex-direction:column; align-items:center; }
+  .chart .cap { font-family:Manrope, sans-serif; font-size:12px; font-weight:600; color:var(--muted); margin:4px 0 2px; align-self:flex-start; }
+  .chart.stack > div { flex-basis:100%; }
+  button.pick { margin-top:12px; font:600 13px Inter, sans-serif; color:var(--ink); background:#fff; border:1px solid #CBD0D8; border-radius:10px; padding:7px 14px; cursor:pointer; }
+  button.pick:hover, button.zoom:hover { border-color:var(--blue); }
+  button.zoom { font:500 12px Inter, sans-serif; color:var(--muted); background:#fff; border:1px solid #DDE0E5; border-radius:8px; padding:4px 10px; cursor:pointer; }
+  .opt.big { grid-column:1 / -1; }
+  .opt.big .chart svg { max-width:min(100%, 1000px) !important; }
+  .opt.picked button.pick { background:var(--blue); border-color:var(--blue); color:#fff; }
+  footer.bar { position:fixed; left:0; right:0; bottom:0; background:#fff; box-shadow:0 0 15.5px rgba(0,0,0,.14); padding:12px 32px; display:flex; gap:16px; align-items:center; flex-wrap:wrap; }
+  footer.bar .picks { font-weight:600; flex:1; min-width:200px; }
+  footer.bar .picks span { color:var(--muted); font-weight:400; }
+  footer.bar button { font:600 13px Inter, sans-serif; color:#fff; background:var(--blue); border:0; border-radius:10px; padding:9px 16px; cursor:pointer; }
+  @media (max-width:640px) { header.top, main, footer.bar { padding-left:16px; padding-right:16px; } .opts, .opts.wide { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>TEIQ<span>ue</span> 360 chart options</h1>
+  <p>Pick one option for each of the seven charts. Charts 1 and 2 have new options (round 2) for showing you and others; the rest are as you picked them. Hover a mark to see its values.</p>
+  <div class="legend">
+    <span><i class="sw others"></i><b>Others</b> are always a filled shape in the factor colour</span>
+    <span><b>You</b> (the self score) is a deeper shade of the same factor colour, in every chart</span>
+  </div>
+  <div class="switches">
+    <span class="sg" role="group" aria-label="Sample data"><em>Sample</em><button type="button" data-view="gaps">Big gaps</button><button type="button" data-view="close">Close scores</button></span>
+    <span class="sg" role="group" aria-label="Colour for You"><em>Colour for You</em><button type="button" data-you="deep">Deeper shade</button><button type="button" data-you="hollow">White, colour edge</button><button type="button" data-you="blue">Brand blue</button></span>
+  </div>
+</header>
+<main id="main"></main>
+<footer class="bar">
+  <div class="picks" id="picks"></div>
+  <button id="copy" type="button">Copy my picks</button>
+</footer>
+
+<script>
+  // Always fetch the current files: the preview server sends no cache headers, and a new page
+  // running old cached scripts draws nothing.
+  (function () {
+    var v = '?v=' + Date.now();
+    ["data/sample-360.js", "data/edge-big-gaps.js", "src/model.js", "src/svg.js", "src/charts/radial.js", "src/charts/linear.js", "src/charts/overview.js"].forEach(function (src) { document.write('<script src="' + src + v + '"><\/script>'); });
+  })();
+</script>
+<script>
+(function () {
+  const T = window.TEIQ, C = T.charts, GAUGE_IDS = ['empathy', 'self_esteem', 'social_awareness'];
+  const VIEWS = { close: T.view(window.TEIQ_SAMPLE), gaps: T.view(window.TEIQ_FILES['edge-big-gaps']) };
+  let v = VIEWS.gaps, you = T.YOU_DEFAULT;   // what the options are drawn with; both can be switched in the header
+  const pair = (fn, ids) => ids.map(id => `<div><span class="cap">${T.nameOf(id)}</span>${fn(id)}</div>`).join('');
+  const one = svg => `<div>${svg}</div>`;
+
+  const CHARTS = [
+    { key: 'wheel', title: 'Petal chart', sub: 'round 2: you and others as two clear shapes', wide: true,
+      lead: 'All 15 facets on one page. Others keep the solid petals from the Figma file. Each option gives your own score a shape of its own in a variation of the same factor colour, instead of a thin dark line. Both numbers sit under each facet name: others first, you second.',
+      opts: [
+        { k: 'D', name: 'Split petals', note: 'Two half petals per facet: others in colour, you beside it. The two views get equal weight and are easy to compare even when the scores are close. The wheel becomes busier and loses some of its colour.', draw: () => one(C.wheel(v, { variant: 'D', you })) },
+        { k: 'E', name: 'Petal with a core', note: 'The petal is others. A slim bar down its middle is you; where you rate yourself higher it runs past the tip. Keeps the Figma petals whole. When the two scores are equal the bar simply ends at the tip.', draw: () => one(C.wheel(v, { variant: 'E', you })) },
+        { k: 'F', name: 'Petal with a score chip', rec: true, note: 'The petal is others. Your score is a white chip, in the same style as the hub, placed at your score with the number inside. A chip beyond the petal is tied back to the tip, so the gap shows as a length.', draw: () => one(C.wheel(v, { variant: 'F', you })) },
+        { k: 'G', name: 'Petals with a profile line', note: 'The petals are others; one line through 15 points is you. This is how the 2010 report drew it. Good for the overall shape, weaker for reading a single facet.', draw: () => one(C.wheel(v, { variant: 'G', you })) }
+      ] },
+    { key: 'gauge', title: 'Score wheel', sub: 'round 2: on the Global page and wherever one score is shown',
+      lead: "The Figma score wheel with a second value. Others' average is the large number in the factor colour; your score sits under it in its own shade.",
+      opts: [
+        { k: 'D', name: 'Two rings', note: 'A wide outer ring for others and a slimmer inner ring for you. Both are lengths, so they compare directly. The centre numbers get smaller.', draw: () => pair(id => C.gauge(v, id, { variant: 'D', you }), GAUGE_IDS) },
+        { k: 'E', name: 'Ring with a core', note: 'The ring is others; a stripe along its middle is you. Matches "Petal with a core". Slightly harder to read where the stripe lies on the coloured ring.', draw: () => pair(id => C.gauge(v, id, { variant: 'E', you }), GAUGE_IDS) },
+        { k: 'F', name: 'Ring with a score chip', rec: true, note: 'The Figma wheel unchanged, plus a white chip sitting on the ring at your score with the number inside. Matches "Petal with a score chip".', draw: () => pair(id => C.gauge(v, id, { variant: 'F', you }), GAUGE_IDS) }
+      ] },
+    { key: 'strip', title: 'Rater-group strip', sub: 'one per factor or facet', wide: true,
+      lead: 'How each rater group scored you on one scale. The pale bar spans the lowest to the highest group, so a short bar means the groups agree.',
+      opts: [
+        { k: 'A', name: 'Labelled markers', rec: true, note: 'Every group is named on the chart, so there is no key to look up. Needs the full text-column width.', stack: true, draw: () => pair(id => C.strip(v, id, { variant: 'A', you }), ['empathy', 'impulse_control']) },
+        { k: 'B', name: 'One row per group', note: 'The easiest to read and never overlaps, but about twice as tall. Works well when a page shows one scale.', stack: true, draw: () => pair(id => C.strip(v, id, { variant: 'B', you }), ['empathy', 'impulse_control']) },
+        { k: 'C', name: 'Compact with letters', note: 'The smallest. Groups are letters with a key underneath, like the 2010 report. Good when many strips share a page.', stack: true, draw: () => pair(id => C.strip(v, id, { variant: 'C', you }), ['empathy', 'impulse_control']) }
+      ] },
+    { key: 'summary', title: 'Summary: you and others', wide: true,
+      lead: 'The current summary graph with the self score added. Bands keep equal-width tracks, as you decided.',
+      opts: [
+        { k: 'A', name: 'Two bars', note: "A thick bar for others and a thin bar in the deeper shade for you. Familiar, but 40 bars is a lot of ink.", draw: () => one(C.summary(v, { variant: 'A', you })) },
+        { k: 'B', name: 'Two dots joined by a line', note: 'The line length is the gap, so disagreements stand out. Loses the look of the current summary graph.', draw: () => one(C.summary(v, { variant: 'B', you })) },
+        { k: 'C', name: 'Bar with a marker', rec: true, note: 'The current summary graph unchanged, plus a dot in the deeper shade for your score. Least new for readers who know the report.', draw: () => one(C.summary(v, { variant: 'C', you })) }
+      ] },
+    { key: 'gap', title: 'Gap chart', wide: true,
+      lead: "Others' average minus your own score for each facet, largest first. The grey zone marks broad agreement (within 10 points; that threshold is my assumption).",
+      opts: [
+        { k: 'A', name: 'Bars either side of zero', rec: true, note: 'Shows the size and direction of every gap at a glance. A bar wears the colour of whoever scored higher: the factor colour for others, the deeper shade for you. The two scores are listed on the right.', draw: () => one(C.gap(v, { variant: 'A', you })) },
+        { k: 'B', name: 'Arrows on the bands', note: 'Each arrow runs from your score to others’. Also shows which band each score is in, but gap sizes are harder to compare.', draw: () => one(C.gap(v, { variant: 'B', you })) }
+      ] },
+    { key: 'map', title: 'Perception map', wide: true,
+      lead: 'Your score across, others’ score up. Facets above the diagonal are hidden strengths; facets below it are blind spots.',
+      opts: [
+        { k: 'A', name: 'Four quarters, named dots', rec: true, note: 'A straight 1 to 99 scale split at 50 into four named quarters. Every dot carries its facet name.', draw: () => one(C.map(v, { variant: 'A', you })) },
+        { k: 'B', name: 'Band grid, numbered dots', note: 'A 3 by 3 grid of Low, Average and High, with numbered dots and a key. Weakness: a facet with a large gap can still land in a white "agreement" square. Empathy (7) does here, at 68 against 32.', draw: () => one(C.map(v, { variant: 'B', you })) }
+      ] },
+    { key: 'raters', title: 'Raters overview', wide: true,
+      lead: 'Who was invited and who responded.',
+      opts: [
+        { k: 'A', name: 'A card per group', rec: true, note: 'One dot per person invited, filled when they responded. Clear for the small numbers a 360 has.', draw: () => one(C.raters(v, { variant: 'A', you })) },
+        { k: 'B', name: 'Bars', note: 'More compact and scales to larger groups, but less immediate for groups of 1 to 5.', draw: () => one(C.raters(v, { variant: 'B', you })) }
+      ] }
+  ];
+
+  let picks = {};
+  try { picks = JSON.parse(localStorage.getItem('teique360-picks') || '{}'); } catch (e) { picks = {}; }
+  // round 1 picks for the two radial charts no longer exist as options
+  CHARTS.forEach(c => { if (picks[c.key] && !c.opts.some(o => o.k === picks[c.key])) delete picks[c.key]; });
+  if (T.YOU_STYLES[picks.you]) you = picks.you; else delete picks.you;
+
+  const main = document.getElementById('main');
+  const draw = () => { main.innerHTML = CHARTS.map((c, i) => `
+    <section data-chart="${c.key}">
+      <h2>${i + 1}. ${c.title}${c.sub ? `<small>${c.sub}</small>` : ''}</h2>
+      <p class="lead">${c.lead}</p>
+      <div class="opts${c.wide ? ' wide' : ''}">
+        ${c.opts.map(o => `
+          <article class="opt" data-opt="${o.k}">
+            <div class="head"><span class="letter">${o.k}</span><h3>${o.name}</h3>${o.rec ? '<span class="tag">Recommended</span>' : ''}<button class="zoom" type="button" aria-expanded="false">Enlarge</button></div>
+            <p class="note">${o.note}</p>
+            <div class="chart${o.stack ? ' stack' : ''}">${o.draw()}</div>
+            <button class="pick" type="button" aria-pressed="false">Pick ${i + 1}${o.k}</button>
+          </article>`).join('')}
+      </div>
+    </section>`).join(''); };
+  draw();
+
+  function render() {
+    document.querySelectorAll('.sg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.view ? VIEWS[b.dataset.view] === v : b.dataset.you === you));
+    document.querySelectorAll('section[data-chart]').forEach(sec => {
+      sec.querySelectorAll('.opt').forEach(o => {
+        const on = picks[sec.dataset.chart] === o.dataset.opt;
+        o.classList.toggle('picked', on);
+        o.querySelector('button.pick').setAttribute('aria-pressed', on);
+      });
+    });
+    const done = CHARTS.filter(c => picks[c.key]).length;
+    document.getElementById('picks').innerHTML = (done ? CHARTS.map((c, i) => picks[c.key] ? `${i + 1}${picks[c.key]}` : `<span>${i + 1}?</span>`).join('  ') : '<span>No picks yet</span>') + ` <span>· ${done} of ${CHARTS.length} chosen</span>`;
+  }
+  main.addEventListener('click', e => {
+    const zoom = e.target.closest('button.zoom');
+    if (zoom) {
+      const big = zoom.closest('.opt').classList.toggle('big');
+      zoom.textContent = big ? 'Shrink' : 'Enlarge';
+      zoom.setAttribute('aria-expanded', big);
+      return;
+    }
+    const btn = e.target.closest('button.pick');
+    if (!btn) return;
+    const key = btn.closest('section').dataset.chart, k = btn.closest('.opt').dataset.opt;
+    picks[key] = picks[key] === k ? undefined : k;
+    try { localStorage.setItem('teique360-picks', JSON.stringify(picks)); } catch (e) {}
+    render();
+  });
+  document.getElementById('copy').addEventListener('click', async e => {
+    const text = 'Chart picks: ' + CHARTS.map((c, i) => `${i + 1} ${c.title} = ${picks[c.key] || 'not chosen'}`).join('; ') + `; colour for You = ${T.YOU_STYLES[you].name}`;
+    try { await navigator.clipboard.writeText(text); e.target.textContent = 'Copied'; } catch (err) { prompt('Copy your picks:', text); }
+    setTimeout(() => { e.target.textContent = 'Copy my picks'; }, 1500);
+  });
+  document.querySelector('.switches').addEventListener('click', e => {
+    const b = e.target.closest('button');
+    if (!b) return;
+    if (b.dataset.view) v = VIEWS[b.dataset.view];
+    else { you = b.dataset.you; picks.you = you; try { localStorage.setItem('teique360-picks', JSON.stringify(picks)); } catch (err) {} }
+    const y = scrollY;
+    draw(); render(); scrollTo(0, y);
+  });
+  render();
+})();
+</script>
+</body>
+</html>
