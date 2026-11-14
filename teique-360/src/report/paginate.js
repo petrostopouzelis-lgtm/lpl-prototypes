@@ -32,6 +32,12 @@
     function place(page, section, node, splitSel, depth = 0) {
       page.body.appendChild(node);
       if (!over(page)) return page;
+      // a page with one large score wheel first tries the smaller wheel before anything moves
+      if (!page.el.classList.contains('tight') && page.body.querySelector('.scores.big')) {
+        page.el.classList.add('tight');
+        if (!over(page)) return page;
+        page.el.classList.remove('tight');
+      }
       const inner = splitSel ? node.querySelector(splitSel) : null;
       if (inner && inner.children.length > 1) {
         const rest = [];
@@ -72,6 +78,18 @@
         page = place(page, section, node, typeof b === 'string' ? null : b.split);
       });
       current = page; carry = !!section.mergeNext;
+    });
+
+    // Spare height is shared out between a page's blocks (up to 22pt more per gap), so a page that
+    // is not full reads as evenly spaced instead of top-heavy. What is left stays at the bottom.
+    // A lead line stays attached to the title above it.
+    const PT = 96 / 72;
+    pages.forEach(p => {
+      const kids = p.body ? [...p.body.children] : [], open = kids.slice(1).filter(k => !k.matches('p.lead'));
+      if (!open.length) return;
+      const free = p.body.getBoundingClientRect().bottom - parseFloat(getComputedStyle(p.body).paddingBottom) - kids[kids.length - 1].getBoundingClientRect().bottom;
+      const extra = Math.min(22 * PT, Math.floor(free / open.length) - 1);
+      if (extra > 1) open.forEach(k => { k.style.marginTop = extra + 'px'; });
     });
 
     // page numbers: counting starts at the first numbered page, as in the Figma file

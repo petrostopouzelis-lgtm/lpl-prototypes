@@ -1,6 +1,6 @@
 // Builds a TEIQue 360 report PDF from a data file.
 //
-//   node tools/build-pdf.js [data.json] [out.pdf] [--fill=none|typical|long] [--watermark] [--no-extras] [--png=<dir>]
+//   node tools/build-pdf.js [data.json] [out.pdf] [--fill=none|typical|long] [--watermark] [--no-extras] [--scales=pair] [--png=<dir>]
 //
 // No npm packages. It serves this folder on a local port, opens report.html in a
 // headless Chrome or Edge already installed on the machine, waits for the page to
@@ -79,6 +79,7 @@ function connect(wsUrl) {
     const query = new URLSearchParams({ data: '/__data.json', fill: flag('fill') || 'typical' });
     if (flag('watermark')) query.set('watermark', '1');
     if (flag('no-extras')) query.set('extras', '0');
+    if (flag('scales')) query.set('scales', flag('scales'));
     await call('Page.enable');
     await call('Page.navigate', { url: `http://127.0.0.1:${port}/report.html?${query}` });
     const started = Date.now();

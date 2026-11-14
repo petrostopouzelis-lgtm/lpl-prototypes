@@ -36,11 +36,11 @@ body { font-family: Inter, 'Segoe UI', Arial, sans-serif; color: #000; -webkit-p
 .body > * { flex: none; }
 
 h1.title { font: 500 26pt/32pt Manrope, sans-serif; color: var(--c); margin: 0; }
-.eyebrow { font: 700 8pt/10pt Manrope, sans-serif; letter-spacing: .09em; text-transform: uppercase; color: #808080; margin-bottom: 1pt; }
+.eyebrow { font: 700 8.5pt/11pt Manrope, sans-serif; letter-spacing: .09em; text-transform: uppercase; color: #808080; margin-bottom: 2pt; }
 p { font: 300 12pt/14.5pt Inter, sans-serif; text-align: justify; hyphens: auto; margin: 0; }
 p + p { margin-top: 8pt; }
-p.lead { font-weight: 500; color: var(--c); margin-bottom: 10pt; }
-p.note { font-size: 10pt; line-height: 13pt; color: #555; text-align: left; }
+p.lead { font-weight: 500; color: var(--c); margin: -4pt 0 6pt; }
+p.note { font-size: 11pt; line-height: 14.5pt; color: #555; text-align: left; }
 h4.sub { font: 500 14pt/17pt Inter, sans-serif; color: var(--c); margin: 0 0 10pt; }
 .card { background: #fff; border-radius: 15pt; padding: 15pt; box-shadow: 0 0 10pt rgba(0, 0, 0, .15); }
 .card ul { margin: 0; padding-left: 16pt; font: 300 12pt/14.5pt Inter, sans-serif; }
@@ -84,12 +84,12 @@ h4.sub { font: 500 14pt/17pt Inter, sans-serif; color: var(--c); margin: 0 0 10p
 
 /* highlight lists */
 .cols3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12pt; }
-.mini { padding: 11pt 12pt; }
-.mini h5 { font: 700 8.5pt/11pt Manrope, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #6B7380; margin: 0 0 6pt; }
-.mini .li { display: flex; gap: 6pt; align-items: baseline; font: 400 9.5pt/13pt Inter, sans-serif; }
+.mini { padding: 13pt 14pt; }
+.mini h5 { font: 700 9pt/12pt Manrope, sans-serif; letter-spacing: .06em; text-transform: uppercase; color: #6B7380; margin: 0 0 7pt; }
+.mini .li { display: flex; flex-wrap: wrap; gap: 0 6pt; align-items: baseline; white-space: nowrap; font: 400 10.5pt/15pt Inter, sans-serif; }
 .mini .li i { width: 6pt; height: 6pt; border-radius: 50%; flex: none; background: var(--c); transform: translateY(-1pt); }
-.mini .li span { color: #6B7380; margin-left: auto; white-space: nowrap; font-size: 8.5pt; }
-.mini .none { font: 300 9.5pt/13pt Inter, sans-serif; color: #6B7380; }
+.mini .li span { color: #6B7380; margin-left: auto; white-space: nowrap; font-size: 9.5pt; }
+.mini .none { font: 300 10.5pt/15pt Inter, sans-serif; color: #6B7380; }
 
 /* development suggestions */
 .dev-head { display: flex; align-items: baseline; gap: 10pt; }
@@ -100,15 +100,15 @@ h5.caps { font: 500 11pt/14pt Inter, sans-serif; text-transform: uppercase; colo
 /* action plan */
 .plan { display: grid; grid-template-columns: 1fr 1.25fr .7fr; gap: 10pt; }
 .plan .h { font: 500 13pt/16pt Manrope, sans-serif; color: #42A2DA; }
-.plan .cell { height: 148pt; border-radius: 15pt; background: #fff; box-shadow: 0 0 10pt rgba(0, 0, 0, .15); }
+.plan .cell { height: 186pt; border-radius: 15pt; background: #fff; box-shadow: 0 0 10pt rgba(0, 0, 0, .15); }
 
 /* coach data */
-.meta { display: flex; flex-direction: column; gap: 8pt; font: 300 10pt/13pt Inter, sans-serif; }
-.meta b { font-weight: 600; display: block; font-size: 8pt; color: #6B7380; text-transform: uppercase; letter-spacing: .05em; }
-table.coach { width: 100%; border-collapse: collapse; font: 400 9.5pt/12pt Inter, sans-serif; }
-table.coach th { font: 700 8pt/10pt Manrope, sans-serif; color: #6B7380; text-align: right; padding: 0 5pt 6pt; vertical-align: bottom; }
+.meta { display: flex; flex-direction: column; gap: 11pt; font: 300 11.5pt/15pt Inter, sans-serif; }
+.meta b { font-weight: 600; display: block; font-size: 9pt; color: #6B7380; text-transform: uppercase; letter-spacing: .05em; }
+table.coach { width: 100%; border-collapse: collapse; font: 400 10.5pt/13pt Inter, sans-serif; }
+table.coach th { font: 700 9pt/11pt Manrope, sans-serif; color: #6B7380; text-align: right; padding: 0 5pt 7pt; vertical-align: bottom; }
 table.coach th:first-child, table.coach td:first-child { text-align: left; padding-left: 0; }
-table.coach td { text-align: right; padding: 3.6pt 5pt; border-top: .5pt solid #E3E5E9; }
+table.coach td { text-align: right; padding: 5pt 5pt; border-top: .5pt solid #E3E5E9; }
 table.coach td:first-child { color: var(--c); }
 table.coach tr.head td { font-weight: 700; border-top: 1pt solid #C9CDD3; }
 table.coach td.you { color: #1F2733; font-weight: 600; }
@@ -119,45 +119,52 @@ table.coach td.gap { color: #6B7380; }
 p.tight + p.tight { margin-top: 2pt; }
 p.note.mid { text-align: center; font-style: italic; }
 .stack { display: flex; flex-direction: column; align-items: center; gap: 6pt; }
-.chart + .card, .scores + .card { margin-top: 8pt; }
+.chart + .card, .scores + .card { margin-top: 10pt; }
 /* a scale's score wheel beside its rater-group strip */
 .scores { display: flex; gap: 16pt; align-items: center; }
-.scores .wheel { width: 116pt; flex: none; }
+.scores .wheel { width: 136pt; flex: none; }
 .scores .strip { flex: 1; min-width: 0; }
+/* one scale per page: a large wheel above the full-width strip */
+.scores.big { flex-direction: column; align-items: stretch; gap: 12pt; }
+.scores.big .wheel { width: 184pt; align-self: center; }
+.scores.big .strip { flex: none; }
+.page.tight .scores.big { gap: 8pt; }
+.page.tight .scores.big .wheel { width: 150pt; }
 .list2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 20pt; padding: 12pt 15pt; }
 .list2 li + li { margin-top: 3pt; }
 
 /* what the TEIQue measures: factor, its facets, one line each */
 .fmap { display: flex; flex-direction: column; gap: 12pt; }
-.fmap .grp { display: grid; grid-template-columns: 100pt 1fr; gap: 10pt; align-items: center; }
-.fmap .grp > .chip { padding: 9pt 6pt; font-size: 9.5pt; }
+.fmap .grp { display: grid; grid-template-columns: 104pt 1fr; gap: 10pt; align-items: center; }
+.fmap .grp > .chip { padding: 10pt 6pt; font-size: 10.5pt; line-height: 12.5pt; }
 .fmap .rows { display: flex; flex-direction: column; gap: 5pt; }
-.fmap .r { display: grid; grid-template-columns: 112pt 1fr; gap: 10pt; align-items: center; }
-.fmap .chip.f { font-weight: 600; color: #1F2733; background: color-mix(in srgb, var(--l) 38%, #fff); }
-.fmap .r span { font: italic 300 9.5pt/12pt Inter, sans-serif; }
+.fmap .r { display: grid; grid-template-columns: 122pt 1fr; gap: 10pt; align-items: center; }
+.fmap .chip.f { font-weight: 600; font-size: 9.5pt; line-height: 11.5pt; color: #1F2733; background: color-mix(in srgb, var(--l) 38%, #fff); }
+.fmap .r span { font: italic 300 10.5pt/13pt Inter, sans-serif; }
 
 /* report contents list */
 .items { display: flex; flex-direction: column; gap: 8pt; }
 .items .card { padding: 10pt 15pt; }
 .items h5 { font: 500 12pt/15pt Inter, sans-serif; color: var(--c); margin: 0 0 3pt; }
-.items p { font-size: 10.5pt; line-height: 13.5pt; }
+.items p { font-size: 11pt; line-height: 14pt; }
 
 /* rater groups */
-.rg + .rg { margin-top: 12pt; }
-.rg h5 { font: 500 12pt/15pt Inter, sans-serif; color: var(--c); margin: 0 0 3pt; }
-.rl { display: grid; grid-template-columns: 130pt 1fr; gap: 10pt; font: 300 10.5pt/15pt Inter, sans-serif; }
+.rg + .rg { margin-top: 14pt; }
+.rg h5 { font: 500 12.5pt/16pt Inter, sans-serif; color: var(--c); margin: 0 0 4pt; }
+.rl { display: grid; grid-template-columns: 140pt 1fr; gap: 10pt; font: 300 11.5pt/17.5pt Inter, sans-serif; }
 
 /* low scorers / high scorers */
-.scorers { display: grid; grid-template-columns: 1fr 1fr; gap: 12pt; align-items: start; }
-.scorers .card { padding: 11pt 13pt; background: color-mix(in srgb, var(--c) 9%, #fff); }
-.scorers p { font-size: 10.5pt; line-height: 13.5pt; text-align: left; }
+.scorers { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; align-items: stretch; }
+.scorers .card { padding: 14pt 15pt; background: color-mix(in srgb, var(--c) 9%, #fff); }
+.scorers p { font-size: 12pt; line-height: 15.5pt; text-align: left; hyphens: manual; }
+.scorers b { color: var(--c); }
 .scorers b, .dev b { font-weight: 600; }
 .dev-head { margin-bottom: 10pt; }
 
 /* acknowledgement */
-.ack h5 { font: 600 9pt/12pt Inter, sans-serif; margin: 0 0 3pt; }
-.ack p { font-size: 9pt; line-height: 12pt; text-align: left; }
-.ack p + h5 { margin-top: 10pt; }
+.ack h5 { font: 600 11pt/14.5pt Inter, sans-serif; margin: 0 0 4pt; }
+.ack p { font-size: 11pt; line-height: 14.5pt; text-align: left; }
+.ack p + h5 { margin-top: 14pt; }
 
 /* coach data */
 p.valid { font: 400 11pt/14pt Inter, sans-serif; text-align: center; background: #F2F3F5; border-radius: 8pt; padding: 6pt; }

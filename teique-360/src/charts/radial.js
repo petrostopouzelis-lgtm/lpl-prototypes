@@ -25,7 +25,7 @@
   C.wheel = (v, opt = {}) => {
     const variant = 'DEFG'.includes(opt.variant) ? opt.variant : 'D';   // D picked by Petros, 2026-11-11
     const W = 600, H = 640, cx = 300, cy = 300;
-    const R = { hub: 40, p0: 46, p1: 204, lab0: 206, lab1: 253, fac1: 290 };
+    const R = { hub: 46, p0: 52, p1: 204, lab0: 206, lab1: 257, fac1: 293 };
     const step = 360 / T.FACET_ORDER.length, rOf = s => T.lin(s, R.p0, R.p1);
     const uid = S.id('wheel');
     let defs = shadow(`${uid}-sh`, 5, 0.15);
@@ -39,7 +39,7 @@
       ring += S.el('path', { d: S.ring(cx, cy, R.lab1, R.fac1, a, a + sweep), fill: `url(#${uid}-r-${g.id})` });
       const rr = (R.lab1 + R.fac1) / 2, pid = `${uid}-f-${g.id}`;
       defs += S.el('path', { id: pid, d: flip ? S.arc(cx, cy, rr, a + sweep, a, true) : S.arc(cx, cy, rr, a, a + sweep) });
-      labels += `<text font-family="${S.FONT_T}" font-size="12" font-weight="700" fill="#fff" dominant-baseline="central"><textPath href="#${pid}" startOffset="50%" text-anchor="middle">${S.esc(g.name)}</textPath></text>`;
+      labels += `<text font-family="${S.FONT_T}" font-size="13.5" font-weight="700" fill="#fff" dominant-baseline="central"><textPath href="#${pid}" startOffset="50%" text-anchor="middle">${S.esc(g.name)}</textPath></text>`;
       a += sweep;
     });
 
@@ -83,16 +83,16 @@
 
       // facet name (wrapped) and the two values, on arcs in the label ring
       const lines = T.FACETS[id].lines || [T.FACETS[id].name];
-      const radii = lines.length === 2 ? (flip ? [219, 229.5, 243] : [244, 233.5, 219.5]) : flip ? [222, 238] : [239, 223.5];
+      const radii = lines.length === 2 ? (flip ? [220.5, 231.5, 247.5] : [248.5, 237.5, 221]) : flip ? [224, 242] : [243, 225];
       const arcAt = (r, key) => {
         const pid = `${uid}-l-${i}-${key}`;
         defs += S.el('path', { id: pid, d: flip ? S.arc(cx, cy, r, a1, a0, true) : S.arc(cx, cy, r, a0, a1) });
         return pid;
       };
       lines.forEach((ln, k) => {
-        labels += `<text font-family="${S.FONT_T}" font-size="8.6" font-weight="600" fill="${g.text}" dominant-baseline="central"><textPath href="#${arcAt(radii[k], 'n' + k)}" startOffset="50%" text-anchor="middle">${S.esc(ln)}</textPath></text>`;
+        labels += `<text font-family="${S.FONT_T}" font-size="9.8" font-weight="600" fill="${g.text}" dominant-baseline="central"><textPath href="#${arcAt(radii[k], 'n' + k)}" startOffset="50%" text-anchor="middle">${S.esc(ln)}</textPath></text>`;
       });
-      labels += `<text font-family="${S.FONT_B}" font-size="8" font-weight="700" dominant-baseline="central"><textPath href="#${arcAt(radii[lines.length], 'v')}" startOffset="50%" text-anchor="middle"><tspan fill="${g.text}">${oth}</tspan><tspan fill="#B7B6B7" font-weight="400"> | </tspan><tspan fill="${Y.text}">${self}</tspan></textPath></text>`;
+      labels += `<text font-family="${S.FONT_B}" font-size="9.6" font-weight="700" dominant-baseline="central"><textPath href="#${arcAt(radii[lines.length], 'v')}" startOffset="50%" text-anchor="middle"><tspan fill="${g.text}">${oth}</tspan><tspan fill="#B7B6B7" font-weight="400"> | </tspan><tspan fill="${Y.text}">${self}</tspan></textPath></text>`;
     });
 
     if (variant === 'G') {
@@ -116,28 +116,28 @@
     let bands = '';
     [['Low', 15], ['Average', 50], ['High', 85]].forEach(([t, s]) => {
       const y = cy - rOf(s);
-      bands += S.el('rect', { x: cx - 15, y: n(y - 5), width: 30, height: 10, rx: 5, fill: '#fff', 'fill-opacity': 0.92 });
-      bands += S.text(cx, y + 2.4, t, { 'text-anchor': 'middle', 'font-size': 6.6, 'font-weight': 600, fill: T.MUTED });
+      bands += S.el('rect', { x: cx - 18, y: n(y - 6), width: 36, height: 12, rx: 6, fill: '#fff', 'fill-opacity': 0.92 });
+      bands += S.text(cx, y + 2.8, t, { 'text-anchor': 'middle', 'font-size': 7.8, 'font-weight': 600, fill: T.MUTED });
     });
 
     // hub: both Global scores at the same size, others in the factor colour and you in its deeper shade
     const YG = T.youStyle(opt.you, T.GLOBAL);
-    const hubRow = (y, name, val, col) => S.text(cx - 2, y, name, { 'text-anchor': 'end', 'font-size': 7, 'font-weight': 700, fill: col }) +
-      `<text x="${cx + 2}" y="${y}" font-family="${S.FONT_T}" font-size="13" font-weight="700" fill="${col}">${val}<tspan font-size="8" font-weight="500">%</tspan></text>`;
+    const hubRow = (y, name, val, col) => S.text(cx - 2, y, name, { 'text-anchor': 'end', 'font-size': 9, 'font-weight': 700, fill: col }) +
+      `<text x="${cx + 2}" y="${y}" font-family="${S.FONT_T}" font-size="15.5" font-weight="700" fill="${col}">${val}<tspan font-size="9" font-weight="500">%</tspan></text>`;
     const hub = S.el('circle', { cx, cy, r: R.hub, fill: '#fff', filter: `url(#${uid}-sh)` }) +
-      S.text(cx, cy - 17, 'GLOBAL', { 'text-anchor': 'middle', 'font-size': 5.6, 'font-weight': 700, fill: T.MUTED, 'letter-spacing': 0.6 }) +
-      hubRow(cy - 1, 'Others', v.others.global, T.GLOBAL.text) + hubRow(cy + 15, 'You', v.self.global, YG.text);
+      S.text(cx, cy - 22, 'GLOBAL', { 'text-anchor': 'middle', 'font-size': 7, 'font-weight': 700, fill: T.MUTED, 'letter-spacing': 0.7 }) +
+      hubRow(cy - 2, 'Others', v.others.global, T.GLOBAL.text) + hubRow(cy + 17, 'You', v.self.global, YG.text);
 
     // legend: both swatches run through the five factor colours, each drawn the way this variant draws it
-    const ly = 618, yx = 318, stops = fn => T.GROUPS.map((g, i) => `<stop offset="${i / (T.GROUPS.length - 1)}" stop-color="${fn(g)}"/>`).join('');
+    const ly = 620, yx = 322, stops = fn => T.GROUPS.map((g, i) => `<stop offset="${i / (T.GROUPS.length - 1)}" stop-color="${fn(g)}"/>`).join('');
     defs += `<linearGradient id="${uid}-lg" gradientUnits="userSpaceOnUse" x1="156" x2="190" y1="0" y2="0">${stops(g => g.fill)}</linearGradient>`;
     defs += `<linearGradient id="${uid}-lgy" gradientUnits="userSpaceOnUse" x1="${yx}" x2="${yx + 24}" y1="0" y2="0">${stops(g => T.youStyle(opt.you, g).edge)}</linearGradient>`;
     const yEdge = `url(#${uid}-lgy)`, hollow = T.youStyle(opt.you, T.GLOBAL).hollow;
-    let legend = S.el('rect', { x: 156, y: ly - 7, width: 34, height: 11, rx: 5.5, fill: `url(#${uid}-lg)` }) + S.text(196, ly + 2.6, "Others' average", { 'font-size': 10, 'font-weight': 600, fill: T.INK });
+    let legend = S.el('rect', { x: 156, y: ly - 7, width: 34, height: 11, rx: 5.5, fill: `url(#${uid}-lg)` }) + S.text(196, ly + 2.8, "Others' average", { 'font-size': 11.5, 'font-weight': 600, fill: T.INK });
     legend += variant === 'F' ? S.el('circle', { cx: yx + 12, cy: ly - 1.5, r: 7, fill: '#fff', stroke: yEdge, 'stroke-width': 1.8 })
       : variant === 'G' ? S.el('rect', { x: yx, y: ly - 2.8, width: 24, height: 2.6, rx: 1.3, fill: yEdge }) + S.el('circle', { cx: yx + 12, cy: ly - 1.5, r: 4.2, fill: '#fff', stroke: yEdge, 'stroke-width': 2.2 })
       : S.el('rect', { x: yx, y: ly - (variant === 'E' ? 5.5 : 7), width: 24, height: variant === 'E' ? 8 : 11, rx: 5.5, fill: hollow ? '#fff' : yEdge, stroke: hollow ? yEdge : null, 'stroke-width': hollow ? 1.5 : null });
-    legend += S.text(yx + 30, ly + 2.6, 'How you rated yourself', { 'font-size': 10, 'font-weight': 600, fill: T.INK });
+    legend += S.text(yx + 30, ly + 2.8, 'How you rated yourself', { 'font-size': 11.5, 'font-weight': 600, fill: T.INK });
 
     return S.root(W, H, `<defs>${defs}</defs>${ring}${grid}${dividers}${petals}${bands}${marks}${labels}${hub}${legend}`, 'TEIQue 360 petal chart: you compared with others');
   };
@@ -157,18 +157,18 @@
     const compact = !!opt.compact, W = compact ? 196 : 240, H = W, cx = W / 2, cy = compact ? 98 : 116, uid = S.id('gauge');
     const ang = s => T.clamp(s, 0, 100) * 3.6, aS = ang(self), aO = ang(oth);
     const defs = shadow(`${uid}-sh`, 6, 0.14);
-    const rIn = variant === 'D' ? 49 : 50, rOut = 92;
+    const rIn = variant === 'D' ? 53 : 50, rOut = 92;
     let body = S.el('circle', { cx, cy, r: (rIn + rOut) / 2, fill: 'none', stroke: '#fff', 'stroke-width': rOut - rIn, filter: `url(#${uid}-sh)` });
     const dividers = (r0, r1) => [108, 252].map(d => { const p0 = S.pt(cx, cy, r0, d), p1 = S.pt(cx, cy, r1, d); return S.el('line', { x1: n(p0[0]), y1: n(p0[1]), x2: n(p1[0]), y2: n(p1[1]), stroke: '#fff', 'stroke-width': 1.3 }) + S.el('line', { x1: n(p0[0]), y1: n(p0[1]), x2: n(p1[0]), y2: n(p1[1]), stroke: '#00000014', 'stroke-width': 0.5 }); }).join('');
 
     if (variant === 'D') {
-      // two rings, 19 wide each, 5 apart: others 73 to 92, you 49 to 68
+      // two rings, 17 wide each, 5 apart: others 75 to 92, you 53 to 70
       const track = (r0, r1) => S.el('circle', { cx, cy, r: (r0 + r1) / 2, fill: 'none', stroke: '#F1F2F4', 'stroke-width': r1 - r0 });
-      body += track(73, rOut) + track(rIn, 68);
-      body += S.arcGrad(cx, cy, 73, rOut, 0, aO, g.light, g.fill);
-      body += Y.hollow ? S.el('path', { d: S.ring(cx, cy, rIn + 0.8, 67.2, 0, Math.max(aS, 0.5)), fill: '#fff', stroke: Y.edge, 'stroke-width': 1.6, 'stroke-linejoin': 'round' })
-        : S.arcGrad(cx, cy, rIn, 68, 0, aS, Y.light, Y.fill);
-      body += S.el('circle', { cx, cy, r: 70.5, fill: 'none', stroke: '#fff', 'stroke-width': 5 });
+      body += track(75, rOut) + track(rIn, 70);
+      body += S.arcGrad(cx, cy, 75, rOut, 0, aO, g.light, g.fill);
+      body += Y.hollow ? S.el('path', { d: S.ring(cx, cy, rIn + 0.8, 69.2, 0, Math.max(aS, 0.5)), fill: '#fff', stroke: Y.edge, 'stroke-width': 1.6, 'stroke-linejoin': 'round' })
+        : S.arcGrad(cx, cy, rIn, 70, 0, aS, Y.light, Y.fill);
+      body += S.el('circle', { cx, cy, r: 72.5, fill: 'none', stroke: '#fff', 'stroke-width': 5 });
       body += dividers(rIn, rOut);
     } else if (variant === 'E') {
       body += S.arcGrad(cx, cy, rIn, rOut, 0, aO, g.light, g.fill) + dividers(rIn, rOut);
@@ -186,9 +186,9 @@
     // centre. D: both scores at the same size, each in its ring's colour. E and F: others is the
     // headline number, you sits beneath it.
     if (variant === 'D') {
-      const row = (y, name, val, col) => S.text(cx - 3, y, name, { 'text-anchor': 'end', 'font-size': 11.5, 'font-weight': 700, fill: col }) +
-        `<text x="${cx + 2}" y="${y}" font-family="${S.FONT_T}" font-size="21" font-weight="700" fill="${col}">${val}<tspan font-size="12" font-weight="500">%</tspan></text>`;
-      body += row(cy - 4, 'Others', oth, g.text) + row(cy + 19, 'You', self, Y.text);
+      const row = (y, name, val, col) => S.text(cx - 3, y, name, { 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: col }) +
+        `<text x="${cx + 3}" y="${y}" font-family="${S.FONT_T}" font-size="22" font-weight="700" fill="${col}">${val}<tspan font-size="12.5" font-weight="500">%</tspan></text>`;
+      body += row(cy - 5, 'Others', oth, g.text) + row(cy + 20, 'You', self, Y.text);
     } else {
       body += S.text(cx, cy - 16, 'OTHERS', { 'text-anchor': 'middle', 'font-size': 8.2, 'font-weight': 700, fill: T.MUTED, 'letter-spacing': 0.7 });
       body += `<text x="${cx}" y="${cy + 9}" text-anchor="middle" font-family="${S.FONT_T}" font-size="28" font-weight="600" fill="${g.text}">${oth}<tspan font-weight="300">%</tspan></text>`;
@@ -198,7 +198,7 @@
 
     // band labels, placed as in Figma
     const rl = 108, lo = S.pt(cx, cy, rl, 60), hi = S.pt(cx, cy, rl, 300);
-    const lab = { 'font-size': 10.5, fill: '#808080', 'text-anchor': 'middle' };
+    const lab = { 'font-size': 11, fill: '#808080', 'text-anchor': 'middle' };
     body += S.el('text', Object.assign({ transform: `translate(${n(lo[0])} ${n(lo[1])}) rotate(60)`, 'font-family': S.FONT_T, dy: 3 }, lab), 'Low');
     body += S.el('text', Object.assign({ transform: `translate(${n(hi[0])} ${n(hi[1])}) rotate(-60)`, 'font-family': S.FONT_T, dy: 3 }, lab), 'High');
     body += S.text(cx, cy + rl + 8, 'Average', lab);

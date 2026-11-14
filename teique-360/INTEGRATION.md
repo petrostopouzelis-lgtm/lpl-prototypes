@@ -30,7 +30,7 @@ report.html?data=/api/reports/123/360.json
 ## Making PDFs
 
 ```
-node tools/build-pdf.js <data.json> <out.pdf> [--fill=none] [--watermark] [--png]
+node tools/build-pdf.js <data.json> <out.pdf> [--fill=none] [--watermark] [--scales=pair] [--png]
 ```
 
 - Needs Node 22 or newer and Chrome, Chromium or Edge on the machine. Set `CHROME_PATH` if the browser is somewhere unusual.

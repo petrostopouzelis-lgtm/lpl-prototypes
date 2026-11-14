@@ -91,12 +91,12 @@
     // ---- global score
     add('global', pg.global.title, T.GLOBAL.text, [
       head(pg.section_results, pg.global.title),
-      `<div class="stack">${chart(C.gauge(v, 'global'), 190, 'center')}<p class="note mid">${esc(fmt(pg.global.caption, { n: v.responded }))}</p></div>`,
+      `<div class="stack">${chart(C.gauge(v, 'global'), 236, 'center')}<p class="note mid">${esc(fmt(pg.global.caption, { n: v.responded }))}</p></div>`,
       { html: `<div><div class="card">${interpretation('global')}</div></div>`, split: '.card' }
     ]);
 
     // ---- profile
-    add('profile', pg.profile.title, T.BLUE, [head(pg.section_results, pg.profile.title), chart(C.wheel(v), 500, 'center'), P(pg.profile.paragraph)]);
+    add('profile', pg.profile.title, T.BLUE, [head(pg.section_results, pg.profile.title), chart(C.wheel(v)), P(pg.profile.paragraph)]);
 
     // ---- pages the 2010 report did not have: summary graph, perception map, gap chart
     // (kept at Petros's request, 2026-11-11; opt.extras === false leaves them out)
@@ -108,25 +108,36 @@
       const hiddenS = facets.filter(f => f.gap > agree).sort((a, b) => b.gap - a.gap).slice(0, 4);
       const blind = facets.filter(f => f.gap < -agree).sort((a, b) => a.gap - b.gap).slice(0, 4);
       add('summary', ex.summary.title, T.BLUE, [head('', ex.summary.title), chart(C.summary(v))]);
-      add('map', ex.map.title, T.BLUE, [head('', ex.map.title), chart(C.map(v), 420, 'center'), P(ex.map.caption, 'note'),
+      add('map', ex.map.title, T.BLUE, [head('', ex.map.title), chart(C.map(v), 460, 'center'), P(ex.map.caption, 'note'),
         `<div class="cols3"><div class="card mini"><h5>${esc(ex.map.strengths)}</h5>${list(strengths, ex.map.none)}</div><div class="card mini"><h5>${esc(ex.map.hidden)}</h5>${list(hiddenS, ex.map.none)}</div><div class="card mini"><h5>${esc(ex.map.blind)}</h5>${list(blind, ex.map.none)}</div></div>`]);
       add('gap', ex.gap.title, T.BLUE, [head('', ex.gap.title), P(ex.gap.caption), chart(C.gap(v, { agree }))]);
     }
 
     // ---- one section per factor: the factor, then each of its facets, each with its chart and its text
-    // every scale shows its score wheel (you and others) next to its rater-group strip
+    // every scale shows its score wheel (you and others) with its rater-group strip.
+    // opt.scales: 'single' (default) gives every factor and facet a page of its own, with a large
+    // wheel above a full-width strip; 'pair' puts a small wheel beside the strip and lets two
+    // scales share a page (the web view uses it).
+    const single = opt.scales !== 'pair';
+    const scoreCharts = id => single
+      ? `<div class="scores big"><div class="chart wheel">${C.gauge(v, id)}</div><div class="chart strip">${C.strip(v, id)}</div></div>`
+      : `<div class="scores"><div class="chart wheel">${C.gauge(v, id, { compact: true })}</div><div class="chart strip">${C.strip(v, id, { width: 324 })}</div></div>`;
     const scaleBlock = (id, heading) => ({ split: '.card',
-      html: `<div>${heading ? `<h4 class="sub">${esc(T.nameOf(id))}</h4>` : ''}<div class="scores"><div class="chart wheel">${C.gauge(v, id, { compact: true })}</div><div class="chart strip">${C.strip(v, id, { width: 342 })}</div></div><div class="card">${interpretation(id)}</div></div>` });
+      html: `<div>${heading ? `<h4 class="sub">${esc(T.nameOf(id))}</h4>` : ''}${scoreCharts(id)}<div class="card">${interpretation(id)}</div></div>` });
     T.GROUPS.forEach(g => {
-      const blocks = [head(pg.section_results, g.name)];
-      if (g.scored) {
-        blocks.push(lib.scales[g.id].short ? P(lib.scales[g.id].short, 'lead') : '', scaleBlock(g.id, false), scorers(g.id));
-        g.facets.forEach(f => blocks.push(scaleBlock(f, true), scorers(f)));
+      const lead = g.scored ? lib.scales[g.id].short : pg.independent.short;
+      const blocks = [head(pg.section_results, g.name), lead ? P(lead, 'lead') : ''];
+      if (g.scored) blocks.push(scaleBlock(g.id, false), scorers(g.id));
+      if (single) {
+        // the independent facets have no factor score, so their first facet opens the section
+        const own = g.scored ? g.facets : g.facets.slice(1);
+        if (!g.scored) blocks.push(scaleBlock(g.facets[0], true), scorers(g.facets[0]));
+        add(g.id, g.name, g.text, blocks);
+        own.forEach(f => add(f, T.nameOf(f), g.text, [head(g.name, T.nameOf(f)), scaleBlock(f, false), scorers(f)], { parent: g.id }));
       } else {
-        blocks.push(pg.independent.short ? P(pg.independent.short, 'lead') : '');
         g.facets.forEach(f => blocks.push(scaleBlock(f, true), scorers(f)));
+        add(g.id, g.name, g.text, blocks);
       }
-      add(g.id, g.name, g.text, blocks);
     });
 
     // ---- development suggestions: facets whose score is outside the average band

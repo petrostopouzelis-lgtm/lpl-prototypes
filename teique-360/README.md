@@ -21,19 +21,31 @@ For the dashboard team: `INTEGRATION.md`.
 - **Score wheel (2D):** the two rings are now the same width with a clear gap (outer = others, inner = you), and both scores sit in the centre at the same size. Before, others had a wide ring and a large number, you a slim ring and a small number. The petal chart's hub shows both Global scores at the same size too.
 - **Every factor and facet shows its score wheel** next to its rater-group strip (before, only the Global page had a wheel). The small wheel is `C.gauge(v, id, { compact: true })`; the strip beside it is drawn narrower with `C.strip(v, id, { width: 342 })`.
 - Strip labels wrap onto as many rows as they need, and leader lines are drawn under the labels.
-- The sample is still 30 pages; all seven builds pass without layout warnings.
+- The sample is still 30 pages; all seven builds pass without layout warnings. (Superseded the same day by the readability pass below.)
+
+### Readability pass (2026-11-14, later)
+
+Petros asked for better readability throughout, larger chart text, larger Low/High Scorers text, and negative space that looks intended.
+
+- **One score per page (new default).** Every factor and facet has its own page: title, a large score wheel, the full-width rater-group strip, the text card and, where the 2010 report has them, the Low/High Scorers boxes. Facet pages carry the factor name as the small line above the title. Two per page left a lone facet on a mostly empty page for every three-facet factor; one per page gives every score the same layout. The sample is **36 pages** (was 30).
+- **Two per page is still there:** `scales=pair` in the page viewer's address (the "Scores" box in the viewer bar), `--scales=pair` for `build-pdf.js`, `scales: 'pair'` in `T.report.build`. The sample is then 31 pages. The web view always uses it.
+- **Score wheel:** rings 17 wide with a larger centre; "Others" and "You" print at about 10pt on the large wheel (they were under 7pt).
+- **Chart text:** petal chart (larger hub, facet names and scores about 8pt, was under 7pt), perception map (wider, larger labels, labels that would collide move out on a thin leader line), gap chart (taller rows, larger text), summary graph (roomier rows), raters cards.
+- **Page text:** Low/High Scorers boxes 12pt (was 10.5pt) with the lead-in in the factor colour and both boxes the same height; rater list, factor/facet overview, report-contents cards, coach data table, acknowledgement and notes all larger. Action-plan boxes are taller, so that page is full.
+- **Spacing:** the paginator shares a page's spare height between its blocks (up to 22pt more per gap, `paginate.js`), so pages read as evenly spaced. A page whose large wheel would push something onto the next page first switches to a smaller wheel (`.page.tight`).
+- All seven builds pass without layout warnings in both layouts.
 
 ## Look at it
 
 - `report.html`: **the page viewer.** It shows every PDF page as it will print, page by page or all at once, with a bar to switch the data file, the filler, the watermark and the zoom. "Save as PDF" prints exactly what is shown.
-- `out/sample-360.pdf`: the sample report (30 pages), the only build kept in git.
+- `out/sample-360.pdf`: the sample report (36 pages), the only build kept in git.
 - The stress tests (`edge-*.pdf`, `sample-long-text.pdf`; `edge-big-gaps` shows self and raters disagreeing): build them with `node tools/build-pdf.js data/<file>.json`, or open the data file in the page viewer.
 - `web.html`: the web report. `chart-options.html`: the options Petros chose from. All open by double-click.
 
 ## Commands
 
 ```
-node tools/build-pdf.js [data.json] [out.pdf] [--fill=none|typical|long] [--watermark] [--no-extras] [--png]
+node tools/build-pdf.js [data.json] [out.pdf] [--fill=none|typical|long] [--watermark] [--no-extras] [--scales=pair] [--png]
 node tools/check-charts.js       # draw every chart from every data file; exit 1 on broken output
 node tools/make-sample.js        # rebuild data/sample-360.json
 node tools/make-edge-cases.js    # rebuild data/edge-*.json
@@ -93,5 +105,5 @@ Differences from the 2010 report that remain: scale names and factor order follo
 - The sample data shows every rater group, including groups of one and two, and names the raters, as the 2010 report does. The anonymity rule still exists in the data format but is off in the sample.
 - The wheel's scale (linear with rings at 30 and 70; Figma has plain quarter rings).
 - The anonymity rule in `data/DATA-FORMAT.md`.
-- One section per factor, flowing over two or three pages (28 numbered pages for the sample).
+- One page per factor and per facet (34 numbered pages for the sample); `--scales=pair` gives the earlier two-per-page flow.
 - Body text is Inter Light, as in Figma. If it still prints too faintly, change one line in `src/report/report.css`.

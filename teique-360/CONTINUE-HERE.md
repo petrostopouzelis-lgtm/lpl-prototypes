@@ -24,7 +24,7 @@ The original brief is `brief/TEIQUE-360-HANDOFF.md`. Figma findings are in `brie
 | `tools/build-pdf.js` | `node tools/build-pdf.js data/sample-360.json` makes `out/sample-360.pdf` with headless Chrome |
 | `text/library.json` | All report wording |
 | `data/` | Made-up sample and edge-case data files; `DATA-FORMAT.md` |
-| `out/sample-360.pdf` | The current sample report (30 pages). Other builds in `out/` are ignored by git |
+| `out/sample-360.pdf` | The current sample report (36 pages). Other builds in `out/` are ignored by git |
 | `brief/` | Brief, Figma notes, Figma screenshots |
 | `reference/2010-sample-pages/` | Page images and extracted text of the 2010 TEIQue 360 sample report, the source of all wording |
 | `brief/claude-memory/` | The two memory notes the first session kept (copy into the new account's memory if useful) |
@@ -53,6 +53,7 @@ The whole site's design system is in `../design-system/`.
 8. The wheel is the Figma "3 tiered" wheel (node 249:19485). Note: its rings are a plain quarter grid in Figma; the code uses a linear 0–100 scale with dashed rings at 30 and 70. Not yet confirmed by Petros.
 
 9. **Every factor and facet shows its score wheel as well as its bar** (Petros, 2026-11-14): a small wheel sits to the left of each rater-group strip.
+10. **Readability pass** (Petros, 2026-11-14): larger text in every chart and card, and negative space that looks intended. Claude's answer was one score per page with a large wheel (36 pages); two per page (31 pages) stays available as `scales=pair`. **Not yet confirmed by Petros**: he may prefer the shorter layout.
 
 ## Current state
 

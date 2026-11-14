@@ -64,45 +64,55 @@
     out += S.el('rect', { x: px, y: py, width: n(mid - px), height: n(midY - py), fill: '#EEF6FB', rx: 6 }) + S.el('rect', { x: n(mid), y: n(midY), width: n(px + sz - mid), height: n(py + sz - midY), fill: '#FBF1EA', rx: 6 });
     out += S.el('line', { x1: n(mid), y1: py, x2: n(mid), y2: py + sz, stroke: '#C9CDD3', 'stroke-width': 0.8 }) + S.el('line', { x1: px, y1: n(midY), x2: px + sz, y2: n(midY), stroke: '#C9CDD3', 'stroke-width': 0.8 });
     out += S.el('line', { x1: px, y1: py + sz, x2: px + sz, y2: py, stroke: '#A9AFB8', 'stroke-width': 0.8, 'stroke-dasharray': '4 3' });
-    const cap = { 'font-size': 8.5, 'font-weight': 700, fill: T.MUTED, 'letter-spacing': 0.4 }, sub = { 'font-size': 8, fill: T.MUTED };
-    out += S.text(px + 10, py + 17, 'HIDDEN STRENGTHS', cap) + S.text(px + 10, py + 29, 'Others see more than you do', sub);
-    out += S.text(px + sz - 10, py + 17, 'STRENGTHS', Object.assign({ 'text-anchor': 'end' }, cap)) + S.text(px + sz - 10, py + 29, 'You and others both rate high', Object.assign({ 'text-anchor': 'end' }, sub));
-    out += S.text(px + 10, py + sz - 20, 'DEVELOPMENT AREAS', cap) + S.text(px + 10, py + sz - 8, 'You and others both rate low', sub);
-    out += S.text(px + sz - 10, py + sz - 20, 'BLIND SPOTS', Object.assign({ 'text-anchor': 'end' }, cap)) + S.text(px + sz - 10, py + sz - 8, 'You see more than others do', Object.assign({ 'text-anchor': 'end' }, sub));
+    const cap = { 'font-size': 9.5, 'font-weight': 700, fill: T.MUTED, 'letter-spacing': 0.4 }, sub = { 'font-size': 9, fill: T.MUTED };
+    out += S.text(px + 11, py + 19, 'HIDDEN STRENGTHS', cap) + S.text(px + 11, py + 32, 'Others see more than you do', sub);
+    out += S.text(px + sz - 11, py + 19, 'STRENGTHS', Object.assign({ 'text-anchor': 'end' }, cap)) + S.text(px + sz - 11, py + 32, 'You and others both rate high', Object.assign({ 'text-anchor': 'end' }, sub));
+    out += S.text(px + 11, py + sz - 23, 'DEVELOPMENT AREAS', cap) + S.text(px + 11, py + sz - 10, 'You and others both rate low', sub);
+    out += S.text(px + sz - 11, py + sz - 23, 'BLIND SPOTS', Object.assign({ 'text-anchor': 'end' }, cap)) + S.text(px + sz - 11, py + sz - 10, 'You see more than others do', Object.assign({ 'text-anchor': 'end' }, sub));
     [1, 50, 99].forEach(t => {
-      out += S.text(X(t), py + sz + 14, t, { 'text-anchor': 'middle', 'font-size': 8, fill: '#808080', 'font-family': S.FONT_B });
-      out += S.text(px - 8, Y(t) + 3, t, { 'text-anchor': 'end', 'font-size': 8, fill: '#808080', 'font-family': S.FONT_B });
+      out += S.text(X(t), py + sz + 15, t, { 'text-anchor': 'middle', 'font-size': 9, fill: '#808080', 'font-family': S.FONT_B });
+      out += S.text(px - 8, Y(t) + 3.2, t, { 'text-anchor': 'end', 'font-size': 9, fill: '#808080', 'font-family': S.FONT_B });
     });
-    out += S.text(px + sz / 2, py + sz + 32, 'How you rated yourself', { 'text-anchor': 'middle', 'font-size': 9.5, 'font-weight': 700, fill: T.INK });
-    out += S.el('text', { transform: `translate(${px - 30} ${py + sz / 2}) rotate(-90)`, 'text-anchor': 'middle', 'font-family': S.FONT_T, 'font-size': 9.5, 'font-weight': 700, fill: T.INK }, 'How others rated you');
+    out += S.text(px + sz / 2, py + sz + 33, 'How you rated yourself', { 'text-anchor': 'middle', 'font-size': 10.5, 'font-weight': 700, fill: T.INK });
+    out += S.el('text', { transform: `translate(${px - 30} ${py + sz / 2}) rotate(-90)`, 'text-anchor': 'middle', 'font-family': S.FONT_T, 'font-size': 10.5, 'font-weight': 700, fill: T.INK }, 'How others rated you');
 
     // labels: try positions around each dot, keep the first that hits nothing
     // facets with identical scores share one label and sit side by side
     const clusters = [];
     pts.forEach(q => { const c = clusters.find(o => o.self === q.self && o.oth === q.oth); if (c) c.items.push(q); else clusters.push({ self: q.self, oth: q.oth, items: [q] }); });
-    const boxes = clusters.map(q => { const hw = 7 + (q.items.length - 1) * 3.5; return { x0: X(q.self) - hw, y0: Y(q.oth) - 7, x1: X(q.self) + hw, y1: Y(q.oth) + 7 }; });
+    const LF = 9.6;   // facet label size
+    const boxes = clusters.map(q => { const hw = 7.5 + (q.items.length - 1) * 4; return { x0: X(q.self) - hw, y0: Y(q.oth) - 7.5, x1: X(q.self) + hw, y1: Y(q.oth) + 7.5 }; });
     // keep labels off the quadrant captions
-    [[px, py, 150, 34], [px + sz - 150, py, 150, 34], [px, py + sz - 32, 150, 32], [px + sz - 150, py + sz - 32, 150, 32]].forEach(([x, y, w2, h2]) => boxes.push({ x0: x, y0: y, x1: x + w2, y1: y + h2 }));
+    [[px, py, 166, 38], [px + sz - 166, py, 166, 38], [px, py + sz - 36, 166, 36], [px + sz - 166, py + sz - 36, 166, 36]].forEach(([x, y, w2, h2]) => boxes.push({ x0: x, y0: y, x1: x + w2, y1: y + h2 }));
     const hit = (a, b) => a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
-    let dots = '', labels = '';
+    let dots = '', labels = '', leaders = '';
     clusters.forEach(q => {
-      const nI = q.items.length, off = 9 + (nI - 1) * 3.5, x = X(q.self), y = Y(q.oth), first = T.nameOf(q.items[0].id);
-      const name = nI === 1 ? first : nI === 2 ? `${first}, ${T.nameOf(q.items[1].id)}` : `${first} +${nI - 1} more`, tw = S.tw(name, 8.6), th = 10;
-      const cands = [[x + off, y - th / 2, 'start'], [x - off - tw, y - th / 2, 'end'], [x - tw / 2, y - 9 - th, 'middle'], [x - tw / 2, y + 9, 'middle'],
-        [x + 7, y - 7 - th, 'start'], [x + 7, y + 7, 'start'], [x - 7 - tw, y - 7 - th, 'end'], [x - 7 - tw, y + 7, 'end']];
+      const nI = q.items.length, off = 10 + (nI - 1) * 4, x = X(q.self), y = Y(q.oth), first = T.nameOf(q.items[0].id);
+      const name = nI === 1 ? first : nI === 2 ? `${first}, ${T.nameOf(q.items[1].id)}` : `${first} +${nI - 1} more`, tw = S.tw(name, LF), th = 11;
+      // next to the dot first; if every spot there is taken, further out with a thin leader line
+      const cands = [];
+      [0, 14, 28, 42].forEach(d => {
+        const o = off + d, e = 8 + d * 0.7;
+        cands.push([x + o, y - th / 2, 'start', d], [x - o - tw, y - th / 2, 'end', d], [x - tw / 2, y - o - th, 'middle', d], [x - tw / 2, y + o, 'middle', d],
+          [x + e, y - e - th, 'start', d], [x + e, y + e, 'start', d], [x - e - tw, y - e - th, 'end', d], [x - e - tw, y + e, 'end', d]);
+      });
       let best = cands[0], bestHits = 99;
       for (const cnd of cands) {
-        const b = { x0: cnd[0] - 1, y0: cnd[1] - 1, x1: cnd[0] + tw + 1, y1: cnd[1] + th + 1 };
+        const b = { x0: cnd[0] - 1.5, y0: cnd[1] - 1, x1: cnd[0] + tw + 1.5, y1: cnd[1] + th + 1 };
         if (b.x0 < px + 2 || b.x1 > px + sz - 2 || b.y0 < py + 2 || b.y1 > py + sz - 2) continue;
         const h = boxes.filter(o => hit(b, o)).length;
         if (h < bestHits) { best = cnd; bestHits = h; if (!h) break; }
       }
       boxes.push({ x0: best[0], y0: best[1], x1: best[0] + tw, y1: best[1] + th });
       const tx = best[2] === 'start' ? best[0] : best[2] === 'end' ? best[0] + tw : best[0] + tw / 2;
-      labels += S.text(tx, best[1] + 8, name, { 'text-anchor': best[2], 'font-size': 8.6, 'font-weight': 600, fill: T.INK, stroke: '#fff', 'stroke-width': 2.4, 'paint-order': 'stroke', 'stroke-linejoin': 'round' });
-      q.items.forEach((it, k) => { dots += S.el('circle', { cx: n(x + (k - (nI - 1) / 2) * 7), cy: n(y), r: 5.4, fill: gr(it.g), stroke: '#fff', 'stroke-width': 1.6 }, S.title(tipOf(it))); });
+      if (best[3]) {
+        const ex = Math.max(best[0], Math.min(best[0] + tw, x)), ey = Math.max(best[1], Math.min(best[1] + th, y));
+        leaders += S.el('line', { x1: n(x), y1: n(y), x2: n(ex), y2: n(ey), stroke: '#A9AFB8', 'stroke-width': 0.7 });
+      }
+      labels += S.text(tx, best[1] + 8.8, name, { 'text-anchor': best[2], 'font-size': LF, 'font-weight': 600, fill: T.INK, stroke: '#fff', 'stroke-width': 2.4, 'paint-order': 'stroke', 'stroke-linejoin': 'round' });
+      q.items.forEach((it, k) => { dots += S.el('circle', { cx: n(x + (k - (nI - 1) / 2) * 8), cy: n(y), r: 6, fill: gr(it.g), stroke: '#fff', 'stroke-width': 1.6 }, S.title(tipOf(it))); });
     });
-    return S.root(W, H, defs + out + dots + labels, 'Perception map: your view against others');
+    return S.root(W, H, defs + out + leaders + dots + labels, 'Perception map: your view against others');
   };
 
   // ---------------------------------------------------------------- raters overview
@@ -138,14 +148,14 @@
       const x = 16 + (i % perRow) * (cw + gapC);
       top = top0 + Math.floor(i / perRow) * (ch + gapC);
       out += S.el('rect', { x: n(x), y: top, width: n(cw), height: ch, rx: 12, fill: '#fff', stroke: '#E1E3E7', 'stroke-width': 0.8 }, S.title(`${g.label}: ${g.responded} of ${g.invited} responded`));
-      out += S.text(x + 12, top + 20, S.fit(g.label, 10, cw - 22), { 'font-size': 10, 'font-weight': 700, fill: T.MUTED });
+      out += S.text(x + 12, top + 21, S.fit(g.label, 10.5, cw - 22), { 'font-size': 10.5, 'font-weight': 700, fill: T.MUTED });
       out += `<text x="${n(x + 12)}" y="${top + 50}" font-family="${S.FONT_T}" font-size="24" font-weight="600" fill="${T.INK}">${g.responded}<tspan font-size="10.5" font-weight="500" fill="${T.MUTED}"> of ${g.invited}</tspan></text>`;
       for (let k = 0; k < g.invited; k++)
         out += S.el('circle', { cx: n(x + 17 + (k % dotsPerRow) * 14), cy: top + 72 + Math.floor(k / dotsPerRow) * 13, r: k < g.responded ? 5.6 : 5, fill: k < g.responded ? BL : '#fff', stroke: k < g.responded ? null : '#B7BCC4', 'stroke-width': k < g.responded ? null : 1.2 });
     });
     top = top0 + (cardRows - 1) * (ch + gapC);
-    out += S.el('circle', { cx: 21, cy: top + ch + 16, r: 4, fill: BL }) + S.text(30, top + ch + 19, 'Responded', { 'font-size': 8.5, fill: T.MUTED });
-    out += S.el('circle', { cx: 91, cy: top + ch + 16, r: 4, fill: '#fff', stroke: '#B7BCC4', 'stroke-width': 1.2 }) + S.text(100, top + ch + 19, 'Invited, no response', { 'font-size': 8.5, fill: T.MUTED });
+    out += S.el('circle', { cx: 21, cy: top + ch + 16, r: 4, fill: BL }) + S.text(30, top + ch + 19.4, 'Responded', { 'font-size': 9.5, fill: T.MUTED });
+    out += S.el('circle', { cx: 97, cy: top + ch + 16, r: 4, fill: '#fff', stroke: '#B7BCC4', 'stroke-width': 1.2 }) + S.text(106, top + ch + 19.4, 'Invited, no response', { 'font-size': 9.5, fill: T.MUTED });
     return S.root(W, top + ch + 28, out, 'Raters: invited and responded, by group');
   };
 

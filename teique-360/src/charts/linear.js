@@ -98,9 +98,9 @@
     });
     const by = ty + th + 2;
     out += S.el('path', { d: `M${n(xo)} ${by}l5 8h-10z`, fill: g.fill }, S.title(`All others: ${oth}`));
-    const tO = `All others ${oth}`, tY = `You ${self}`, close = Math.abs(xo - xs) < (S.tw(tO, 9) + S.tw(tY, 9)) / 2 + 8;
+    const tO = `All others ${oth}`, tY = `You ${self}`, close = Math.abs(xo - xs) < (S.tw(tO, 9.5) + S.tw(tY, 9.5)) / 2 + 8;
     const youLeft = xs <= xo, ly = by + 20;
-    const put = (x, t, fill, side) => S.text(x, ly, t, { 'text-anchor': side, 'font-size': 9, 'font-weight': 700, fill });
+    const put = (x, t, fill, side) => S.text(x, ly, t, { 'text-anchor': side, 'font-size': 9.5, 'font-weight': 700, fill });
     if (close) {
       const mid = (xo + xs) / 2;
       out += put(Math.min(youLeft ? xs : xo, mid) - 5, youLeft ? tY : tO, youLeft ? Y.text : g.text, 'end');
@@ -121,12 +121,12 @@
     T.GROUPS.forEach(g => { rows.push({ id: g.id, level: 1, scored: g.scored }); g.facets.forEach(f => rows.push({ id: f, level: 2 })); });
     let out = gradDefs(uid, opt) + S.bandHeader(x0, 14, w, gap), y = 34;
     const tw = (w - 2 * gap) / 3;
-    [[1, x0], [30, x0 + tw + gap / 2], [70, x0 + 2 * tw + 1.5 * gap], [99, x0 + w]].forEach(([t, x]) => { out += S.text(x, 24, t, { 'text-anchor': 'middle', 'font-size': 7, fill: '#808080' }); });
-    out += S.text(vx + 9, 14, 'Others', { 'text-anchor': 'middle', 'font-size': 7.5, 'font-weight': 700, fill: T.MUTED }) + S.text(vx + 43, 14, 'You', { 'text-anchor': 'middle', 'font-size': 7.5, 'font-weight': 700, fill: T.MUTED });
+    [[1, x0], [30, x0 + tw + gap / 2], [70, x0 + 2 * tw + 1.5 * gap], [99, x0 + w]].forEach(([t, x]) => { out += S.text(x, 24.5, t, { 'text-anchor': 'middle', 'font-size': 8, fill: '#808080' }); });
+    out += S.text(vx + 9, 14, 'Others', { 'text-anchor': 'middle', 'font-size': 8.5, 'font-weight': 700, fill: T.MUTED }) + S.text(vx + 43, 14, 'You', { 'text-anchor': 'middle', 'font-size': 8.5, 'font-weight': 700, fill: T.MUTED });
 
     rows.forEach(r => {
       const g = colour(r.id), Y = T.youStyle(opt.you, g), head = r.level < 2, h = head ? 13 : 9, gO = `url(#${uid}-o-${g.id})`, gY = `url(#${uid}-y-${g.id})`;
-      if (r.level === 1) y += 9;
+      if (r.level === 1) y += 10;
       const cyR = y + h / 2;
       out += S.text(lx, cyR + 3.6, T.nameOf(r.id), { 'font-size': head ? 11.5 : 11, 'font-weight': head ? 700 : 400, fill: g.text });
       if (r.scored !== false) {
@@ -144,19 +144,19 @@
           out += S.tracks(x0, y, w, h, gap) + S.trackFill(oth, x0, y, w, h, gap, gO);
           out += dotYou(xs, cyR, h / 2 + 1.4, Y, gY, tip);
         }
-        const num = { 'text-anchor': 'middle', 'font-size': head ? 10 : 9.5, 'font-family': S.FONT_B, 'font-weight': 700 };
+        const num = { 'text-anchor': 'middle', 'font-size': head ? 10.5 : 10, 'font-family': S.FONT_B, 'font-weight': 700 };
         out += S.text(vx + 9, cyR + 3.4, oth, Object.assign({ fill: g.text }, num)) + S.text(vx + 43, cyR + 3.4, self, Object.assign({ fill: Y.text }, num));
       }
-      y += h + (head ? 12 : 13);
+      y += h + (head ? 14 : 15);
     });
     // key, drawn in the first factor's colours
-    const ky = y + 4, sw = T.GROUPS[0], YS = T.youStyle(opt.you, sw), kO = `url(#${uid}-o-${sw.id})`, kY = `url(#${uid}-y-${sw.id})`, lab = { 'font-size': 8.5, fill: T.MUTED };
+    const ky = y + 4, sw = T.GROUPS[0], YS = T.youStyle(opt.you, sw), kO = `url(#${uid}-o-${sw.id})`, kY = `url(#${uid}-y-${sw.id})`, lab = { 'font-size': 9.5, fill: T.MUTED };
     let key = '';
     if (variant === 'B') key = dotOthers(x0 + 6, ky, 4.6, kO) + S.text(x0 + 16, ky + 3.2, "Others' average", lab) + dotYou(x0 + 110, ky, 3.9, YS, kY) + S.text(x0 + 119, ky + 3.2, 'You', lab);
-    else key = S.el('rect', { x: x0, y: ky - 4, width: 20, height: 8, rx: 4, fill: kO }) + S.text(x0 + 26, ky + 3.2, "Others' average", lab) +
+    else key = S.el('rect', { x: x0, y: ky - 4, width: 20, height: 8, rx: 4, fill: kO }) + S.text(x0 + 26, ky + 3.4, "Others' average", lab) +
       (variant === 'A' ? S.el('rect', { x: x0 + 108, y: ky - 1.5, width: 20, height: 3, rx: 1.5, fill: YS.edge }) + S.text(x0 + 134, ky + 3.2, 'You', lab)
-        : dotYou(x0 + 113, ky, 4.6, YS, kY) + S.text(x0 + 123, ky + 3.2, 'You', lab));
-    return S.root(W, ky + 14, out + key, 'Summary: you compared with others');
+        : dotYou(x0 + 121, ky, 4.6, YS, kY) + S.text(x0 + 131, ky + 3.4, 'You', lab));
+    return S.root(W, ky + 12, out + key, 'Summary: you compared with others');
   };
 
   // ---------------------------------------------------------------- gap chart
@@ -167,7 +167,7 @@
   C.gap = (v, opt = {}) => {
     const variant = opt.variant || 'A', W = 540, agree = opt.agree == null ? 10 : opt.agree, uid = S.id('gap');
     const rows = T.FACET_ORDER.map(id => ({ id, self: v.self[id], oth: v.others[id], gap: v.gap(id) })).sort((a, b) => b.gap - a.gap);
-    const top = 34, pitch = 21, H = top + rows.length * pitch + 26, lx = 124;
+    const top = 42, pitch = 30, H = top + rows.length * pitch + 22, lx = 124;
     const sign = d => (d > 0 ? '+' : d < 0 ? '−' : '±') + Math.abs(d);
     let out = gradDefs(uid, opt);
 
@@ -196,15 +196,15 @@
     }
 
     // the scale covers at least 50 points each way and grows when a gap is larger
-    const zx = 318, max = Math.max(50, Math.ceil(Math.max(...rows.map(r => Math.abs(r.gap))) / 10) * 10), px = 165 / max, bh = 11;
-    out += S.el('rect', { x: n(zx - agree * px), y: top - 12, width: n(2 * agree * px), height: rows.length * pitch + 6, fill: '#F1F2F4', rx: 4 });
-    out += S.text(zx - agree * px - 8, 15, '◀  You rate yourself higher', { 'text-anchor': 'end', 'font-size': 8.5, 'font-weight': 700, fill: T.MUTED });
-    out += S.text(zx + agree * px + 8, 15, 'Others rate you higher  ▶', { 'font-size': 8.5, 'font-weight': 700, fill: T.MUTED });
-    out += S.el('line', { x1: zx, y1: top - 12, x2: zx, y2: top + rows.length * pitch - 6, stroke: '#C9CDD3', 'stroke-width': 1 });
+    const zx = 300, max = Math.max(50, Math.ceil(Math.max(...rows.map(r => Math.abs(r.gap))) / 10) * 10), px = 150 / max, bh = 14;
+    out += S.el('rect', { x: n(zx - agree * px), y: top - 17, width: n(2 * agree * px), height: rows.length * pitch + 4, fill: '#F1F2F4', rx: 5 });
+    out += S.text(zx - agree * px - 8, 15, '◀  You rate yourself higher', { 'text-anchor': 'end', 'font-size': 9, 'font-weight': 700, fill: T.MUTED });
+    out += S.text(zx + agree * px + 8, 15, 'Others rate you higher  ▶', { 'font-size': 9, 'font-weight': 700, fill: T.MUTED });
+    out += S.el('line', { x1: zx, y1: top - 17, x2: zx, y2: top + rows.length * pitch - 13, stroke: '#C9CDD3', 'stroke-width': 1 });
     rows.forEach((r, i) => {
       const g = T.groupOf(r.id), Y = T.youStyle(opt.you, g), y = top + i * pitch, len = Math.min(Math.abs(r.gap), max) * px, pos = r.gap >= 0;
       const tip = `${T.nameOf(r.id)}: you ${r.self}, others ${r.oth} (${sign(r.gap)})`;
-      out += S.text(lx, y + 3.5, T.nameOf(r.id), { 'text-anchor': 'end', 'font-size': 10, 'font-weight': 500, fill: g.text });
+      out += S.text(lx, y + 3.9, T.nameOf(r.id), { 'text-anchor': 'end', 'font-size': 11, 'font-weight': 500, fill: g.text });
       if (len > 0.5) {
         const x = pos ? zx : zx - len, rr = Math.min(4, len);
         // square at the zero line, rounded at the data end
@@ -212,11 +212,11 @@
           : `M${n(zx)} ${y - bh / 2}h${n(-(len - rr))}a${rr} ${rr} 0 0 0 ${-rr} ${rr}v${bh - 2 * rr}a${rr} ${rr} 0 0 0 ${rr} ${rr}h${n(len - rr)}z`;
         out += S.el('path', Object.assign({ d, fill: `url(#${uid}-${pos ? 'o' : 'y'}-${g.id})` }, !pos && Y.hollow ? { stroke: Y.edge, 'stroke-width': 1.4 } : {}), S.title(tip));
       }
-      out += S.text(pos ? zx + len + 6 : zx - len - 6, y + 3.4, sign(r.gap), { 'text-anchor': pos ? 'start' : 'end', 'font-size': 9.5, 'font-weight': 700, fill: Y.text, 'font-family': S.FONT_B });
-      out += `<text x="${W - 12}" y="${n(y + 3.4)}" text-anchor="end" font-family="${S.FONT_B}" font-size="8.5" font-weight="700"><tspan fill="${Y.text}">${r.self}</tspan><tspan fill="#B7B6B7" font-weight="400"> → </tspan><tspan fill="${g.text}">${r.oth}</tspan></text>`;
+      out += S.text(pos ? zx + len + 6 : zx - len - 6, y + 3.8, sign(r.gap), { 'text-anchor': pos ? 'start' : 'end', 'font-size': 10.5, 'font-weight': 700, fill: Y.text, 'font-family': S.FONT_B });
+      out += `<text x="${W - 12}" y="${n(y + 3.6)}" text-anchor="end" font-family="${S.FONT_B}" font-size="9.5" font-weight="700"><tspan fill="${Y.text}">${r.self}</tspan><tspan fill="#B7B6B7" font-weight="400"> → </tspan><tspan fill="${g.text}">${r.oth}</tspan></text>`;
     });
-    out += S.text(zx, H - 10, `Shaded: broad agreement (within ${agree} points)`, { 'text-anchor': 'middle', 'font-size': 8, fill: T.MUTED });
-    out += S.text(W - 12, 15, 'You → Others', { 'text-anchor': 'end', 'font-size': 7.5, 'font-weight': 700, fill: T.MUTED });
+    out += S.text(zx, H - 8, `Shaded: broad agreement (within ${agree} points)`, { 'text-anchor': 'middle', 'font-size': 9, fill: T.MUTED });
+    out += S.text(W - 12, 15, 'You → Others', { 'text-anchor': 'end', 'font-size': 8.5, 'font-weight': 700, fill: T.MUTED });
     return S.root(W, H, out, 'Gap between your view and others, per facet');
   };
 

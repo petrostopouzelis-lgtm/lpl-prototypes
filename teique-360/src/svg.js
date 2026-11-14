@@ -102,7 +102,7 @@
   S.bandHeader = (x0, y, w, gap) => {
     const tw = (w - 2 * gap) / 3;
     let out = '';
-    T.BANDS.forEach((b, i) => { out += S.text(x0 + i * (tw + gap) + tw / 2, y, b.label, { 'text-anchor': 'middle', 'font-size': 8.5, fill: T.MUTED }); });
+    T.BANDS.forEach((b, i) => { out += S.text(x0 + i * (tw + gap) + tw / 2, y, b.label, { 'text-anchor': 'middle', 'font-size': 9, fill: T.MUTED }); });
     return out;
   };
   // Top-to-bottom gradient, as on the Figma bars: c0 along the top edge, c1 along the bottom.

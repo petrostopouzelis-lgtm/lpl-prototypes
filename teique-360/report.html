@@ -9,6 +9,7 @@
     fill=none|typical|long   how much filler to show where text is still missing (default typical)
     watermark=1       force the sample watermark on
     extras=0          leave out the three pages the 2010 report did not have (summary graph, perception map, gap chart)
+    scales=pair       two factors or facets share a page, each with a small wheel (default: one per page, large wheel)
     view=grid         start in the all-pages overview
     print=1           open the browser's print dialog once the pages are ready
 -->
@@ -42,6 +43,7 @@
   <label>Missing text <select id="v-fill"><option value="none">marker only</option><option value="typical">with filler</option><option value="long">long filler</option></select></label>
   <label><input type="checkbox" id="v-wm"> Watermark</label>
   <label><input type="checkbox" id="v-extras"> Summary, map and gap pages</label>
+  <label>Scores <select id="v-scales"><option value="single">one per page</option><option value="pair">two per page</option></select></label>
   <span class="seg"><button type="button" id="v-single" aria-pressed="true">Page by page</button><button type="button" id="v-grid" aria-pressed="false">All pages</button></span>
   <span class="seg"><button type="button" id="v-out" aria-label="Zoom out">−</button><span id="v-zoom">100%</span><button type="button" id="v-in" aria-label="Zoom in">+</button></span>
   <button type="button" id="v-print">Save as PDF</button>
@@ -89,6 +91,8 @@
     $('v-fill').onchange = e => go('fill', e.target.value === 'typical' ? '' : e.target.value);
     $('v-wm').onchange = e => go('watermark', e.target.checked ? '1' : '');
     $('v-extras').onchange = e => go('extras', e.target.checked ? '' : '0');
+    $('v-scales').value = q.get('scales') === 'pair' ? 'pair' : 'single';
+    $('v-scales').onchange = e => go('scales', e.target.value === 'pair' ? 'pair' : '');
     $('v-single').onclick = () => { grid = false; applyView(); };
     $('v-grid').onclick = () => { grid = true; applyView(); };
     $('v-out').onclick = () => setZoom(grid ? -0.04 : -0.1);
@@ -110,7 +114,7 @@
     const images = ['assets/cover.jpg', 'assets/back-cover.jpg', 'assets/logo-monogram.png'].map(src => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = src; }));
     await Promise.all([document.fonts.load('300 12pt Inter'), document.fonts.load('500 26pt Manrope'), ...images]);
     await document.fonts.ready;
-    const built = T.report.build(data, window.TEIQ_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', extras: q.get('extras') !== '0' });
+    const built = T.report.build(data, window.TEIQ_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', extras: q.get('extras') !== '0', scales: q.get('scales') === 'pair' ? 'pair' : 'single' });
     document.title = 'TEIQue 360 Report: ' + data.subject.name;
     const r = window.__REPORT = T.report.paginate(built, mount);   // measured at 100%, before any zoom
     const missing = mount.querySelectorAll('.needed').length;
