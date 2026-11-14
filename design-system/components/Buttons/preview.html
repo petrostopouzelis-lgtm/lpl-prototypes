@@ -1,0 +1,18 @@
+<!-- @dsCard group="Components" height=260 subtitle="One blue button (primary) plus secondary, ghost, danger, submit" page -->
+<!doctype html><html><head><meta charset="utf-8"><script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script><style>body{width:700px;height:260px;font-family:var(--font-body)}#root{padding:24px;display:flex;flex-wrap:wrap;gap:20px;align-items:center}</style></head><body>
+<div id="root"></div>
+<script type="text/babel">
+const { Button } = window.PsychometricLaboratoryDesignSystem_0d727f;
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <>
+    <Button variant="primary">New Assignment</Button>
+    <Button variant="secondary">Cancel</Button>
+    <Button variant="ghost">Resend</Button>
+    <Button variant="danger">Delete Account</Button>
+    <Button variant="submit">Save Changes</Button>
+    <Button variant="primary" disabled>Disabled</Button>
+    <div style={{width:200}}><Button variant="primary" fullWidth>View</Button></div>
+  </>
+);
+</script>
+</body></html>

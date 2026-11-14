@@ -1,0 +1,23 @@
+<!-- @dsCard group="Components" height=620 subtitle="Primary-gradient block, 5-column top row, divided bottom bar" page -->
+<!doctype html><html><head><meta charset="utf-8"><script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script><style>body{width:1440px;height:620px;font-family:var(--font-body)}#root{height:100%}</style></head><body>
+<div id="root"></div>
+<script type="text/babel">
+const { Footer } = window.PsychometricLaboratoryDesignSystem_0d727f;
+const s = (n) => ({label:n,defaultSrc:`../../assets/icons/social/${n}-default.svg`,hoverSrc:`../../assets/icons/social/${n}-hover.svg`});
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <Footer
+    logo="../../assets/logos/lpl-logo-blue-horizontal.webp"
+    tagline="Research-led emotional intelligence assessment since 1998."
+    social={["linkedin","x","youtube","facebook","instagram"].map(s)}
+    columns={[
+      {heading:"Assessments",links:["TEIQue Full Form","TEIQue Short Form","TSIQue"]},
+      {heading:"For Business",links:["Recruitment","Development","Teams"]},
+      {heading:"Resources",links:["Research Library","Case Studies","Support"]},
+    ]}
+    impressum={{title:"London Psychometric Laboratory",lines:["26 Bedford Way","London WC1H 0AP","United Kingdom"]}}
+    legalLinks={["Privacy Policy","Terms of Service","Cookie Policy"]}
+    copyright="© 2026 London Psychometric Laboratory. All rights reserved."
+  />
+);
+</script>
+</body></html>

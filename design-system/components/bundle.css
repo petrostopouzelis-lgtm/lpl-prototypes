@@ -1,0 +1,66 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap");
+
+/* ── styles.css ── */
+/* ── tokens/colors.css ── */
+:root{
+}
+
+/* ── styles.css ── */
+
+/* ── tokens/typography.css ── */
+
+:root{
+--font-display:var(--font-manrope);
+--font-body:var(--font-inter);
+}
+
+/* ── styles.css ── */
+
+/* ── tokens/spacing.css ── */
+:root{
+}
+
+/* ── styles.css ── */
+
+/* ── tokens/shadows.css ── */
+:root{ /* @kind other */
+}
+
+/* ── styles.css ── */
+
+/* ── tokens/app-shell.css ── */
+/* App shell geometry — the logged-in platform layout (sidebar + topbar + content) */
+:root{ /* @kind other */
+}
+
+/* ── styles.css ── */
+
+/* ── tokens/base.css ── */
+*{margin:0;padding:0;box-sizing:border-box}
+*:focus,button:focus,a:focus{outline:none}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+body{font-family:var(--font-body);font-size:var(--font-size-content);line-height:var(--line-height-normal);color:var(--color-black);background:var(--color-white)}
+img{max-width:100%;height:auto}
+a{color:var(--text-link);text-decoration:none;transition:var(--ease-standard)}
+a:hover{color:var(--text-link-hover)}
+.container{max-width:1440px;margin:0 auto;padding:0 var(--spacing-wide-l)}
+@media (min-width:1441px){.container{max-width:1600px}}
+@media (max-width:1024px){.container{padding:0 64px}}
+@media (max-width:768px){.container{padding:0 16px}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important}}
+
+/* ── styles.css ── */
+
+
+/* ── tokens/colors.css ── */
+
+/* ── tokens/typography.css ── */
+
+/* ── tokens/spacing.css ── */
+
+/* ── tokens/shadows.css ── */
+
+/* ── tokens/app-shell.css ── */
+
+/* ── tokens/base.css ── */
+

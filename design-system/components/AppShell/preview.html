@@ -1,0 +1,29 @@
+<!-- @dsCard group="Components" height=580 subtitle="Sidebar rail, topbar and avatars for the logged-in platforms" page -->
+<!doctype html><html><head><meta charset="utf-8"><script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script><style>body{width:1000px;height:580px;background:#f6f6f6;font-family:var(--font-body)}#root{height:100%;display:flex;gap:16px;padding:16px}</style></head><body>
+<div id="root"></div>
+<script type="text/babel">
+const { AppSidebar, AppTopbar, Avatar } = window.PsychometricLaboratoryDesignSystem_0d727f;
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <>
+    <AppSidebar
+      brandLogo="../../assets/logos/lpl-logo-blue-monogram.webp"
+      brandName="Psychometric Laboratory" brandSub="For Coaches"
+      sections={[
+        { items: [{ name: 'Dashboard' }, { name: 'Assignments', badge: 3 }] },
+        { label: 'People', items: [{ name: 'Candidates' }, { name: 'Groups' }] },
+        { label: 'Account', items: [{ name: 'Credits' }, { name: 'Settings' }] },
+      ]}
+      activeItem="Dashboard"
+      org={{ initials: 'EM', name: 'Elena Moreau', plan: 'Premium coach' }}
+    />
+    <div style={{flex:1,background:'#fff',borderRadius:16,boxShadow:'var(--shadow-card)',overflow:'hidden'}}>
+      <AppTopbar title="Dashboard" subtitle="Welcome back, Elena." profileName="Elena" profileInitials="EM" unread
+        menuItems={[{name:'Notifications',badge:3},{name:'Settings'},{name:'Log out',danger:true}]} />
+      <div style={{display:'flex',gap:12,alignItems:'center',padding:'0 40px'}}>
+        <Avatar initials="AM" size="sm" /><Avatar initials="LC" size="md" /><Avatar initials="EM" size="lg" />
+      </div>
+    </div>
+  </>
+);
+</script>
+</body></html>

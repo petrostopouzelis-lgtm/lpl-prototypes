@@ -1,0 +1,1027 @@
+{
+  "v": 3,
+  "assetGroups": {
+    "Icons": {
+      "files": {
+        "apple-pay.svg": {
+          "blob": "85a48d230e711f649356b918fde340d2",
+          "name": "apple-pay.svg",
+          "sha256": "b58291e1939b61daac5ecf1ca217b9a5a5ba1e74c5efc88f213f73468da98ff0",
+          "size": 863,
+          "type": "image/svg+xml"
+        },
+        "credit-card.svg": {
+          "blob": "35d93641f6b98cda4ccec1931ac2ce6a",
+          "name": "credit-card.svg",
+          "sha256": "141223ecde855bc4c30ce0c923b44c2087f54fefd4f109a617436250d50e7fed",
+          "size": 894,
+          "type": "image/svg+xml"
+        },
+        "csv-default.svg": {
+          "blob": "fa188465c3267fa6a5548bc3b3126647",
+          "name": "csv-default.svg",
+          "sha256": "5d1b7b74cb6139b8ab48ebb14fd6eaef5f2efb72bd14717c97cc434fba13c01c",
+          "size": 2453,
+          "type": "image/svg+xml"
+        },
+        "dropdown-arrow-blue.svg": {
+          "blob": "be8ecb7322b56c31a343b824dcc4fc01",
+          "name": "dropdown-arrow-blue.svg",
+          "sha256": "86d85777122b353d9bbd329e5ec63add3cf43d55ae09ec3ccae52e715ee20e09",
+          "size": 775,
+          "type": "image/svg+xml"
+        },
+        "excel-default.svg": {
+          "blob": "a2f52fbdaa53746121a6488d0baac6b2",
+          "name": "excel-default.svg",
+          "sha256": "f6b8bf6bc01a6ec861cb7823788f667765a333fc78699974c2ca7e1f2903eda1",
+          "size": 1436,
+          "type": "image/svg+xml"
+        },
+        "facebook-default.svg": {
+          "blob": "b8d35401df3fe1aa8bb07c245724d0cc",
+          "name": "facebook-default.svg",
+          "sha256": "78a1700f8c6c2308c58c6181030a53556c1f4224333f1858f10f93d7c1895456",
+          "size": 720,
+          "type": "image/svg+xml"
+        },
+        "google-pay.svg": {
+          "blob": "18229f54b1ca154333639273fee6aeee",
+          "name": "google-pay.svg",
+          "sha256": "3e062aff12e58fe7d4dbdace3778ad8eba181c21c51c8c091ec30fd673b96e73",
+          "size": 1261,
+          "type": "image/svg+xml"
+        },
+        "instagram-default.svg": {
+          "blob": "be2efeca4606a79fdc1835bac4b7582b",
+          "name": "instagram-default.svg",
+          "sha256": "5b1d6acb1fadd1b547a502cb7c81b1d2ebdeb1b458ca7772aa1478e2b8fc700a",
+          "size": 1928,
+          "type": "image/svg+xml"
+        },
+        "linkedin-default.svg": {
+          "blob": "0d527985d9a9ee9eed8e6286adf91687",
+          "name": "linkedin-default.svg",
+          "sha256": "77de1d31e07e2a41e52ee4bd7877964b319c52f62a643430f2f97e7a066e8380",
+          "size": 1029,
+          "type": "image/svg+xml"
+        },
+        "pdf-default.svg": {
+          "blob": "6c0990524dcfa8bd9b51450a27311c58",
+          "name": "pdf-default.svg",
+          "sha256": "454a1aeb50e7e0d74ebf5b3d6b893ed2c273c5ecd4aa0a2f671ecfc1443a4d32",
+          "size": 2234,
+          "type": "image/svg+xml"
+        },
+        "revolut.svg": {
+          "blob": "b17aed0e3798e44808e2f73f73983ebd",
+          "name": "revolut.svg",
+          "sha256": "605e5916d2010706e3f5b4039fab1853b612c66f6140d43f590793ecd9ff3167",
+          "size": 995,
+          "type": "image/svg+xml"
+        },
+        "search.svg": {
+          "blob": "6579107d231dfb1e859a45e1add412a4",
+          "name": "search.svg",
+          "sha256": "2e2c5e7e631142b1b3754ec97885fb4a35f43e9f48421b432120f60849d93be4",
+          "size": 1320,
+          "type": "image/svg+xml"
+        },
+        "tick.svg": {
+          "blob": "825de6e112ec37f846102ad3582c2750",
+          "name": "tick.svg",
+          "sha256": "0d900c5a08609f170081bc540ce8fcd57b0ab56d5ebf92ef2a06db6a02623860",
+          "size": 1098,
+          "type": "image/svg+xml"
+        },
+        "tiktok-default.svg": {
+          "blob": "f144cb4856549da1ed2fdb9f518e2142",
+          "name": "tiktok-default.svg",
+          "sha256": "c5a6cc38c4cd06a8d308d1a0cd2ec4207f1c1836a0c9d63f2ab21675b011c258",
+          "size": 1329,
+          "type": "image/svg+xml"
+        },
+        "x-default.svg": {
+          "blob": "a2bb604bb94abd41dfda9a9116ca7c1b",
+          "name": "x-default.svg",
+          "sha256": "4511b47f116f598abdf05111a03837477683801338f4f3b58d58607b436a3970",
+          "size": 908,
+          "type": "image/svg+xml"
+        },
+        "x-icon.svg": {
+          "blob": "8efbc47137e071677d8b7dd3d2522011",
+          "name": "x-icon.svg",
+          "sha256": "41265dc7562d49188692287a28c0838dce0e44d60ed0e0bc2e29a804a1687f6b",
+          "size": 739,
+          "type": "image/svg+xml"
+        },
+        "youtube-default.svg": {
+          "blob": "85831ddbfb9ee21e503549fbd38e9a99",
+          "name": "youtube-default.svg",
+          "sha256": "1ffbbada8128df347e3aee9c88443517ce6bfd0d8b89e2a184c557a5a3ca3b23",
+          "size": 1167,
+          "type": "image/svg+xml"
+        }
+      },
+      "name": "Icons",
+      "order": []
+    },
+    "Logos": {
+      "files": {
+        "lpl-logo-blue-monogram.webp": {
+          "blob": "7a11d0569d2bc504a6f5614c405ffb21",
+          "name": "lpl-logo-blue-monogram.webp",
+          "sha256": "dab0688262a94e16336e633587cd4bf33b07ac6fc8161159c747423e62e20553",
+          "size": 35890,
+          "type": "image/webp"
+        },
+        "lpl-logo-blue-vertical.webp": {
+          "blob": "4a4b92f824711acd2f37d1c9892c11ee",
+          "name": "lpl-logo-blue-vertical.webp",
+          "sha256": "36296ae91a75162c973b695259ea08253a0428b1bec87e3655a0afa0643526a8",
+          "size": 43766,
+          "type": "image/webp"
+        },
+        "lpl-logo-orange-vertical.webp": {
+          "blob": "e75cd6b6281b5fbc2294e378449099ac",
+          "name": "lpl-logo-orange-vertical.webp",
+          "sha256": "a2f07b789557e5cbf1844fb6a48fe4fb7bb5b8ab50c93ce7d95e712e1f603001",
+          "size": 45592,
+          "type": "image/webp"
+        },
+        "lpl-logo-white-vertical.webp": {
+          "blob": "14922e299b5b86691fb79e67f2478dc7",
+          "name": "lpl-logo-white-vertical.webp",
+          "sha256": "0188a5e6cee75090caaec04f83b9e6a7a791af979497ba0e9c233c67a99d9b10",
+          "size": 39780,
+          "type": "image/webp"
+        },
+        "teique-logo.png": {
+          "blob": "802a5c05d6a0c51401b548ccb4fd20dd",
+          "name": "teique-logo.png",
+          "sha256": "56fd1fcf0a45ea557da1c505609b02f7cead7cd53d01c9ef8ad789d7340bd3c5",
+          "size": 11177,
+          "type": "image/png"
+        }
+      },
+      "name": "Logos",
+      "order": []
+    },
+    "Uploads": {
+      "files": {
+        "draw-1f0326df-d4b7-4ee9-b792-ae78d6dc5551.png": {
+          "blob": "66ca069030fa9ea5276a55b06d39af48",
+          "name": "draw-1f0326df-d4b7-4ee9-b792-ae78d6dc5551.png",
+          "sha256": "5f1dd958ef9b11337551372ca31662bd20d17c0fd99cc8e9e59cc88929923325",
+          "size": 7849,
+          "type": "image/png"
+        }
+      },
+      "name": "Uploads",
+      "order": []
+    },
+    "articles": {
+      "files": {
+        "coach-aid-concept-diagram.png": {
+          "blob": "e20ae4b8128ae09f72dd02d7c3ddb6ab",
+          "name": "coach-aid-concept-diagram.png",
+          "sha256": "7d486afb5a5c3fc8481861ee47a4d1e4fe8e0d5365736f91533ea3578305d757",
+          "size": 543500,
+          "type": "image/png"
+        },
+        "complex-formations.png": {
+          "blob": "a45eeb4f8294f2138367c8410f3b1733",
+          "name": "complex-formations.png",
+          "sha256": "d7ad77f034f5d42828be273d2c860986d2f502e98e28f7e04717ecaa9ec31f6a",
+          "size": 191931,
+          "type": "image/png"
+        },
+        "indices.png": {
+          "blob": "8d3b6496605cd5be15725100fd6ad65e",
+          "name": "indices.png",
+          "sha256": "54f57445be8164a07d8758122e890dec05f1cc1dff9d23ec950ef665ac140cc3",
+          "size": 316249,
+          "type": "image/png"
+        },
+        "prototypicality.png": {
+          "blob": "75efad09eadacfb315dd5d18a25b5a35",
+          "name": "prototypicality.png",
+          "sha256": "22f87e91eeed9b9035e437297d0e82b1fa2e8e2d98eb22c553a0e6b87c13dd9c",
+          "size": 332287,
+          "type": "image/png"
+        }
+      },
+      "name": "articles",
+      "order": []
+    },
+    "case-studies": {
+      "files": {
+        "assertiveness-high-d-paradox.png": {
+          "blob": "dbe47ac49c0daab9243e679a4f56b5a3",
+          "name": "assertiveness-high-d-paradox.png",
+          "sha256": "5851fa640600b42362713bcc8601fdae897753f0b3d3bcefa514852876ef9593",
+          "size": 3722206,
+          "type": "image/png"
+        },
+        "from-conflict-to-communication.jpg": {
+          "blob": "28381815572c96d57c2602a36cc6c149",
+          "name": "from-conflict-to-communication.jpg",
+          "sha256": "c075421c6ed2ed1bb0c01a4b49a232e498295e3c46a5f8798cc70f9e450e4e4c",
+          "size": 10926492,
+          "type": "image/jpeg"
+        },
+        "global-leadership-across-cultures.jpg": {
+          "blob": "c364a0a65767a6c524cbe0f978615673",
+          "name": "global-leadership-across-cultures.jpg",
+          "sha256": "92334bfbe85ffb081325ac6e9063bd062237cebbc1affa50d9ca9b54aae228a9",
+          "size": 2998000,
+          "type": "image/jpeg"
+        },
+        "saving-a-partnership.png": {
+          "blob": "c95a78c8ce475baeaea2364f0aa824d7",
+          "name": "saving-a-partnership.png",
+          "sha256": "2f1118af1edbb51ec4e3b238350653fa407bfce31a893a07fc77f89e099d0e61",
+          "size": 1206410,
+          "type": "image/png"
+        },
+        "thames-valley-police.png": {
+          "blob": "c621691160d27717c325c0c909ab966c",
+          "name": "thames-valley-police.png",
+          "sha256": "1747d799057a79bd63761de41f5ca8c2fbbff0d8a1e2d858b182c8b626dbf52d",
+          "size": 4423025,
+          "type": "image/png"
+        },
+        "the-leadership-paradox.png": {
+          "blob": "83778ae4799ca94a63aad60939a7bcc0",
+          "name": "the-leadership-paradox.png",
+          "sha256": "a01d9b6e50eb74160d03d66630dfaa513e34fabf6cae9cc271f02c027afef534",
+          "size": 5009277,
+          "type": "image/png"
+        },
+        "transforming-retail-leadership.jpg": {
+          "blob": "2912d1e61d95bfd05339e271a2eb90eb",
+          "name": "transforming-retail-leadership.jpg",
+          "sha256": "954c0b6ac01e9f32ca5dd6a3d9f8d547d02f2d17992249d84e57a8b2c0412c71",
+          "size": 1061123,
+          "type": "image/jpeg"
+        }
+      },
+      "name": "case-studies",
+      "order": []
+    },
+    "hero": {
+      "files": {
+        "spotlight-wheel-hero.png": {
+          "blob": "39214bf0d63338dce4ea35ce3165c120",
+          "name": "spotlight-wheel-hero.png",
+          "sha256": "0e2b84949057560aa0caefbf5295ddb470fac8f5a1ad426c8b7529096f157a2d",
+          "size": 57610,
+          "type": "image/png"
+        },
+        "teique-hero-1.png": {
+          "blob": "9fb8859d4d7b0af9e50314621f799191",
+          "name": "teique-hero-1.png",
+          "sha256": "637c1592a5a5b11ff4e49863dab5ecc8a4a12d30743e4720fd55e967529b6c6e",
+          "size": 3174853,
+          "type": "image/png"
+        },
+        "teique-hero-2.png": {
+          "blob": "b3baddaa807908a15ce659ce151f7a86",
+          "name": "teique-hero-2.png",
+          "sha256": "e083169b11b81b23f1e1df0ba4735ef39109aa3f24968d08898030b32fe44670",
+          "size": 3825422,
+          "type": "image/png"
+        },
+        "teique-hero-3.png": {
+          "blob": "13b4350408c6cfd0cf56557ee07f99ac",
+          "name": "teique-hero-3.png",
+          "sha256": "947ad08bf3563c95b1be2db8a488f645fef75267f00186f2e6fe892b54b42efc",
+          "size": 3298595,
+          "type": "image/png"
+        },
+        "teique-hero-4.png": {
+          "blob": "c55b82e675a01ecc09419acf3fd9a52c",
+          "name": "teique-hero-4.png",
+          "sha256": "ea4a3e9401b8c42967107763b5abb95b23a29b7df4847c5591e4466663009f64",
+          "size": 2904643,
+          "type": "image/png"
+        },
+        "teique-hero-5.png": {
+          "blob": "f9eacb4af675268c0e9cd1fd0324f425",
+          "name": "teique-hero-5.png",
+          "sha256": "59fc03ccb2e975fc23535c6fec5d02cc09c20c08d937f60f360dedab462b1231",
+          "size": 2919555,
+          "type": "image/png"
+        }
+      },
+      "name": "hero",
+      "order": []
+    },
+    "icons": {
+      "files": {
+        "files/csv-hover.svg": {
+          "blob": "73b9d10d0dd486b821f0246cd34a7d49",
+          "name": "files/csv-hover.svg",
+          "sha256": "015f9feaa33aa1f21a5a29ebb2be59385a30d255006cbc512ab64e035fb61f2b",
+          "size": 2497,
+          "type": "image/svg+xml"
+        },
+        "files/excel-hover.svg": {
+          "blob": "b7e03585a2d5e326746d3a82c4eca5f5",
+          "name": "files/excel-hover.svg",
+          "sha256": "b46e9ee7dc372c67c2e1038f46327d5cb1114885db8d50029a47dc667ab173ca",
+          "size": 1437,
+          "type": "image/svg+xml"
+        },
+        "files/pdf-hover.svg": {
+          "blob": "ec3cd9a036a4879dc6c8ecd8da73b014",
+          "name": "files/pdf-hover.svg",
+          "sha256": "2acd25f9995ef5fac6a7292a5e71d4c59a758ba779e669739c1c77a7dfc4a84a",
+          "size": 2179,
+          "type": "image/svg+xml"
+        },
+        "master-keys/belimp.svg": {
+          "blob": "44935fb77913a2ee56521d9f3e8a36ab",
+          "name": "master-keys/belimp.svg",
+          "sha256": "51b7cc9176bc2f897e22765ccbb8a7e826861b82ac35a41044322bbf549b82df",
+          "size": 795,
+          "type": "image/svg+xml"
+        },
+        "master-keys/kvp.svg": {
+          "blob": "652ec43620efed21bf8373f9c123876f",
+          "name": "master-keys/kvp.svg",
+          "sha256": "bf1654a5f2180fb5be0614673b58bc12960a37b775eab9845786557d3dbca12d",
+          "size": 912,
+          "type": "image/svg+xml"
+        },
+        "master-keys/psychobionomy.svg": {
+          "blob": "ada283407e7f7a607e47336d7e87b0e5",
+          "name": "master-keys/psychobionomy.svg",
+          "sha256": "89c7126669b165750bb8ae2f119a6993dcbbefd89ef0a4f6afd75599234932cb",
+          "size": 2848,
+          "type": "image/svg+xml"
+        },
+        "master-keys/radix-intelligence.svg": {
+          "blob": "2985260445649c55811822bff8ca9e68",
+          "name": "master-keys/radix-intelligence.svg",
+          "sha256": "95c6836fd2788f05743f9f8be2a190247ae875640e1241e5c37404c8f5f30da6",
+          "size": 7229,
+          "type": "image/svg+xml"
+        },
+        "master-keys/teique.svg": {
+          "blob": "89e7d6dc3dac2524a4b2d6c38dfd51eb",
+          "name": "master-keys/teique.svg",
+          "sha256": "e21ec280f8efe06c66b213e977d38f06b3b29e489d3bae0abe6f909ea3060f47",
+          "size": 3983,
+          "type": "image/svg+xml"
+        },
+        "master-keys/trait-ei.svg": {
+          "blob": "7f561eae072eb795a633264f441fe9ab",
+          "name": "master-keys/trait-ei.svg",
+          "sha256": "03a534206840fea943b2506f82a22dd57745d769f4ff1d105aacac920fa4acb2",
+          "size": 729,
+          "type": "image/svg+xml"
+        },
+        "nav/burger-collapsed.svg": {
+          "blob": "870750748c8e026272ce24d8a8071631",
+          "name": "nav/burger-collapsed.svg",
+          "sha256": "98f612108cb2dfc853da16b61d29dfefcfdc599c97a4be2cac705cd5e8fe00c4",
+          "size": 1005,
+          "type": "image/svg+xml"
+        },
+        "nav/burger-expanded.svg": {
+          "blob": "790c3df7923517711a59df6b66b25d43",
+          "name": "nav/burger-expanded.svg",
+          "sha256": "d3ff104a615b7be798d718ddd79a6604eb6a3369eb0e445d8bb3e9379fe117a5",
+          "size": 919,
+          "type": "image/svg+xml"
+        },
+        "notifications/billing.svg": {
+          "blob": "278d909862ea64b9947303cdfa659edc",
+          "name": "notifications/billing.svg",
+          "sha256": "aa3bff837409c3010c693aa06a9d159f6655bbd90c4591c6547664e4586e5494",
+          "size": 1720,
+          "type": "image/svg+xml"
+        },
+        "notifications/coaching.svg": {
+          "blob": "557723c71c8a7913dfaacbd7d326d08d",
+          "name": "notifications/coaching.svg",
+          "sha256": "3eb0c41b01f78ca5fc43b12fc10353dc445b3fda43bb01d0f1b8207e6842bd25",
+          "size": 694,
+          "type": "image/svg+xml"
+        },
+        "notifications/internal.svg": {
+          "blob": "610feaa1ef3f92b82f3f256c21130f9d",
+          "name": "notifications/internal.svg",
+          "sha256": "4e2cd6132557724834b80427fa8959c0bbc62ada3ad05fa961e2bd3885b26442",
+          "size": 1525,
+          "type": "image/svg+xml"
+        },
+        "notifications/legal.svg": {
+          "blob": "0769a345550a90c099f46ccf8befed9e",
+          "name": "notifications/legal.svg",
+          "sha256": "ebe4c59d8d7b8e57735dbe11614fad83b0f99ab024cc75dacbb4d177895c7f4a",
+          "size": 1524,
+          "type": "image/svg+xml"
+        },
+        "notifications/product.svg": {
+          "blob": "467570567f22311ffcea0dd0065cf82a",
+          "name": "notifications/product.svg",
+          "sha256": "278a197c60f08a8191d816accc7dd26f339723dd2d1379b59f52841cacd14876",
+          "size": 694,
+          "type": "image/svg+xml"
+        },
+        "notifications/quality.svg": {
+          "blob": "932d409374823d704275091bd72a1b85",
+          "name": "notifications/quality.svg",
+          "sha256": "0fca8849fc0ce60abf35982f3db74e7fd97d9422d79d0f20178f02eea21a707b",
+          "size": 1307,
+          "type": "image/svg+xml"
+        },
+        "notifications/reminder.svg": {
+          "blob": "e2906cc1ae76ec7b020e9a903e70f383",
+          "name": "notifications/reminder.svg",
+          "sha256": "c4fc97745faee559b0c5671746dcc9bc3e7df97ceb365fbdb4b4f8478cc1d8d9",
+          "size": 1226,
+          "type": "image/svg+xml"
+        },
+        "notifications/support.svg": {
+          "blob": "690d40ac5659d4f66a570f9050c10b72",
+          "name": "notifications/support.svg",
+          "sha256": "525b88db76ff377fd8a5a2ca0049e88182aa11b9df13857ec9ac0e783b2ea1e0",
+          "size": 2419,
+          "type": "image/svg+xml"
+        },
+        "notifications/system.svg": {
+          "blob": "cf0c87fcb1d1228054ade50fe52df81d",
+          "name": "notifications/system.svg",
+          "sha256": "fb23bb086899ba8b68567a36590e93210652f9929421fda73dc0374a7a9ef40a",
+          "size": 2136,
+          "type": "image/svg+xml"
+        },
+        "notifications/user.svg": {
+          "blob": "8968c624e389abe70499650204633ada",
+          "name": "notifications/user.svg",
+          "sha256": "db6a540191b56b28e4e03a8aae39f12a71f51670ff3c7fb6383012099225c8a5",
+          "size": 694,
+          "type": "image/svg+xml"
+        },
+        "social/facebook-hover.svg": {
+          "blob": "099590af2c018c456ae7f6a15356485d",
+          "name": "social/facebook-hover.svg",
+          "sha256": "f62a2c022db0571ea7483fce584d456012b432a54d7b05efa564052b7d7a3e79",
+          "size": 722,
+          "type": "image/svg+xml"
+        },
+        "social/instagram-hover.svg": {
+          "blob": "93512d35ba4ce69fa8e28486fa897fc8",
+          "name": "social/instagram-hover.svg",
+          "sha256": "9ebed25aa9c38b5e5d06086f08c4339d726abac9c646e1235d823d555f0cd3e3",
+          "size": 1930,
+          "type": "image/svg+xml"
+        },
+        "social/linkedin-hover.svg": {
+          "blob": "2842a554b936e2cea04841851c89eaae",
+          "name": "social/linkedin-hover.svg",
+          "sha256": "d823be98ae2c16472cd061401254ebd1992ff564384a11b45534a191be6d2558",
+          "size": 1035,
+          "type": "image/svg+xml"
+        },
+        "social/tiktok-hover.svg": {
+          "blob": "eb29baff089034e89490312b3a9c7fca",
+          "name": "social/tiktok-hover.svg",
+          "sha256": "e17a00039bb9ab4ab1f6cdb1a2cc22865654fff10c5954c2272df77986080bc6",
+          "size": 1103,
+          "type": "image/svg+xml"
+        },
+        "social/website-default.svg": {
+          "blob": "1182b37b9f7ea56a8c633360254d73fb",
+          "name": "social/website-default.svg",
+          "sha256": "16f9513b08389feb31fa4aced23d966df5e56fe68850d690f7dcef4fb12aa2f3",
+          "size": 1858,
+          "type": "image/svg+xml"
+        },
+        "social/website-hover.svg": {
+          "blob": "167d4389e9cebffbd5b5480878334f42",
+          "name": "social/website-hover.svg",
+          "sha256": "b7be12e21f6ff16d4c08db064a2f9b6da0d56a1303e26d43fdcf8cfd23556ac8",
+          "size": 1860,
+          "type": "image/svg+xml"
+        },
+        "social/x-hover.svg": {
+          "blob": "96b33aed7f85f353c3c3b8a3f442c00d",
+          "name": "social/x-hover.svg",
+          "sha256": "206ec1b0c689d7154d857c552245edd98f8fb18dfbe2b074e68fb50f114f5b39",
+          "size": 680,
+          "type": "image/svg+xml"
+        },
+        "social/youtube-hover.svg": {
+          "blob": "a121ea47e6c68b456cc7dd7ce96031bf",
+          "name": "social/youtube-hover.svg",
+          "sha256": "7a4b2f991a0078f69dde987e118ff5fdd8c37cece752663df95fa7a90726ccd0",
+          "size": 1169,
+          "type": "image/svg+xml"
+        },
+        "support-topics/faq.svg": {
+          "blob": "6fa930753194eac8211d3c2c2b62f857",
+          "name": "support-topics/faq.svg",
+          "sha256": "a84f5afb029808bb706dcb8a95fc504ea670aaffa6294bc3378c57c019e6bb8c",
+          "size": 2878,
+          "type": "image/svg+xml"
+        },
+        "support-topics/library.svg": {
+          "blob": "d07c9db9349b54d7b6a873c43ed6a4a7",
+          "name": "support-topics/library.svg",
+          "sha256": "c325934f1ca2788e55d562306e29118aea99cf9309797339ae56e148cf15d871",
+          "size": 2927,
+          "type": "image/svg+xml"
+        },
+        "support-topics/theory-and-concepts.svg": {
+          "blob": "b43efcbacf7b555dba7ff1fc9ce3e96b",
+          "name": "support-topics/theory-and-concepts.svg",
+          "sha256": "a798239511ae17ecba2709ff62e74e0ac232c22bb670b286f98d183789d29acb",
+          "size": 925,
+          "type": "image/svg+xml"
+        },
+        "support-topics/using-the-teique.svg": {
+          "blob": "7119f5e58f866c9ab5a62015b3626cd5",
+          "name": "support-topics/using-the-teique.svg",
+          "sha256": "492c249606d18902fcbf0931f7e18a8752063d7ac3437983dfc2ec8908ca27b5",
+          "size": 3979,
+          "type": "image/svg+xml"
+        },
+        "tools/certificate-checker.svg": {
+          "blob": "e6020a3428f880c148cac7456b51e8c8",
+          "name": "tools/certificate-checker.svg",
+          "sha256": "31ef897f88283936d6a1eaee8fca84e0c7c5ee2c806407f394bdf02456be0870",
+          "size": 2239,
+          "type": "image/svg+xml"
+        },
+        "tools/psychometric-validation.svg": {
+          "blob": "4046ab351020d615a61a9cd3fb4eb639",
+          "name": "tools/psychometric-validation.svg",
+          "sha256": "738291ac6cef42e07d050b7bb9d421be9341a69fe80c1fa26e92883346db7351",
+          "size": 2517,
+          "type": "image/svg+xml"
+        },
+        "tools/teique-scoring-engine.svg": {
+          "blob": "dd87175fb09fd9b3ef68c228b0e16803",
+          "name": "tools/teique-scoring-engine.svg",
+          "sha256": "034b026c2ef476f904318a9dbfd1dd7545c758c171414dff5869d565e4f32afc",
+          "size": 1482,
+          "type": "image/svg+xml"
+        },
+        "ui/arrow-cta.svg": {
+          "blob": "c8045cca7fb787eb5300ba16fbd9dc25",
+          "name": "ui/arrow-cta.svg",
+          "sha256": "54d6037c89f40121a81ae68c765df092ae5c2490487d4b57f9d88b1bd6fe2573",
+          "size": 821,
+          "type": "image/svg+xml"
+        },
+        "ui/dropdown-arrow.svg": {
+          "blob": "2257608c3de5a156d2e1d5b0661ab5f3",
+          "name": "ui/dropdown-arrow.svg",
+          "sha256": "e9a679500218103edceeb009e8255599064c052fad43044d3aa51da33467d4ad",
+          "size": 744,
+          "type": "image/svg+xml"
+        },
+        "ui/language.svg": {
+          "blob": "83896eaafa5fb25e9fe52fd6bb4f98e6",
+          "name": "ui/language.svg",
+          "sha256": "a3ccd82ae98bf16087cb195182d793ea4a6a8d52759a3c87e52b5337f82773cf",
+          "size": 1648,
+          "type": "image/svg+xml"
+        },
+        "ui/request-demo-arrow.svg": {
+          "blob": "c8045cca7fb787eb5300ba16fbd9dc25",
+          "name": "ui/request-demo-arrow.svg",
+          "sha256": "54d6037c89f40121a81ae68c765df092ae5c2490487d4b57f9d88b1bd6fe2573",
+          "size": 821,
+          "type": "image/svg+xml"
+        },
+        "user/guest-hover.svg": {
+          "blob": "11571449c3fe63c847366e5540f8b252",
+          "name": "user/guest-hover.svg",
+          "sha256": "df65d1f29cf60b9c8f3da701be7daf94636e4fd53d274ec03ae45b83314f5b46",
+          "size": 964,
+          "type": "image/svg+xml"
+        },
+        "user/guest.svg": {
+          "blob": "ab13c71b84f70d352e802edb953d6134",
+          "name": "user/guest.svg",
+          "sha256": "9f2242a0b8767644e141907e167fd750b48d6316af49d6d0fc502462b327ed57",
+          "size": 694,
+          "type": "image/svg+xml"
+        },
+        "user/logged-in-hover.svg": {
+          "blob": "66cc294606f16359dd3b7d4f2f748b81",
+          "name": "user/logged-in-hover.svg",
+          "sha256": "ee5fbe392472697725e97a8564c88c3364ebac84f6ef4d79f5d309f530c58279",
+          "size": 26313,
+          "type": "image/svg+xml"
+        },
+        "user/logged-in.svg": {
+          "blob": "a9c60c67494efdf9badc8662ebf28c7a",
+          "name": "user/logged-in.svg",
+          "sha256": "d2598524c9916babeb876f525b2de9931a496f0d7404ca7302f4b317e828bd36",
+          "size": 941,
+          "type": "image/svg+xml"
+        },
+        "user/state-guest.svg": {
+          "blob": "ab13c71b84f70d352e802edb953d6134",
+          "name": "user/state-guest.svg",
+          "sha256": "9f2242a0b8767644e141907e167fd750b48d6316af49d6d0fc502462b327ed57",
+          "size": 694,
+          "type": "image/svg+xml"
+        },
+        "user/state-hover-logged-in.svg": {
+          "blob": "66cc294606f16359dd3b7d4f2f748b81",
+          "name": "user/state-hover-logged-in.svg",
+          "sha256": "ee5fbe392472697725e97a8564c88c3364ebac84f6ef4d79f5d309f530c58279",
+          "size": 26313,
+          "type": "image/svg+xml"
+        },
+        "user/state-hover.svg": {
+          "blob": "11571449c3fe63c847366e5540f8b252",
+          "name": "user/state-hover.svg",
+          "sha256": "df65d1f29cf60b9c8f3da701be7daf94636e4fd53d274ec03ae45b83314f5b46",
+          "size": 964,
+          "type": "image/svg+xml"
+        },
+        "user/state-logged-in.svg": {
+          "blob": "a9c60c67494efdf9badc8662ebf28c7a",
+          "name": "user/state-logged-in.svg",
+          "sha256": "d2598524c9916babeb876f525b2de9931a496f0d7404ca7302f4b317e828bd36",
+          "size": 941,
+          "type": "image/svg+xml"
+        }
+      },
+      "name": "icons",
+      "order": []
+    },
+    "illustrations": {
+      "files": {
+        "about-us.webp": {
+          "blob": "a6e494e66181f04090ad21432dac95a8",
+          "name": "about-us.webp",
+          "sha256": "dd7089e3255cea669cc1e5d6cc2c12ebe8b692983e4e5d80fbed047df2ca3083",
+          "size": 723402,
+          "type": "image/webp"
+        },
+        "background-abstract-2.png": {
+          "blob": "0822acb2ac01a4e376414dc76be81bf3",
+          "name": "background-abstract-2.png",
+          "sha256": "52472baecccaba12ebd97550ca5993d61ddfbcd08af067161bd81e7e30ae4292",
+          "size": 8519535,
+          "type": "image/png"
+        },
+        "background-abstract.png": {
+          "blob": "4f34506401acce1c7b212b702265b5d0",
+          "name": "background-abstract.png",
+          "sha256": "fa9c3d93e911d97b47855fc9b0ae5ae3d2f4682357eb77e8b89cfecef42311ed",
+          "size": 197019,
+          "type": "image/png"
+        },
+        "contact-us-chat-bubble.webp": {
+          "blob": "7f2015d6515953e50388600245c10fe1",
+          "name": "contact-us-chat-bubble.webp",
+          "sha256": "f4f3ccaa9e2907f605babefa4fb24ab6d59fd1768b09f84e13673b22bbc4c966",
+          "size": 520768,
+          "type": "image/webp"
+        },
+        "info-bubble-blue.webp": {
+          "blob": "c8e7873a611b0ea6845e9c3d18a51ebd",
+          "name": "info-bubble-blue.webp",
+          "sha256": "be0c8798a22744a16687662d5a3414dd2f37b3654c0936f9c6ac7a48c004d0a9",
+          "size": 722504,
+          "type": "image/webp"
+        },
+        "library-blue.webp": {
+          "blob": "b2ff736959c41588219675a44f381f00",
+          "name": "library-blue.webp",
+          "sha256": "85aa834ef53a6e9f0bd69addc993251c4bf0c36585bc9dd6fac9db876d0322e8",
+          "size": 668758,
+          "type": "image/webp"
+        },
+        "library.webp": {
+          "blob": "54bdf3b1d17175e2daa4e4c385e44c53",
+          "name": "library.webp",
+          "sha256": "592aea960b8baf128d6afacae0f28aa310484ed07d3c7527797505de63e24873",
+          "size": 660648,
+          "type": "image/webp"
+        },
+        "padlock.webp": {
+          "blob": "68267d4432455e651c7b2697a8cfb2c3",
+          "name": "padlock.webp",
+          "sha256": "ecfdc076843f2ba1ac2364cc78dc177a21ce032c6f4722177a0aa606783a510a",
+          "size": 433332,
+          "type": "image/webp"
+        },
+        "settings.webp": {
+          "blob": "baaa453ac6d1a9d7b2b1b9a66d0b4507",
+          "name": "settings.webp",
+          "sha256": "0421142d4fea99db7a2700ea3102426b485ec5a18674872fdc20f93a835da0f5",
+          "size": 526104,
+          "type": "image/webp"
+        },
+        "toolbox-research-icons.webp": {
+          "blob": "8b425cfe23072f97f523540510134f33",
+          "name": "toolbox-research-icons.webp",
+          "sha256": "4f2a4a9acec6df9126530fd720e236b582b650b6c0db5146fb1ea465789839e3",
+          "size": 609380,
+          "type": "image/webp"
+        }
+      },
+      "name": "illustrations",
+      "order": []
+    },
+    "logos": {
+      "files": {
+        "lpl-logo-academic.webp": {
+          "blob": "b881bd678299f7fbb0242872ac5f3ac7",
+          "name": "lpl-logo-academic.webp",
+          "sha256": "9e2f113656368f18299c99008651d62d3d81ebcef06469756cd23abf7ddceb2c",
+          "size": 162074,
+          "type": "image/webp"
+        },
+        "lpl-logo-blue-horizontal.webp": {
+          "blob": "af3f456e6ab2ff6c27d8fa224a3ec4c8",
+          "name": "lpl-logo-blue-horizontal.webp",
+          "sha256": "51f01b15df7636257b5e7c8e1f512610c15fb87f432d9fef1606ea1f3d2c79ad",
+          "size": 44212,
+          "type": "image/webp"
+        },
+        "lpl-logo-orange-monogram.webp": {
+          "blob": "914b516c149d6060454df3ede8d9ebf3",
+          "name": "lpl-logo-orange-monogram.webp",
+          "sha256": "ba6f4eb7fd736234b0bd9e85cf3ff6952401c214adae66cc18682aa980c6ddad",
+          "size": 39188,
+          "type": "image/webp"
+        },
+        "lpl-logo-white-horizontal.webp": {
+          "blob": "e9df04e35948b9e4403a0f7cf8765366",
+          "name": "lpl-logo-white-horizontal.webp",
+          "sha256": "1a12df37d19a5c3d2fe427a94ac30755aa171810888468584f416fc771a0fd8e",
+          "size": 39618,
+          "type": "image/webp"
+        },
+        "lpl-logo-white-monogram.webp": {
+          "blob": "d9ac9e3a2ba088f97783b53e5d295844",
+          "name": "lpl-logo-white-monogram.webp",
+          "sha256": "404d88af89d6fe4d1d06e2f63ccd89d2d22ffc0f43b966de350da60e81e56dfb",
+          "size": 28362,
+          "type": "image/webp"
+        }
+      },
+      "name": "logos",
+      "order": []
+    },
+    "notes": {
+      "files": {},
+      "name": "notes",
+      "order": []
+    },
+    "placeholders": {
+      "files": {
+        "yt-preview.png": {
+          "blob": "34d515cebb26f5b877cc3f5366f57d77",
+          "name": "yt-preview.png",
+          "sha256": "0f32de08201de183451e042c361ca08df4b6dbbf545835c768647ca0ead74412",
+          "size": 865331,
+          "type": "image/png"
+        }
+      },
+      "name": "placeholders",
+      "order": []
+    },
+    "quotes": {
+      "files": {
+        "albert-einstein.png": {
+          "blob": "a85089f4cfe17f85af9efeee07468b0d",
+          "name": "albert-einstein.png",
+          "sha256": "f76857714ad1c8154fe793bf27d551d266b4d7e4d9bef3254d813a44a21ae806",
+          "size": 11573,
+          "type": "image/png"
+        }
+      },
+      "name": "quotes",
+      "order": []
+    },
+    "report-covers": {
+      "files": {
+        "3rs-sample.png": {
+          "blob": "92d5dd4f9dd6628fac04a5170b661c02",
+          "name": "3rs-sample.png",
+          "sha256": "0a8ea3f4ac92c1a03a685471c7a729b78d60295376b857c2f62d6c770c1a0458",
+          "size": 521599,
+          "type": "image/png"
+        },
+        "big-5.png": {
+          "blob": "07f07c6f178b852e65cf07709b8494a9",
+          "name": "big-5.png",
+          "sha256": "f48217bc2e1a592057023e1cc4e6d65225eb852216ed78ac954a599131b71f26",
+          "size": 1031704,
+          "type": "image/png"
+        },
+        "coach-aid.png": {
+          "blob": "73c65254387984b6349b27d2c0cf1d62",
+          "name": "coach-aid.png",
+          "sha256": "3cbd3a44ebdbfac5403f71b1098f0405b48f482f21e9c51764dd15057bf9f1df",
+          "size": 960774,
+          "type": "image/png"
+        },
+        "compatibility.png": {
+          "blob": "eade304554341f5bbd506dfdf8f62478",
+          "name": "compatibility.png",
+          "sha256": "6d064772aac41c435b9c7021f846e13dc58a50d61f6b9d3c3f83279042e6097a",
+          "size": 848139,
+          "type": "image/png"
+        },
+        "corporate.png": {
+          "blob": "1a807fad482f1935b06838047167ebf7",
+          "name": "corporate.png",
+          "sha256": "faaa13095a496d48e077162eec37dd6a11fe480a7f0a220977ad31a374adfb02",
+          "size": 664783,
+          "type": "image/png"
+        },
+        "developmental.png": {
+          "blob": "ea16904b60a4b76e2ea3bfc9a1233e16",
+          "name": "developmental.png",
+          "sha256": "eb20ef9c8c9407c0d51b2de8c0088d0be4d75a8721731ed4c5849686a9907442",
+          "size": 936678,
+          "type": "image/png"
+        },
+        "disc.png": {
+          "blob": "cd9f9bb9329d92380f057559f66686ee",
+          "name": "disc.png",
+          "sha256": "fbaa4f618a7fa572c8d0bcd77b9dfe4d84cd512a5cf74a42287064319f60fb9f",
+          "size": 1619067,
+          "type": "image/png"
+        },
+        "leadership.png": {
+          "blob": "3bdf7ae90eba5ee0fd234102ed0e9ac4",
+          "name": "leadership.png",
+          "sha256": "5b0e9f07caa14a50c1e4c1182eb0315e7a381fab4007ddc650ae4bb16b3c71dd",
+          "size": 1044808,
+          "type": "image/png"
+        },
+        "personal.png": {
+          "blob": "b96b9563c101bfbeb74057e6cc3ea0f9",
+          "name": "personal.png",
+          "sha256": "289b12189efe9dba09974a827959f4c575767afb0c3750fe758dd56516e9adcb",
+          "size": 921744,
+          "type": "image/png"
+        },
+        "recruitment.png": {
+          "blob": "3eebf6fb27320bf87800adc5a0af040d",
+          "name": "recruitment.png",
+          "sha256": "96772fef660e70e9a650b81f89a790f3dae9c15e1341455b06ae2500f11283a7",
+          "size": 660123,
+          "type": "image/png"
+        },
+        "rolesync.png": {
+          "blob": "ae09a42ac114f76c7ba10750b003676c",
+          "name": "rolesync.png",
+          "sha256": "4718406462259cde121e918bfe2984631cda9a97405a1ccc9eb72c796ea4f666",
+          "size": 288915,
+          "type": "image/png"
+        },
+        "scan-in.png": {
+          "blob": "b1ae9d436ae2407b1466d1feef8f1a5e",
+          "name": "scan-in.png",
+          "sha256": "1b2f23e7f9f2653effcb65756d794f785a7987e3d9259054b51f7fb57de04db9",
+          "size": 1324320,
+          "type": "image/png"
+        },
+        "team-grouping.png": {
+          "blob": "26430492731b685ba8a1eb8683d516c8",
+          "name": "team-grouping.png",
+          "sha256": "33ea72968e7635ab5bb9a0d8deebef2781c0aa3bc77e37b763805b6e636b3cae",
+          "size": 1123651,
+          "type": "image/png"
+        },
+        "team-selection.png": {
+          "blob": "80c0fa9cef3ad4ee8481033412f0faee",
+          "name": "team-selection.png",
+          "sha256": "6ef73400ddfacfb2dfc82d2c9061e38a40560311c57d077ca9700a3eaec1aada",
+          "size": 1149100,
+          "type": "image/png"
+        },
+        "teams.png": {
+          "blob": "0e13ad0cece53a7690081c6a3b7e43be",
+          "name": "teams.png",
+          "sha256": "bf072f1e5257b23a19be1823a355cf6156bc700a08f0191452e0a1c639022d7c",
+          "size": 1075828,
+          "type": "image/png"
+        }
+      },
+      "name": "report-covers",
+      "order": []
+    },
+    "try-teique": {
+      "files": {
+        "blurred-results.png": {
+          "blob": "5a323620752b1aaf3d215dbb5c58ea74",
+          "name": "blurred-results.png",
+          "sha256": "5f685d3061832dcfca636a69ab40608f39c15690550b5069b2293522b352dfaf",
+          "size": 348263,
+          "type": "image/png"
+        },
+        "global-score-wheel.png": {
+          "blob": "b93e901aa4c97eebd30cc9548ee71bf9",
+          "name": "global-score-wheel.png",
+          "sha256": "37b5c8daee91e88b066610f356286470d449f2388ae4899b789a6e1b63dccb4d",
+          "size": 16248,
+          "type": "image/png"
+        },
+        "personal-cover.png": {
+          "blob": "8bd1922bfeade00c537eeffe313d0dda",
+          "name": "personal-cover.png",
+          "sha256": "5c089c09a68b8bc9f42dc112aa463825e4e7ee3053cad4fd0169f5d6d7fb349f",
+          "size": 21397,
+          "type": "image/png"
+        },
+        "step-1.png": {
+          "blob": "b8c70ee4c28db22676c9eded476009e2",
+          "name": "step-1.png",
+          "sha256": "14120638c378b806282946b45237481ef5d879f87fca9605275e5312ee0d0ed8",
+          "size": 166012,
+          "type": "image/png"
+        },
+        "step-2.png": {
+          "blob": "b1662cc9da2e92374566f7ca985ceb13",
+          "name": "step-2.png",
+          "sha256": "94227c8b67e81cf17acdf8c19b7564292d783ba2f360a856f4c566478b174abc",
+          "size": 201714,
+          "type": "image/png"
+        },
+        "step-3.png": {
+          "blob": "087a00273c0ee73060fce30541ec5baf",
+          "name": "step-3.png",
+          "sha256": "d31b08fd11751ac0363afa8b3de29062af0bb91ac2cfd34949e5e92583d6280e",
+          "size": 200886,
+          "type": "image/png"
+        },
+        "step-4.png": {
+          "blob": "b6cf564d6df8071f08454ebb3038a1a9",
+          "name": "step-4.png",
+          "sha256": "5510b7837e682672fad2f61f62648ef2f90e16daad1e3e72483ba65232252b23",
+          "size": 79091,
+          "type": "image/png"
+        }
+      },
+      "name": "try-teique",
+      "order": []
+    }
+  },
+  "blobs": {},
+  "createdOnFiles": {
+    "at": "2026-09-17T18:47:35.861Z",
+    "v": 1
+  },
+  "docs": {
+    "readme": "project/README.md",
+    "sections": []
+  },
+  "groups": [
+    "Icons",
+    "Logos",
+    "Uploads",
+    "articles",
+    "case-studies",
+    "hero",
+    "icons",
+    "illustrations",
+    "logos",
+    "notes",
+    "placeholders",
+    "quotes",
+    "report-covers",
+    "try-teique"
+  ],
+  "layout": "files",
+  "libraries": [
+    {
+      "file": "components/lib/react.production.min.js",
+      "global": "React",
+      "name": "react",
+      "version": "18.3.1"
+    },
+    {
+      "file": "components/lib/react-dom.production.min.js",
+      "global": "ReactDOM",
+      "name": "react-dom",
+      "version": "18.3.1"
+    }
+  ],
+  "namespace": "PsychometricLaboratoryDesignSystem_0d727f",
+  "sections": {},
+  "source": {
+    "app": "claude-design",
+    "exportedAt": "2026-09-17T18:47:35.861Z",
+    "projectId": "0d727f3a-82b5-41af-9631-06a0bd640faf",
+    "url": "https://claude.ai/design/p/0d727f3a-82b5-41af-9631-06a0bd640faf",
+    "v": 1
+  },
+  "title": "Psychometric Laboratory Design System"
+}

@@ -1,0 +1,26 @@
+<!-- @dsCard group="Components" height=200 subtitle="Facet-coded chips and hover-swap social links" page -->
+<!doctype html><html><head><meta charset="utf-8"><script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script><style>body{width:700px;height:200px;font-family:var(--font-body)}#root{padding:24px;display:flex;flex-direction:column;gap:24px}</style></head><body>
+<div id="root"></div>
+<script type="text/babel">
+const { Tag, SocialIcon } = window.PsychometricLaboratoryDesignSystem_0d727f;
+const social = ["facebook","instagram","linkedin","tiktok","x","youtube","website"];
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <>
+    <div style={{display:'flex',flexWrap:'wrap',gap:12,alignItems:'center'}}>
+      <Tag color="secondary">Tag</Tag>
+      <Tag color="primary">Tag</Tag>
+      <Tag color="red">Tag</Tag>
+      <Tag color="magenta">Tag</Tag>
+      <Tag color="purple">Tag</Tag>
+      <Tag color="green">Tag</Tag>
+      <Tag color="yellow">Tag</Tag>
+    </div>
+    <div style={{display:'flex',gap:20,alignItems:'center'}}>
+      {social.map(s => (<SocialIcon key={s} label={s} size={28}
+        defaultSrc={`../../assets/icons/social/${s}-default.svg`}
+        hoverSrc={`../../assets/icons/social/${s}-hover.svg`} />))}
+    </div>
+  </>
+);
+</script>
+</body></html>

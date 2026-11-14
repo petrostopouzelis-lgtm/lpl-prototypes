@@ -1,0 +1,13 @@
+<!-- @dsCard group="Components" height=220 subtitle="Shared account/report table pattern" page -->
+<!doctype html><html><head><meta charset="utf-8"><script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script><style>body{width:700px;height:220px;font-family:var(--font-body)}#root{padding:24px}</style></head><body>
+<div id="root"></div>
+<script type="text/babel">
+const { Table, Button } = window.PsychometricLaboratoryDesignSystem_0d727f;
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <Table columns={["Report","Date","Action"]} rows={[
+    ["Personal EQ Report","04 Jan 2026",<Button variant="primary" fullWidth>View</Button>],
+    ["360 Leadership","22 Feb 2026",<Button variant="primary" fullWidth>View</Button>],
+  ]} />
+);
+</script>
+</body></html>

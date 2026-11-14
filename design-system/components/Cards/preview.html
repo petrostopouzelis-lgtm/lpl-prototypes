@@ -1,0 +1,16 @@
+<!-- @dsCard group="Components" height=240 subtitle="Base, gradient, hoverable and collapsible surfaces" page -->
+<!doctype html><html><head><meta charset="utf-8"><script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script><style>body{width:900px;height:240px;background:#f6f6f6;font-family:var(--font-body)}#root{padding:24px;display:flex;gap:20px;align-items:flex-start}</style></head><body>
+<div id="root"></div>
+<script type="text/babel">
+const { Card, DropdownCard } = window.PsychometricLaboratoryDesignSystem_0d727f;
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <>
+    <Card style={{width:150}}>Base card<br/>16px radius</Card>
+    <Card variant="primary" style={{width:150}}>Primary gradient card</Card>
+    <Card variant="secondary" style={{width:150}}>Secondary gradient card</Card>
+    <Card hoverable style={{width:150}}>Hover me</Card>
+    <DropdownCard title="Collapsible" style={{width:180}}>Body animates open and closed.</DropdownCard>
+  </>
+);
+</script>
+</body></html>

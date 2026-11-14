@@ -1,0 +1,31 @@
+<!-- @dsCard group="Components" height=360 subtitle="Stat cards, panels, progress, status dots, empty state" page -->
+<!doctype html><html><head><meta charset="utf-8"><script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script><style>body{width:900px;height:360px;background:#f6f6f6;font-family:var(--font-body)}#root{padding:24px;display:flex;flex-direction:column;gap:20px}</style></head><body>
+<div id="root"></div>
+<script type="text/babel">
+const { StatCard, Panel, ProgressBar, StatusDot, EmptyState, Button } = window.PsychometricLaboratoryDesignSystem_0d727f;
+const icon = <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--color-primary-full)" strokeWidth="1.8" strokeLinecap="round"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>;
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <>
+    <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:20}}>
+      <StatCard label="Total Candidates" value={248} sub="+12 added this month" subTone="up" icon={icon} />
+      <StatCard label="Awaiting Completion" value={37} sub="across 5 assignments" subTone="warn" icon={icon} />
+      <StatCard label="Reports Generated" value={24} sub="+8 new this week" subTone="up" icon={icon} />
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'1.4fr 1fr',gap:20,alignItems:'start'}}>
+      <Panel title="Completion" action={<Button variant="primary">New</Button>}>
+        <div style={{padding:'0 24px 24px',display:'flex',flexDirection:'column',gap:14}}>
+          <ProgressBar value={12} max={15} label="12/15" />
+          <ProgressBar value={4} max={20} label="4/20" />
+          <div style={{display:'flex',gap:20}}>
+            <StatusDot tone="green" label="Completed" />
+            <StatusDot tone="yellow" label="Awaiting" />
+            <StatusDot tone="red" label="Overdue" />
+          </div>
+        </div>
+      </Panel>
+      <Panel><EmptyState title="No assignments yet" description="Issue your first questionnaire to see it here." /></Panel>
+    </div>
+  </>
+);
+</script>
+</body></html>
