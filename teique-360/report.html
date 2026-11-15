@@ -13,6 +13,10 @@
     scales=pair       two factors or facets share a page, each with a small wheel (default: one per page, large wheel)
     view=grid         start in the all-pages overview
     print=1           open the browser's print dialog once the pages are ready
+  Save as PDF: opened on its own (a file, a local server) it opens the print dialog. Inside the
+  claude.ai viewer, where pages may not open a print dialog, it saves a ready-made PDF instead,
+  from pdf/ next to this page (made by tools/build-viewer-pdfs.js): one per data file, with and
+  without the "Added" tags, in the standard layout.
 -->
 <html lang="en">
 <head>
@@ -26,6 +30,7 @@
     .viewer { display: flex; position: sticky; top: 0; z-index: 50; gap: 8px 14px; align-items: center; flex-wrap: wrap; padding: 8px 14px; margin: -16pt 0 16pt;
       background: #1F2733; color: #fff; font: 500 13px/1.2 Inter, 'Segoe UI', Arial, sans-serif; }
     .viewer label { display: inline-flex; gap: 6px; align-items: center; color: #C5CAD3; }
+    .viewer button:disabled { opacity: .7; cursor: progress; }
     .viewer select, .viewer button { font: inherit; color: #fff; background: #2E3948; border: 1px solid #485568; border-radius: 7px; padding: 5px 9px; cursor: pointer; }
     .viewer button[aria-pressed="true"] { background: #42A2DA; border-color: #42A2DA; }
     .viewer button:focus-visible, .viewer select:focus-visible, .viewer input:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
@@ -101,13 +106,41 @@
     $('v-grid').onclick = () => { grid = true; applyView(); };
     $('v-out').onclick = () => setZoom(grid ? -0.04 : -0.1);
     $('v-in').onclick = () => setZoom(grid ? 0.04 : 0.1);
-    $('v-print').onclick = () => window.print();
+    $('v-print').onclick = savePdf;
     // in the overview, a click on a page opens it at reading size
     mount.addEventListener('click', e => {
       const page = e.target.closest('.page');
       if (!grid || !page) return;
       grid = false; applyView(); page.scrollIntoView({ block: 'start' });
     });
+  }
+
+  // ---- Save as PDF. The claude.ai viewer runs this page in a frame that may not open a print
+  // dialog; there the page hands over a ready-made PDF through the viewer's downloads capability.
+  // Anywhere else (a file opened from disk, a local server) it prints, which gives exactly what is shown.
+  const downloadsReady = window.claude && window.claude.use ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
+  const note = (text, warn) => { $('v-status').textContent = text; $('v-status').classList.toggle('warn', !!warn); };
+  async function savePdf() {
+    const dl = await Promise.race([downloadsReady, new Promise(res => setTimeout(() => res(null), 1500))]);
+    if (!dl) { window.print(); return; }
+    const marks = q.get('marks') !== '0';
+    const standard = !q.get('fill') && q.get('watermark') !== '1' && q.get('extras') !== '0' && q.get('scales') !== 'pair';
+    const btn = $('v-print'), label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Preparing PDF…';
+    try {
+      const res = await fetch(`pdf/${file}${marks ? '' : '-final'}.pdf`);
+      if (!res.ok) throw { code: 'missing' };
+      const blob = await res.blob();
+      const name = (window.__REPORT_NAME || 'Report').replace(/[\\/:*?"<>|]+/g, ' ').trim();
+      await dl.save({ filename: `TEIQue 360 Report - ${name}${marks ? ' (review)' : ''}.pdf`, data: blob });
+      note(standard ? 'PDF saved' : 'PDF saved, in the standard layout: filler, watermark, extra pages and two-per-page settings are not in it', !standard);
+    } catch (e) {
+      const code = e && e.code;
+      if (code === 'declined') note('PDF not saved');
+      else if (code === 'rate_limited') note('A save is already waiting for your answer', true);
+      else if (code === 'missing') note('No ready-made PDF for this report here; open the page on its own to print it', true);
+      else note('This view cannot save files; open the page on its own to print it', true);
+    } finally { btn.disabled = false; btn.textContent = label; }
   }
 
   // ---- build the pages
@@ -120,6 +153,7 @@
     await document.fonts.ready;
     const built = T.report.build(data, window.TEIQ_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', extras: q.get('extras') !== '0', scales: q.get('scales') === 'pair' ? 'pair' : 'single', marks: q.get('marks') !== '0' });
     document.title = 'TEIQue 360° Report: ' + data.subject.name;
+    window.__REPORT_NAME = data.subject.name;
     const r = window.__REPORT = T.report.paginate(built, mount);   // measured at 100%, before any zoom
     const missing = mount.querySelectorAll('.needed').length;
     $('v-status').textContent = `${r.pages} pages` + (missing ? ` · ${missing} texts missing` : '') + (r.warnings.length ? ` · ${r.warnings.length} layout warning${r.warnings.length > 1 ? 's' : ''}: ${r.warnings[0]}` : '');

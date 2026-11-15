@@ -53,6 +53,12 @@ Petros asked for better readability throughout, larger chart text, larger Low/Hi
 - **Contents page** after the cover: every section with its page number, in its factor colour, facets listed under their factor. It is not numbered itself, so the page numbers of the rest are unchanged; the sample is now **37 pages**. The 2010 report has no such page; it is not tagged (Petros, 2026-11-15). `toc: false` in `T.report.build` leaves it out.
 - **The report's name is "TEIQue 360°"** with the degree sign (Petros): cover, page header, the Summary Graph title, the web page and the browser tab. The acknowledgement page title is now "TEIQue 360° (multi-rater feedback)"; the 2010 report prints it without the sign. Body text is untouched.
 
+### "Save as PDF" in the claude.ai viewer (2026-11-15)
+
+- Inside claude.ai the viewer's page may not open a print dialog, so the **Save as PDF** button there saves a ready-made PDF instead (through the viewer's `downloads` capability): the report picked in the bar, with or without the "Added" tags. Those PDFs are in the standard layout; if filler, watermark, extra pages or two-per-page are changed, the status line says they are not in it.
+- Opened any other way (double-click, local server) the button prints, exactly as shown, as before.
+- Make the ready-made PDFs with `node tools/build-viewer-pdfs.js` (to `out/viewer-pdf/`, not in git) and publish them next to the page as `pdf/<name>.pdf` and `pdf/<name>-final.pdf`. **Rebuild and republish them after any change to the report.**
+
 ## Look at it
 
 - `report.html`: **the page viewer.** It shows every PDF page as it will print, page by page or all at once, with a bar to switch the data file, the filler, the watermark and the zoom. "Save as PDF" prints exactly what is shown.
