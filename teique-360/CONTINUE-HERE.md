@@ -18,6 +18,7 @@ The original brief is `brief/TEIQUE-360-HANDOFF.md`. Figma findings are in `brie
 | Path | What |
 |---|---|
 | this folder | All the code. No npm packages, no build step |
+| `hub.html` | **Report Hub**: load a data file, make the full report (PDF/HTML) or export charts (PNG/SVG). Logic in `src/hub/hub.js` |
 | `report.html` | **Page viewer**: every PDF page as it prints, page by page or all at once, with a data-file switcher. Printing it gives the PDF |
 | `web.html` | Web version of the report (stand-in app shell) |
 | `chart-options.html` | Chart options Petros chose from (picks saved in the browser) |

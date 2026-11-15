@@ -1,0 +1,318 @@
+<!doctype html>
+<!--
+  LPL Report Hub: pick a report, load a data file, then either make the full A4 report
+  (save as PDF, or download it as a self-contained HTML file) or export single charts as PNG/SVG.
+  Opens by double-click in Chrome or Edge; nothing to install. The logic is in src/hub/hub.js and
+  uses the same report and chart code as report.html and tools/build-pdf.js.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LPL Report Hub</title>
+<style>
+/* Layout: a control column on the left (report, data, options, export), the live result on the right.
+   Light only, like the reports themselves; colours from the Psychometric Laboratory design system. */
+:root {
+  --blue: #259DD5; --blue-soft: #E9F5FB; --blue-line: #B9DFF2; --blue-ink: #1477A8;
+  --orange: #F3792A;
+  --ink: #1E2630; --muted: #687482; --faint: #98A3AF;
+  --line: #E1E6EC; --ground: #F2F5F8; --card: #FFFFFF; --sunk: #E7ECF1;
+  --err: #C8161D; --err-soft: #FDECEC; --warn: #8A5A00; --warn-soft: #FFF6DF; --ok: #2E8B47;
+  --title: Manrope, 'Segoe UI', Arial, sans-serif;
+  --body: Inter, 'Segoe UI', Arial, sans-serif;
+  --r: 16px; --r-s: 8px;
+  --shadow: 0 1px 3px rgba(20, 40, 60, .08), 0 6px 24px rgba(20, 40, 60, .08);
+  color-scheme: light;
+}
+@font-face { font-family: 'Inter'; src: url('fonts/Inter-Variable.ttf') format('truetype'); font-weight: 100 900; }
+@font-face { font-family: 'Manrope'; src: url('fonts/Manrope-Variable.ttf') format('truetype'); font-weight: 200 800; }
+@page { size: 595pt 842pt; margin: 0; }
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--ground); color: var(--ink); font: 400 14px/1.45 var(--body); -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+/* ---------- top bar */
+.top { height: 60px; display: flex; align-items: center; gap: 14px; background: var(--card); border-bottom: 1px solid var(--line);
+  padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+.top img { height: 30px; width: auto; }
+.top h1 { margin: 0; font: 700 17px/1 var(--title); letter-spacing: -.01em; }
+.top h1 span { color: var(--muted); font-weight: 500; }
+.top .where { margin-left: auto; color: var(--muted); font-size: 12.5px; }
+
+/* ---------- two columns */
+.app { display: grid; grid-template-columns: minmax(330px, 380px) minmax(0, 1fr); height: calc(100% - 60px); }
+.panel { display: flex; flex-direction: column; min-height: 0; background: var(--card); border-right: 1px solid var(--line); }
+.steps { flex: 1; overflow: auto; padding: 20px 22px 28px; display: flex; flex-direction: column; gap: 26px; }
+.step > h2 { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; font: 700 15px/1.2 var(--title); }
+.step > h2 i { flex: none; width: 22px; height: 22px; border-radius: 50%; background: var(--blue-soft); color: var(--blue-ink); font: 700 12px/22px var(--title); text-align: center; font-style: normal; }
+.step > h2 small { margin-left: auto; font: 500 12px var(--body); color: var(--muted); }
+.hint { margin: 0; color: var(--muted); font-size: 12.5px; }
+label.f { display: flex; flex-direction: column; gap: 5px; font-weight: 600; font-size: 12.5px; color: var(--muted); }
+label.f + label.f, .row + label.f, label.f + .row { margin-top: 12px; }
+select, input[type=number] { appearance: none; width: 100%; padding: 8px 32px 8px 11px; border: 1px solid var(--line); border-radius: var(--r-s); background: var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23687482' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 12px center; font-weight: 500; color: var(--ink); }
+input[type=number] { background-image: none; padding-right: 11px; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.check { display: flex; gap: 9px; align-items: flex-start; font-weight: 500; color: var(--ink); cursor: pointer; }
+.check + .check { margin-top: 9px; }
+.check input { margin: 2px 0 0; accent-color: var(--blue); width: 15px; height: 15px; flex: none; }
+.check small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; }
+.group-title { margin: 16px 0 8px; font: 700 11px/1 var(--title); letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
+
+/* report type */
+.rtype { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1.5px solid var(--blue); border-radius: 12px; background: var(--blue-soft); }
+.rtype b { display: block; font: 700 15px/1.2 var(--title); }
+.rtype b i { font-style: normal; color: var(--orange); }
+.rtype span { color: var(--muted); font-size: 12.5px; }
+.rtype .dot { flex: none; width: 16px; height: 16px; border-radius: 50%; border: 5px solid var(--blue); background: #fff; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin-top: 12px; background: var(--sunk); border-radius: 12px; }
+.seg button { border: 0; border-radius: 9px; padding: 9px 8px; background: transparent; cursor: pointer; font-weight: 600; color: var(--muted); }
+.seg button small { display: block; font-weight: 400; font-size: 11.5px; }
+.seg button[aria-pressed=true] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(20, 40, 60, .14); }
+
+/* data */
+.drop { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 18px 14px; border: 1.5px dashed var(--blue-line); border-radius: 12px; background: #FAFDFF; text-align: center; cursor: pointer; transition: background .15s, border-color .15s; }
+.drop:hover, .drop.over { background: var(--blue-soft); border-color: var(--blue); }
+.drop b { font-weight: 600; }
+.drop span { color: var(--muted); font-size: 12.5px; }
+.drop input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.linkbtn { border: 0; padding: 0; background: none; color: var(--blue-ink); font-weight: 600; font-size: 12.5px; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.loaded { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--ground); }
+.loaded .who { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.loaded .who b { font: 700 15px/1.25 var(--title); }
+.badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font: 700 10.5px/1.5 var(--title); letter-spacing: .05em; text-transform: uppercase; background: var(--blue-soft); color: var(--blue-ink); }
+.badge.file { background: #EAF6EE; color: var(--ok); }
+.loaded dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 8px 0 0; font-size: 12.5px; }
+.loaded dt { color: var(--muted); }
+.loaded dd { margin: 0; font-weight: 500; font-variant-numeric: tabular-nums; }
+.issues { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.issue { padding: 8px 10px; border-radius: var(--r-s); font-size: 12.5px; line-height: 1.4; }
+.issue.err { background: var(--err-soft); color: var(--err); }
+.issue.warn { background: var(--warn-soft); color: var(--warn); }
+.issue b { font-weight: 700; }
+details.fmt { margin-top: 10px; font-size: 12.5px; }
+details.fmt summary { cursor: pointer; color: var(--blue-ink); font-weight: 600; }
+details.fmt ul { margin: 8px 0 0; padding-left: 18px; color: var(--muted); }
+details.fmt li + li { margin-top: 3px; }
+details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: var(--ink); background: var(--sunk); padding: 1px 4px; border-radius: 4px; }
+
+/* chart picker */
+.picks { display: flex; flex-direction: column; gap: 2px; }
+.pick { display: flex; align-items: center; gap: 9px; padding: 7px 8px; margin: 0 -8px; border-radius: var(--r-s); cursor: pointer; font-weight: 500; }
+.pick:hover { background: var(--ground); }
+.pick input { accent-color: var(--blue); width: 15px; height: 15px; margin: 0; }
+.pick em { margin-left: auto; font-style: normal; color: var(--faint); font-size: 12px; font-variant-numeric: tabular-nums; }
+.scales { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.scales .sg { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { border: 1px solid var(--line); background: var(--card); border-radius: 20px; padding: 4px 10px; font-size: 12px; font-weight: 500; cursor: pointer; color: var(--muted); }
+.chip[aria-pressed=true] { background: var(--c, var(--blue)); border-color: var(--c, var(--blue)); color: #fff; }
+.chip.head { font-weight: 700; }
+.mini-actions { display: flex; gap: 14px; margin-top: 6px; }
+
+/* export bar at the foot of the panel */
+.export { flex: none; padding: 14px 22px 16px; border-top: 1px solid var(--line); background: var(--card); display: flex; flex-direction: column; gap: 8px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 16px; border-radius: 50px; border: 0; cursor: pointer; font: 700 14px/1 var(--title); }
+.btn.primary { background: linear-gradient(180deg, #2FA6DD, #1E92CB); color: #fff; box-shadow: 0 2px 8px rgba(37, 157, 213, .35); }
+.btn.primary:hover { background: linear-gradient(180deg, #2A9ED5, #1A86BC); }
+.btn.ghost { background: var(--card); color: var(--blue-ink); border: 1.5px solid var(--blue-line); }
+.btn.ghost:hover { background: var(--blue-soft); }
+.btn:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+.export .btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.export .btns.one { grid-template-columns: 1fr; }
+.export .note { margin: 0; font-size: 12px; color: var(--muted); text-align: center; min-height: 1.4em; }
+.export .note.bad { color: var(--err); }
+
+/* ---------- result area */
+.work { position: relative; min-width: 0; overflow: auto; }
+.bar { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 10px 22px; background: rgba(242, 245, 248, .92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+.bar .status { font-weight: 600; }
+.bar .status span { color: var(--muted); font-weight: 400; }
+.bar .status .w { color: var(--warn); }
+.bar .tools { margin-left: auto; display: flex; gap: 4px; align-items: center; }
+.bar .tools button { min-width: 32px; height: 30px; padding: 0 10px; border: 1px solid var(--line); background: var(--card); border-radius: var(--r-s); cursor: pointer; font-weight: 600; color: var(--muted); }
+.bar .tools output { min-width: 46px; text-align: center; font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12.5px; }
+#report-host { display: block; max-width: 100%; overflow-x: auto; }
+.empty { max-width: 420px; margin: 80px auto; padding: 0 20px; text-align: center; color: var(--muted); }
+.empty b { display: block; margin-bottom: 6px; color: var(--ink); font: 700 17px/1.3 var(--title); }
+
+/* chart cards */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 18px; padding: 22px; align-items: start; }
+.card { min-width: 0; background: var(--card); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+.card.wide { grid-column: 1 / -1; }
+.card.wide .art svg { max-width: 780px !important; }
+.card header { display: flex; align-items: center; gap: 10px; padding: 12px 14px 0; }
+.card header b { font: 700 14px/1.25 var(--title); }
+.card header small { display: block; color: var(--muted); font-size: 12px; font-weight: 400; font-family: var(--body); }
+.card header .acts { margin-left: auto; display: flex; gap: 5px; flex: none; }
+.card header .acts button { border: 1px solid var(--line); background: var(--card); border-radius: 20px; padding: 4px 10px; cursor: pointer; font: 700 11px/1.3 var(--title); letter-spacing: .04em; color: var(--blue-ink); }
+.card header .acts button:hover { background: var(--blue-soft); border-color: var(--blue-line); }
+.card .art { padding: 14px; }
+.card .art svg { display: block; width: 100%; height: auto; max-width: none !important; margin: 0 auto; }
+.card .art.narrow svg { max-width: 260px !important; }
+
+@media (max-width: 860px) {
+  html, body { height: auto; }
+  .app { grid-template-columns: 1fr; height: auto; }
+  .panel { border-right: 0; border-bottom: 1px solid var(--line); }
+  .steps { overflow: visible; }
+  .work { overflow: visible; }
+  .top .where { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* printing: only the report pages */
+@media print {
+  html, body { height: auto; background: #fff; }
+  .top, .panel, .bar, .cards, .empty { display: none !important; }
+  .app { display: block; height: auto; }
+  .work { overflow: visible; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <img src="assets/logo-monogram.png" alt="">
+  <h1>Report Hub <span>· London Psychometric Laboratory</span></h1>
+  <div class="where" id="where"></div>
+</header>
+
+<div class="app">
+  <aside class="panel" aria-label="Report settings">
+    <div class="steps">
+      <section class="step">
+        <h2><i>1</i>Report</h2>
+        <div class="rtype" role="radiogroup" aria-label="Report type">
+          <span class="dot" role="radio" aria-checked="true" tabindex="0" aria-label="TEIQue 360°"></span>
+          <div><b>TEIQ<i>ue</i> 360°</b><span>Self and rater scores, full form · A4</span></div>
+        </div>
+        <div class="seg" role="group" aria-label="What to make">
+          <button type="button" id="mode-report" aria-pressed="true">Full report<small>PDF or HTML</small></button>
+          <button type="button" id="mode-charts" aria-pressed="false">Charts only<small>PNG or SVG</small></button>
+        </div>
+      </section>
+
+      <section class="step">
+        <h2><i>2</i>Data</h2>
+        <label class="drop" id="drop">
+          <b>Drop the report data file here</b>
+          <span>or click to choose a .json file</span>
+          <input type="file" id="file" accept=".json,application/json">
+        </label>
+        <div class="row" style="margin-top:10px">
+          <label class="f" style="flex:1;margin:0">Or use sample data
+            <select id="sample"></select>
+          </label>
+        </div>
+        <div class="loaded" id="loaded" hidden></div>
+        <details class="fmt">
+          <summary>What the data file holds</summary>
+          <ul>
+            <li><code>subject</code>: the person's name, and optionally their role and time in role.</li>
+            <li><code>report</code>: date, form (<code>TEIQue-360</code>), norm and participant ID.</li>
+            <li><code>self</code>: their own 20 scores (Global, 4 factors, 15 facets), as percentiles 1 to 99.</li>
+            <li><code>others</code>: how many raters responded and were invited, and the raters' average for the same 20 scores.</li>
+            <li><code>groups</code>: each rater group with its counts and scores, and optionally the raters' names.</li>
+            <li>Optional: <code>self_raw</code> (raw scores for the coach table) and <code>settings</code>.</li>
+          </ul>
+          <p class="hint" style="margin-top:8px"><button type="button" class="linkbtn" id="template">Download a data template</button> (the sample, to fill in). Full description: <code>data/DATA-FORMAT.md</code>.</p>
+        </details>
+      </section>
+
+      <section class="step" id="opts-report">
+        <h2><i>3</i>Options</h2>
+        <label class="f">Where wording is still missing
+          <select id="o-fill">
+            <option value="none">Show the "Text needed" marker only</option>
+            <option value="typical">Marker and grey filler text</option>
+            <option value="long">Marker and long filler text</option>
+          </select>
+        </label>
+        <label class="f">Layout
+          <select id="o-scales">
+            <option value="single">One factor or facet per page</option>
+            <option value="pair">Two per page (shorter report)</option>
+          </select>
+        </label>
+        <label class="f">Interpretation text follows
+          <select id="o-follows">
+            <option value="self">The person's own score</option>
+            <option value="others">The raters' average</option>
+          </select>
+        </label>
+        <label class="f">Show a rater group on its own from
+          <select id="o-min">
+            <option value="1">1 rater</option><option value="2">2 raters</option><option value="3">3 raters</option><option value="4">4 raters</option><option value="5">5 raters</option>
+          </select>
+        </label>
+        <div class="group-title">Pages and marks</div>
+        <label class="check"><input type="checkbox" id="o-extras"><span>Summary graph, perception map and gap chart<small>Three pages the 2010 report did not have</small></span></label>
+        <label class="check"><input type="checkbox" id="o-marks"><span>Mark additions<small>"+ Added" tags for review; switch off for a finished report</small></span></label>
+        <label class="check"><input type="checkbox" id="o-wm"><span>Sample watermark</span></label>
+      </section>
+
+      <section class="step" id="opts-charts" hidden>
+        <h2><i>3</i>Charts<small id="c-count"></small></h2>
+        <div class="picks" id="c-types"></div>
+        <div class="group-title">Scales for the score wheels and rater-group charts</div>
+        <div class="scales" id="c-scales"></div>
+        <div class="mini-actions"><button type="button" class="linkbtn" id="c-all">Select all scales</button><button type="button" class="linkbtn" id="c-none">Clear</button></div>
+        <div class="group-title">Export</div>
+        <div class="row">
+          <label class="f" style="flex:1;margin:0">Format
+            <select id="c-format"><option value="png">PNG</option><option value="svg">SVG</option><option value="both">PNG and SVG</option></select>
+          </label>
+          <label class="f" style="flex:1;margin:0">PNG size
+            <select id="c-scale"><option value="1">1×</option><option value="2">2×</option><option value="3" selected>3×</option><option value="4">4×</option></select>
+          </label>
+        </div>
+        <label class="f">PNG background
+          <select id="c-bg"><option value="white">White</option><option value="none">Transparent</option></select>
+        </label>
+      </section>
+    </div>
+
+    <div class="export">
+      <div class="btns" id="x-report">
+        <button type="button" class="btn primary" id="x-pdf">Save as PDF</button>
+        <button type="button" class="btn ghost" id="x-html">Download HTML</button>
+      </div>
+      <div class="btns one" id="x-charts" hidden>
+        <button type="button" class="btn primary" id="x-zip">Download charts</button>
+      </div>
+      <p class="note" id="x-note" role="status"></p>
+    </div>
+  </aside>
+
+  <main class="work" id="work">
+    <div class="bar">
+      <div class="status" id="status">Loading…</div>
+      <div class="tools" id="zoom-tools">
+        <button type="button" id="z-out" aria-label="Zoom out">−</button>
+        <output id="z-val">100%</output>
+        <button type="button" id="z-in" aria-label="Zoom in">+</button>
+        <button type="button" id="z-fit">Fit</button>
+      </div>
+    </div>
+    <div class="empty" id="empty" hidden><b>Nothing to show yet</b><span id="empty-text"></span></div>
+    <div id="report-host"></div>
+    <div class="cards" id="cards" hidden></div>
+  </main>
+</div>
+
+<script>
+  // Always fetch the current files: a local preview server sends no cache headers, and a new page
+  // running old cached scripts draws nothing. The sample data files are listed in data/files.js.
+  window.HUB_V = '?v=' + Date.now();
+  document.write('<script src="data/files.js' + HUB_V + '"><\/script>');
+</script>
+<script>
+  (window.TEIQ_FILE_LIST || ['sample-360']).map(function (n) { return 'data/' + n + '.js'; })
+    .concat(['text/library.js', 'src/model.js', 'src/svg.js', 'src/charts/radial.js', 'src/charts/linear.js', 'src/charts/overview.js', 'src/report/content.js', 'src/report/paginate.js', 'src/hub/hub.js'])
+    .forEach(function (src) { document.write('<script src="' + src + HUB_V + '"><\/script>'); });
+</script>
+</body>
+</html>

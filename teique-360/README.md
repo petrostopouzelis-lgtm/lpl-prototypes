@@ -59,8 +59,21 @@ Petros asked for better readability throughout, larger chart text, larger Low/Hi
 - Opened any other way (double-click, local server) the button prints, exactly as shown, as before.
 - Make the ready-made PDFs with `node tools/build-viewer-pdfs.js` (to `out/viewer-pdf/`, not in git) and publish them next to the page as `pdf/<name>.pdf` and `pdf/<name>-final.pdf`. **Rebuild and republish them after any change to the report.**
 
+### Report Hub (2026-11-15)
+
+`hub.html` is the tool for making reports and charts. Open it by double-click in Chrome or Edge.
+
+1. **Report**: TEIQue 360° (the only report type so far; new types are added in `src/hub/hub.js`). Choose **Full report** or **Charts only**.
+2. **Data**: drop a report data file (`.json`, see `data/DATA-FORMAT.md`) or pick a sample. The hub checks the file and lists what is wrong (missing or out-of-range scores, missing name, counts that do not add up); errors stop the report, warnings do not. "Download a data template" saves the sample to fill in.
+3. **Options**: missing-text filler, one or two scales per page, which score the text follows, smallest rater group shown on its own, extra pages, "Added" tags, watermark. Or, for charts: which charts (profile wheel, summary graph, perception map, gap chart, raters overview, and a score wheel and rater-group chart per chosen scale), PNG or SVG, PNG size 1× to 4×, white or transparent background.
+4. **Export**: *Save as PDF* (the browser's print dialog, the same 37 pages `build-pdf.js` makes); *Download HTML* (the whole report as one file with its fonts and images, which prints to PDF from any browser); for charts, one PNG/SVG per chart or all of them in a `.zip`.
+
+Nothing leaves the computer: files are read in the browser. Inside claude.ai (the published hub) the PDF button is hidden because pages there cannot print; use the HTML download.
+After changing `src/report/report.css`, the fonts or the report images, run `node tools/build-hub-embed.js` (it refreshes `src/hub/embed.js`, which the exports use).
+
 ## Look at it
 
+- `hub.html`: **the Report Hub**, for making reports and charts from a data file (above).
 - `report.html`: **the page viewer.** It shows every PDF page as it will print, page by page or all at once, with a bar to switch the data file, the filler, the watermark and the zoom. "Save as PDF" prints exactly what is shown.
 - `out/sample-360.pdf`: the sample report (37 pages), the only build kept in git.
 - The stress tests (`edge-*.pdf`, `sample-long-text.pdf`; `edge-big-gaps` shows self and raters disagreeing): build them with `node tools/build-pdf.js data/<file>.json`, or open the data file in the page viewer.
