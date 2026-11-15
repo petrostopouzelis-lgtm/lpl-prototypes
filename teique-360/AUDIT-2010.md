@@ -23,7 +23,6 @@ Only content and visuals that are wholly new carry the "+ Added" tag. A 2010 cha
 | Where | What | Tag |
 |---|---|---|
 | Summary Graph, Perception Map, Where the Views Differ | Three whole pages: titles, captions, charts and chart labels. The wording is Claude's draft (`extras` in the library) | "Added page" |
-| Contents | A contents page with page numbers, after the cover. Its entries are the page titles | "Added page" |
 | Rater Groups | The response cards above the rater list ("9 of 9 raters responded", one card per group) | "Added chart" |
 | Every factor and facet page | The score wheel (the 2010 report has only the rater-group chart there) | "Added chart" |
 
@@ -39,6 +38,7 @@ Only content and visuals that are wholly new carry the "+ Added" tag. A 2010 cha
 
 | Where | What |
 |---|---|
+| Contents | A contents page with page numbers, after the cover; its entries are the page titles. Not tagged (Petros, 2026-11-15) |
 | Cover | "A product of London Psychometric Laboratory Ltd." (from the current LPL reports); the form line "Full Form" (from the cover template) |
 | Every page | Footer "© K. V. Petrides 2026. All rights reserved." (from the current LPL reports) |
 | Where wording is missing | The yellow "Text needed" marker and grey filler, which mark themselves. Not in the sample: its scores all fall in bands the 2010 report has wording for |

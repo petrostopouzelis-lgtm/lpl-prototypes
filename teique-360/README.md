@@ -50,7 +50,7 @@ Petros asked for better readability throughout, larger chart text, larger Low/Hi
 
 ### Contents page and the name "TEIQue 360°" (2026-11-14, last edits)
 
-- **Contents page** after the cover: every section with its page number, in its factor colour, facets listed under their factor. It is not numbered itself, so the page numbers of the rest are unchanged; the sample is now **37 pages**. The 2010 report has no such page, so it carries the "Added page" tag. `toc: false` in `T.report.build` leaves it out.
+- **Contents page** after the cover: every section with its page number, in its factor colour, facets listed under their factor. It is not numbered itself, so the page numbers of the rest are unchanged; the sample is now **37 pages**. The 2010 report has no such page; it is not tagged (Petros, 2026-11-15). `toc: false` in `T.report.build` leaves it out.
 - **The report's name is "TEIQue 360°"** with the degree sign (Petros): cover, page header, the Summary Graph title, the web page and the browser tab. The acknowledgement page title is now "TEIQue 360° (multi-rater feedback)"; the 2010 report prints it without the sign. Body text is untouched.
 
 ## Look at it

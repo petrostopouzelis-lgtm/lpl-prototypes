@@ -65,7 +65,7 @@
     // page titles; a section's tocSubs are entries without a page of their own.
     if (opt.toc !== false) {
       const tocTitle = (lib.toc && lib.toc.title) || 'Contents';
-      sections.push({ id: 'toc', kind: 'contents', title: tocTitle, color: T.BLUE, headHtml: head('', tocTitle, 'Added page') });
+      sections.push({ id: 'toc', kind: 'contents', title: tocTitle, color: T.BLUE, headHtml: head('', tocTitle) });
     }
 
     // ---- about trait emotional intelligence
