@@ -12,12 +12,13 @@
         .status-card { margin-bottom: var(--spacing-narrow-l); }
         .r360-cover { width: 64px; height: 90px; border-radius: var(--radius-small); object-fit: cover; box-shadow: var(--shadow-card); flex-shrink: 0; }
         .r360-head { display: flex; gap: var(--spacing-narrow-l); align-items: center; min-width: 0; }
-        /* Section bar: sticks just below the top bar (its height is measured: --r360-top), scrolls the page
-           to a part of the report, and follows the part being read. */
-        .r360-nav { position: sticky; top: var(--r360-top, 104px); z-index: 70; margin-bottom: var(--spacing-narrow-l); padding: 0 var(--spacing-narrow-l); transition: box-shadow 0.3s ease; }
-        .r360-nav .tabs { overflow-x: auto; scrollbar-width: none; border-bottom: 0; }
-        .r360-nav .tabs::-webkit-scrollbar { display: none; }
-        .r360-nav .tab { white-space: nowrap; padding-top: var(--spacing-narrow-m); padding-bottom: var(--spacing-narrow-m); }
+        /* Section bar: the app's segmented filter bar (.seg, as on Assignments and Reports). It sticks just
+           below the top bar (its height is measured: --r360-top), scrolls the page to a part of the report,
+           and follows the part being read. The padding leaves room for the pill's shadow. */
+        .r360-bar { position: sticky; top: var(--r360-top, 96px); z-index: 70; display: flex; max-width: calc(100% + 16px); overflow-x: auto; scrollbar-width: none;
+            margin: calc(-1 * var(--spacing-narrow-s)) calc(-1 * var(--spacing-narrow-s)) var(--spacing-narrow-m); padding: var(--spacing-narrow-s);
+            background: var(--color-white); }   /* white like the page and the top bar, so content scrolling under it does not show through */
+        .r360-bar::-webkit-scrollbar { display: none; }
         #r360tip { position: fixed; z-index: 90; pointer-events: none; background: var(--color-black); color: #fff; font: 500 12px/1.35 var(--font-inter); padding: 6px 9px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity .08s; }
         #r360tip.on { opacity: 1; }
         @media (max-width: 680px) { .r360-cover { display: none; } }
@@ -59,13 +60,13 @@
             </div>
 
             <!-- Section bar: jumps to a part of the report; follows the part being read -->
-            <nav class="card r360-nav" aria-label="Report sections">
-                <div class="tabs" id="r360Tabs">
-                    <a class="tab active" href="#results" data-part="results" aria-current="true">Results</a>
-                    <a class="tab" href="#factors" data-part="factors">Factors and facets</a>
-                    <a class="tab" href="#development" data-part="development">Development</a>
-                    <a class="tab" href="#about" data-part="about">About the report</a>
-                    <a class="tab" href="#coach" data-part="coach">Coach data</a>
+            <nav class="r360-bar" aria-label="Report sections">
+                <div class="seg" id="r360Seg">
+                    <button class="active" type="button" data-part="results" aria-current="true">Results</button>
+                    <button type="button" data-part="factors">Factors and facets</button>
+                    <button type="button" data-part="development">Development</button>
+                    <button type="button" data-part="about">About the report</button>
+                    <button type="button" data-part="coach">Coach data</button>
                 </div>
             </nav>
 
@@ -218,26 +219,33 @@
                 document.getElementById('backLabel').textContent = 'Back to Reports';
             }
 
-            // the whole report, built once
+            // The report goes into a shadow root, so its styles stay apart from the app's. The page paints
+            // first, exactly like every other page; the report is built in the next frame, while its block is
+            // still waiting for its turn in the entrance (app.css: .page-content > * rises in with a stagger,
+            // this block 0.22 s after the first), so it rises in already filled.
             const host = document.getElementById('r360');
             const shadow = host.attachShadow({ mode: 'open' });
-            const built = T.report.build(data, lib, { fill: 'none', marks: false, scales: 'pair' });
-            const byId = {};
-            built.sections.forEach(function (s) { byId[s.id] = s; });
-            const sec = function (s) {
-                return '<section class="sec" style="--c:' + (s.color || '') + '">' + s.blocks.map(function (b) { return typeof b === 'string' ? b : b.html; }).join('') + '</section>';
-            };
             shadow.appendChild(document.getElementById('r360Styles').content.cloneNode(true));
             const body = document.createElement('div');
             body.className = 'r360-body';
-            const partHtml = PARTS.map(function (part) {
-                return part.rows.map(function (row) {
-                    const parts = row.filter(function (id) { return byId[id]; }).map(function (id) { return sec(byId[id]); });
-                    return parts.length > 1 ? '<div class="grid2">' + parts.join('') + '</div>' : parts.join('');
-                }).join('');
-            });
             body.innerHTML = PARTS.map(function (part) { return '<div class="r360-part" data-part="' + part.id + '"></div>'; }).join('');
             shadow.appendChild(body);
+
+            let partHtml = null;
+            function buildAll() {
+                const built = T.report.build(data, lib, { fill: 'none', marks: false, scales: 'pair' });
+                const byId = {};
+                built.sections.forEach(function (s) { byId[s.id] = s; });
+                const sec = function (s) {
+                    return '<section class="sec" style="--c:' + (s.color || '') + '">' + s.blocks.map(function (b) { return typeof b === 'string' ? b : b.html; }).join('') + '</section>';
+                };
+                partHtml = PARTS.map(function (part) {
+                    return part.rows.map(function (row) {
+                        const parts = row.filter(function (id) { return byId[id]; }).map(function (id) { return sec(byId[id]); });
+                        return parts.length > 1 ? '<div class="grid2">' + parts.join('') + '</div>' : parts.join('');
+                    }).join('');
+                });
+            }
             // Fill a part; hover values: each chart's <title> becomes the tooltip text
             function fill(i) {
                 const el = body.children[i];
@@ -246,23 +254,27 @@
                 el.dataset.ready = '1';
                 el.querySelectorAll('svg title').forEach(function (t) { t.parentNode.setAttribute('data-tip', t.textContent); t.remove(); });
             }
-            // The first part now, so it rises in with the rest of the page; the others once the entrance
-            // animation is over (they are below the fold), so building them does not make it stutter.
-            fill(0);
+            // two animation frames: the second only starts once the first frame has been drawn
+            const afterPaint = function (fn) { requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(fn, 0); }); }); };
+            // The first part right after the first paint; the others once this block has risen in
+            // (they are below the fold), so building them does not compete with the entrance.
+            const firstFilled = new Promise(function (res) { afterPaint(function () { buildAll(); fill(0); res(); }); });
             let filledAll = null;
             const fillRest = function () {
-                return filledAll || (filledAll = new Promise(function (res) {
-                    let done = false;
-                    const go = function () { if (done) return; done = true; for (let i = 1; i < PARTS.length; i++) fill(i); res(); };
-                    // this block is the last to rise in (app.css: .page-content > *): build when its animation ends
-                    host.addEventListener('animationend', function () { requestAnimationFrame(go); }, { once: true });
-                    setTimeout(go, 2000);   // reduced motion, or no animation: do not wait for one
+                return filledAll || (filledAll = firstFilled.then(function () {
+                    return new Promise(function (res) {
+                        let done = false;
+                        const go = function () { if (done) return; done = true; for (let i = 1; i < PARTS.length; i++) fill(i); res(); };
+                        host.addEventListener('animationend', function () { requestAnimationFrame(go); }, { once: true });
+                        setTimeout(go, 1200);   // reduced motion, or the animation already over
+                    });
                 }));
             };
 
             // ---- section bar
-            const nav = document.querySelector('.r360-nav');
-            const tabs = Array.prototype.slice.call(document.querySelectorAll('#r360Tabs .tab'));
+            const nav = document.querySelector('.r360-bar');
+            const seg = document.getElementById('r360Seg');
+            const tabs = Array.prototype.slice.call(seg.querySelectorAll('button'));
             const partEls = PARTS.map(function (p) { return shadow.querySelector('.r360-part[data-part="' + p.id + '"]'); });
             let locked = false, unlockTimer = 0;   // while a tab's jump is under way the bar keeps that tab
 
@@ -270,17 +282,34 @@
             function placeBar() {
                 const top = document.querySelector('.app-topbar');
                 const h = top ? top.getBoundingClientRect().height : 96;
-                document.documentElement.style.setProperty('--r360-top', Math.round(h + 8) + 'px');
+                document.documentElement.style.setProperty('--r360-top', Math.round(h) + 'px');
             }
             const barBottom = function () { return parseFloat(getComputedStyle(nav).top) + nav.offsetHeight; };
 
+            // the sliding selection of the segmented bar (app.js adds it and moves it on clicks; scrolling
+            // changes the selection too, so it is moved here the same way)
+            function moveIndicator() {
+                const ind = seg.querySelector('.seg-indicator'), active = seg.querySelector('button.active');
+                if (!ind || !active) return;
+                const s = seg.getBoundingClientRect(), b = active.getBoundingClientRect();
+                ind.style.left = (b.left - s.left) + 'px'; ind.style.top = (b.top - s.top) + 'px';
+                ind.style.width = b.width + 'px'; ind.style.height = b.height + 'px';
+            }
+            let activeId = 'results';
             function setActive(id) {
+                if (id === activeId) return;
+                activeId = id;
                 tabs.forEach(function (t) {
                     const on = t.dataset.part === id;
                     t.classList.toggle('active', on);
-                    if (on) { t.setAttribute('aria-current', 'true'); t.scrollIntoView({ block: 'nearest', inline: 'nearest' }); }
-                    else t.removeAttribute('aria-current');
+                    if (on) {
+                        t.setAttribute('aria-current', 'true');
+                        // keep the selected button in view when the bar is wider than the screen
+                        const left = t.offsetLeft - (nav.clientWidth - t.offsetWidth) / 2;
+                        nav.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+                    } else t.removeAttribute('aria-current');
                 });
+                moveIndicator();
             }
 
             // the part being read: the last one whose top has passed under the bar
@@ -304,7 +333,7 @@
             function goTo(id, smooth) {
                 const el = partEls[PARTS.findIndex(function (p) { return p.id === id; })];
                 if (!el) return;
-                const y = el.getBoundingClientRect().top + window.scrollY - barBottom() - 16;
+                const y = el.getBoundingClientRect().top + window.scrollY - barBottom() - 8;
                 setActive(id);
                 if (smooth) {
                     locked = true;
@@ -315,7 +344,7 @@
                 if (history.replaceState) history.replaceState(null, '', location.pathname + location.search + '#' + id);
             }
             tabs.forEach(function (t) {
-                t.addEventListener('click', function (e) { e.preventDefault(); fillRest().then(function () { goTo(t.dataset.part, true); }); });
+                t.addEventListener('click', function () { setActive(t.dataset.part); fillRest().then(function () { goTo(t.dataset.part, true); }); });
             });
             window.addEventListener('scrollend', function () { if (locked) { locked = false; clearTimeout(unlockTimer); } else follow(); });
             // the address changed to #part on an open page (a link, or back/forward)

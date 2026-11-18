@@ -127,6 +127,13 @@
         return out;
     }
 
+    /* Tell the coach why Next did not move on. The app's toast (showToast in app.js), as the Generate
+       report dialog does; alert() is blocked in some views (claude.ai), where Next then seemed to do nothing. */
+    function awWarn(msg) {
+        if (typeof showToast === 'function') showToast(msg);
+        else window.alert(msg);
+    }
+
     function formatAC(n) {
         return AC ? AC.formatAC(n) : (Number(n).toFixed(1) + ' AC');
     }
@@ -205,24 +212,24 @@
                 if (state.targetMode === 'individuals') {
                     syncIndividuals();
                     if (!state.individuals.length) {
-                        alert('Select at least one candidate.');
+                        awWarn('Select at least one candidate.');
                         return false;
                     }
                 } else if (!state.groups.length) {
-                    alert('Select at least one group.');
+                    awWarn('Select at least one group.');
                     return false;
                 }
                 return true;
             case 'assessment-mode':
                 if (state.assessmentMode === 'toolkit') {
                     if (!state.toolkit) {
-                        alert('Select a toolkit.');
+                        awWarn('Select a toolkit.');
                         return false;
                     }
                     return true;
                 }
                 if (!state.instrument) {
-                    alert('Select a questionnaire.');
+                    awWarn('Select a questionnaire.');
                     return false;
                 }
                 return true;
@@ -230,39 +237,39 @@
                 if (is360()) {
                     syncIndividuals();
                     if (state.targetMode !== 'individuals' || state.individuals.length !== 1) {
-                        alert('A 360° is for one candidate at a time. Go back to Target and select one candidate.');
+                        awWarn('A 360° is for one candidate at a time. Go back to Target and select one candidate.');
                         return false;
                     }
                     state.report = REPORT_360;
                     return true;
                 }
                 if (!state.report) {
-                    alert('Select a report.');
+                    awWarn('Select a report.');
                     return false;
                 }
                 return true;
             case 'raters': {
                 const raters = filledRaters();
                 if (!raters.length) {
-                    alert('Add at least one rater.');
+                    awWarn('Add at least one rater.');
                     return false;
                 }
                 const incomplete = raters.filter(function (r) { return !r.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email); });
                 if (incomplete.length) {
-                    alert('Each rater needs a name and a valid email address (' + incomplete.length + ' to finish).');
+                    awWarn('Each rater needs a name and a valid email address (' + incomplete.length + ' to finish).');
                     return false;
                 }
                 return true;
             }
             case 'rolesync-preset':
                 if (!state.rolesyncPreset) {
-                    alert('Choose a RoleSync preset.');
+                    awWarn('Choose a RoleSync preset.');
                     return false;
                 }
                 return true;
             case 'compatibility':
                 if (!state.compatibilityCandidate) {
-                    alert('Select a candidate for compatibility comparison.');
+                    awWarn('Select a candidate for compatibility comparison.');
                     return false;
                 }
                 return true;
@@ -425,7 +432,7 @@
             const input = document.getElementById('awNewGroupName'), label = input.value.trim();
             if (!label) { input.focus(); return; }
             if (state.raterGroups.some(function (g) { return g.label.toLowerCase() === label.toLowerCase(); })) {
-                alert('There is already a group called ' + label + '.');
+                awWarn('There is already a group called ' + label + '.');
                 return;
             }
             state.raterGroups.push({ label: label, raters: [{ name: '', email: '' }] });
@@ -1173,7 +1180,7 @@
             const last = (document.getElementById('awNewLast').value || '').trim();
             const email = (document.getElementById('awNewEmail').value || '').trim();
             if (!first && !last) {
-                alert('Enter a name for the new candidate.');
+                awWarn('Enter a name for the new candidate.');
                 return;
             }
             const full = (first + ' ' + last).trim();
