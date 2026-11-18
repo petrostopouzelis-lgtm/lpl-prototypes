@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>James Okoro | Psychometric Laboratory for Coaches</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .profile-card { margin-bottom: var(--spacing-narrow-l); }
+        .cprofile-table .pl-table-header,
+        .cprofile-table .crow { grid-template-columns: 2.6fr 1fr 1.2fr 1.3fr 56px; }
+        .cprofile-toolbar { margin: var(--spacing-narrow-m) 0 var(--spacing-narrow-l); }
+
+        @media (max-width: 680px) {
+            .cprofile-table .crow { grid-template-columns: 1fr 1fr !important; }
+            .cprofile-table .cell-assignment { grid-column: 1 / -1; }
+        }
+    </style>
+</head>
+<body data-page="candidates" data-title="Candidate" data-subtitle="">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <a class="back-link" href="candidates.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+                Back to Candidates
+            </a>
+
+            <!-- Profile header -->
+            <div class="card profile-card">
+                <div class="profile-head">
+                    <span class="avatar-lg">JO</span>
+                    <div class="pinfo">
+                        <h2>James Okoro</h2>
+                        <div class="pemail">james.okoro@acme.com</div>
+                        <span class="group-pill"><span class="gp-dot" style="background:#7569a1;"></span>Leadership Cohort</span>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <button class="primary-button" onclick="openGenerateReport('James Okoro')">
+                            <img class="btn-icon" src="assets/icons/arrow.svg" alt="">
+                            Generate report
+                        </button>
+                        <div class="export-menu">
+                            <button class="export-trigger" onclick="toggleExportMenu(this)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Export data
+                                <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                            <div class="export-dropdown">
+                                <button onclick="exportData('James Okoro data','CSV')"><img src="assets/icons/csv.svg" alt="">Export as CSV</button>
+                                <button onclick="exportData('James Okoro data','Excel')"><img src="assets/icons/excel.svg" alt="">Export as Excel</button>
+                            </div>
+                        </div>
+                        <button class="secondary-button" onclick="openModal('editCandidateModal')">Edit</button>
+                        <button class="danger-button" onclick="openModal('deleteCandidateModal')">Delete</button>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="assign-meta">
+                    <span><b>Added</b> 2 May 2026</span>
+                    <span><b>Questionnaires</b> 4 total · 3 completed</span>
+                    <span><b>Reports generated</b> 4</span>
+                </div>
+            </div>
+
+            <!-- Questionnaires (multi-assessment tracking) -->
+            <div class="card">
+                <h2 class="card-title">Questionnaires</h2>
+                <p class="settings-intro">Every questionnaire this candidate has taken, across instruments. Open one to view its completion data and generate reports.</p>
+                <div class="seg cprofile-toolbar" id="statusSeg">
+                    <button class="active" data-status="all">All</button>
+                    <button data-status="completed">Completed</button>
+                    <button data-status="active">In progress</button>
+                </div>
+
+                <div class="cprofile-table">
+                    <div class="pl-table-header">
+                        <div>Questionnaire</div>
+                        <div>Type</div>
+                        <div>Completed</div>
+                        <div>Reports</div>
+                        <div></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row crow" data-status="completed" onclick="location.href='assignment-individual.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>TEIQue</b> <span class="form-tag">Full</span></div><div class="assign-target">Individual</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag">Individual</span></div>
+                        <div data-label="Completed">9 Jun 2026</div>
+                        <div data-label="Reports"><span class="highlight-tag green">2 reports</span></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row crow" data-status="completed" onclick="location.href='assignment.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>TEIQue</b> <span class="form-tag">Full</span></div><div class="assign-target">Group · Leadership Cohort</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag primary">Group</span></div>
+                        <div data-label="Completed">2 Jun 2026</div>
+                        <div data-label="Reports"><span class="highlight-tag green">1 report</span></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row crow" data-status="completed" onclick="location.href='assignment-individual.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>TSIQue</b></div><div class="assign-target">Individual</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag">Individual</span></div>
+                        <div data-label="Completed">28 May 2026</div>
+                        <div data-label="Reports"><span class="highlight-tag green">1 report</span></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row crow" data-status="active" onclick="location.href='assignment-individual.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>3Rs Rapid Reasoning</b></div><div class="assign-target">Individual</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag">Individual</span></div>
+                        <div data-label="Completed">—</div>
+                        <div data-label="Reports"><span class="highlight-tag yellow">In progress</span></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="empty-state" id="assignEmpty" style="display:none;">
+                        <h3>Nothing here</h3>
+                        <p>No questionnaires match this filter.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Generate report modal -->
+    <div class="modal-overlay" id="generateReportModal">
+        <div class="modal" style="max-width:560px;">
+            <div class="modal-head">
+                <h3>Generate report</h3>
+                <button class="modal-close" onclick="closeModal('generateReportModal')"><img src="assets/icons/close.svg" alt="Close"></button>
+            </div>
+            <p class="settings-intro">Generate a new report for <b id="genReportFor">James Okoro</b> from a completed TEIQue questionnaire. Pick a report type.</p>
+            <div class="report-pick-grid" id="genReportGrid">
+                <div class="report-pick-card" data-report="Personal"><img class="report-thumb" src="assets/report-covers/personal.png" alt="Personal"><b>Personal</b></div>
+                <div class="report-pick-card" data-report="Corporate"><img class="report-thumb" src="assets/report-covers/corporate.png" alt="Corporate"><b>Corporate</b></div>
+                <div class="report-pick-card" data-report="Leadership"><img class="report-thumb" src="assets/report-covers/leadership.png" alt="Leadership"><b>Leadership</b></div>
+                <div class="report-pick-card" data-report="Developmental"><img class="report-thumb" src="assets/report-covers/developmental.png" alt="Developmental"><b>Developmental</b></div>
+                <div class="report-pick-card" data-report="Recruitment"><img class="report-thumb" src="assets/report-covers/recruitment.png" alt="Recruitment"><b>Recruitment</b></div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('generateReportModal')">Cancel</button>
+                <button class="primary-button" onclick="confirmGenerateReport()">Generate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Candidate modal -->
+    <div class="modal-overlay" id="editCandidateModal">
+        <div class="modal">
+            <div class="modal-head">
+                <h3>Edit Candidate</h3>
+                <button class="modal-close" onclick="closeModal('editCandidateModal')"><img src="assets/icons/close.svg" alt="Close"></button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--spacing-narrow-m);">
+                <div>
+                    <label class="form-label">Full name</label>
+                    <input class="form-input" value="James Okoro">
+                </div>
+                <div>
+                    <label class="form-label">Email address</label>
+                    <input class="form-input" type="email" value="james.okoro@acme.com">
+                </div>
+                <div>
+                    <label class="form-label">Group</label>
+                    <div class="dropdown">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('editGroup')"><span class="dropdown-label">Leadership Cohort</span></button>
+                        <div class="dropdown-menu" id="editGroup">
+                            <button class="dropdown-option" onclick="selectOption('editGroup','No group')">No group</button>
+                            <button class="dropdown-option" onclick="selectOption('editGroup','Leadership Cohort')">Leadership Cohort</button>
+                            <button class="dropdown-option" onclick="selectOption('editGroup','Sales Team')">Sales Team</button>
+                            <button class="dropdown-option" onclick="selectOption('editGroup','Graduate Cohort')">Graduate Cohort</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('editCandidateModal')">Cancel</button>
+                <button class="primary-button" onclick="closeModal('editCandidateModal')">Save changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete confirm modal -->
+    <div class="modal-overlay" id="deleteCandidateModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>Delete candidate?</h3>
+                <button class="modal-close" onclick="closeModal('deleteCandidateModal')"><img src="assets/icons/close.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);">
+                This removes <b>James Okoro</b> and their pending assignments. Completed reports are retained in your account for records.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('deleteCandidateModal')">Keep candidate</button>
+                <button class="danger-button" onclick="window.location.href='candidates.html'">Delete candidate</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        (function () {
+            const seg = document.getElementById('statusSeg');
+            const rows = Array.prototype.slice.call(document.querySelectorAll('.crow'));
+            const emptyState = document.getElementById('assignEmpty');
+
+            seg.addEventListener('click', function (e) {
+                const btn = e.target.closest('button');
+                if (!btn) return;
+                seg.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                const status = btn.dataset.status;
+                filterAnimate(rows, function (r) {
+                    return status === 'all' || r.dataset.status === status;
+                }, emptyState);
+            });
+        })();
+    </script>
+</body>
+</html>

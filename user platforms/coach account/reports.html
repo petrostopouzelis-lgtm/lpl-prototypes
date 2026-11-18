@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports | Psychometric Laboratory for Coaches</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        /* Page-specific table grid */
+        .reports-table .pl-table-header,
+        .reports-table .report-row { grid-template-columns: 2.4fr 1.3fr 1.3fr 1fr 1.6fr; }
+        .reports-toolbar { margin-bottom: var(--spacing-narrow-l); }
+        .report-row { cursor: default; }
+        .report-cell { display: flex; align-items: center; gap: var(--spacing-narrow-m); min-width: 0; }
+        .report-cell img.file-icon { width: 30px; height: 38px; flex-shrink: 0; }
+        .report-cell .r-name { font-family: var(--font-inter); color: var(--color-black); }
+        .report-cell .r-name b { font-weight: var(--font-weight-semibold); }
+        .report-cell .r-sub { font-size: var(--font-size-secondary); color: var(--color-gray); margin-top: 2px; }
+        .report-row .report-actions { justify-content: flex-end; }
+
+        @media (max-width: 680px) {
+            .reports-table .report-row { grid-template-columns: 1fr 1fr !important; }
+        }
+    </style>
+</head>
+<body data-page="reports" data-title="Reports" data-subtitle="Every report you have generated from completed questionnaires.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <div class="panel">
+                <!-- In-card header -->
+                <div class="panel-head">
+                    <h2 class="card-title">Reports</h2>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <div class="export-menu">
+                            <button class="export-trigger" onclick="toggleExportMenu(this)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Export
+                                <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                            <div class="export-dropdown">
+                                <button onclick="exportData('Reports','CSV')"><img src="assets/icons/csv.svg" alt="">Export as CSV</button>
+                                <button onclick="exportData('Reports','Excel')"><img src="assets/icons/excel.svg" alt="">Export as Excel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Toolbar: status segmented (left) + type segmented (right) -->
+                <div class="toolbar reports-toolbar" style="padding: 0 var(--spacing-narrow-l);">
+                    <div class="seg" id="statusSeg">
+                        <button class="active" data-status="all">All</button>
+                        <button data-status="ready">Ready</button>
+                        <button data-status="processing">Processing</button>
+                    </div>
+                    <div class="seg" id="typeSeg">
+                        <button class="active" data-type="all">All</button>
+                        <button data-type="individual">Individual</button>
+                        <button data-type="group">Group</button>
+                    </div>
+                </div>
+
+                <!-- Table — each row is a GENERATED REPORT -->
+                <div class="reports-table">
+                    <div class="pl-table-header">
+                        <div>Report</div>
+                        <div>Subject</div>
+                        <div>From questionnaire</div>
+                        <div>Generated</div>
+                        <div></div>
+                    </div>
+
+                    <div class="pl-table-row report-row filter-item" data-type="individual" data-status="ready">
+                        <div data-label="Report" class="report-cell">
+                            <img class="file-icon" src="assets/icons/pdf.svg" alt="PDF">
+                            <div><div class="r-name"><b>Personal Report</b></div><div class="r-sub">TEIQue · Individual</div></div>
+                        </div>
+                        <div data-label="Subject">James Okoro</div>
+                        <div data-label="From questionnaire">TEIQue Full Form</div>
+                        <div data-label="Generated">9 Jun 2026</div>
+                        <div data-label="" class="report-actions">
+                            <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row report-row filter-item" data-type="individual" data-status="ready">
+                        <div data-label="Report" class="report-cell">
+                            <img class="file-icon" src="assets/icons/pdf.svg" alt="PDF">
+                            <div><div class="r-name"><b>Corporate Report</b></div><div class="r-sub">TEIQue · Individual</div></div>
+                        </div>
+                        <div data-label="Subject">James Okoro</div>
+                        <div data-label="From questionnaire">TEIQue Full Form</div>
+                        <div data-label="Generated">10 Jun 2026</div>
+                        <div data-label="" class="report-actions">
+                            <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row report-row filter-item" data-type="individual" data-status="ready">
+                        <div data-label="Report" class="report-cell">
+                            <img class="file-icon" src="assets/icons/pdf.svg" alt="PDF">
+                            <div><div class="r-name"><b>Personal Report</b></div><div class="r-sub">TEIQue · Individual</div></div>
+                        </div>
+                        <div data-label="Subject">Sofia Almeida</div>
+                        <div data-label="From questionnaire">TEIQue Full Form</div>
+                        <div data-label="Generated">5 Jun 2026</div>
+                        <div data-label="" class="report-actions">
+                            <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row report-row filter-item" data-type="individual" data-status="ready">
+                        <div data-label="Report" class="report-cell">
+                            <img class="file-icon" src="assets/icons/pdf.svg" alt="PDF">
+                            <div><div class="r-name"><b>Leadership Report</b></div><div class="r-sub">TEIQue · Individual</div></div>
+                        </div>
+                        <div data-label="Subject">Sofia Almeida</div>
+                        <div data-label="From questionnaire">TEIQue Full Form</div>
+                        <div data-label="Generated">7 Jun 2026</div>
+                        <div data-label="" class="report-actions">
+                            <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row report-row filter-item" data-type="group" data-status="ready">
+                        <div data-label="Report" class="report-cell">
+                            <img class="file-icon" src="assets/icons/pdf.svg" alt="PDF">
+                            <div><div class="r-name"><b>Team Report</b></div><div class="r-sub">TEIQue · Group</div></div>
+                        </div>
+                        <div data-label="Subject">Onboarding Group</div>
+                        <div data-label="From questionnaire">TEIQue Full Form</div>
+                        <div data-label="Generated">29 May 2026</div>
+                        <div data-label="" class="report-actions">
+                            <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row report-row filter-item" data-type="individual" data-status="ready">
+                        <div data-label="Report" class="report-cell">
+                            <img class="file-icon" src="assets/icons/pdf.svg" alt="PDF">
+                            <div><div class="r-name"><b>Social Intelligence Report</b></div><div class="r-sub">TSIQue · Individual</div></div>
+                        </div>
+                        <div data-label="Subject">Anna Müller</div>
+                        <div data-label="From questionnaire">TSIQue</div>
+                        <div data-label="Generated">2 Jun 2026</div>
+                        <div data-label="" class="report-actions">
+                            <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row report-row filter-item" data-type="individual" data-status="processing">
+                        <div data-label="Report" class="report-cell">
+                            <img class="file-icon" src="assets/icons/pdf.svg" alt="PDF">
+                            <div><div class="r-name"><b>Developmental Report</b></div><div class="r-sub">TEIQue · Individual</div></div>
+                        </div>
+                        <div data-label="Subject">Marcus Webb</div>
+                        <div data-label="From questionnaire">TEIQue Short Form</div>
+                        <div data-label="Generated">Just now</div>
+                        <div data-label="" class="report-actions">
+                            <span class="highlight-tag yellow">Processing</span>
+                        </div>
+                    </div>
+
+                    <!-- Empty state -->
+                    <div class="empty-state" id="reportsEmpty" style="display:none;">
+                        <h3>No reports here</h3>
+                        <p>Try a different filter, or generate a report from a completed questionnaire.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        (function () {
+            const rows = Array.prototype.slice.call(document.querySelectorAll('.report-row'));
+            const statusBtns = Array.prototype.slice.call(document.querySelectorAll('#statusSeg button'));
+            const typeBtns = Array.prototype.slice.call(document.querySelectorAll('#typeSeg button'));
+            const emptyState = document.getElementById('reportsEmpty');
+            let curType = 'all', curStatus = 'all';
+
+            function applyFilter() {
+                filterAnimate(rows, function (r) {
+                    const okType = curType === 'all' || r.dataset.type === curType;
+                    const okStatus = curStatus === 'all' || r.dataset.status === curStatus;
+                    return okType && okStatus;
+                }, emptyState);
+            }
+
+            function wireSeg(btns, set) {
+                btns.forEach(function (b) {
+                    b.addEventListener('click', function () {
+                        btns.forEach(function (x) { x.classList.remove('active'); });
+                        b.classList.add('active');
+                        set(b);
+                        applyFilter();
+                    });
+                });
+            }
+            wireSeg(statusBtns, function (b) { curStatus = b.dataset.status; });
+            wireSeg(typeBtns, function (b) { curType = b.dataset.type; });
+
+            applyFilter();
+        })();
+    </script>
+</body>
+</html>

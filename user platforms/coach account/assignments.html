@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignments | Psychometric Laboratory for Coaches</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        /* Page-specific table grid */
+        .assign-table .pl-table-header,
+        .assign-table .assign-row { grid-template-columns: 2.6fr 1fr 1fr 1fr 1.6fr 56px; }
+        .assign-toolbar { margin-bottom: var(--spacing-narrow-l); }
+
+        @media (max-width: 680px) {
+            .assign-table .assign-row { grid-template-columns: 1fr 1fr !important; }
+        }
+    </style>
+</head>
+<body data-page="assignments" data-title="Assignments" data-subtitle="Every questionnaire you have issued. Track completion, then generate reports.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <div class="panel">
+                <!-- In-card header -->
+                <div class="panel-head">
+                    <h2 class="card-title">Assignments</h2>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <div class="export-menu">
+                            <button class="export-trigger" onclick="toggleExportMenu(this)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Export
+                                <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                            <div class="export-dropdown">
+                                <button onclick="exportData('Assignments','CSV')"><img src="assets/icons/csv.svg" alt="">Export as CSV</button>
+                                <button onclick="exportData('Assignments','Excel')"><img src="assets/icons/excel.svg" alt="">Export as Excel</button>
+                            </div>
+                        </div>
+                        <button class="primary-button" onclick="openAssignmentWizard()">
+                            <img class="btn-icon" src="assets/icons/arrow.svg" alt="">
+                            New Assignment
+                        </button>
+                    </div>
+                </div>
+
+                <div class="assign-success-banner" id="assignSuccessBanner">
+                    <b>Order confirmed.</b> Your questionnaire is issued and invites will be sent according to your settings.
+                </div>
+
+                <!-- Toolbar: status segmented (left) + type segmented (right) -->
+                <div class="toolbar assign-toolbar" style="padding: 0 var(--spacing-narrow-l);">
+                    <div class="seg" id="statusSeg">
+                        <button class="active" data-status="all">All</button>
+                        <button data-status="active">Active</button>
+                        <button data-status="completed">Completed</button>
+                        <button data-status="cancelled">Cancelled</button>
+                    </div>
+                    <div class="seg" id="typeSeg">
+                        <button class="active" data-type="all">All</button>
+                        <button data-type="individual">Individual</button>
+                        <button data-type="group">Group</button>
+                    </div>
+                </div>
+
+                <!-- Table — each row is an ISSUED QUESTIONNAIRE -->
+                <div class="assign-table">
+                    <div class="pl-table-header">
+                        <div>Questionnaire</div>
+                        <div>Type</div>
+                        <div>Issued</div>
+                        <div>Due</div>
+                        <div>Completion</div>
+                        <div></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row" data-type="group" data-status="active" onclick="location.href='assignment.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>TEIQue</b> <span class="form-tag">Full</span></div><div class="assign-target">Leadership Cohort · 15 candidates</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag primary">Group</span></div>
+                        <div data-label="Issued">2 Jun 2026</div>
+                        <div data-label="Due">16 Jun 2026</div>
+                        <div data-label="Completion"><div class="progress"><div class="progress-track"><div class="progress-fill" style="width:80%"></div></div><span class="progress-label">12/15</span></div></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row" data-type="individual" data-status="active" onclick="location.href='assignment-individual.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>TEIQue</b> <span class="form-tag">Full</span></div><div class="assign-target">James Okoro</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag">Individual</span></div>
+                        <div data-label="Issued">4 Jun 2026</div>
+                        <div data-label="Due">18 Jun 2026</div>
+                        <div data-label="Completion"><span class="highlight-tag yellow">In progress</span></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row" data-type="group" data-status="active" onclick="location.href='assignment.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>Scan-In</b></div><div class="assign-target">Sales Team · 8 candidates</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag primary">Group</span></div>
+                        <div data-label="Issued">1 Jun 2026</div>
+                        <div data-label="Due">14 Jun 2026</div>
+                        <div data-label="Completion"><div class="progress"><div class="progress-track"><div class="progress-fill" style="width:50%"></div></div><span class="progress-label">4/8</span></div></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row" data-type="group" data-status="active" onclick="location.href='assignment.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>3Rs Rapid Reasoning</b></div><div class="assign-target">Graduate Cohort · 20 candidates</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag primary">Group</span></div>
+                        <div data-label="Issued">28 May 2026</div>
+                        <div data-label="Due">10 Jun 2026</div>
+                        <div data-label="Completion"><div class="progress"><div class="progress-track"><div class="progress-fill" style="width:40%"></div></div><span class="progress-label">8/20</span></div></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row" data-type="group" data-status="completed" onclick="location.href='assignment.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>TEIQue</b> <span class="form-tag">Full</span></div><div class="assign-target">Onboarding Group · 6 candidates</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag primary">Group</span></div>
+                        <div data-label="Issued">5 May 2026</div>
+                        <div data-label="Due">28 May 2026</div>
+                        <div data-label="Completion"><span class="highlight-tag green">6/6 complete</span></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row" data-type="individual" data-status="completed" onclick="location.href='assignment-individual.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>TSIQue</b></div><div class="assign-target">Anna Müller</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag">Individual</span></div>
+                        <div data-label="Issued">25 May 2026</div>
+                        <div data-label="Due">2 Jun 2026</div>
+                        <div data-label="Completion"><span class="highlight-tag green">Completed</span></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row" data-type="individual" data-status="completed" onclick="location.href='assignment-individual.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>TEIQue</b> <span class="form-tag short">Short</span></div><div class="assign-target">Marcus Webb</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag">Individual</span></div>
+                        <div data-label="Issued">22 May 2026</div>
+                        <div data-label="Due">1 Jun 2026</div>
+                        <div data-label="Completion"><span class="highlight-tag green">Completed</span></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row" data-type="individual" data-status="cancelled" onclick="location.href='assignment-individual.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>TEIQue</b> <span class="form-tag short">Short</span></div><div class="assign-target">Tom Becker</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag">Individual</span></div>
+                        <div data-label="Issued">20 May 2026</div>
+                        <div data-label="Due">—</div>
+                        <div data-label="Completion"><span class="highlight-tag red">Cancelled</span></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row" data-type="group" data-status="cancelled" onclick="location.href='assignment.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>3Rs Rapid Reasoning</b></div><div class="assign-target">Intern Group · 5 candidates</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag primary">Group</span></div>
+                        <div data-label="Issued">18 May 2026</div>
+                        <div data-label="Due">—</div>
+                        <div data-label="Completion"><span class="highlight-tag red">Cancelled</span></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <!-- Empty state -->
+                    <div class="empty-state" id="assignEmpty" style="display:none;">
+                        <h3>No assignments here</h3>
+                        <p>Try a different filter, or issue a new questionnaire to get started.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ============================ NEW ASSIGNMENT WIZARD ============================ -->
+    <div class="modal-overlay" id="newAssignmentModal">
+        <div class="modal wizard assign-wizard">
+            <div class="modal-head">
+                <h3>Add Assignment</h3>
+                <button class="modal-close" onclick="closeModal('newAssignmentModal')"><img src="assets/icons/close.svg" alt="Close"></button>
+            </div>
+
+            <div class="stepper" id="awStepper">
+                <div class="step active" data-stage="1"><span class="step-num">1</span><span class="step-label">Target</span></div>
+                <div class="step-line" data-line="1"></div>
+                <div class="step" data-stage="2"><span class="step-num">2</span><span class="step-label">Assessment</span></div>
+                <div class="step-line" data-line="2"></div>
+                <div class="step" data-stage="3"><span class="step-num">3</span><span class="step-label">Settings</span></div>
+                <div class="step-line" data-line="3"></div>
+                <div class="step" data-stage="4"><span class="step-num">4</span><span class="step-label">Review</span></div>
+            </div>
+
+            <div class="wiz-body">
+
+            <!-- SLIDE: Target -->
+            <div class="wiz-slide active" data-slide="target">
+                <div class="seg" id="awTargetSeg" style="margin-bottom:var(--spacing-narrow-l);">
+                    <button class="active" data-target="individuals">Individuals</button>
+                    <button data-target="group">Group</button>
+                </div>
+
+                <div id="awTargetIndividuals">
+                    <div style="display:flex;gap:var(--spacing-narrow-m);margin-bottom:var(--spacing-narrow-m);flex-wrap:wrap;">
+                        <input class="form-input" id="awCandSearch" placeholder="Search candidates" style="flex:1;min-width:160px;margin-bottom:0;">
+                        <button class="secondary-button" type="button" id="awAddNewCandToggle" style="flex-shrink:0;">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                            New candidate
+                        </button>
+                    </div>
+                    <div class="cand-form" id="awNewCandForm" style="display:none;margin-bottom:var(--spacing-narrow-m);">
+                        <h4>Add a new candidate</h4>
+                        <div class="field-row">
+                            <div><label class="form-label">First name</label><input class="form-input" id="awNewFirst" placeholder="First name"></div>
+                            <div><label class="form-label">Last name</label><input class="form-input" id="awNewLast" placeholder="Last name"></div>
+                        </div>
+                        <div style="margin-top:var(--spacing-narrow-m);"><label class="form-label">Email</label><input class="form-input" id="awNewEmail" type="email" placeholder="name@company.com"></div>
+                        <div style="display:flex;gap:var(--spacing-narrow-s);justify-content:flex-end;margin-top:var(--spacing-narrow-m);">
+                            <button class="secondary-button" type="button" id="awNewCandCancel">Cancel</button>
+                            <button class="primary-button" type="button" id="awNewCandAdd">Add to list</button>
+                        </div>
+                    </div>
+                    <div class="member-box aw-candlist" id="awCandList">
+                        <div class="cand-row" data-name="James Okoro">
+                            <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                            <span class="avatar-sm">JO</span>
+                            <div class="cand-info"><div class="cand-name"><b>James Okoro</b></div><div class="cand-email">james.okoro@acme.com</div></div>
+                            <span class="group-pill"><span class="gp-dot" style="background:#7569a1;"></span>Leadership Cohort</span>
+                        </div>
+                        <div class="cand-row" data-name="Anna Müller">
+                            <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                            <span class="avatar-sm">AM</span>
+                            <div class="cand-info"><div class="cand-name"><b>Anna Müller</b></div><div class="cand-email">anna.mueller@acme.com</div></div>
+                            <span class="group-pill none">No group</span>
+                        </div>
+                        <div class="cand-row" data-name="Jordan Rivera">
+                            <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                            <span class="avatar-sm">JR</span>
+                            <div class="cand-info"><div class="cand-name"><b>Jordan Rivera</b></div><div class="cand-email">jordan.rivera@acme.com</div></div>
+                            <span class="group-pill none">No group</span>
+                        </div>
+                        <div class="cand-row" data-name="Marcus Webb">
+                            <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                            <span class="avatar-sm">MW</span>
+                            <div class="cand-info"><div class="cand-name"><b>Marcus Webb</b></div><div class="cand-email">marcus.webb@acme.com</div></div>
+                            <span class="group-pill"><span class="gp-dot" style="background:#f3792a;"></span>Sales Team</span>
+                        </div>
+                        <div class="cand-row" data-name="Elena Rossi">
+                            <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                            <span class="avatar-sm">ER</span>
+                            <div class="cand-info"><div class="cand-name"><b>Elena Rossi</b></div><div class="cand-email">elena.rossi@acme.com</div></div>
+                            <span class="group-pill"><span class="gp-dot" style="background:#f3792a;"></span>Sales Team</span>
+                        </div>
+                        <div class="cand-row" data-name="Tom Becker">
+                            <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                            <span class="avatar-sm">TB</span>
+                            <div class="cand-info"><div class="cand-name"><b>Tom Becker</b></div><div class="cand-email">tom.becker@acme.com</div></div>
+                            <span class="group-pill none">No group</span>
+                        </div>
+                        <div class="cand-row" data-name="Aisha Khan">
+                            <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                            <span class="avatar-sm">AK</span>
+                            <div class="cand-info"><div class="cand-name"><b>Aisha Khan</b></div><div class="cand-email">aisha.khan@acme.com</div></div>
+                            <span class="group-pill"><span class="gp-dot" style="background:#3aa756;"></span>Graduate Cohort</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="awTargetGroups" style="display:none;">
+                    <p class="aw-slide-hint">Select one or more groups to assign to.</p>
+                    <div class="group-pick-grid" id="awGroupPick">
+                        <div class="group-card" data-group="Leadership Cohort" data-count="15" style="--group-color:#7569a1;--group-gradient:linear-gradient(180deg,#7569a1 0%,#9e96bd 100%);">
+                            <div class="group-card-head"><span class="group-dot"></span><span class="group-card-title">Leadership Cohort</span><span class="group-count">15 members</span></div>
+                            <div class="gc-body"><div class="avatar-stack"><span class="avatar-sm">JO</span><span class="avatar-sm">SA</span><span class="avatar-sm avatar-more">+13</span></div><div class="gc-meta"><b>2</b> group assignments</div></div>
+                        </div>
+                        <div class="group-card" data-group="Sales Team" data-count="8" style="--group-color:#f3792a;--group-gradient:linear-gradient(180deg,#f3792a 0%,#eba97c 100%);">
+                            <div class="group-card-head"><span class="group-dot"></span><span class="group-card-title">Sales Team</span><span class="group-count">8 members</span></div>
+                            <div class="gc-body"><div class="avatar-stack"><span class="avatar-sm">MW</span><span class="avatar-sm">ER</span><span class="avatar-sm avatar-more">+6</span></div><div class="gc-meta"><b>1</b> group assignment</div></div>
+                        </div>
+                        <div class="group-card" data-group="Graduate Cohort" data-count="20" style="--group-color:#3aa756;--group-gradient:linear-gradient(180deg,#3aa756 0%,#75c188 100%);">
+                            <div class="group-card-head"><span class="group-dot"></span><span class="group-card-title">Graduate Cohort</span><span class="group-count">20 members</span></div>
+                            <div class="gc-body"><div class="avatar-stack"><span class="avatar-sm">AK</span><span class="avatar-sm">TB</span><span class="avatar-sm avatar-more">+18</span></div><div class="gc-meta"><b>1</b> group assignment</div></div>
+                        </div>
+                        <div class="group-card" data-group="Onboarding Group" data-count="6" style="--group-color:#259dd5;--group-gradient:linear-gradient(180deg,#259dd5 0%,#66bae2 100%);">
+                            <div class="group-card-head"><span class="group-dot"></span><span class="group-card-title">Onboarding Group</span><span class="group-count">6 members</span></div>
+                            <div class="gc-body"><div class="avatar-stack"><span class="avatar-sm">HG</span><span class="avatar-sm">KP</span><span class="avatar-sm avatar-more">+4</span></div><div class="gc-meta"><b>1</b> group assignment</div></div>
+                        </div>
+                        <div class="group-card" data-group="Intern Group" data-count="5" style="--group-color:#ebbb3d;--group-gradient:linear-gradient(180deg,#ebbb3d 0%,#f1cf77 100%);">
+                            <div class="group-card-head"><span class="group-dot"></span><span class="group-card-title">Intern Group</span><span class="group-count">5 members</span></div>
+                            <div class="gc-body"><div class="avatar-stack"><span class="avatar-sm">NS</span><span class="avatar-sm">YT</span><span class="avatar-sm avatar-more">+3</span></div><div class="gc-meta"><b>0</b> group assignments</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE: Assessment -->
+            <div class="wiz-slide" data-slide="assessment-mode">
+                <p class="aw-slide-hint">Choose what you are assigning.</p>
+                <div class="seg" id="awModeSeg">
+                    <button class="active" data-mode="report">Report</button>
+                    <button data-mode="toolkit">Toolkit</button>
+                </div>
+                <div id="awInstrumentSection" style="margin-top:var(--spacing-narrow-l);">
+                    <label class="form-label">Questionnaire</label>
+                    <div class="instrument-cards" id="awInstrumentCards">
+                        <div class="instrument-card" data-instrument="teique"><b>TEIQue</b><span class="pick-card-price"></span><span class="pick-card-desc">Trait emotional intelligence</span></div>
+                        <div class="instrument-card" data-instrument="tsique"><b>TSIQue</b><span class="pick-card-price"></span><span class="pick-card-desc">Social intelligence</span></div>
+                        <div class="instrument-card" data-instrument="scanin"><b>Scan-In</b><span class="pick-card-price"></span><span class="pick-card-desc">Organisational scan</span></div>
+                        <div class="instrument-card" data-instrument="3rs"><b>3Rs</b><span class="pick-card-price"></span><span class="pick-card-desc">Rapid reasoning</span></div>
+                    </div>
+                </div>
+                <div id="awToolkitSection" style="display:none;margin-top:var(--spacing-narrow-l);">
+                    <label class="form-label">Toolkit</label>
+                    <div class="instrument-cards" id="awToolkitCards">
+                        <div class="instrument-card" data-toolkit="personality"><b>TEIQue Personality Toolkit</b><span class="pick-card-price"></span><span class="pick-card-desc">Full Form assessment plus Lecture Series.</span></div>
+                        <div class="instrument-card" data-toolkit="lecture"><b>TEIQue Lecture Series</b><span class="pick-card-price"></span><span class="pick-card-desc">Standalone educational content.</span></div>
+                        <div class="instrument-card" data-toolkit="compatibility"><b>TEIQue Compatibility Bundle</b><span class="pick-card-price"></span><span class="pick-card-desc">Two Full Forms, Compatibility report, and educational video.</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE: TEIQue report -->
+            <div class="wiz-slide" data-slide="teique-report">
+                <p class="aw-slide-hint">Pick the questionnaire form and a report to auto-generate once it is completed. You can always generate more report types later from the completed questionnaire.</p>
+                <div class="seg" id="awTeiqueScopeSeg">
+                    <button class="active" data-scope="individual">Individual report</button>
+                    <button data-scope="group">Group report</button>
+                </div>
+
+                <div class="wiz-settings-block" id="awFormSection">
+                    <label class="form-label">Questionnaire form</label>
+                    <div class="seg seg-form" id="awFormSeg">
+                        <button class="active" data-form="full">Full <span class="seg-price">1.0 AC</span></button>
+                        <button data-form="short">Short <span class="seg-price">0.6 AC</span></button>
+                    </div>
+                    <p class="aw-slide-hint" id="awFormHint" style="margin-top:var(--spacing-narrow-s);margin-bottom:0;">Comprehensive 153-item questionnaire with full facet breakdown.</p>
+                </div>
+
+                <div id="awReportSection" style="margin-top:var(--spacing-narrow-l);">
+                    <label class="form-label">Report</label>
+                    <p class="aw-slide-hint" id="awReportHint" style="margin-bottom:var(--spacing-narrow-m);">Select an individual report.</p>
+                    <div class="report-pick-grid" id="awReportGrid"></div>
+                </div>
+
+                <div id="awAddonSection" style="margin-top:var(--spacing-narrow-l);">
+                    <hr class="wiz-divider">
+                    <label class="form-label">Add-on reports <span class="aw-optional">Optional</span></label>
+                    <p class="aw-slide-hint" style="margin-bottom:var(--spacing-narrow-m);">Attach complementary analyses to each respondent's TEIQue. Priced per respondent.</p>
+                    <div class="addon-grid" id="awAddonGrid">
+                        <button type="button" class="addon-card" data-addon="CDC">
+                            <span class="addon-check" aria-hidden="true"></span>
+                            <span class="addon-info"><b>CDC Report</b><span class="pick-card-price"></span><span class="pick-card-desc">Career drivers &amp; competencies</span></span>
+                        </button>
+                        <button type="button" class="addon-card" data-addon="DISC">
+                            <span class="addon-check" aria-hidden="true"></span>
+                            <span class="addon-info"><b>DISC Report</b><span class="pick-card-price"></span><span class="pick-card-desc">Behavioural style profile</span></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE: RoleSync preset -->
+            <div class="wiz-slide" data-slide="rolesync-preset">
+                <p class="aw-slide-hint">RoleSync compares your targets' scores against a preset profile for a specific occupation.</p>
+                <label class="form-label">RoleSync preset</label>
+                <div class="dropdown">
+                    <button class="dropdown-trigger" onclick="toggleDropdown('awRoleSyncPreset')"><span class="dropdown-label" id="awRoleSyncLabel">Choose a preset</span></button>
+                    <div class="dropdown-menu" id="awRoleSyncPreset">
+                        <button class="dropdown-option" onclick="awSelectPreset('Registered Nurse')">Registered Nurse</button>
+                        <button class="dropdown-option" onclick="awSelectPreset('Software Developer')">Software Developer</button>
+                        <button class="dropdown-option" onclick="awSelectPreset('Sales Manager')">Sales Manager</button>
+                        <button class="dropdown-option" onclick="awSelectPreset('Teacher')">Teacher</button>
+                        <button class="dropdown-option" onclick="awSelectPreset('Executive Leader')">Executive Leader</button>
+                        <button class="dropdown-option" onclick="awSelectPreset('Customer Service Representative')">Customer Service Representative</button>
+                        <button class="dropdown-option" onclick="awSelectPreset('Project Manager')">Project Manager</button>
+                        <button class="dropdown-option" onclick="awSelectPreset('HR Business Partner')">HR Business Partner</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE: Compatibility candidate -->
+            <div class="wiz-slide" data-slide="compatibility">
+                <p class="aw-slide-hint">Choose one candidate who has completed at least one TEIQue questionnaire to compare compatibility with your targets.</p>
+                <div id="awCompList">
+                    <div class="comp-cand-row" data-name="James Okoro" data-teique-complete="true">
+                        <span class="avatar-sm">JO</span>
+                        <div class="cand-info"><div class="cand-name"><b>James Okoro</b></div><div class="cand-email">james.okoro@acme.com</div></div>
+                        <span class="highlight-tag green">TEIQue completed</span>
+                    </div>
+                    <div class="comp-cand-row" data-name="Anna Müller" data-teique-complete="true">
+                        <span class="avatar-sm">AM</span>
+                        <div class="cand-info"><div class="cand-name"><b>Anna Müller</b></div><div class="cand-email">anna.mueller@acme.com</div></div>
+                        <span class="highlight-tag green">TEIQue completed</span>
+                    </div>
+                    <div class="comp-cand-row" data-name="Marcus Webb" data-teique-complete="true">
+                        <span class="avatar-sm">MW</span>
+                        <div class="cand-info"><div class="cand-name"><b>Marcus Webb</b></div><div class="cand-email">marcus.webb@acme.com</div></div>
+                        <span class="highlight-tag green">TEIQue completed</span>
+                    </div>
+                    <div class="comp-cand-row" data-name="Elena Rossi" data-teique-complete="true">
+                        <span class="avatar-sm">ER</span>
+                        <div class="cand-info"><div class="cand-name"><b>Elena Rossi</b></div><div class="cand-email">elena.rossi@acme.com</div></div>
+                        <span class="highlight-tag green">TEIQue completed</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE: Settings -->
+            <div class="wiz-slide" data-slide="settings">
+                <div class="wiz-settings-block">
+                    <label class="form-label">Report delivery</label>
+                    <div class="seg" id="awDeliverySeg">
+                        <button class="active" data-delivery="coach">Coach only</button>
+                        <button data-delivery="both">Coach &amp; candidate</button>
+                    </div>
+                    <p class="aw-slide-hint" id="awDeliveryHint" style="margin-top:var(--spacing-narrow-s);margin-bottom:0;">Only you receive the generated reports — candidates will not see their results.</p>
+                </div>
+
+                <hr class="wiz-divider">
+
+                <div class="wiz-settings-block">
+                    <div class="toggle-line"><span class="toggle-switch" id="awRemindersToggle" onclick="toggleSwitch(this)"></span> Auto reminders</div>
+                    <p class="aw-slide-hint" style="margin-top:var(--spacing-narrow-s);margin-bottom:0;">Respondents who haven't started receive an automatic reminder every 48 hours.</p>
+                </div>
+
+                <hr class="wiz-divider">
+
+                <div class="wiz-settings-block" style="display:flex;gap:var(--spacing-narrow-l);flex-wrap:wrap;align-items:flex-start;">
+                    <div style="flex:1;min-width:200px;">
+                        <div class="toggle-line"><span class="toggle-switch off" id="awScheduleToggle" onclick="toggleSwitch(this);awToggleNested('awScheduleNested',this)"></span> Schedule invite</div>
+                        <div class="wiz-nested hidden" id="awScheduleNested">
+                            <div class="date-triple">
+                                <input class="form-input" placeholder="dd" maxlength="2" aria-label="Day">
+                                <input class="form-input" placeholder="mm" maxlength="2" aria-label="Month">
+                                <input class="form-input" placeholder="yy" maxlength="2" aria-label="Year">
+                            </div>
+                        </div>
+                    </div>
+                    <div style="flex:1;min-width:200px;">
+                        <label class="form-label">Completion deadline</label>
+                        <div class="dropdown">
+                            <button class="dropdown-trigger" onclick="toggleDropdown('awDeadline')"><span class="dropdown-label" id="awDeadlineLabel">No deadline</span></button>
+                            <div class="dropdown-menu" id="awDeadline">
+                                <button class="dropdown-option" onclick="awSelectDeadline('none','No deadline')">No deadline</button>
+                                <button class="dropdown-option" onclick="awSelectDeadline('7','1 week')">1 week</button>
+                                <button class="dropdown-option" onclick="awSelectDeadline('14','2 weeks')">2 weeks</button>
+                                <button class="dropdown-option" onclick="awSelectDeadline('30','1 month')">1 month</button>
+                                <button class="dropdown-option" onclick="awSelectDeadline('custom','Custom date…')">Custom date…</button>
+                            </div>
+                        </div>
+                        <div class="wiz-nested hidden" id="awDeadlineNested">
+                            <div class="date-triple">
+                                <input class="form-input" id="awDueDay" placeholder="dd" maxlength="2" aria-label="Due day">
+                                <input class="form-input" id="awDueMonth" placeholder="mm" maxlength="2" aria-label="Due month">
+                                <input class="form-input" id="awDueYear" placeholder="yy" maxlength="2" aria-label="Due year">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="wiz-divider">
+
+                <div class="wiz-settings-block">
+                    <label class="form-label">Languages</label>
+                    <div class="lang-grid">
+                        <div class="lang-field">
+                            <span class="lang-sublabel">Questionnaire language</span>
+                            <div class="dropdown">
+                                <button class="dropdown-trigger" onclick="toggleDropdown('awQLang')"><span class="dropdown-label">English</span></button>
+                                <div class="dropdown-menu" id="awQLang">
+                                    <button class="dropdown-option" onclick="selectOption('awQLang','English')">English</button>
+                                    <button class="dropdown-option" onclick="selectOption('awQLang','German')">German</button>
+                                    <button class="dropdown-option" onclick="selectOption('awQLang','French')">French</button>
+                                    <button class="dropdown-option" onclick="selectOption('awQLang','Spanish')">Spanish</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lang-field">
+                            <span class="lang-sublabel">Report language</span>
+                            <div class="dropdown">
+                                <button class="dropdown-trigger" onclick="toggleDropdown('awRLang')"><span class="dropdown-label">English</span></button>
+                                <div class="dropdown-menu" id="awRLang">
+                                    <button class="dropdown-option" onclick="selectOption('awRLang','English')">English</button>
+                                    <button class="dropdown-option" onclick="selectOption('awRLang','German')">German</button>
+                                    <button class="dropdown-option" onclick="selectOption('awRLang','French')">French</button>
+                                    <button class="dropdown-option" onclick="selectOption('awRLang','Spanish')">Spanish</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="wiz-divider">
+
+                <div class="wiz-settings-block">
+                    <div class="toggle-line"><span class="toggle-switch off" id="awCustomInviteToggle" onclick="toggleSwitch(this);awToggleNested('awCustomInviteNested',this)"></span> Customize invite email</div>
+                    <div class="wiz-nested hidden" id="awCustomInviteNested">
+                        <textarea class="form-textarea" id="awCustomInviteText" placeholder="Custom invite message" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE: Review -->
+            <div class="wiz-slide" data-slide="review">
+                <div id="awReviewContent"></div>
+            </div>
+
+            </div><!-- /.wiz-body -->
+
+            <div class="wiz-foot">
+                <button class="secondary-button" id="awBack" onclick="awBack()" style="visibility:hidden;">Back</button>
+                <div>
+                    <button class="primary-button" id="awNext" onclick="awNext()">Next</button>
+                    <button class="primary-button" id="awFinish" onclick="awFinish()" style="display:none;">Proceed to payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="shared/admin-credits.js"></script>
+    <script src="shared/promotions.js"></script>
+    <script src="app.js"></script>
+    <script>
+        (function () {
+            const rows = Array.prototype.slice.call(document.querySelectorAll('.assign-row'));
+            const statusBtns = Array.prototype.slice.call(document.querySelectorAll('#statusSeg button'));
+            const typeBtns = Array.prototype.slice.call(document.querySelectorAll('#typeSeg button'));
+            const emptyState = document.getElementById('assignEmpty');
+            let curType = 'all', curStatus = 'all';
+
+            function applyFilter() {
+                filterAnimate(rows, function (r) {
+                    const okType = curType === 'all' || r.dataset.type === curType;
+                    const okStatus = curStatus === 'all' || r.dataset.status === curStatus;
+                    return okType && okStatus;
+                }, emptyState);
+            }
+
+            function wireSeg(btns, set) {
+                btns.forEach(function (b) {
+                    b.addEventListener('click', function () {
+                        btns.forEach(function (x) { x.classList.remove('active'); });
+                        b.classList.add('active');
+                        set(b);
+                        applyFilter();
+                    });
+                });
+            }
+            wireSeg(statusBtns, function (b) { curStatus = b.dataset.status; });
+            wireSeg(typeBtns, function (b) { curType = b.dataset.type; });
+
+            applyFilter();
+        })();
+    </script>
+    <script src="report-covers.js"></script>
+    <script src="assignment-wizard.js"></script>
+</body>
+</html>

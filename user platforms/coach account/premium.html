@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium | Psychometric Laboratory for Coaches</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        /* ---- Hero ---- */
+        .prem-hero {
+            position: relative; overflow: hidden;
+            background: linear-gradient(135deg, #f3792a 0%, #ebbb3d 100%);
+            border-radius: var(--radius-standard); box-shadow: var(--shadow-card);
+            color: var(--color-white); padding: var(--spacing-standard-m) var(--spacing-standard-s);
+            display: flex; align-items: center; gap: var(--spacing-standard-s); flex-wrap: wrap;
+            margin-bottom: var(--spacing-narrow-l);
+        }
+        .prem-hero-body { flex: 1; min-width: 280px; position: relative; z-index: 2; }
+        .prem-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.25); backdrop-filter: blur(2px);
+            border-radius: 50px; padding: 6px 16px; margin-bottom: var(--spacing-narrow-m);
+            font-family: var(--font-manrope); font-weight: var(--font-weight-bold); font-size: 13px;
+            letter-spacing: 0.3px;
+        }
+        .prem-badge svg { width: 16px; height: 16px; }
+        .prem-hero h1 {
+            font-family: var(--font-manrope); font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-title-xl); line-height: var(--line-height-tight); margin-bottom: var(--spacing-narrow-s);
+        }
+        .prem-hero h1 .accent { display: inline-block; }
+        .prem-hero p { font-family: var(--font-inter); font-size: var(--font-size-content); color: rgba(255,255,255,0.95); max-width: 540px; line-height: var(--line-height-normal); }
+        .prem-hero-cta { margin-top: var(--spacing-narrow-l); display: flex; gap: var(--spacing-narrow-m); flex-wrap: wrap; }
+        .prem-hero-cta .ghost-white {
+            background: var(--color-white); color: var(--color-secondary-full); border: none; border-radius: 50px;
+            padding: 12px 28px; font-family: var(--font-manrope); font-weight: var(--font-weight-semibold); font-size: var(--font-size-content);
+            cursor: pointer; box-shadow: var(--shadow-card); transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .prem-hero-cta .ghost-white:hover { transform: translateY(-2px) scale(1.02); box-shadow: var(--shadow-card-hover); }
+
+        .prem-hero-art { position: relative; z-index: 2; flex-shrink: 0; width: 200px; display: flex; align-items: center; justify-content: center; }
+        .prem-hero-art img { width: 160px; height: auto; filter: drop-shadow(0 14px 24px rgba(0,0,0,0.22)); }
+
+        /* ---- Layout ---- */
+        .prem-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: var(--spacing-narrow-l); align-items: start; }
+        @media (max-width: 960px) { .prem-grid { grid-template-columns: 1fr; } }
+
+        /* ---- Plans ---- */
+        .plan-stack { display: flex; flex-direction: column; gap: var(--spacing-narrow-m); }
+        .plan-card {
+            position: relative; background: var(--color-white); border: 1px solid var(--color-light-gray);
+            border-radius: var(--radius-standard); box-shadow: var(--shadow-card);
+            padding: var(--spacing-narrow-l); text-align: center;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .plan-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-card-hover); border-color: var(--color-primary-light); }
+        .plan-card.popular { border: 2px solid var(--color-primary-full); box-shadow: var(--shadow-card-hover); }
+        .plan-flag {
+            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+            background: var(--color-primary-gradient); color: var(--color-white);
+            border-radius: 50px; padding: 6px 18px; box-shadow: var(--shadow-card);
+            font-family: var(--font-manrope); font-weight: var(--font-weight-bold); font-size: 12px; white-space: nowrap;
+            display: inline-flex; align-items: center; gap: 6px;
+        }
+        .plan-flag svg { width: 14px; height: 14px; }
+        .plan-name { font-family: var(--font-manrope); font-weight: var(--font-weight-bold); font-size: var(--font-size-title-large); color: var(--color-black); margin-bottom: var(--spacing-narrow-s); }
+        .plan-price { font-family: var(--font-manrope); font-weight: var(--font-weight-bold); font-size: 44px; color: var(--color-text-blue); line-height: 1; }
+        .plan-per { font-family: var(--font-inter); font-size: 13px; color: var(--color-gray); margin-top: 4px; }
+        .plan-save { display: inline-block; margin-top: var(--spacing-narrow-s); background: rgba(58,167,86,0.12); color: var(--color-green-full); font-family: var(--font-manrope); font-weight: var(--font-weight-semibold); font-size: 12px; border-radius: 50px; padding: 4px 12px; }
+        .plan-desc { font-family: var(--font-inter); font-size: 14px; color: var(--color-black); line-height: var(--line-height-normal); margin: var(--spacing-narrow-m) 0 var(--spacing-narrow-l); }
+        .plan-card .primary-button { width: 100%; }
+
+        /* ---- Benefits ---- */
+        .benefits-card { padding: var(--spacing-narrow-l); }
+        .benefits-card .card-title { text-align: center; }
+        .benefits-sub { text-align: center; font-family: var(--font-inter); font-size: 14px; color: var(--color-gray); margin-bottom: var(--spacing-narrow-l); }
+        .benefit-list { list-style: none; margin: 0; padding: 0; }
+        .benefit-item {
+            display: flex; align-items: flex-start; gap: var(--spacing-narrow-m);
+            padding: var(--spacing-narrow-m); border-radius: var(--radius-small);
+            font-family: var(--font-inter); font-size: 15px; color: var(--color-black); line-height: var(--line-height-normal);
+            transition: background 0.2s ease, transform 0.2s ease;
+            opacity: 0; transform: translateY(8px); animation: benefitIn 0.5s ease forwards;
+        }
+        .benefit-item:hover { background: #f7fbfe; transform: translateX(4px); }
+        .benefit-check {
+            flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+            background: linear-gradient(180deg, var(--color-green-light) 0%, var(--color-green-full) 100%);
+            display: flex; align-items: center; justify-content: center; color: var(--color-white);
+        }
+        .benefit-check svg { width: 15px; height: 15px; }
+        .benefit-item b { font-weight: var(--font-weight-semibold); }
+        @keyframes benefitIn { to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 560px) {
+            .prem-hero { padding: var(--spacing-narrow-l); }
+            .prem-hero h1 { font-size: 28px; }
+            .plan-price { font-size: 38px; }
+        }
+    </style>
+</head>
+<body data-page="premium" data-title="Premium" data-subtitle="Unlock exclusive features, free monthly credits, and 40% off everything.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+
+            <!-- Hero -->
+            <div class="prem-hero">
+                <div class="prem-hero-body">
+                    <span class="prem-badge">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 7.5l4 3 4-6 4 6 4-3-1.6 11H5.6z"/></svg>
+                        Save up to 40%
+                    </span>
+                    <h1>Go <span class="accent">Premium</span> — your toolkit, supercharged.</h1>
+                    <p>Free monthly credits, 40% off every assessment and toolkit, advanced reports, and a direct line to Prof. Petrides' team. Pick a plan and the perks kick in instantly.</p>
+                    <div class="prem-hero-cta">
+                        <button class="ghost-white" onclick="scrollToPlans()">Choose your plan</button>
+                    </div>
+                </div>
+                <div class="prem-hero-art">
+                    <img src="assets/illustrations/gift.svg" alt="Premium gift">
+                </div>
+            </div>
+
+            <div class="prem-grid">
+                <!-- Plans -->
+                <div class="plan-stack" id="planStack">
+                    <div class="plan-card">
+                        <div class="plan-name">1 Quarter Premium</div>
+                        <div class="plan-price">£400</div>
+                        <div class="plan-per">£400 / quarter</div>
+                        <p class="plan-desc">3 months of Premium <b>+ 3 free administration credits</b> to spend however you like.</p>
+                        <button class="primary-button" onclick="choosePlan(this,'1 Quarter Premium')">Choose plan</button>
+                    </div>
+
+                    <div class="plan-card popular">
+                        <span class="plan-flag">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.6-5.2 4.5 1.6 6.7L12 17.8 5.8 20.6l1.6-6.7L2.2 8.9l6.9-.6z"/></svg>
+                            Most popular
+                        </span>
+                        <div class="plan-name">2 Quarters Premium</div>
+                        <div class="plan-price">£700</div>
+                        <div class="plan-per">£350 / quarter</div>
+                        <span class="plan-save">Save £100 vs quarterly</span>
+                        <p class="plan-desc">6 months of Premium <b>+ 6 free administration credits</b>. Our best balance of value and flexibility.</p>
+                        <button class="primary-button" onclick="choosePlan(this,'2 Quarters Premium')">Choose plan</button>
+                    </div>
+
+                    <div class="plan-card">
+                        <div class="plan-name">4 Quarters Premium</div>
+                        <div class="plan-price">£1,200</div>
+                        <div class="plan-per">£300 / quarter</div>
+                        <span class="plan-save">Save £400 vs quarterly</span>
+                        <p class="plan-desc">12 months of Premium <b>+ 12 free administration credits</b>. Maximum savings for the whole year.</p>
+                        <button class="primary-button" onclick="choosePlan(this,'4 Quarters Premium')">Choose plan</button>
+                    </div>
+                </div>
+
+                <!-- Benefits -->
+                <div class="card benefits-card">
+                    <h2 class="card-title">Premium Benefits</h2>
+                    <p class="benefits-sub">Save money and get exclusive features</p>
+                    <ul class="benefit-list" id="benefitList">
+                        <li class="benefit-item"><span class="benefit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10"/></svg></span><span><b>40% discount</b> on all TEIQue assessments and toolkits</span></li>
+                        <li class="benefit-item"><span class="benefit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10"/></svg></span><span><b>1 free administration credit</b> per month</span></li>
+                        <li class="benefit-item"><span class="benefit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10"/></svg></span><span>Priority customer support with <b>Prof. Petrides' team</b></span></li>
+                        <li class="benefit-item"><span class="benefit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10"/></svg></span><span>Access to premium-only features and <b>advanced reports</b></span></li>
+                        <li class="benefit-item"><span class="benefit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10"/></svg></span><span><b>Early access</b> to new TEIQue assessments and research</span></li>
+                        <li class="benefit-item"><span class="benefit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10"/></svg></span><span>Exclusive insights from <b>Professor Petrides' research</b></span></li>
+                        <li class="benefit-item"><span class="benefit-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4 4 10-10"/></svg></span><span><b>Quarterly spotlight</b> offers featuring new assessments</span></li>
+                    </ul>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        // Stagger the benefit list animation
+        (function () {
+            document.querySelectorAll('#benefitList .benefit-item').forEach(function (li, i) {
+                li.style.animationDelay = (0.08 * i) + 's';
+            });
+        })();
+
+        function scrollToPlans() {
+            var el = document.getElementById('planStack');
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function choosePlan(btn, name) {
+            if (typeof showToast === 'function') showToast(name + ' selected. We\u2019ll take you to checkout.');
+        }
+    </script>
+</body>
+</html>
