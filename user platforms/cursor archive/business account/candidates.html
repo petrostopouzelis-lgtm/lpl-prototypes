@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidates | Psychometric Laboratory for Business</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .cand-table .pl-table-header,
+        .cand-table .cand-trow { grid-template-columns: 2.2fr 1.2fr 1.8fr 56px; }
+        .cand-trow { cursor: pointer; }
+        .cand-toolbar { margin-bottom: var(--spacing-narrow-l); }
+        .cand-search { position: relative; flex: 1; max-width: 360px; }
+        .cand-search img { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; opacity: 0.6; }
+        .cand-search input { padding-left: 42px; }
+
+        @media (max-width: 680px) {
+            .cand-table .cand-trow { grid-template-columns: 1fr 1fr !important; }
+            .cand-table .cell-candidate { grid-column: 1 / -1; }
+        }
+    </style>
+</head>
+<body data-page="candidates" data-title="Candidates" data-subtitle="Add people, organise them into groups, and track their assignments.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <div class="panel">
+                <div class="panel-head">
+                    <h2 class="card-title">Candidates</h2>
+                    <button class="primary-button" onclick="openModal('addCandidateModal')">
+                        <img class="btn-icon" src="../../005_PLATFORM ICONS/other icons/request demo button arrow icon.svg" alt="">
+                        Add Candidate
+                    </button>
+                </div>
+
+                <!-- Toolbar: search + group filter -->
+                <div class="toolbar cand-toolbar" style="padding: 0 var(--spacing-narrow-l);">
+                    <div class="cand-search">
+                        <img src="../../005_PLATFORM ICONS/other icons/search icon.svg" alt="">
+                        <input class="form-input" id="candSearch" placeholder="Search by name or email">
+                    </div>
+                    <div class="dropdown" style="width:auto;min-width:200px;">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('groupFilter')"><span class="dropdown-label">All groups</span></button>
+                        <div class="dropdown-menu" id="groupFilter">
+                            <button class="dropdown-option" onclick="selectGroup('all','All groups')">All groups</button>
+                            <button class="dropdown-option" onclick="selectGroup('Leadership Cohort','Leadership Cohort')">Leadership Cohort</button>
+                            <button class="dropdown-option" onclick="selectGroup('Sales Team','Sales Team')">Sales Team</button>
+                            <button class="dropdown-option" onclick="selectGroup('Graduate Cohort','Graduate Cohort')">Graduate Cohort</button>
+                            <button class="dropdown-option" onclick="selectGroup('none','No group')">No group</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cand-table">
+                    <div class="pl-table-header">
+                        <div>Candidate</div>
+                        <div>Group</div>
+                        <div>Assignments</div>
+                        <div></div>
+                    </div>
+
+                    <div class="pl-table-row cand-trow" data-group="Leadership Cohort" onclick="location.href='candidate.html'">
+                        <div data-label="Candidate" class="cell-candidate cell-assignment">
+                            <span class="avatar-sm">JO</span>
+                            <div><div class="assign-name"><b>James Okoro</b></div><div class="assign-target">james.okoro@acme.com</div></div>
+                        </div>
+                        <div data-label="Group"><span class="group-pill"><span class="gp-dot" style="background:#7569a1;"></span>Leadership Cohort</span></div>
+                        <div data-label="Assignments"><div class="assign-summary"><span class="highlight-tag green">3 completed</span><span class="highlight-tag yellow">1 pending</span></div></div>
+                        <div class="cell-action">
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" onclick="openModal('editCandidateModal')">Edit</button>
+                                    <button type="button" class="danger" onclick="openModal('deleteCandidateModal')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row cand-trow" data-group="none" onclick="location.href='candidate.html'">
+                        <div data-label="Candidate" class="cell-candidate cell-assignment">
+                            <span class="avatar-sm">AM</span>
+                            <div><div class="assign-name"><b>Anna Müller</b></div><div class="assign-target">anna.mueller@acme.com</div></div>
+                        </div>
+                        <div data-label="Group"><span class="group-pill none">No group</span></div>
+                        <div data-label="Assignments"><div class="assign-summary"><span class="highlight-tag green">2 completed</span></div></div>
+                        <div class="cell-action">
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" onclick="openModal('editCandidateModal')">Edit</button>
+                                    <button type="button" class="danger" onclick="openModal('deleteCandidateModal')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row cand-trow" data-group="Leadership Cohort" onclick="location.href='candidate.html'">
+                        <div data-label="Candidate" class="cell-candidate cell-assignment">
+                            <span class="avatar-sm">SA</span>
+                            <div><div class="assign-name"><b>Sofia Almeida</b></div><div class="assign-target">sofia.almeida@acme.com</div></div>
+                        </div>
+                        <div data-label="Group"><span class="group-pill"><span class="gp-dot" style="background:#7569a1;"></span>Leadership Cohort</span></div>
+                        <div data-label="Assignments"><div class="assign-summary"><span class="highlight-tag green">2 completed</span><span class="highlight-tag yellow">1 pending</span></div></div>
+                        <div class="cell-action">
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" onclick="openModal('editCandidateModal')">Edit</button>
+                                    <button type="button" class="danger" onclick="openModal('deleteCandidateModal')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row cand-trow" data-group="Leadership Cohort" onclick="location.href='candidate.html'">
+                        <div data-label="Candidate" class="cell-candidate cell-assignment">
+                            <span class="avatar-sm">LC</span>
+                            <div><div class="assign-name"><b>Liam Chen</b></div><div class="assign-target">liam.chen@acme.com</div></div>
+                        </div>
+                        <div data-label="Group"><span class="group-pill"><span class="gp-dot" style="background:#7569a1;"></span>Leadership Cohort</span></div>
+                        <div data-label="Assignments"><div class="assign-summary"><span class="highlight-tag yellow">1 in progress</span></div></div>
+                        <div class="cell-action">
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" onclick="openModal('editCandidateModal')">Edit</button>
+                                    <button type="button" class="danger" onclick="openModal('deleteCandidateModal')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row cand-trow" data-group="Leadership Cohort" onclick="location.href='candidate.html'">
+                        <div data-label="Candidate" class="cell-candidate cell-assignment">
+                            <span class="avatar-sm">PN</span>
+                            <div><div class="assign-name"><b>Priya Nair</b></div><div class="assign-target">priya.nair@acme.com</div></div>
+                        </div>
+                        <div data-label="Group"><span class="group-pill"><span class="gp-dot" style="background:#7569a1;"></span>Leadership Cohort</span></div>
+                        <div data-label="Assignments"><div class="assign-summary"><span class="highlight-tag gray">1 not started</span></div></div>
+                        <div class="cell-action">
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" onclick="openModal('editCandidateModal')">Edit</button>
+                                    <button type="button" class="danger" onclick="openModal('deleteCandidateModal')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row cand-trow" data-group="Sales Team" onclick="location.href='candidate.html'">
+                        <div data-label="Candidate" class="cell-candidate cell-assignment">
+                            <span class="avatar-sm">MW</span>
+                            <div><div class="assign-name"><b>Marcus Webb</b></div><div class="assign-target">marcus.webb@acme.com</div></div>
+                        </div>
+                        <div data-label="Group"><span class="group-pill"><span class="gp-dot" style="background:#f3792a;"></span>Sales Team</span></div>
+                        <div data-label="Assignments"><div class="assign-summary"><span class="highlight-tag green">2 completed</span></div></div>
+                        <div class="cell-action">
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" onclick="openModal('editCandidateModal')">Edit</button>
+                                    <button type="button" class="danger" onclick="openModal('deleteCandidateModal')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row cand-trow" data-group="Sales Team" onclick="location.href='candidate.html'">
+                        <div data-label="Candidate" class="cell-candidate cell-assignment">
+                            <span class="avatar-sm">ER</span>
+                            <div><div class="assign-name"><b>Elena Rossi</b></div><div class="assign-target">elena.rossi@acme.com</div></div>
+                        </div>
+                        <div data-label="Group"><span class="group-pill"><span class="gp-dot" style="background:#f3792a;"></span>Sales Team</span></div>
+                        <div data-label="Assignments"><div class="assign-summary"><span class="highlight-tag yellow">1 in progress</span></div></div>
+                        <div class="cell-action">
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" onclick="openModal('editCandidateModal')">Edit</button>
+                                    <button type="button" class="danger" onclick="openModal('deleteCandidateModal')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row cand-trow" data-group="Graduate Cohort" onclick="location.href='candidate.html'">
+                        <div data-label="Candidate" class="cell-candidate cell-assignment">
+                            <span class="avatar-sm">AK</span>
+                            <div><div class="assign-name"><b>Aisha Khan</b></div><div class="assign-target">aisha.khan@acme.com</div></div>
+                        </div>
+                        <div data-label="Group"><span class="group-pill"><span class="gp-dot" style="background:#3aa756;"></span>Graduate Cohort</span></div>
+                        <div data-label="Assignments"><div class="assign-summary"><span class="highlight-tag green">1 completed</span></div></div>
+                        <div class="cell-action">
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" onclick="openModal('editCandidateModal')">Edit</button>
+                                    <button type="button" class="danger" onclick="openModal('deleteCandidateModal')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row cand-trow" data-group="Graduate Cohort" onclick="location.href='candidate.html'">
+                        <div data-label="Candidate" class="cell-candidate cell-assignment">
+                            <span class="avatar-sm">TB</span>
+                            <div><div class="assign-name"><b>Tom Becker</b></div><div class="assign-target">tom.becker@acme.com</div></div>
+                        </div>
+                        <div data-label="Group"><span class="group-pill"><span class="gp-dot" style="background:#3aa756;"></span>Graduate Cohort</span></div>
+                        <div data-label="Assignments"><div class="assign-summary"><span class="highlight-tag red">1 cancelled</span></div></div>
+                        <div class="cell-action">
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" onclick="openModal('editCandidateModal')">Edit</button>
+                                    <button type="button" class="danger" onclick="openModal('deleteCandidateModal')">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="empty-state" id="candEmpty" style="display:none;">
+                        <h3>No candidates found</h3>
+                        <p>Try a different search or group, or add a new candidate.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Candidate modal -->
+    <div class="modal-overlay" id="addCandidateModal">
+        <div class="modal">
+            <div class="modal-head">
+                <h3>Add Candidate</h3>
+                <button class="modal-close" onclick="closeModal('addCandidateModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="card-content" style="margin-bottom:var(--spacing-narrow-l);color:var(--color-gray);">Candidates are not notified until you send them an assignment.</p>
+            <div style="display:flex;flex-direction:column;gap:var(--spacing-narrow-m);">
+                <div>
+                    <label class="form-label">Full name</label>
+                    <input class="form-input" placeholder="e.g. Jordan Rivera">
+                </div>
+                <div>
+                    <label class="form-label">Email address</label>
+                    <input class="form-input" type="email" placeholder="name@company.com">
+                </div>
+                <div>
+                    <label class="form-label">Group (optional)</label>
+                    <div class="dropdown">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('addGroup')"><span class="dropdown-label">No group</span></button>
+                        <div class="dropdown-menu" id="addGroup">
+                            <button class="dropdown-option" onclick="selectOption('addGroup','No group')">No group</button>
+                            <button class="dropdown-option" onclick="selectOption('addGroup','Leadership Cohort')">Leadership Cohort</button>
+                            <button class="dropdown-option" onclick="selectOption('addGroup','Sales Team')">Sales Team</button>
+                            <button class="dropdown-option" onclick="selectOption('addGroup','Graduate Cohort')">Graduate Cohort</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('addCandidateModal')">Cancel</button>
+                <button class="primary-button" onclick="closeModal('addCandidateModal')">Add Candidate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Candidate modal -->
+    <div class="modal-overlay" id="editCandidateModal">
+        <div class="modal">
+            <div class="modal-head">
+                <h3>Edit Candidate</h3>
+                <button class="modal-close" onclick="closeModal('editCandidateModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--spacing-narrow-m);">
+                <div>
+                    <label class="form-label">Full name</label>
+                    <input class="form-input" value="James Okoro">
+                </div>
+                <div>
+                    <label class="form-label">Email address</label>
+                    <input class="form-input" type="email" value="james.okoro@acme.com">
+                </div>
+                <div>
+                    <label class="form-label">Group</label>
+                    <div class="dropdown">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('editGroup')"><span class="dropdown-label">Leadership Cohort</span></button>
+                        <div class="dropdown-menu" id="editGroup">
+                            <button class="dropdown-option" onclick="selectOption('editGroup','No group')">No group</button>
+                            <button class="dropdown-option" onclick="selectOption('editGroup','Leadership Cohort')">Leadership Cohort</button>
+                            <button class="dropdown-option" onclick="selectOption('editGroup','Sales Team')">Sales Team</button>
+                            <button class="dropdown-option" onclick="selectOption('editGroup','Graduate Cohort')">Graduate Cohort</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('editCandidateModal')">Cancel</button>
+                <button class="primary-button" onclick="closeModal('editCandidateModal')">Save changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete confirm modal -->
+    <div class="modal-overlay" id="deleteCandidateModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>Delete candidate?</h3>
+                <button class="modal-close" onclick="closeModal('deleteCandidateModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);">
+                This removes the candidate and their pending assignments. Completed reports are retained in your account for records.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('deleteCandidateModal')">Keep candidate</button>
+                <button class="danger-button" onclick="closeModal('deleteCandidateModal')">Delete candidate</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        (function () {
+            const rows = Array.prototype.slice.call(document.querySelectorAll('.cand-trow'));
+            const search = document.getElementById('candSearch');
+            const emptyState = document.getElementById('candEmpty');
+            let curGroup = 'all', curText = '';
+
+            function applyFilter() {
+                filterAnimate(rows, function (r) {
+                    const okGroup = curGroup === 'all' || r.dataset.group === curGroup;
+                    const okText = curText === '' || r.textContent.toLowerCase().indexOf(curText) !== -1;
+                    return okGroup && okText;
+                }, emptyState);
+            }
+
+            if (search) search.addEventListener('input', function () { curText = search.value.trim().toLowerCase(); applyFilter(); });
+            window.selectGroup = function (val, label) { curGroup = val; selectOption('groupFilter', label); applyFilter(); };
+
+            // Row option menus
+            document.querySelectorAll('.row-actions-btn').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const ra = btn.closest('.row-actions');
+                    document.querySelectorAll('.row-actions.open').forEach(function (o) { if (o !== ra) o.classList.remove('open'); });
+                    ra.classList.toggle('open');
+                });
+            });
+            document.addEventListener('click', function () {
+                document.querySelectorAll('.row-actions.open').forEach(function (o) { o.classList.remove('open'); });
+            });
+        })();
+    </script>
+</body>
+</html>

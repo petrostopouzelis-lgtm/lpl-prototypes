@@ -1,0 +1,949 @@
+/* Assignment creation wizard — slide stack navigation */
+(function () {
+    const REPORTS = {
+        individual: [
+            { name: 'Personal' },
+            { name: 'Corporate' },
+            { name: 'Leadership' },
+            { name: 'Developmental' },
+            { name: 'Recruitment' }
+        ],
+        group: [
+            { name: 'Team Report' },
+            { name: 'Compatibility' },
+            { name: 'Group-Sort' },
+            { name: 'RoleSync' }
+        ]
+    };
+
+    function reportCoverSrc(name) {
+        if (typeof coverForReport === 'function') {
+            return coverForReport(name);
+        }
+        return '';
+    }
+
+    function reportCoverImg(name) {
+        var src = reportCoverSrc(name);
+        if (src) {
+            return '<img class="report-thumb" src="' + src + '" alt="' + name + ' report cover">';
+        }
+        return '<span class="report-thumb report-thumb-placeholder" aria-hidden="true">' + name.charAt(0) + '</span>';
+    }
+
+    const STAGE_MAP = {
+        target: 1,
+        'assessment-mode': 2,
+        'teique-report': 2,
+        'rolesync-preset': 2,
+        compatibility: 2,
+        settings: 3,
+        review: 4
+    };
+
+    const INSTRUMENT_LABELS = {
+        teique: 'TEIQue',
+        tsique: 'TSIQue',
+        scanin: 'Scan-In',
+        '3rs': '3Rs'
+    };
+    const TOOLKIT_LABELS = {
+        personality: 'TEIQue Personality Toolkit',
+        lecture: 'TEIQue Lecture Series',
+        compatibility: 'TEIQue Compatibility Bundle'
+    };
+
+    /* Administration credit rates — see ../shared/admin-credits.js */
+    const AC = typeof AdminCredits !== 'undefined' ? AdminCredits : null;
+    const PROMO = typeof Promotions !== 'undefined' ? Promotions : null;
+    const PROMO_CONTEXT = { accountType: 'business', isPremium: false };
+    const DEMO_BALANCE = AC ? AC.DEMO_BALANCE : 124.7;
+
+    const FORM_LABELS = { full: 'Full Form', short: 'Short Form' };
+    const ADDON_LABELS = { CDC: 'CDC Report', DISC: 'DISC Report' };
+    const FORM_HINTS = {
+        full: 'Comprehensive 153-item questionnaire with full facet breakdown.',
+        short: 'Streamlined 30-item questionnaire covering the four broad factors.'
+    };
+
+    let slideStack = ['target'];
+    let prefillInstrument = null;
+    let prefillMode = null;
+    let awDirection = 'forward';
+
+    const state = {
+        targetMode: 'individuals',
+        individuals: [],
+        groups: [],
+        assessmentMode: 'report',
+        instrument: null,
+        toolkit: null,
+        teiqueReportScope: 'individual',
+        report: null,
+        teiqueForm: 'full',
+        addOns: [],
+        rolesyncPreset: null,
+        compatibilityCandidate: null,
+        reminders: true,
+        selectedPromo: null
+    };
+
+    function formatAC(n) {
+        return AC ? AC.formatAC(n) : (Number(n).toFixed(1) + ' AC');
+    }
+
+    function respondentCount() {
+        return AC ? AC.respondentCount(state) : state.individuals.length;
+    }
+
+    function baseCostResult() {
+        if (!AC) return { items: [], total: 0, qty: 0 };
+        return AC.calcAssignmentCost(state);
+    }
+
+    function getAvailablePromos() {
+        if (!PROMO) return [];
+        return PROMO.filterPromosForAssignment(PROMO.getPromosForUser(PROMO_CONTEXT), state);
+    }
+
+    function syncSelectedPromo() {
+        if (!state.selectedPromo || !PROMO) return;
+        const valid = getAvailablePromos().some(function (p) { return p.id === state.selectedPromo; });
+        if (!valid) state.selectedPromo = null;
+    }
+
+    function getAppliedCost() {
+        const base = baseCostResult();
+        if (!PROMO || !state.selectedPromo) {
+            return Object.assign({}, base, { savingsAC: 0, promoLine: null });
+        }
+        const promo = PROMO.getPromoById(state.selectedPromo);
+        if (!promo) {
+            state.selectedPromo = null;
+            return Object.assign({}, base, { savingsAC: 0, promoLine: null });
+        }
+        return PROMO.applyPromoDiscount(promo, base, state);
+    }
+
+    function cartLineItems() {
+        return getAppliedCost().items;
+    }
+
+    function cartTotal() {
+        return getAppliedCost().total;
+    }
+
+    function currentSlide() {
+        return slideStack[slideStack.length - 1];
+    }
+
+    function getNextSlide(from) {
+        switch (from) {
+            case 'target':
+                return 'assessment-mode';
+            case 'assessment-mode':
+                if (state.assessmentMode === 'toolkit') return 'settings';
+                return state.instrument === 'teique' ? 'teique-report' : 'settings';
+            case 'teique-report':
+                if (state.report === 'RoleSync') return 'rolesync-preset';
+                if (state.report === 'Compatibility') return 'compatibility';
+                return 'settings';
+            case 'rolesync-preset':
+            case 'compatibility':
+                return 'settings';
+            case 'settings':
+                return 'review';
+            default:
+                return 'review';
+        }
+    }
+
+    function validateSlide(slide) {
+        switch (slide) {
+            case 'target':
+                if (state.targetMode === 'individuals') {
+                    syncIndividuals();
+                    if (!state.individuals.length) {
+                        alert('Select at least one candidate.');
+                        return false;
+                    }
+                } else if (!state.groups.length) {
+                    alert('Select at least one group.');
+                    return false;
+                }
+                return true;
+            case 'assessment-mode':
+                if (state.assessmentMode === 'toolkit') {
+                    if (!state.toolkit) {
+                        alert('Select a toolkit.');
+                        return false;
+                    }
+                    return true;
+                }
+                if (!state.instrument) {
+                    alert('Select a questionnaire.');
+                    return false;
+                }
+                return true;
+            case 'teique-report':
+                if (!state.report) {
+                    alert('Select a report.');
+                    return false;
+                }
+                return true;
+            case 'rolesync-preset':
+                if (!state.rolesyncPreset) {
+                    alert('Choose a RoleSync preset.');
+                    return false;
+                }
+                return true;
+            case 'compatibility':
+                if (!state.compatibilityCandidate) {
+                    alert('Select a candidate for compatibility comparison.');
+                    return false;
+                }
+                return true;
+            default:
+                return true;
+        }
+    }
+
+    function syncIndividuals() {
+        state.individuals = [];
+        document.querySelectorAll('#awCandList .cand-row').forEach(function (row) {
+            if (row.querySelector('.custom-checkbox').classList.contains('checked')) {
+                state.individuals.push({
+                    name: row.dataset.name,
+                    initials: row.querySelector('.avatar-sm').textContent
+                });
+            }
+        });
+    }
+
+    function initPickCardPrices() {
+        if (!AC) return;
+        document.querySelectorAll('#awInstrumentCards .instrument-card').forEach(function (card) {
+            var priceEl = card.querySelector('.pick-card-price');
+            if (priceEl) priceEl.textContent = AC.instrumentCardPrice(card.dataset.instrument);
+        });
+        document.querySelectorAll('#awAddonGrid .addon-card').forEach(function (card) {
+            var priceEl = card.querySelector('.pick-card-price');
+            if (priceEl) priceEl.textContent = AC.addonCardPrice(card.dataset.addon);
+        });
+        document.querySelectorAll('#awToolkitCards .instrument-card').forEach(function (card) {
+            var priceEl = card.querySelector('.pick-card-price');
+            if (priceEl) priceEl.textContent = AC.toolkitCardPrice(card.dataset.toolkit);
+        });
+    }
+
+    function buildReportGrid() {
+        const isGroup = state.teiqueReportScope === 'group';
+
+        /* Form toggle and add-ons are individual-only */
+        if (isGroup) {
+            state.teiqueForm = 'full';
+            state.addOns = [];
+            setSegActive('awFormSeg', 'full');
+        }
+
+        const list = REPORTS[state.teiqueReportScope] || REPORTS.individual;
+        const grid = document.getElementById('awReportGrid');
+        const hint = document.getElementById('awReportHint');
+        hint.textContent = isGroup
+            ? 'Select a group report. Some reports require 2+ completed questionnaires.'
+            : 'Select an individual report.';
+        grid.innerHTML = list.map(function (r) {
+            const sel = state.report === r.name ? ' selected' : '';
+            const price = AC ? AC.reportCardPrice(r.name, state.teiqueReportScope, state.teiqueForm) : '';
+            return '<div class="report-pick-card' + sel + '" data-report="' + r.name + '">' +
+                reportCoverImg(r.name) +
+                '<b>' + r.name + '</b>' +
+                (price ? '<span class="pick-card-price">' + price + '</span>' : '') +
+                '</div>';
+        }).join('');
+        grid.querySelectorAll('.report-pick-card').forEach(function (card) {
+            card.addEventListener('click', function () {
+                grid.querySelectorAll('.report-pick-card').forEach(function (c) { c.classList.remove('selected'); });
+                card.classList.add('selected');
+                state.report = card.dataset.report;
+            });
+        });
+
+        const formHint = document.getElementById('awFormHint');
+        if (formHint) formHint.textContent = FORM_HINTS[state.teiqueForm] || '';
+
+        const formSection = document.getElementById('awFormSection');
+        if (formSection) formSection.style.display = isGroup ? 'none' : '';
+
+        const addonSection = document.getElementById('awAddonSection');
+        if (addonSection) addonSection.style.display = isGroup ? 'none' : '';
+
+        syncAddonCards();
+    }
+
+    function syncAddonCards() {
+        document.querySelectorAll('#awAddonGrid .addon-card').forEach(function (card) {
+            card.classList.toggle('selected', state.addOns.indexOf(card.dataset.addon) !== -1);
+        });
+    }
+
+    function updateStepper() {
+        const stage = STAGE_MAP[currentSlide()] || 1;
+        document.querySelectorAll('#awStepper .step').forEach(function (s) {
+            const n = +s.dataset.stage;
+            s.classList.toggle('active', n === stage);
+            s.classList.toggle('done', n < stage);
+        });
+        document.querySelectorAll('#awStepper .step-line').forEach(function (l) {
+            l.classList.toggle('done', +l.dataset.line < stage);
+        });
+    }
+
+    function isAwMenu(menu) {
+        return !!(menu && menu.id && menu.id.indexOf('aw') === 0);
+    }
+
+    function awDropdownTrigger(menu) {
+        return menu && (menu._awTrigger || menu.previousElementSibling);
+    }
+
+    function ensureAwDropdownAnchor(menu) {
+        if (menu._awAnchor) return;
+        const anchor = document.createComment('aw-dropdown-anchor');
+        menu.parentNode.insertBefore(anchor, menu);
+        menu._awAnchor = anchor;
+        menu._awHome = menu.parentNode;
+    }
+
+    function clearAwDropdownStyles(menu) {
+        if (!menu) return;
+        menu.classList.remove('aw-portal', 'aw-drop-up');
+        menu.style.position = '';
+        menu.style.left = '';
+        menu.style.top = '';
+        menu.style.width = '';
+        menu.style.minWidth = '';
+        menu.style.maxHeight = '';
+        menu.style.overflowY = '';
+        menu.style.zIndex = '';
+        menu.style.visibility = '';
+    }
+
+    function restoreAwDropdown(menu) {
+        if (!menu) return;
+        clearAwDropdownStyles(menu);
+        if (menu._awHome && menu._awAnchor && menu.parentNode !== menu._awHome) {
+            menu._awHome.insertBefore(menu, menu._awAnchor.nextSibling);
+        }
+        menu._awTrigger = null;
+    }
+
+    function closeAwDropdown(menu) {
+        if (!menu) return;
+        menu.classList.remove('active');
+        const trigger = awDropdownTrigger(menu);
+        if (trigger) trigger.classList.remove('active');
+        restoreAwDropdown(menu);
+    }
+
+    function closeAwDropdowns() {
+        document.querySelectorAll('.dropdown-menu.aw-portal, #newAssignmentModal .dropdown-menu').forEach(closeAwDropdown);
+    }
+
+    function positionAwDropdown(menu, trigger) {
+        if (!menu || !trigger || !menu.classList.contains('active')) return;
+
+        const gap = 4;
+        const rect = trigger.getBoundingClientRect();
+        if (!rect.width && !rect.height) {
+            closeAwDropdown(menu);
+            return;
+        }
+        const viewportPad = 8;
+        const maxMenuWidth = Math.min(320, window.innerWidth - viewportPad * 2);
+        const menuWidth = Math.min(Math.max(rect.width, 180), maxMenuWidth);
+
+        menu.style.position = 'fixed';
+        menu.style.width = menuWidth + 'px';
+        menu.style.minWidth = '180px';
+        menu.style.zIndex = '500';
+        menu.style.top = (rect.bottom + gap) + 'px';
+        menu.classList.remove('aw-drop-up');
+
+        let left = rect.left;
+        if (left + menuWidth > window.innerWidth - viewportPad) {
+            left = window.innerWidth - viewportPad - menuWidth;
+        }
+        if (left < viewportPad) left = viewportPad;
+        menu.style.left = left + 'px';
+
+        const menuHeight = menu.offsetHeight || menu.scrollHeight;
+        const spaceBelow = window.innerHeight - rect.bottom - gap - viewportPad;
+        const spaceAbove = rect.top - gap - viewportPad;
+
+        if (menuHeight > spaceBelow && spaceAbove > spaceBelow) {
+            menu.classList.add('aw-drop-up');
+            menu.style.top = Math.max(viewportPad, rect.top - menuHeight - gap) + 'px';
+        }
+
+        const maxH = Math.min(280, window.innerHeight - viewportPad * 2);
+        if (menu.offsetHeight > maxH) {
+            menu.style.maxHeight = maxH + 'px';
+            menu.style.overflowY = 'auto';
+        } else {
+            menu.style.maxHeight = '';
+            menu.style.overflowY = '';
+        }
+    }
+
+    function openAwDropdown(menu, trigger) {
+        if (!menu || !trigger) return;
+        ensureAwDropdownAnchor(menu);
+        menu._awTrigger = trigger;
+        menu.classList.add('aw-portal');
+        menu.style.visibility = 'hidden';
+        document.body.appendChild(menu);
+        menu.classList.add('active');
+        trigger.classList.add('active');
+        requestAnimationFrame(function () {
+            positionAwDropdown(menu, trigger);
+            menu.style.visibility = '';
+        });
+    }
+
+    function awToggleDropdown(id) {
+        const menu = document.getElementById(id);
+        if (!isAwMenu(menu)) return false;
+        const trigger = awDropdownTrigger(menu) || menu.previousElementSibling;
+        const wasOpen = menu.classList.contains('active');
+
+        closeAwDropdowns();
+        if (!wasOpen && trigger) openAwDropdown(menu, trigger);
+        return true;
+    }
+
+    function repositionAwDropdowns() {
+        document.querySelectorAll('.dropdown-menu.aw-portal.active').forEach(function (menu) {
+            positionAwDropdown(menu, awDropdownTrigger(menu));
+        });
+    }
+
+    function render() {
+        const slide = currentSlide();
+        closeAwDropdowns();
+        document.querySelectorAll('.assign-wizard .wiz-slide').forEach(function (el) {
+            const isActive = el.dataset.slide === slide;
+            el.classList.toggle('active', isActive);
+            el.classList.remove('aw-from-back', 'aw-from-forward');
+            if (isActive) {
+                el.classList.add(awDirection === 'back' ? 'aw-from-back' : 'aw-from-forward');
+            }
+        });
+        updateStepper();
+
+        const wizBody = document.querySelector('#newAssignmentModal .wiz-body');
+        if (wizBody) wizBody.scrollTop = 0;
+
+        const backBtn = document.getElementById('awBack');
+        const nextBtn = document.getElementById('awNext');
+        const finishBtn = document.getElementById('awFinish');
+        backBtn.style.visibility = slideStack.length > 1 ? 'visible' : 'hidden';
+        nextBtn.style.display = slide === 'review' ? 'none' : '';
+        finishBtn.style.display = slide === 'review' ? '' : 'none';
+
+        if (slide === 'teique-report') buildReportGrid();
+        if (slide === 'review') buildReview();
+    }
+
+    function buildReview() {
+        const count = respondentCount();
+        let targetHtml = '';
+        if (state.targetMode === 'group') {
+            targetHtml = '<div class="review-row"><span class="review-label">Groups</span><span class="review-val">' +
+                state.groups.map(function (g) { return g.name; }).join(', ') + '</span></div>';
+            targetHtml += '<div class="review-row"><span class="review-label">Respondents</span><span class="review-val">' +
+                count + ' candidate' + (count === 1 ? '' : 's') + '</span></div>';
+        } else {
+            targetHtml = '<div class="review-row"><span class="review-label">Candidates</span><span class="review-val">' +
+                state.individuals.map(function (i) { return i.name; }).join(', ') + '</span></div>';
+            targetHtml += '<div class="review-row"><span class="review-label">Respondents</span><span class="review-val">' +
+                count + ' candidate' + (count === 1 ? '' : 's') + '</span></div>';
+        }
+
+        let assessHtml = '';
+        if (state.assessmentMode === 'toolkit') {
+            assessHtml = '<div class="review-row"><span class="review-label">Type</span><span class="review-val">Toolkit</span></div>';
+            assessHtml += '<div class="review-row"><span class="review-label">Toolkit</span><span class="review-val">' +
+                (TOOLKIT_LABELS[state.toolkit] || state.toolkit || '—') + '</span></div>';
+        } else {
+            assessHtml = '<div class="review-row"><span class="review-label">Instrument</span><span class="review-val">' +
+                (INSTRUMENT_LABELS[state.instrument] || state.instrument || '—') + '</span></div>';
+            if (state.instrument === 'teique') {
+                assessHtml += '<div class="review-row"><span class="review-label">Report scope</span><span class="review-val">' +
+                    (state.teiqueReportScope === 'group' ? 'Group report' : 'Individual report') + '</span></div>';
+                if (state.teiqueReportScope !== 'group') {
+                    assessHtml += '<div class="review-row"><span class="review-label">Form</span><span class="review-val">' +
+                        (FORM_LABELS[state.teiqueForm] || '—') + '</span></div>';
+                }
+                if (state.report) {
+                    assessHtml += '<div class="review-row"><span class="review-label">Report</span><span class="review-val">' +
+                        state.report + '</span></div>';
+                }
+                if (state.addOns.length) {
+                    assessHtml += '<div class="review-row"><span class="review-label">Add-ons</span><span class="review-val">' +
+                        state.addOns.map(function (a) { return ADDON_LABELS[a] || a; }).join(', ') + '</span></div>';
+                }
+                if (state.rolesyncPreset) {
+                    assessHtml += '<div class="review-row"><span class="review-label">RoleSync preset</span><span class="review-val">' +
+                        state.rolesyncPreset + '</span></div>';
+                }
+                if (state.compatibilityCandidate) {
+                    assessHtml += '<div class="review-row"><span class="review-label">Compare with</span><span class="review-val">' +
+                        state.compatibilityCandidate + '</span></div>';
+                }
+            }
+        }
+
+        const settingsHtml = buildSettingsReview();
+        const promoHtml = buildPromoSection();
+        const cartHtml = buildCart();
+
+        document.getElementById('awReviewContent').innerHTML =
+            '<div class="review-block"><h4>Target</h4>' + targetHtml + '</div>' +
+            '<div class="review-block"><h4>Assessment</h4>' + assessHtml + '</div>' +
+            '<div class="review-block"><h4>Settings</h4>' + settingsHtml + '</div>' +
+            promoHtml +
+            cartHtml;
+
+        wirePromoPicker();
+    }
+
+    function buildPromoSection() {
+        syncSelectedPromo();
+        const available = getAvailablePromos();
+        if (!available.length) {
+            return '<div class="review-block aw-promo-block"><h4>Promotions</h4><p class="aw-promo-empty">No promotions apply to this assignment.</p></div>';
+        }
+        const cost = baseCostResult();
+        let html = '<div class="review-block aw-promo-block"><h4>Promotions</h4>' +
+            '<p class="aw-slide-hint" style="margin-bottom:var(--spacing-narrow-m);">Optional — select one promotion to reduce the AC cost.</p>' +
+            '<div class="aw-promo-picker" id="awPromoPicker">';
+        available.forEach(function (p) {
+            const sel = state.selectedPromo === p.id ? ' selected' : '';
+            const preview = PROMO.previewSavings(p, cost, state);
+            const tagCls = p.tag === 'Spotlight' ? ' spotlight' : (p.scope === 'user' ? ' user' : '');
+            html += '<button type="button" class="aw-promo-row' + sel + '" data-promo-id="' + p.id + '">' +
+                '<span class="addon-check" aria-hidden="true"></span>' +
+                '<span class="aw-promo-row-info">' +
+                '<span class="promo-tag-pill' + tagCls + '">' + p.tag + '</span>' +
+                '<b>' + p.title + '</b>' +
+                '<span class="aw-promo-row-save">' + preview + '</span>' +
+                '</span></button>';
+        });
+        html += '</div></div>';
+        return html;
+    }
+
+    function wirePromoPicker() {
+        const picker = document.getElementById('awPromoPicker');
+        if (!picker) return;
+        picker.querySelectorAll('.aw-promo-row').forEach(function (row) {
+            row.addEventListener('click', function () {
+                const id = row.dataset.promoId;
+                state.selectedPromo = state.selectedPromo === id ? null : id;
+                buildReview();
+            });
+        });
+    }
+
+    function buildCart() {
+        const applied = getAppliedCost();
+        const items = applied.items || [];
+        const rowsHtml = items.map(function (i) {
+            return '<div class="cart-row">' +
+                '<div class="cart-item"><span class="cart-item-name">' + i.label + '</span>' +
+                '<span class="cart-item-meta">' + formatAC(i.unit) + ' × ' + i.qty + '</span></div>' +
+                '<span class="cart-item-total">' + formatAC(i.total) + '</span></div>';
+        }).join('');
+        const promoRow = applied.savingsAC > 0 && applied.promoLine
+            ? '<div class="cart-row cart-row-promo"><div class="cart-item"><span class="cart-item-name">' + applied.promoLine + '</span>' +
+                '<span class="cart-item-meta">Promotion applied</span></div>' +
+                '<span class="cart-item-total">−' + formatAC(applied.savingsAC) + '</span></div>'
+            : '';
+        const total = applied.total || 0;
+        const remaining = Math.max(0, DEMO_BALANCE - total);
+        return '<div class="review-block cart-block">' +
+            '<h4>Credit summary</h4>' +
+            '<div class="cart-list">' + rowsHtml + promoRow + '</div>' +
+            '<div class="cart-total-row"><span>Total deduction</span><span class="cart-total-val">' + formatAC(total) + '</span></div>' +
+            '<p class="cart-note">' + formatAC(total) + ' will be deducted from your balance (' + formatAC(remaining) + ' remaining).</p>' +
+            '</div>';
+    }
+
+    function isToggleOn(id) {
+        const el = document.getElementById(id);
+        return el && !el.classList.contains('off');
+    }
+
+    function buildSettingsReview() {
+        const rows = [];
+
+        rows.push(['Auto reminders', isToggleOn('awRemindersToggle') ? 'Every 48 hours' : 'Off']);
+
+        const qLang = document.querySelector('#awQLang .dropdown-label');
+        const rLang = document.querySelector('#awRLang .dropdown-label');
+        if (qLang) rows.push(['Questionnaire language', qLang.textContent]);
+        if (rLang) rows.push(['Report language', rLang.textContent]);
+
+        if (isToggleOn('awScheduleToggle')) rows.push(['Schedule invite', 'Enabled']);
+        if (isToggleOn('awDueToggle')) {
+            const d = document.getElementById('awDueDay').value;
+            const m = document.getElementById('awDueMonth').value;
+            const y = document.getElementById('awDueYear').value;
+            if (d || m || y) rows.push(['Due date', [d, m, y].filter(Boolean).join('/')]);
+            else rows.push(['Due date', 'Enabled']);
+        }
+        if (isToggleOn('awCustomInviteToggle')) rows.push(['Invite email', 'Custom message']);
+
+        return rows.map(function (r) {
+            return '<div class="review-row"><span class="review-label">' + r[0] +
+                '</span><span class="review-val">' + r[1] + '</span></div>';
+        }).join('');
+    }
+
+    function updateAssessmentPanel() {
+        const isReport = state.assessmentMode === 'report';
+        document.getElementById('awInstrumentSection').style.display = isReport ? '' : 'none';
+        document.getElementById('awToolkitSection').style.display = isReport ? 'none' : '';
+    }
+
+    function resetWizard(opts) {
+        opts = opts || {};
+        slideStack = ['target'];
+        awDirection = 'forward';
+        closeAwDropdowns();
+        state.targetMode = 'individuals';
+        state.individuals = [];
+        state.groups = [];
+        state.assessmentMode = opts.mode === 'toolkit' ? 'toolkit' : 'report';
+        state.instrument = opts.mode === 'toolkit' ? null : (opts.instrument || null);
+        state.toolkit = opts.toolkit || null;
+        state.teiqueReportScope = 'individual';
+        state.report = null;
+        state.teiqueForm = 'full';
+        state.addOns = [];
+        state.rolesyncPreset = null;
+        state.compatibilityCandidate = null;
+        state.reminders = true;
+        state.selectedPromo = null;
+
+        document.querySelectorAll('#awCandList .custom-checkbox.checked').forEach(function (cb) {
+            cb.classList.remove('checked');
+        });
+        document.querySelectorAll('#awGroupPick .group-card.selected').forEach(function (c) {
+            c.classList.remove('selected');
+        });
+        document.querySelectorAll('#awInstrumentCards .instrument-card.selected').forEach(function (c) {
+            c.classList.remove('selected');
+        });
+        document.querySelectorAll('#awToolkitCards .instrument-card.selected').forEach(function (c) {
+            c.classList.remove('selected');
+        });
+        document.querySelectorAll('#awCompList .comp-cand-row.selected').forEach(function (c) {
+            c.classList.remove('selected');
+        });
+        document.querySelectorAll('#awAddonGrid .addon-card.selected').forEach(function (c) {
+            c.classList.remove('selected');
+        });
+
+        if (state.instrument) {
+            const card = document.querySelector('#awInstrumentCards [data-instrument="' + state.instrument + '"]');
+            if (card) card.classList.add('selected');
+        }
+        if (state.toolkit) {
+            const tkCard = document.querySelector('#awToolkitCards [data-toolkit="' + state.toolkit + '"]');
+            if (tkCard) tkCard.classList.add('selected');
+        }
+
+        document.getElementById('awCandSearch').value = '';
+        document.querySelectorAll('#awCandList .cand-row').forEach(function (r) { r.style.display = ''; });
+
+        setSegActive('awTargetSeg', state.targetMode === 'group' ? 'group' : 'individuals');
+        document.getElementById('awTargetIndividuals').style.display = state.targetMode === 'group' ? 'none' : '';
+        document.getElementById('awTargetGroups').style.display = state.targetMode === 'group' ? '' : 'none';
+
+        setSegActive('awModeSeg', state.assessmentMode);
+        updateAssessmentPanel();
+
+        setSegActive('awTeiqueScopeSeg', 'individual');
+        setSegActive('awFormSeg', 'full');
+
+        document.getElementById('awRoleSyncLabel').textContent = 'Choose a preset';
+
+        const remToggle = document.getElementById('awRemindersToggle');
+        if (remToggle) remToggle.classList.toggle('off', !state.reminders);
+
+        render();
+        if (typeof initSegIndicators === 'function') initSegIndicators();
+    }
+
+    function setSegActive(segId, value) {
+        const seg = document.getElementById(segId);
+        if (!seg) return;
+        seg.querySelectorAll('button').forEach(function (b) {
+            b.classList.toggle('active', b.dataset.target === value || b.dataset.mode === value || b.dataset.scope === value || b.dataset.form === value);
+        });
+    }
+
+    window.awNext = function () {
+        const slide = currentSlide();
+        if (!validateSlide(slide)) return;
+        const next = getNextSlide(slide);
+        awDirection = 'forward';
+        slideStack.push(next);
+        render();
+    };
+
+    window.awBack = function () {
+        if (slideStack.length <= 1) return;
+        awDirection = 'back';
+        slideStack.pop();
+        render();
+    };
+
+    window.awFinish = function () {
+        closeModal('newAssignmentModal');
+        const banner = document.getElementById('assignSuccessBanner');
+        if (banner) {
+            banner.classList.add('visible');
+            setTimeout(function () { banner.classList.remove('visible'); }, 6000);
+        }
+        if (window.history.replaceState) {
+            window.history.replaceState({}, '', 'assignments.html');
+        }
+    };
+
+    window.awSelectPreset = function (name) {
+        state.rolesyncPreset = name;
+        document.getElementById('awRoleSyncLabel').textContent = name;
+        selectOption('awRoleSyncPreset', name);
+    };
+
+    window.awToggleNested = function (id, toggleEl) {
+        const nested = document.getElementById(id);
+        if (!nested) return;
+        const show = toggleEl && !toggleEl.classList.contains('off');
+        nested.classList.toggle('hidden', !show);
+    };
+
+    window.openAssignmentWizard = function (opts) {
+        opts = opts || {};
+        resetWizard(opts);
+        openModal('newAssignmentModal');
+    };
+
+    function wireAwDropdowns() {
+        const modal = document.getElementById('newAssignmentModal');
+        if (!modal) return;
+
+        const origToggle = window.toggleDropdown;
+        if (typeof origToggle === 'function') {
+            window.toggleDropdown = function (id) {
+                if (awToggleDropdown(id)) return;
+                origToggle(id);
+            };
+        }
+
+        const origSelect = window.selectOption;
+        if (typeof origSelect === 'function') {
+            window.selectOption = function (id, label) {
+                const menu = document.getElementById(id);
+                origSelect(id, label);
+                if (isAwMenu(menu)) closeAwDropdown(menu);
+            };
+        }
+
+        document.addEventListener('click', function (e) {
+            const overlay = document.getElementById('newAssignmentModal');
+            if (!overlay || !overlay.classList.contains('active')) return;
+            if (e.target.closest('#newAssignmentModal .dropdown-trigger')) return;
+            if (e.target.closest('.dropdown-menu.aw-portal')) return;
+            closeAwDropdowns();
+        });
+
+        const overlay = document.getElementById('newAssignmentModal');
+        if (overlay) {
+            new MutationObserver(function () {
+                if (!overlay.classList.contains('active')) closeAwDropdowns();
+            }).observe(overlay, { attributes: true, attributeFilter: ['class'] });
+        }
+
+        const origCloseModal = window.closeModal;
+        if (typeof origCloseModal === 'function') {
+            window.closeModal = function (id) {
+                if (id === 'newAssignmentModal') closeAwDropdowns();
+                origCloseModal(id);
+            };
+        }
+
+        const body = modal.querySelector('.wiz-body');
+        if (body) body.addEventListener('scroll', repositionAwDropdowns, { passive: true });
+        window.addEventListener('resize', repositionAwDropdowns);
+        window.addEventListener('scroll', repositionAwDropdowns, { passive: true, capture: true });
+    }
+
+    function wireEvents() {
+        initPickCardPrices();
+        document.getElementById('awTargetSeg').addEventListener('click', function (e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            this.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            state.targetMode = btn.dataset.target;
+            document.getElementById('awTargetIndividuals').style.display = state.targetMode === 'individuals' ? '' : 'none';
+            document.getElementById('awTargetGroups').style.display = state.targetMode === 'group' ? '' : 'none';
+            if (typeof initSegIndicators === 'function') initSegIndicators();
+        });
+
+        document.getElementById('awModeSeg').addEventListener('click', function (e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            this.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            state.assessmentMode = btn.dataset.mode;
+            if (state.assessmentMode === 'toolkit') {
+                state.instrument = null;
+                state.report = null;
+                state.addOns = [];
+                state.selectedPromo = null;
+                document.querySelectorAll('#awInstrumentCards .instrument-card.selected').forEach(function (c) {
+                    c.classList.remove('selected');
+                });
+            } else {
+                state.toolkit = null;
+                state.selectedPromo = null;
+                document.querySelectorAll('#awToolkitCards .instrument-card.selected').forEach(function (c) {
+                    c.classList.remove('selected');
+                });
+            }
+            updateAssessmentPanel();
+            if (typeof initSegIndicators === 'function') initSegIndicators();
+        });
+
+        document.getElementById('awTeiqueScopeSeg').addEventListener('click', function (e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            this.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            state.teiqueReportScope = btn.dataset.scope;
+            state.report = null;
+            buildReportGrid();
+            if (typeof initSegIndicators === 'function') initSegIndicators();
+        });
+
+        document.getElementById('awInstrumentCards').addEventListener('click', function (e) {
+            const card = e.target.closest('.instrument-card');
+            if (!card) return;
+            this.querySelectorAll('.instrument-card').forEach(function (c) { c.classList.remove('selected'); });
+            card.classList.add('selected');
+            state.instrument = card.dataset.instrument;
+            state.report = null;
+            state.addOns = [];
+            state.selectedPromo = null;
+            state.rolesyncPreset = null;
+            state.compatibilityCandidate = null;
+        });
+
+        document.getElementById('awToolkitCards').addEventListener('click', function (e) {
+            const card = e.target.closest('.instrument-card');
+            if (!card) return;
+            this.querySelectorAll('.instrument-card').forEach(function (c) { c.classList.remove('selected'); });
+            card.classList.add('selected');
+            state.toolkit = card.dataset.toolkit;
+            state.selectedPromo = null;
+        });
+
+        document.getElementById('awFormSeg').addEventListener('click', function (e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            this.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            state.teiqueForm = btn.dataset.form;
+            const formHint = document.getElementById('awFormHint');
+            if (formHint) formHint.textContent = FORM_HINTS[state.teiqueForm] || '';
+            if (state.teiqueReportScope === 'individual') buildReportGrid();
+            if (typeof initSegIndicators === 'function') initSegIndicators();
+        });
+
+        document.getElementById('awAddonGrid').addEventListener('click', function (e) {
+            const card = e.target.closest('.addon-card');
+            if (!card) return;
+            const name = card.dataset.addon;
+            const idx = state.addOns.indexOf(name);
+            if (idx === -1) state.addOns.push(name);
+            else state.addOns.splice(idx, 1);
+            card.classList.toggle('selected', idx === -1);
+        });
+
+        document.getElementById('awGroupPick').addEventListener('click', function (e) {
+            const card = e.target.closest('.group-card');
+            if (!card) return;
+            const name = card.dataset.group;
+            const idx = state.groups.findIndex(function (g) { return g.name === name; });
+            if (idx === -1) {
+                state.groups.push({ name: name, count: +card.dataset.count || 0 });
+                card.classList.add('selected');
+            } else {
+                state.groups.splice(idx, 1);
+                card.classList.remove('selected');
+            }
+        });
+
+        document.getElementById('awCompList').addEventListener('click', function (e) {
+            const row = e.target.closest('.comp-cand-row');
+            if (!row || row.dataset.teiqueComplete !== 'true') return;
+            this.querySelectorAll('.comp-cand-row').forEach(function (r) { r.classList.remove('selected'); });
+            row.classList.add('selected');
+            state.compatibilityCandidate = row.dataset.name;
+        });
+
+        document.getElementById('awCandSearch').addEventListener('input', function () {
+            const q = this.value.trim().toLowerCase();
+            document.querySelectorAll('#awCandList .cand-row').forEach(function (row) {
+                const ok = !q || row.dataset.name.toLowerCase().indexOf(q) !== -1;
+                row.style.display = ok ? '' : 'none';
+            });
+        });
+    }
+
+    function parseQuery() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.get('new') !== '1') return;
+
+        const instrument = params.get('instrument');
+        const mode = params.get('mode');
+        const instrumentMap = {
+            teique: 'teique',
+            tsiqe: 'tsique',
+            scanin: 'scanin',
+            '3rs': '3rs',
+            toolkit: null
+        };
+
+        let inst = instrument && instrumentMap[instrument.toLowerCase()];
+        if (instrument === 'toolkit') {
+            openAssignmentWizard({ mode: 'toolkit' });
+            return;
+        }
+        if (inst) {
+            openAssignmentWizard({ instrument: inst });
+        } else {
+            openAssignmentWizard();
+        }
+    }
+
+    wireEvents();
+    wireAwDropdowns();
+    document.addEventListener('DOMContentLoaded', parseQuery);
+    if (document.readyState !== 'loading') parseQuery();
+})();

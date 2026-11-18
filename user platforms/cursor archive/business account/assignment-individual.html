@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment · TEIQue Corporate | Psychometric Laboratory for Business</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .status-card { margin-bottom: var(--spacing-narrow-l); }
+        .report-pending { opacity: 0.6; }
+        .report-note { display: flex; align-items: flex-start; gap: var(--spacing-narrow-s); margin-top: var(--spacing-narrow-m); padding: var(--spacing-narrow-m); background: var(--color-yellow-light); border-radius: var(--radius-standard); font-family: var(--font-inter); font-size: 14px; color: var(--color-black); line-height: var(--line-height-normal); }
+        .report-note svg { width: 18px; height: 18px; flex-shrink: 0; stroke: var(--color-yellow-full); margin-top: 1px; }
+    </style>
+</head>
+<!-- Individual assignment example (in progress) -->
+<body data-page="assignments" data-title="Assignment" data-subtitle="">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <a class="back-link" href="assignments.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+                Back to Assignments
+            </a>
+
+            <!-- Status / overview header -->
+            <div class="card status-card">
+                <div class="status-bar">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:var(--spacing-narrow-s);">
+                            <span class="status-dot yellow"></span>
+                            <span class="subhead" style="margin-bottom:0;">Active assignment</span>
+                        </div>
+                        <h2 class="assign-h-title" style="margin-top:var(--spacing-narrow-s);">TEIQue Corporate</h2>
+                        <p class="assign-h-sub">James Okoro · Individual assignment</p>
+                        <div class="assign-meta">
+                            <span><b>Assigned</b> 4 Jun 2026</span>
+                            <span><b>Due</b> 18 Jun 2026</span>
+                            <span><b>Status</b> In progress</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <button class="secondary-button" onclick="openModal('resendModal')">Resend invite</button>
+                        <button class="danger-button" onclick="openModal('cancelModal')">Cancel assignment</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <!-- LEFT: Report (single) -->
+                <div class="card">
+                    <h2 class="card-title">Report</h2>
+                    <div class="type-block">
+                        <img class="report-thumb report-pending" src="../../006_RASTER/report covers/corporate cover 2023-01.png" alt="TEIQue Corporate report cover">
+                        <div class="type-info">
+                            <div class="type-name">TEIQue Corporate Report</div>
+                            <p class="type-desc">A leadership-context interpretation of James Okoro's emotional intelligence results.</p>
+                            <span class="highlight-tag yellow">Not ready yet</span>
+                            <div class="report-note">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                                <span>The report is generated automatically and becomes available to read and download as soon as James completes the assessment.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Target (single candidate) -->
+                <div class="card">
+                    <div class="section-head">
+                        <h2 class="card-title">Target</h2>
+                        <a href="candidate.html">Go to candidate</a>
+                    </div>
+                    <div class="member-box">
+                        <div class="cand-row">
+                            <span class="avatar-sm">JO</span>
+                            <div class="cand-info"><div class="cand-name"><b>James Okoro</b></div><div class="cand-email">james.okoro@acme.com</div></div>
+                            <span class="highlight-tag yellow">In progress</span>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View candidate</a>
+                                    <button type="button" onclick="openModal('resendModal')">Resend invite</button>
+                                    <button type="button" class="danger" onclick="openModal('cancelModal')">Cancel assignment</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <p class="subhead">Invitation</p>
+                    <p style="font-family:var(--font-inter);font-size:14px;color:var(--color-gray);line-height:var(--line-height-normal);">
+                        Invited <b style="color:var(--color-black);">4 Jun 2026</b> · last reminder sent <b style="color:var(--color-black);">9 Jun 2026</b>. James has opened the invitation but not yet finished.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Resend invite modal -->
+    <div class="modal-overlay" id="resendModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>Resend invite</h3>
+                <button class="modal-close" onclick="closeModal('resendModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);">
+                Send James Okoro a fresh email reminder for the TEIQue Corporate assessment. This does not consume an additional credit.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('resendModal')">Cancel</button>
+                <button class="primary-button" onclick="closeModal('resendModal')">Send reminder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel assignment modal -->
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>Cancel assignment?</h3>
+                <button class="modal-close" onclick="closeModal('cancelModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);">
+                Cancelling withdraws James Okoro's invitation. Because the assessment is not yet complete, the credits are returned to your balance.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('cancelModal')">Keep assignment</button>
+                <button class="danger-button" onclick="window.location.href='assignments.html'">Cancel assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        (function () {
+            document.querySelectorAll('.row-actions-btn').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const ra = btn.closest('.row-actions');
+                    document.querySelectorAll('.row-actions.open').forEach(function (o) { if (o !== ra) o.classList.remove('open'); });
+                    ra.classList.toggle('open');
+                });
+            });
+            document.addEventListener('click', function () {
+                document.querySelectorAll('.row-actions.open').forEach(function (o) { o.classList.remove('open'); });
+            });
+        })();
+    </script>
+</body>
+</html>

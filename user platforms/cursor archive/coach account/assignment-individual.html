@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment · TEIQue Full Form | Psychometric Laboratory for Coaches</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .status-card { margin-bottom: var(--spacing-narrow-l); }
+        .comp-data-head { font-family: var(--font-manrope); font-weight: var(--font-weight-semibold); font-size: 13px; color: var(--color-primary-full); margin: var(--spacing-narrow-m) 0 var(--spacing-narrow-s); }
+    </style>
+</head>
+<!-- Individual assignment example (completed) -->
+<body data-page="assignments" data-title="Assignment" data-subtitle="">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <a class="back-link" href="assignments.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+                Back to Assignments
+            </a>
+
+            <!-- Status / overview header -->
+            <div class="card status-card">
+                <div class="status-bar">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:var(--spacing-narrow-s);">
+                            <span class="status-dot green"></span>
+                            <span class="subhead" style="margin-bottom:0;">Completed assignment</span>
+                        </div>
+                        <h2 class="assign-h-title" style="margin-top:var(--spacing-narrow-s);display:flex;align-items:center;gap:var(--spacing-narrow-s);flex-wrap:wrap;">TEIQue <span class="form-tag">Full</span></h2>
+                        <p class="assign-h-sub">James Okoro · Individual assignment</p>
+                        <div class="assign-meta">
+                            <span><b>Issued</b> 4 Jun 2026</span>
+                            <span><b>Completed</b> 9 Jun 2026</span>
+                            <span><b>Status</b> Completed</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <button class="primary-button" onclick="openGenerateReport('James Okoro')">
+                            <img class="btn-icon" src="../../005_PLATFORM ICONS/other icons/request demo button arrow icon.svg" alt="">
+                            Generate report
+                        </button>
+                        <div class="export-menu">
+                            <button class="export-trigger" onclick="toggleExportMenu(this)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Export data
+                                <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                            <div class="export-dropdown">
+                                <button onclick="exportData('James Okoro data','CSV')"><img src="../../005_PLATFORM ICONS/file icons/csv state=Default.svg" alt="">Export as CSV</button>
+                                <button onclick="exportData('James Okoro data','Excel')"><img src="../../005_PLATFORM ICONS/file icons/excel state=Default-1.svg" alt="">Export as Excel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <!-- LEFT: Questionnaire + generated reports + data -->
+                <div class="card">
+                    <h2 class="card-title">Questionnaire</h2>
+                    <div class="qnr-block">
+                        <span class="qnr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3.5h6v3H9z"/><path d="M8.5 11l1.6 1.6 3-3.2M8.5 16.5h7"/></svg></span>
+                        <div class="qnr-info">
+                            <div class="qnr-name">TEIQue <span class="form-tag">Full</span></div>
+                            <p class="qnr-meta">153 items · English (UK) · Completed 9 Jun 2026</p>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <p class="comp-data-head" style="margin-top:0;">Generated reports</p>
+                    <div class="gen-reports">
+                        <div class="gen-report-row">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="gen-report-meta"><div class="gen-report-name">Personal Report</div><div class="gen-report-sub">Generated 9 Jun 2026 · PDF</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                        <div class="gen-report-row">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="gen-report-meta"><div class="gen-report-name">Corporate Report</div><div class="gen-report-sub">Generated 10 Jun 2026 · PDF</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                    </div>
+                    <div class="type-actions" style="margin-top:var(--spacing-narrow-m);">
+                        <button class="secondary-button" onclick="openGenerateReport('James Okoro')">+ Generate another report</button>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <p class="comp-data-head" style="margin-top:0;">Download data</p>
+                    <div class="data-downloads">
+                        <button class="data-dl" onclick="downloadData('Questionnaire answers')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Answers</span><span class="data-dl-format">CSV</span></button>
+                        <button class="data-dl" onclick="downloadData('Raw scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Raw scores</span><span class="data-dl-format">CSV</span></button>
+                        <button class="data-dl" onclick="downloadData('Normed scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Normed scores</span><span class="data-dl-format">CSV</span></button>
+                        <button class="data-dl" onclick="downloadData('Percentile scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Percentile scores</span><span class="data-dl-format">CSV</span></button>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Target (single candidate) -->
+                <div class="card">
+                    <div class="section-head">
+                        <h2 class="card-title">Target</h2>
+                        <a href="candidate.html">Go to candidate</a>
+                    </div>
+                    <div class="member-box">
+                        <div class="cand-row">
+                            <span class="avatar-sm">JO</span>
+                            <div class="cand-info"><div class="cand-name"><b>James Okoro</b></div><div class="cand-email">james.okoro@acme.com</div></div>
+                            <span class="highlight-tag green">Completed</span>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">Open profile</a>
+                                    <button type="button" onclick="openGenerateReport('James Okoro')">Generate report</button>
+                                    <button type="button" onclick="downloadData('James Okoro · data')">Download data</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <p class="subhead">Completion</p>
+                    <p style="font-family:var(--font-inter);font-size:14px;color:var(--color-gray);line-height:var(--line-height-normal);">
+                        Invited <b style="color:var(--color-black);">4 Jun 2026</b> · completed <b style="color:var(--color-black);">9 Jun 2026</b>. The questionnaire data is stored and can be re-interpreted into any TEIQue report type at any time.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Generate report modal -->
+    <div class="modal-overlay" id="generateReportModal">
+        <div class="modal" style="max-width:560px;">
+            <div class="modal-head">
+                <h3>Generate report</h3>
+                <button class="modal-close" onclick="closeModal('generateReportModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="settings-intro">Generate a new report for <b id="genReportFor">this completed questionnaire</b>. The questionnaire data already exists — pick another report type to interpret it.</p>
+            <div class="report-pick-grid" id="genReportGrid">
+                <div class="report-pick-card" data-report="Personal"><img class="report-thumb" src="../../006_RASTER/report covers/personal cover 2023-01.png" alt="Personal"><b>Personal</b></div>
+                <div class="report-pick-card" data-report="Corporate"><img class="report-thumb" src="../../006_RASTER/report covers/corporate cover 2023-01.png" alt="Corporate"><b>Corporate</b></div>
+                <div class="report-pick-card" data-report="Leadership"><img class="report-thumb" src="../../006_RASTER/report covers/leadership cover 2023-01.png" alt="Leadership"><b>Leadership</b></div>
+                <div class="report-pick-card" data-report="Developmental"><img class="report-thumb" src="../../006_RASTER/report covers/developmental cover-01.png" alt="Developmental"><b>Developmental</b></div>
+                <div class="report-pick-card" data-report="Recruitment"><img class="report-thumb" src="../../006_RASTER/report covers/recruitment cover 2023-01.png" alt="Recruitment"><b>Recruitment</b></div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('generateReportModal')">Cancel</button>
+                <button class="primary-button" onclick="confirmGenerateReport()">Generate</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="report-covers.js"></script>
+    <script src="app.js"></script>
+    <script>
+        (function () {
+            document.querySelectorAll('.row-actions-btn').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const ra = btn.closest('.row-actions');
+                    document.querySelectorAll('.row-actions.open').forEach(function (o) { if (o !== ra) o.classList.remove('open'); });
+                    ra.classList.toggle('open');
+                });
+            });
+            document.addEventListener('click', function () {
+                document.querySelectorAll('.row-actions.open').forEach(function (o) { o.classList.remove('open'); });
+            });
+        })();
+    </script>
+</body>
+</html>

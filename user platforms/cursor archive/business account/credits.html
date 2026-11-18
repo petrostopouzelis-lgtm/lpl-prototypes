@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Credits | Psychometric Laboratory for Business</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-page="credits" data-title="Credits" data-subtitle="Buy administration credits, review your balance, and see what each action costs.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+
+            <div class="purchase-layout">
+                <div class="purchase-main">
+
+                    <div class="panel ac-balance-panel">
+                        <div class="ac-balance-inner">
+                            <div class="ac-balance-text">
+                                <span class="ac-balance-label">Available balance</span>
+                                <div class="ac-balance-value"><b id="acBalanceDisplay">124.7</b> <span>administration credits</span></div>
+                                <p class="ac-balance-sub">Credits are deducted when you send an assignment. Cancelled invitations return unused credits automatically.</p>
+                            </div>
+                            <a class="primary-button" href="assignments.html?new=1">New assignment</a>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2 class="card-title">Buy credits</h2>
+                        </div>
+                        <div style="padding: 0 var(--spacing-narrow-l) var(--spacing-narrow-l);">
+                            <div class="credit-cards">
+                                <div class="credit-buy-card" data-product="Administration Credits" data-unit="70">
+                                    <div class="cbc-head">
+                                        <div class="cbc-name">Administration Credits</div>
+                                    </div>
+                                    <p class="cbc-desc">One flexible balance for every questionnaire, report, add-on and group administration. TEIQue Full Form administrations cost 1.0 credit; Short Form 0.6; other instruments and surcharges use fractional rates shown in the gallery below.</p>
+                                    <div class="cbc-buybar">
+                                        <div class="cbc-pricerow">
+                                            <div class="cbc-price"><span class="cbc-amount">£70</span><span class="cbc-per">per credit</span></div>
+                                            <div class="qty-stepper">
+                                                <button class="qty-btn" type="button" aria-label="Decrease" onclick="stepQty(this,-1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+                                                <input class="qty-input" type="number" min="1" value="1" aria-label="Quantity">
+                                                <button class="qty-btn" type="button" aria-label="Increase" onclick="stepQty(this,1)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+                                            </div>
+                                        </div>
+                                        <button class="primary-button" onclick="addToBasket(this)">Add to basket</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="inv-reports-label" style="margin-top:var(--spacing-narrow-l);text-align:center;">Bulk pricing applies automatically <span class="sub">· from £70/credit on small orders to £50/credit average at 100 credits</span></p>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2 class="card-title">Gallery</h2>
+                            <div class="seg" id="galleryFilter">
+                                <button class="active" data-fam="all" onclick="filterGallery(this)">All</button>
+                                <button data-fam="teique" onclick="filterGallery(this)">TEIQue</button>
+                                <button data-fam="tsique" onclick="filterGallery(this)">TSIQue</button>
+                                <button data-fam="scanin" onclick="filterGallery(this)">Scan-In</button>
+                                <button data-fam="3rs" onclick="filterGallery(this)">3Rs</button>
+                            </div>
+                        </div>
+
+                        <div style="padding: 0 var(--spacing-narrow-l) var(--spacing-narrow-l);">
+                            <p class="gallery-intro">Each questionnaire is answered once. Report types are generated from the same answers at no extra administration cost unless an add-on or group surcharge applies.</p>
+
+                            <div class="gallery-section" data-inst="teique">
+                                <div class="gal-inst">
+                                    <div class="gal-inst-title">TEIQue <span class="form-tag">Full · 1.0 AC</span><span class="form-tag short">Short · 0.6 AC</span></div>
+                                    <p class="gal-inst-sub">Trait emotional intelligence. Individual report types share the same form cost.</p>
+                                </div>
+                                <div class="gal-grouphead ind">Individual reports<span class="sub">Included in form cost</span></div>
+                                <div class="gallery-grid">
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Personal</div><span class="scope-badge ind">Individual</span></div><p class="gallery-desc">Self-understanding and everyday emotional functioning.</p><div class="gallery-foot"><span class="gallery-cost">1.0 / 0.6 AC</span><button class="secondary-button" onclick="showToast('Opening Personal report…')">View more</button></div></div>
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Corporate</div><span class="scope-badge ind">Individual</span></div><p class="gallery-desc">Workplace profile for organisational settings.</p><div class="gallery-foot"><span class="gallery-cost">1.0 / 0.6 AC</span><button class="secondary-button" onclick="showToast('Opening Corporate report…')">View more</button></div></div>
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Leadership</div><span class="scope-badge ind">Individual</span></div><p class="gallery-desc">Leadership strengths and development priorities.</p><div class="gallery-foot"><span class="gallery-cost">1.0 / 0.6 AC</span><button class="secondary-button" onclick="showToast('Opening Leadership report…')">View more</button></div></div>
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Developmental</div><span class="scope-badge ind">Individual</span></div><p class="gallery-desc">Growth-focused read with coaching prompts.</p><div class="gallery-foot"><span class="gallery-cost">1.0 / 0.6 AC</span><button class="secondary-button" onclick="showToast('Opening Developmental report…')">View more</button></div></div>
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Recruitment</div><span class="scope-badge ind">Individual</span></div><p class="gallery-desc">Selection-focused profile for hiring decisions.</p><div class="gallery-foot"><span class="gallery-cost">1.0 / 0.6 AC</span><button class="secondary-button" onclick="showToast('Opening Recruitment report…')">View more</button></div></div>
+                                </div>
+                                <div class="gal-grouphead group">Group reports<span class="sub">Additive to each candidate&rsquo;s form cost</span></div>
+                                <div class="gallery-grid">
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Team Report</div><span class="scope-badge group">Group</span></div><p class="gallery-desc">Aggregated team profile and dynamics.</p><div class="gallery-foot"><span class="gallery-cost">+0.3 AC per candidate</span><button class="secondary-button" onclick="showToast('Opening Team Report…')">View more</button></div></div>
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Compatibility</div><span class="scope-badge group">Group</span></div><p class="gallery-desc">Profile fit for pairing and partnerships.</p><div class="gallery-foot"><span class="gallery-cost">0.5 AC</span><button class="secondary-button" onclick="showToast('Opening Compatibility report…')">View more</button></div></div>
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Group-Sort</div><span class="scope-badge group">Group</span></div><p class="gallery-desc">Rank and cluster a cohort across traits.</p><div class="gallery-foot"><span class="gallery-cost">+0.3 AC per candidate</span><button class="secondary-button" onclick="showToast('Opening Group-Sort report…')">View more</button></div></div>
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">RoleSync</div><span class="scope-badge group">Group</span></div><p class="gallery-desc">Benchmark a cohort against a role preset.</p><div class="gallery-foot"><span class="gallery-cost">+0.3 AC per candidate</span><button class="secondary-button" onclick="showToast('Opening RoleSync report…')">View more</button></div></div>
+                                </div>
+                                <div class="gal-grouphead addon">Add-on reports<span class="sub">Layers onto a TEIQue Full Form</span></div>
+                                <div class="gallery-grid">
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">CDC</div><span class="scope-badge addon">Add-on</span></div><p class="gallery-desc">Career drivers and motivational fit.</p><div class="gallery-foot"><span class="gallery-cost">+0.4 AC</span><button class="secondary-button" onclick="showToast('Opening CDC report…')">View more</button></div></div>
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">DISC</div><span class="scope-badge addon">Add-on</span></div><p class="gallery-desc">Behavioural style profile.</p><div class="gallery-foot"><span class="gallery-cost">+0.5 AC</span><button class="secondary-button" onclick="showToast('Opening DISC report…')">View more</button></div></div>
+                                </div>
+                            </div>
+
+                            <div class="gallery-section" data-inst="tsique">
+                                <div class="gal-inst"><div class="gal-inst-title">TSIQue</div><p class="gal-inst-sub">Trait social intelligence.</p></div>
+                                <div class="gallery-grid">
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Social Intelligence Report</div><span class="scope-badge standard">Standard</span></div><p class="gallery-desc">Interpersonal effectiveness profile.</p><div class="gallery-foot"><span class="gallery-cost">0.7 AC</span><button class="secondary-button" onclick="showToast('Opening Social Intelligence report…')">View more</button></div></div>
+                                </div>
+                            </div>
+
+                            <div class="gallery-section" data-inst="scanin">
+                                <div class="gal-inst"><div class="gal-inst-title">Scan-In</div><p class="gal-inst-sub">Belief-Importance profiling.</p></div>
+                                <div class="gallery-grid">
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Scan-In Profile</div><span class="scope-badge standard">Standard</span></div><p class="gallery-desc">Personality and belief-system insights.</p><div class="gallery-foot"><span class="gallery-cost">0.7 AC</span><button class="secondary-button" onclick="showToast('Opening Scan-In Profile…')">View more</button></div></div>
+                                </div>
+                            </div>
+
+                            <div class="gallery-section" data-inst="3rs">
+                                <div class="gal-inst"><div class="gal-inst-title">3Rs</div><p class="gal-inst-sub">Rapid reasoning (cognitive ability).</p></div>
+                                <div class="gallery-grid">
+                                    <div class="gallery-card"><div class="gallery-cardtop"><div class="gallery-name">Rapid Reasoning Report</div><span class="scope-badge standard">Standard</span></div><p class="gallery-desc">Core reasoning and problem-solving performance.</p><div class="gallery-foot"><span class="gallery-cost">0.4 AC</span><button class="secondary-button" onclick="showToast('Opening Rapid Reasoning report…')">View more</button></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="inv-rules">
+                        <h3>Credit rules</h3>
+                        <ul>
+                            <li>Credits are deducted when an assignment is sent, not when the candidate completes it.</li>
+                            <li>Cancelled assignments return credits automatically, except for administrations already started by the candidate.</li>
+                            <li>Group surcharges are additive to each candidate&rsquo;s own instrument cost.</li>
+                            <li>Unused credits are valid for 12 months from purchase date.</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <aside>
+                    <div class="card basket-card">
+                        <div class="basket-head">
+                            <h2 class="card-title">Basket</h2>
+                            <button class="basket-clear" id="basketClear" onclick="clearBasket()" disabled>Clear all</button>
+                        </div>
+                        <div class="basket-empty" id="basketEmpty">
+                            <img src="../../006_RASTER/platform illustrations/png/white basket.png" alt="Empty basket">
+                            <h4>Your basket is empty</h4>
+                            <p>Add credits to get started</p>
+                        </div>
+                        <div class="basket-items" id="basketItems" style="display:none;"></div>
+                        <div class="basket-summary" id="basketSummary" style="display:none;">
+                            <div class="basket-discount-note" id="discountNote" style="display:none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+                                <span id="discountNoteText">Volume discount applied</span>
+                            </div>
+                            <div class="summary-row"><span>Subtotal</span><span class="summary-val" id="sumSubtotal">£0.00</span></div>
+                            <div class="summary-row discount" id="sumDiscountRow" style="display:none;"><span id="sumDiscountLabel">Volume discount</span><span class="summary-val" id="sumDiscount">−£0.00</span></div>
+                            <div class="summary-row"><span>VAT (20%)</span><span class="summary-val" id="sumVat">£0.00</span></div>
+                            <div class="summary-row total"><span>Total</span><span class="summary-val" id="sumTotal">£0.00</span></div>
+                            <button class="primary-button" onclick="showToast('Proceeding to checkout…')">Proceed to checkout</button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="../shared/admin-credits.js"></script>
+    <script src="app.js"></script>
+    <script>
+        var basket = [];
+        var AC = AdminCredits;
+
+        function filterGallery(btn) {
+            var seg = btn.closest('.seg');
+            seg.querySelectorAll('button').forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            var fam = btn.dataset.fam;
+            document.querySelectorAll('.gallery-section').forEach(function (s) {
+                s.style.display = (fam === 'all' || s.dataset.inst === fam) ? '' : 'none';
+            });
+        }
+
+        function stepQty(btn, delta) {
+            var input = btn.parentNode.querySelector('.qty-input');
+            var v = parseInt(input.value, 10) || 1;
+            input.value = Math.max(1, v + delta);
+        }
+
+        function addToBasket(btn) {
+            var card = btn.closest('.credit-buy-card');
+            var product = card.dataset.product;
+            var unit = parseFloat(card.dataset.unit);
+            var qty = parseInt(card.querySelector('.qty-input').value, 10) || 1;
+            var existing = basket.find(function (i) { return i.product === product; });
+            if (existing) existing.qty += qty;
+            else basket.push({ product: product, unit: unit, qty: qty });
+            card.querySelector('.qty-input').value = 1;
+            renderBasket();
+            showToast(qty + ' × ' + product + ' added to basket');
+        }
+        function removeFromBasket(idx) { basket.splice(idx, 1); renderBasket(); }
+        function clearBasket() { basket = []; renderBasket(); }
+
+        function renderBasket() {
+            var itemsEl = document.getElementById('basketItems');
+            var emptyEl = document.getElementById('basketEmpty');
+            var summaryEl = document.getElementById('basketSummary');
+            var clearBtn = document.getElementById('basketClear');
+
+            if (!basket.length) {
+                itemsEl.style.display = 'none';
+                summaryEl.style.display = 'none';
+                emptyEl.style.display = '';
+                clearBtn.disabled = true;
+                return;
+            }
+            emptyEl.style.display = 'none';
+            itemsEl.style.display = '';
+            summaryEl.style.display = '';
+            clearBtn.disabled = false;
+
+            itemsEl.innerHTML = basket.map(function (i, idx) {
+                return '<div class="basket-item">' +
+                    '<div class="basket-item-info"><div class="basket-item-name">' + i.product + '</div>' +
+                    '<div class="basket-item-meta">' + i.qty + ' × ' + AC.money(i.unit) + '</div></div>' +
+                    '<span class="basket-item-price">' + AC.money(i.unit * i.qty) + '</span>' +
+                    '<button class="basket-item-remove" aria-label="Remove" onclick="removeFromBasket(' + idx + ')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>';
+            }).join('');
+
+            var totalQty = basket.reduce(function (s, i) { return s + i.qty; }, 0);
+            var pricing = AC.calcPurchasePricing(totalQty);
+
+            document.getElementById('sumSubtotal').textContent = AC.money(pricing.listSubtotal);
+            var discRow = document.getElementById('sumDiscountRow');
+            var discNote = document.getElementById('discountNote');
+            if (pricing.discount > 0.005) {
+                var pct = (pricing.effectiveRate * 100).toFixed(1).replace(/\.0$/, '');
+                discRow.style.display = '';
+                discNote.style.display = '';
+                document.getElementById('sumDiscountLabel').textContent = 'Bulk discount (' + pct + '%)';
+                document.getElementById('sumDiscount').textContent = '−' + AC.money(pricing.discount);
+                document.getElementById('discountNoteText').textContent = 'Bulk discount applied · avg ' + AC.money(pricing.avgUnitPrice) + '/credit on ' + totalQty + ' credits';
+            } else {
+                discRow.style.display = 'none';
+                discNote.style.display = 'none';
+            }
+            document.getElementById('sumVat').textContent = AC.money(pricing.vat);
+            document.getElementById('sumTotal').textContent = AC.money(pricing.total);
+        }
+
+        document.getElementById('acBalanceDisplay').textContent = AC.DEMO_BALANCE.toFixed(1);
+        renderBasket();
+    </script>
+</body>
+</html>

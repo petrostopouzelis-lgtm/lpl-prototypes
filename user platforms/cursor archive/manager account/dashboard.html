@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Psychometric Laboratory for Managers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-page="dashboard" data-title="Dashboard" data-subtitle="Welcome back, Alex. Here is what is happening at Northwind Coaching Group.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+                <defs>
+                    <linearGradient id="statIconGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#259dd5"/>
+                        <stop offset="100%" stop-color="#66bae2"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+
+            <div class="stats-grid">
+                <div class="card stat-card">
+                    <div class="stat-meta">
+                        <div class="stat-head">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7L12 16.8 5.7 21l2.3-7-6-4.6h7.6z"/></svg>
+                            </div>
+                            <span class="stat-label">Active Coaches</span>
+                        </div>
+                        <span class="stat-value" id="kpiActiveCoaches">12</span>
+                        <span class="stat-sub up">+2 joined this month</span>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-meta">
+                        <div class="stat-head">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+                            </div>
+                            <span class="stat-label">Candidates</span>
+                        </div>
+                        <span class="stat-value" id="kpiCandidates">6</span>
+                        <span class="stat-sub up" id="kpiCandidatesSub">all assigned to coaches</span>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-meta">
+                        <div class="stat-head">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h14v17l-2.3-1.5-2.3 1.5-2.4-1.5L9.6 20 7.3 18.5 5 20z"/></svg>
+                            </div>
+                            <span class="stat-label">Credits Allocated</span>
+                        </div>
+                        <span class="stat-value" id="kpiCredits">245</span>
+                        <span class="stat-sub" id="kpiCreditsSub">of 300 contract credits</span>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-meta">
+                        <div class="stat-head">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 17V11"/><path d="M12 17V7"/><path d="M16 17v-4"/></svg>
+                            </div>
+                            <span class="stat-label">Budget Remaining</span>
+                        </div>
+                        <span class="stat-value" id="kpiBudget">£18.4k</span>
+                        <span class="stat-sub up" id="kpiBudgetSub">82% of annual pool left</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bento-grid">
+                <div class="bento-col">
+                    <div class="panel">
+                        <div class="panel-head">
+                            <h2 class="card-title">Monthly assessments completed</h2>
+                            <a class="secondary-button" href="analytics.html">View analytics</a>
+                        </div>
+                        <div class="panel-body">
+                        <div class="chart-summary">
+                            <span class="chart-summary-value">18</span>
+                            <span class="chart-summary-meta">July month to date · <span class="up">248 peak in May</span></span>
+                        </div>
+                        <div class="engagement-chart engagement-chart--year">
+                            <div class="eng-bar" style="height:57%" title="142 assessments"><span class="eng-label">Jan</span></div>
+                            <div class="eng-bar" style="height:68%" title="168 assessments"><span class="eng-label">Feb</span></div>
+                            <div class="eng-bar" style="height:80%" title="198 assessments"><span class="eng-label">Mar</span></div>
+                            <div class="eng-bar" style="height:89%" title="221 assessments"><span class="eng-label">Apr</span></div>
+                            <div class="eng-bar peak" style="height:100%" title="248 assessments"><span class="eng-label">May</span></div>
+                            <div class="eng-bar" style="height:74%" title="184 assessments"><span class="eng-label">Jun</span></div>
+                            <div class="eng-bar active" style="height:18%" title="18 assessments (month to date)"><span class="eng-label">Jul</span></div>
+                            <div class="eng-bar unrecorded" title="No data yet"><span class="eng-label">Aug</span></div>
+                            <div class="eng-bar unrecorded" title="No data yet"><span class="eng-label">Sep</span></div>
+                            <div class="eng-bar unrecorded" title="No data yet"><span class="eng-label">Oct</span></div>
+                            <div class="eng-bar unrecorded" title="No data yet"><span class="eng-label">Nov</span></div>
+                            <div class="eng-bar unrecorded" title="No data yet"><span class="eng-label">Dec</span></div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="section-head">
+                            <h2 class="card-title">Top teams by engagement</h2>
+                            <a href="teams.html">All teams</a>
+                        </div>
+                        <div id="topTeams"></div>
+                    </div>
+                </div>
+
+                <div class="bento-col">
+                    <div class="card">
+                        <div class="section-head">
+                            <h2 class="card-title">Recent activity</h2>
+                            <a href="notifications.html">View all</a>
+                        </div>
+                        <div class="activity-item">
+                            <img src="../../005_PLATFORM ICONS/notification icons/notification ID=USR.svg" alt="">
+                            <div><div class="activity-text"><b>Elena Rivera</b> accepted her coach invitation.</div><div class="activity-time">20 minutes ago</div></div>
+                        </div>
+                        <div class="activity-item">
+                            <img src="../../005_PLATFORM ICONS/notification icons/notification ID=BIL.svg" alt="">
+                            <div><div class="activity-text">Credit usage reached <b>82%</b> of contract capacity.</div><div class="activity-time">2 hours ago</div></div>
+                        </div>
+                        <div class="activity-item">
+                            <img src="../../005_PLATFORM ICONS/notification icons/notification ID=REM.svg" alt="">
+                            <div><div class="activity-text"><b>12 credits</b> reallocated to Sales Coaches team.</div><div class="activity-time">Yesterday</div></div>
+                        </div>
+                        <div class="activity-item">
+                            <img src="../../005_PLATFORM ICONS/notification icons/notification ID=QUA.svg" alt="">
+                            <div><div class="activity-text">New team <b>Wellbeing Network</b> was created.</div><div class="activity-time">2 days ago</div></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="section-head">
+                            <h2 class="card-title">Credit snapshot</h2>
+                            <a href="billing.html">Manage</a>
+                        </div>
+                        <p class="card-content" id="snapshotText" style="margin-bottom:var(--spacing-narrow-m);color:var(--color-gray);">245 of 300 credits allocated · renews 14 Aug 2026</p>
+                        <div class="credit-meter" style="margin-bottom:var(--spacing-narrow-m);">
+                            <div class="credit-used" id="snapshotMeter" style="width:82%"></div>
+                            <div class="credit-threshold" id="snapshotThreshold" style="left:90%"></div>
+                        </div>
+                        <div id="snapshotRows"></div>
+                        <div style="margin-top:var(--spacing-narrow-l);">
+                            <a class="primary-button" href="billing.html" style="width:100%;">Billing &amp; Credits</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="app.js"></script>
+    <script>
+        (function renderDashboard() {
+            var d = PLStore.get();
+            var allocated = plTeamsAllocated();
+            var pct = plCreditsUsedPct();
+            document.getElementById('kpiActiveCoaches').textContent = plActiveCoaches().length;
+            document.getElementById('kpiCandidates').textContent = d.candidates.length;
+            document.getElementById('kpiCandidatesSub').textContent = d.candidates.filter(function (c) { return c.status === 'active'; }).length + ' active · all assigned';
+            document.getElementById('kpiCredits').textContent = allocated;
+            document.getElementById('kpiCreditsSub').textContent = 'of ' + d.credits.contract + ' contract credits';
+            document.getElementById('kpiBudget').textContent = plMoneyShort(plBudgetRemaining());
+            document.getElementById('kpiBudgetSub').textContent = (100 - plBudgetSpentPct()) + '% of annual budget left';
+
+            document.getElementById('snapshotText').textContent = allocated + ' of ' + d.credits.contract + ' credits allocated · renews ' + d.credits.renews;
+            document.getElementById('snapshotMeter').style.width = pct + '%';
+            document.getElementById('snapshotThreshold').style.left = (d.credits.threshold * 100) + '%';
+
+            var rows = document.getElementById('snapshotRows');
+            rows.innerHTML = '';
+            d.teams.forEach(function (t) {
+                rows.insertAdjacentHTML('beforeend', '<div class="inv-row"><span class="inv-name">' + t.name + '</span><span class="inv-count">' + t.allocated + '</span></div>');
+            });
+            rows.insertAdjacentHTML('beforeend', '<div class="inv-row"><span class="inv-name">Unallocated</span><span class="inv-count">' + plUnallocated() + '</span></div>');
+
+            var teamsByEng = d.teams.slice().sort(function (a, b) { return b.engagement - a.engagement; });
+            var top = document.getElementById('topTeams');
+            top.innerHTML = '';
+            teamsByEng.forEach(function (t, i) {
+                var rank = i === 0 ? '<span class="leader-rank gold">1</span>' : '<span class="leader-rank">' + (i + 1) + '</span>';
+                var tag = i === 0 ? 'green' : 'primary';
+                var count = plTeamCoaches(t.id).length;
+                top.insertAdjacentHTML('beforeend',
+                    '<div class="leader-row">' + rank +
+                    '<div><div class="cand-name"><b>' + t.name + '</b></div><div class="cand-email">' + count + ' coaches · ' + t.allocated + ' credits</div></div>' +
+                    '<span class="highlight-tag ' + tag + '">' + t.engagement + '%</span></div>');
+            });
+        })();
+    </script>
+</body>
+</html>

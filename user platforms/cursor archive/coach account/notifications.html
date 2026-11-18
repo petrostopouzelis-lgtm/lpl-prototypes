@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications | Psychometric Laboratory for Coaches</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-page="notifications" data-title="Notifications" data-subtitle="Everything that needs your attention — questionnaire activity, reminders, billing and system updates.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <div class="panel">
+                <!-- In-card header -->
+                <div class="panel-head">
+                    <h2 class="card-title">Notifications</h2>
+                    <button class="secondary-button" id="markAllBtn" onclick="markAllRead()">Mark all as read</button>
+                </div>
+
+                <!-- Toolbar: read state (left) + category filter (right) -->
+                <div class="toolbar notif-toolbar">
+                    <div class="seg" id="readSeg">
+                        <button class="active" data-read="all">All</button>
+                        <button data-read="unread">Unread <span id="unreadCount"></span></button>
+                    </div>
+                    <div class="dropdown" style="width:auto;min-width:200px;">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('catFilter')"><span class="dropdown-label">All categories</span></button>
+                        <div class="dropdown-menu" id="catFilter">
+                            <button class="dropdown-option" onclick="selectCat('all','All categories')">All categories</button>
+                            <button class="dropdown-option" onclick="selectCat('qua','Questionnaires')">Questionnaires</button>
+                            <button class="dropdown-option" onclick="selectCat('usr','Candidates')">Candidates</button>
+                            <button class="dropdown-option" onclick="selectCat('cch','Clients')">Clients</button>
+                            <button class="dropdown-option" onclick="selectCat('rem','Reminders')">Reminders</button>
+                            <button class="dropdown-option" onclick="selectCat('bil','Billing &amp; credits')">Billing &amp; credits</button>
+                            <button class="dropdown-option" onclick="selectCat('sys','System &amp; security')">System &amp; security</button>
+                            <button class="dropdown-option" onclick="selectCat('sup','Support')">Support</button>
+                            <button class="dropdown-option" onclick="selectCat('pro','Product updates')">Product updates</button>
+                            <button class="dropdown-option" onclick="selectCat('int','Integrations')">Integrations</button>
+                            <button class="dropdown-option" onclick="selectCat('leg','Legal')">Legal</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="notif-list" id="notifList">
+
+                    <div class="notif-group-label" data-group="today">Today</div>
+
+                    <div class="notif-row unread filter-item" data-group="today" data-cat="qua">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=QUA.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text"><b>3 candidates</b> completed the TEIQue Full Form questionnaire.</div>
+                            <div class="notif-meta"><span class="notif-cat">Questionnaires</span>·<span>20 minutes ago</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <a class="pl-action-button ghost" href="assignments.html">View</a>
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-row unread filter-item" data-group="today" data-cat="rem">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=REM.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text">Reminder: <b>Leadership Cohort</b> assignment closes in 2 days.</div>
+                            <div class="notif-meta"><span class="notif-cat">Reminders</span>·<span>2 hours ago</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <a class="pl-action-button ghost" href="assignment.html">Open</a>
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-row filter-item" data-group="today" data-cat="cch">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=CCH.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text"><b>Anna Müller</b> was added to your client list.</div>
+                            <div class="notif-meta"><span class="notif-cat">Clients</span>·<span>5 hours ago</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <a class="pl-action-button ghost" href="candidate.html">View profile</a>
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-group-label" data-group="yesterday">Yesterday</div>
+
+                    <div class="notif-row unread filter-item" data-group="yesterday" data-cat="usr">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=USR.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text"><b>James Okoro</b> accepted the questionnaire invitation.</div>
+                            <div class="notif-meta"><span class="notif-cat">Candidates</span>·<span>Yesterday, 14:32</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <a class="pl-action-button ghost" href="candidate.html">View profile</a>
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-row filter-item" data-group="yesterday" data-cat="sys">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=SYS.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text">New sign-in from <b>Chrome on Windows</b> — Athens, GR. If this was you, no action is needed.</div>
+                            <div class="notif-meta"><span class="notif-cat">System &amp; security</span>·<span>Yesterday, 09:05</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-row filter-item" data-group="yesterday" data-cat="sup">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=SUP.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text">Support ticket <b>#4815</b> was resolved. Tell us how we did.</div>
+                            <div class="notif-meta"><span class="notif-cat">Support</span>·<span>Yesterday, 08:40</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-group-label" data-group="earlier">Earlier</div>
+
+                    <div class="notif-row unread filter-item" data-group="earlier" data-cat="bil">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=BIL.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text">Invoice <b>#INV-2041</b> is ready to download.</div>
+                            <div class="notif-meta"><span class="notif-cat">Billing &amp; credits</span>·<span>2 days ago</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <a class="pl-action-button ghost" href="billing.html">Download</a>
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-row filter-item" data-group="earlier" data-cat="bil">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=BIL.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text">Low balance: <b>7.0 administration credits</b> remaining.</div>
+                            <div class="notif-meta"><span class="notif-cat">Billing &amp; credits</span>·<span>3 days ago</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <a class="pl-action-button ghost" href="credits.html">Buy credits</a>
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-row filter-item" data-group="earlier" data-cat="rem">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=REM.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text"><b>Sofia Almeida</b>'s questionnaire link expires in 48 hours.</div>
+                            <div class="notif-meta"><span class="notif-cat">Reminders</span>·<span>3 days ago</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <a class="pl-action-button ghost" href="candidate.html">Resend invite</a>
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-row filter-item" data-group="earlier" data-cat="pro">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=PRO.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text">New feature: generate <b>additional report types</b> from any completed questionnaire — no new assessment needed.</div>
+                            <div class="notif-meta"><span class="notif-cat">Product updates</span>·<span>4 days ago</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <a class="pl-action-button ghost" href="reports.html">Explore</a>
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-row filter-item" data-group="earlier" data-cat="int">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=INT.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text">Calendar sync connected — session bookings now appear in your calendar automatically.</div>
+                            <div class="notif-meta"><span class="notif-cat">Integrations</span>·<span>5 days ago</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="notif-row filter-item" data-group="earlier" data-cat="leg">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=LEG.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text">Our <b>privacy policy</b> was updated, effective 1 Jul 2026. Review the key changes.</div>
+                            <div class="notif-meta"><span class="notif-cat">Legal</span>·<span>1 week ago</span></div>
+                        </div>
+                        <div class="notif-side">
+                            <button class="notif-mark" title="Mark as read" onclick="markRead(this)"><span class="dot"></span></button>
+                        </div>
+                    </div>
+
+                    <!-- Empty state -->
+                    <div class="empty-state" id="notifEmpty" style="display:none;">
+                        <h3>You're all caught up</h3>
+                        <p>No notifications match this filter.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        var notifRows = Array.prototype.slice.call(document.querySelectorAll('.notif-row'));
+        var groupLabels = Array.prototype.slice.call(document.querySelectorAll('.notif-group-label'));
+        var notifEmpty = document.getElementById('notifEmpty');
+        var curRead = 'all', curCat = 'all';
+
+        function matches(row) {
+            var okRead = curRead === 'all' || row.classList.contains('unread');
+            var okCat = curCat === 'all' || row.dataset.cat === curCat;
+            return okRead && okCat;
+        }
+
+        function applyFilter() {
+            filterAnimate(notifRows, matches, notifEmpty);
+            groupLabels.forEach(function (label) {
+                var any = notifRows.some(function (r) { return r.dataset.group === label.dataset.group && matches(r); });
+                label.style.display = any ? '' : 'none';
+            });
+        }
+
+        function updateUnreadCount() {
+            var n = notifRows.filter(function (r) { return r.classList.contains('unread'); }).length;
+            document.getElementById('unreadCount').textContent = n ? '(' + n + ')' : '';
+            document.getElementById('markAllBtn').disabled = n === 0;
+        }
+
+        function markRead(btn) {
+            btn.closest('.notif-row').classList.remove('unread');
+            updateUnreadCount();
+            if (curRead === 'unread') applyFilter();
+        }
+
+        function markAllRead() {
+            notifRows.forEach(function (r) { r.classList.remove('unread'); });
+            updateUnreadCount();
+            if (curRead === 'unread') applyFilter();
+            if (typeof showToast === 'function') showToast('All notifications marked as read');
+        }
+
+        function selectCat(cat, label) {
+            curCat = cat;
+            selectOption('catFilter', label);
+            applyFilter();
+        }
+
+        document.querySelectorAll('#readSeg button').forEach(function (b) {
+            b.addEventListener('click', function () {
+                document.querySelectorAll('#readSeg button').forEach(function (x) { x.classList.remove('active'); });
+                b.classList.add('active');
+                curRead = b.dataset.read;
+                applyFilter();
+            });
+        });
+
+        updateUnreadCount();
+        applyFilter();
+    </script>
+</body>
+</html>

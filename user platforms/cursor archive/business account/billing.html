@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing &amp; Orders | Psychometric Laboratory for Business</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .orders-table .pl-table-header,
+        .orders-table .pl-table-row { grid-template-columns: 1.1fr 2.4fr 0.9fr 1fr 1.2fr; }
+        .cell-total { font-family: var(--font-manrope); font-weight: var(--font-weight-bold); color: var(--color-text-blue); }
+        .cell-invoice { justify-self: start; }
+
+        .pay-method { display: flex; align-items: center; gap: var(--spacing-narrow-m); }
+        .pay-badge {
+            width: 54px; height: 40px; border-radius: 10px; flex-shrink: 0;
+            background: var(--color-primary-gradient); color: var(--color-white);
+            display: flex; align-items: center; justify-content: center;
+            font-family: var(--font-manrope); font-weight: var(--font-weight-bold); font-size: 12px; letter-spacing: 0.5px;
+        }
+        .pay-info { flex: 1; min-width: 0; }
+        .pay-name { font-family: var(--font-inter); font-size: var(--font-size-content); color: var(--color-black); font-weight: var(--font-weight-semibold); }
+        .pay-sub { font-family: var(--font-inter); font-size: var(--font-size-secondary); color: var(--color-gray); margin-top: 2px; }
+
+        @media (max-width: 680px) {
+            .orders-table .cell-invoice { grid-column: 1 / -1; }
+        }
+    </style>
+</head>
+<body data-page="billing" data-title="Billing &amp; Orders" data-subtitle="6 purchases · £7,540 spent year-to-date">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <!-- Order history -->
+            <div class="panel" style="margin-bottom: var(--spacing-narrow-l);">
+                <div class="panel-head">
+                    <h2 class="card-title">Order history</h2>
+                    <button class="secondary-button" onclick="openModal('exportModal')">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                        Export
+                    </button>
+                </div>
+                <div class="orders-table">
+                    <div class="pl-table-header">
+                        <div>Date</div>
+                        <div>Order</div>
+                        <div>Quantity</div>
+                        <div>Total</div>
+                        <div>Invoice</div>
+                    </div>
+
+                    <div class="pl-table-row">
+                        <div data-label="Date">02 Apr 2026</div>
+                        <div data-label="Order"><b>Administration Credits</b></div>
+                        <div data-label="Quantity">× 30</div>
+                        <div data-label="Total" class="cell-total">£1,960.80</div>
+                        <div data-label="Invoice" class="cell-invoice">
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Invoice
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row">
+                        <div data-label="Date">02 Apr 2026</div>
+                        <div data-label="Order"><b>Administration Credits</b></div>
+                        <div data-label="Quantity">× 20</div>
+                        <div data-label="Total" class="cell-total">£1,372.00</div>
+                        <div data-label="Invoice" class="cell-invoice">
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Invoice
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row">
+                        <div data-label="Date">02 Apr 2026</div>
+                        <div data-label="Order"><b>Leadership Toolkit</b></div>
+                        <div data-label="Quantity">× 8</div>
+                        <div data-label="Total" class="cell-total">£1,200.00</div>
+                        <div data-label="Invoice" class="cell-invoice">
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Invoice
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row">
+                        <div data-label="Date">14 Mar 2026</div>
+                        <div data-label="Order"><b>TEIQue Full-Form</b></div>
+                        <div data-label="Quantity">× 50</div>
+                        <div data-label="Total" class="cell-total">£2,250.00</div>
+                        <div data-label="Invoice" class="cell-invoice">
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Invoice
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row">
+                        <div data-label="Date">14 Mar 2026</div>
+                        <div data-label="Order"><b>TEIQue Short-Form</b></div>
+                        <div data-label="Quantity">× 25</div>
+                        <div data-label="Total" class="cell-total">£950.00</div>
+                        <div data-label="Invoice" class="cell-invoice">
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Invoice
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="pl-table-row">
+                        <div data-label="Date">14 Mar 2026</div>
+                        <div data-label="Order"><b>Onboarding Toolkit</b></div>
+                        <div data-label="Quantity">× 10</div>
+                        <div data-label="Total" class="cell-total">£1,300.00</div>
+                        <div data-label="Invoice" class="cell-invoice">
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Invoice
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment method -->
+            <div class="card">
+                <div class="section-head">
+                    <h2 class="card-title">Payment method</h2>
+                </div>
+                <div class="pay-method">
+                    <div class="pay-badge">BACS</div>
+                    <div class="pay-info">
+                        <div class="pay-name">Business account ···· 6612 · HSBC UK</div>
+                        <div class="pay-sub">Invoice billing · Net 14 day terms</div>
+                    </div>
+                    <button class="secondary-button" onclick="openModal('manageModal')">Manage</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Export modal -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>Export order history</h3>
+                <button class="modal-close" onclick="closeModal('exportModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);margin-bottom:var(--spacing-narrow-l);">
+                Download all 6 orders as a single statement. Individual invoices are also available per order in the table.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('exportModal')">Cancel</button>
+                <button class="primary-button" onclick="closeModal('exportModal')">Download CSV</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manage payment modal -->
+    <div class="modal-overlay" id="manageModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>Manage payment method</h3>
+                <button class="modal-close" onclick="closeModal('manageModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);margin-bottom:var(--spacing-narrow-l);">
+                Your account is billed by invoice on <b>Net 14 day terms</b>. To change billing details or switch to card payment, your account manager will be in touch.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('manageModal')">Close</button>
+                <button class="primary-button" onclick="closeModal('manageModal')">Contact billing</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

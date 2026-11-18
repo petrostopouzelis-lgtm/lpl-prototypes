@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Psychometric Laboratory for Business</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        /* Page-specific table grids */
+        .assignments-table .pl-table-header,
+        .assignments-table .pl-table-row { grid-template-columns: 2.2fr 1.1fr 1fr 1.5fr 1fr; }
+
+        @media (max-width: 680px) {
+            .assignments-table .pl-table-row { grid-template-columns: 1fr 1fr !important; }
+            .assignments-table .pl-table-row .cell-action { grid-column: 1 / -1; }
+        }
+    </style>
+</head>
+<body data-page="dashboard" data-title="Dashboard" data-subtitle="Welcome back, Maria. Here is what is happening at Acme Talent Group.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <svg width="0" height="0" aria-hidden="true" style="position:absolute">
+                <defs>
+                    <linearGradient id="statIconGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#259dd5"/>
+                        <stop offset="100%" stop-color="#66bae2"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+
+            <!-- Stat cards -->
+            <div class="stats-grid">
+                <div class="card stat-card">
+                    <div class="stat-meta">
+                        <div class="stat-head">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/></svg>
+                            </div>
+                            <span class="stat-label">Total Candidates</span>
+                        </div>
+                        <span class="stat-value">248</span>
+                        <span class="stat-sub up">+12 added this month</span>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-meta">
+                        <div class="stat-head">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3.5h6v3H9z"/><path d="M8.5 11l1.6 1.6 3-3.2"/></svg>
+                            </div>
+                            <span class="stat-label">Active Assignments</span>
+                        </div>
+                        <span class="stat-value">18</span>
+                        <span class="stat-sub">6 individual · 12 group</span>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-meta">
+                        <div class="stat-head">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+                            </div>
+                            <span class="stat-label">Awaiting Completion</span>
+                        </div>
+                        <span class="stat-value">37</span>
+                        <span class="stat-sub warn">across 5 assignments</span>
+                    </div>
+                </div>
+                <div class="card stat-card">
+                    <div class="stat-meta">
+                        <div class="stat-head">
+                            <div class="stat-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3.5h7l4 4V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z"/><path d="M13.5 3.5V8h4.5M9 13.5l2 2 3.5-3.8"/></svg>
+                            </div>
+                            <span class="stat-label">Reports Ready</span>
+                        </div>
+                        <span class="stat-value">24</span>
+                        <span class="stat-sub up">+8 new this week</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main bento -->
+            <div class="bento-grid">
+                <!-- LEFT (wide) -->
+                <div class="bento-col">
+                    <!-- Recent Assignments -->
+                    <div>
+                        <div class="panel">
+                            <div class="panel-head">
+                                <h2 class="card-title">Recent Assignments</h2>
+                                <a class="primary-button" href="assignments.html?new=1">
+                                    <img class="btn-icon" src="../../005_PLATFORM ICONS/other icons/request demo button arrow icon.svg" alt="">
+                                    New Assignment
+                                </a>
+                            </div>
+                            <div class="assignments-table">
+                                <div class="pl-table-header">
+                                    <div>Assignment</div>
+                                    <div>Type</div>
+                                    <div>Assigned</div>
+                                    <div>Progress</div>
+                                    <div>Action</div>
+                                </div>
+                                <div class="pl-table-row">
+                                    <div data-label="Assignment"><b>TEIQue Leadership</b> — Leadership Cohort</div>
+                                    <div data-label="Type"><span class="highlight-tag primary">Group</span></div>
+                                    <div data-label="Assigned">2 Jun 2026</div>
+                                    <div data-label="Progress">
+                                        <div class="progress"><div class="progress-track"><div class="progress-fill" style="width:80%"></div></div><span class="progress-label">12/15</span></div>
+                                    </div>
+                                    <div data-label="Action" class="cell-action"><a class="pl-action-button" href="assignments.html">View</a></div>
+                                </div>
+                                <div class="pl-table-row">
+                                    <div data-label="Assignment"><b>TSIQue Social Intelligence</b> — A. Müller</div>
+                                    <div data-label="Type"><span class="highlight-tag">Individual</span></div>
+                                    <div data-label="Assigned">3 Jun 2026</div>
+                                    <div data-label="Progress"><span class="highlight-tag green">Complete</span></div>
+                                    <div data-label="Action" class="cell-action"><a class="pl-action-button" href="assignments.html">View</a></div>
+                                </div>
+                                <div class="pl-table-row">
+                                    <div data-label="Assignment"><b>Scan-In Assessment</b> — Sales Team</div>
+                                    <div data-label="Type"><span class="highlight-tag">Individual</span></div>
+                                    <div data-label="Assigned">1 Jun 2026</div>
+                                    <div data-label="Progress"><span class="highlight-tag yellow">Pending</span></div>
+                                    <div data-label="Action" class="cell-action"><a class="pl-action-button" href="assignments.html">View</a></div>
+                                </div>
+                                <div class="pl-table-row">
+                                    <div data-label="Assignment"><b>3Rs Rapid Reasoning</b> — Graduate Cohort</div>
+                                    <div data-label="Type"><span class="highlight-tag primary">Group</span></div>
+                                    <div data-label="Assigned">28 May 2026</div>
+                                    <div data-label="Progress">
+                                        <div class="progress"><div class="progress-track"><div class="progress-fill" style="width:40%"></div></div><span class="progress-label">8/20</span></div>
+                                    </div>
+                                    <div data-label="Action" class="cell-action"><a class="pl-action-button" href="assignments.html">View</a></div>
+                                </div>
+                                <div class="pl-table-row">
+                                    <div data-label="Assignment"><b>TEIQue Team Report</b> — Leadership Cohort</div>
+                                    <div data-label="Type"><span class="highlight-tag primary">Group</span></div>
+                                    <div data-label="Assigned">25 May 2026</div>
+                                    <div data-label="Progress"><span class="highlight-tag green">Complete</span></div>
+                                    <div data-label="Action" class="cell-action"><a class="pl-action-button" href="assignments.html">View</a></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reports Ready -->
+                    <div class="card">
+                        <div class="section-head">
+                            <h2 class="card-title">Reports Ready to Read</h2>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta">
+                                <div class="report-name">TEIQue Corporate · J. Okoro</div>
+                                <div class="report-sub">Completed 4 Jun 2026 · Individual report</div>
+                            </div>
+                            <div class="report-actions">
+                                <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                                <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                            </div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta">
+                                <div class="report-name">TEIQue Team Report · Leadership Cohort</div>
+                                <div class="report-sub">Completed 3 Jun 2026 · Group report (15 members)</div>
+                            </div>
+                            <div class="report-actions">
+                                <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                                <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                            </div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta">
+                                <div class="report-name">TSIQue Social Intelligence · A. Müller</div>
+                                <div class="report-sub">Completed 2 Jun 2026 · Individual report</div>
+                            </div>
+                            <div class="report-actions">
+                                <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                                <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT (narrow) -->
+                <div class="bento-col">
+                    <!-- Activity feed (top) -->
+                    <div class="card">
+                        <div class="section-head">
+                            <h2 class="card-title">Recent Activity</h2>
+                        </div>
+                        <div class="activity-item">
+                            <img src="../../005_PLATFORM ICONS/notification icons/notification ID=QUA.svg" alt="">
+                            <div><div class="activity-text"><b>3 candidates</b> completed the TEIQue Full Form questionnaire.</div><div class="activity-time">20 minutes ago</div></div>
+                        </div>
+                        <div class="activity-item">
+                            <img src="../../005_PLATFORM ICONS/notification icons/notification ID=USR.svg" alt="">
+                            <div><div class="activity-text"><b>James Okoro</b> accepted the invitation to Leadership Cohort.</div><div class="activity-time">2 hours ago</div></div>
+                        </div>
+                        <div class="activity-item">
+                            <img src="../../005_PLATFORM ICONS/notification icons/notification ID=REM.svg" alt="">
+                            <div><div class="activity-text">Assignment <b>Graduate Cohort</b> closes in 2 days.</div><div class="activity-time">5 hours ago</div></div>
+                        </div>
+                        <div class="activity-item">
+                            <img src="../../005_PLATFORM ICONS/notification icons/notification ID=BIL.svg" alt="">
+                            <div><div class="activity-text">Invoice <b>#INV-2041</b> was generated.</div><div class="activity-time">2 days ago</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Inventory snapshot (bottom) -->
+                    <div class="card">
+                        <div class="section-head">
+                            <h2 class="card-title">Credits</h2>
+                            <a href="credits.html">Manage</a>
+                        </div>
+                        <div class="inv-row"><span class="inv-name">Administration credits</span><span class="inv-count">124.7</span></div>
+                        <div style="margin-top:var(--spacing-narrow-l);">
+                            <a class="primary-button" href="credits.html" style="width:100%;">Buy more credits</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Candidate modal (demo) -->
+    <div class="modal-overlay" id="addCandidateModal">
+        <div class="modal">
+            <div class="modal-head">
+                <h3>Add Candidate</h3>
+                <button class="modal-close" onclick="closeModal('addCandidateModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="card-content" style="margin-bottom:var(--spacing-narrow-l);color:var(--color-gray);">Candidates are not notified until you send them an assignment.</p>
+            <div style="display:flex;flex-direction:column;gap:var(--spacing-narrow-m);">
+                <div>
+                    <label class="form-label">Full name</label>
+                    <input class="form-input" placeholder="e.g. Jordan Rivera">
+                </div>
+                <div>
+                    <label class="form-label">Email address</label>
+                    <input class="form-input" type="email" placeholder="name@company.com">
+                </div>
+                <div>
+                    <label class="form-label">Group (optional)</label>
+                    <div class="dropdown">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('candGroup')"><span class="dropdown-label">No group</span></button>
+                        <div class="dropdown-menu" id="candGroup">
+                            <button class="dropdown-option" onclick="selectOption('candGroup','No group')">No group</button>
+                            <button class="dropdown-option" onclick="selectOption('candGroup','Leadership Cohort')">Leadership Cohort</button>
+                            <button class="dropdown-option" onclick="selectOption('candGroup','Graduate Cohort')">Graduate Cohort</button>
+                            <button class="dropdown-option" onclick="selectOption('candGroup','Sales Team')">Sales Team</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('addCandidateModal')">Cancel</button>
+                <button class="primary-button" onclick="closeModal('addCandidateModal')">Add Candidate</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

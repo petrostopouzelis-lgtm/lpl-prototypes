@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing &amp; Credits | Psychometric Laboratory for Managers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .orders-table .pl-table-header,
+        .orders-table .pl-table-row { grid-template-columns: 1.1fr 2.4fr 0.9fr 1fr 1.2fr; }
+        .cell-total { font-family: var(--font-manrope); font-weight: var(--font-weight-bold); color: var(--color-text-blue); }
+        .alloc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-narrow-l); }
+        @media (max-width: 900px) { .alloc-grid { grid-template-columns: 1fr; } }
+        .budget-headline { display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:var(--spacing-narrow-m); margin-bottom:var(--spacing-narrow-m); }
+    </style>
+</head>
+<body data-page="billing" data-title="Billing &amp; Credits" data-subtitle="Contract, budget, credit allocation, and invoice history">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+        <section class="page-content">
+            <div class="panel-head" style="margin-bottom:var(--spacing-narrow-l);">
+                <div></div>
+                <button class="primary-button" onclick="openModal('addCreditsModal')">
+                    <img class="btn-icon" src="../../005_PLATFORM ICONS/other icons/request demo button arrow icon.svg" alt="">
+                    Add credits
+                </button>
+            </div>
+
+            <div class="card" style="margin-bottom:var(--spacing-narrow-l);">
+                <h2 class="card-title" style="margin-bottom:var(--spacing-narrow-m);">Credit usage</h2>
+                <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:var(--spacing-narrow-m);margin-bottom:var(--spacing-narrow-m);">
+                    <div>
+                        <span class="stat-value" id="usageAllocated" style="font-size:32px;color:var(--color-enterprise-deep);">245</span>
+                        <span class="card-content" style="color:var(--color-gray);"> of <span id="usageContract">300</span> credits allocated</span>
+                        <p class="card-content" style="color:var(--color-gray);margin-top:4px;"><span id="usageAvailable">55</span> credits available · contract renews <span id="usageRenews">14 Aug 2026</span></p>
+                    </div>
+                    <span class="highlight-tag green" id="usagePct">82% allocated</span>
+                </div>
+                <div class="credit-meter" style="margin-bottom:var(--spacing-narrow-s);">
+                    <div class="credit-used" id="usageMeter" style="width:82%"></div>
+                    <div class="credit-threshold" id="usageThreshold" style="left:90%" title="Alert at 90%"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--color-gray);">
+                    <span>0</span><span id="usageThresholdLabel">Alert at 90% (270)</span><span id="usageContractEnd">300</span>
+                </div>
+            </div>
+
+            <div class="alloc-grid" style="margin-bottom:var(--spacing-narrow-l);">
+                <div class="card">
+                    <h2 class="card-title" style="margin-bottom:var(--spacing-narrow-m);">Allocation by team</h2>
+                    <div class="credit-alloc-bar" id="allocBar"></div>
+                    <div id="allocRows"></div>
+                    <button class="secondary-button" style="margin-top:var(--spacing-narrow-m);" onclick="openReallocateModal()">Reallocate credits</button>
+                </div>
+                <div class="card">
+                    <div class="section-head">
+                        <h2 class="card-title">Budget</h2>
+                        <button type="button" class="pl-action-button ghost" style="width:auto;" onclick="openSetBudgetModal()">Set budget</button>
+                    </div>
+                    <div class="budget-headline">
+                        <div>
+                            <span class="stat-value" id="budgetSpent" style="font-size:32px;color:var(--color-enterprise-deep);">£31,600</span>
+                            <span class="card-content" style="color:var(--color-gray);"> of <span id="budgetAnnual">£50,000</span> annual budget</span>
+                            <p class="card-content" style="color:var(--color-gray);margin-top:4px;"><span id="budgetRemaining">£18,400</span> remaining this year</p>
+                        </div>
+                        <span class="highlight-tag primary" id="budgetPct">63% spent</span>
+                    </div>
+                    <div class="credit-meter" style="margin-bottom:var(--spacing-narrow-m);">
+                        <div class="credit-used" id="budgetMeter" style="width:63%"></div>
+                    </div>
+                    <div class="divider" style="margin:var(--spacing-narrow-m) 0;"></div>
+                    <div class="inv-row"><span class="inv-name">Plan</span><span class="inv-count" id="contractPlan">Manager 300</span></div>
+                    <div class="inv-row"><span class="inv-name">Annual fee</span><span class="inv-count">£136,800</span></div>
+                    <div class="inv-row"><span class="inv-name">Renewal</span><span class="inv-count" id="contractRenewal">14 Aug 2026</span></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h2 class="card-title">Invoice history</h2>
+                    <div class="export-menu">
+                        <button type="button" class="export-trigger" onclick="toggleExportMenu(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                            Export
+                            <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="export-dropdown">
+                            <button type="button" onclick="exportData('Invoices','CSV')"><img src="../../005_PLATFORM ICONS/file icons/csv state=Default.svg" alt="">Export as CSV</button>
+                            <button type="button" onclick="exportData('Invoices','Excel')"><img src="../../005_PLATFORM ICONS/file icons/excel state=Default-1.svg" alt="">Export as Excel</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="orders-table" style="padding:0 var(--spacing-narrow-l) var(--spacing-narrow-l);">
+                    <div class="pl-table-header"><div>Date</div><div>Description</div><div>Credits</div><div>Total</div><div>Invoice</div></div>
+                    <div id="invoiceRows"></div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:var(--spacing-narrow-l);">
+                <div class="section-head"><h2 class="card-title">Payment method</h2></div>
+                <div class="pay-method" style="display:flex;align-items:center;gap:var(--spacing-narrow-m);">
+                    <div style="width:54px;height:40px;border-radius:10px;background:var(--color-primary-gradient);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-manrope);font-weight:700;font-size:12px;">BACS</div>
+                    <div style="flex:1;"><div style="font-weight:600;">Organisation account ···· 8842 · Barclays</div><div style="font-size:12px;color:var(--color-gray);">Invoice billing · Net 30 day terms</div></div>
+                    <button class="secondary-button" onclick="openModal('paymentModal')">Manage</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="addCreditsModal">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-head">
+                <h3>Add credits</h3>
+                <button class="modal-close" onclick="closeModal('addCreditsModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="card-content" style="color:var(--color-gray);margin-bottom:var(--spacing-narrow-l);">Purchase additional contract credits for your organisation. Credits are added to the unallocated pool and can be distributed to teams immediately.</p>
+
+            <p class="inv-reports-label">Quick select <span class="sub">· contract add-on rate</span></p>
+            <div class="price-tiers" id="creditTiers">
+                <button type="button" class="tier" data-qty="10">
+                    <span class="tier-qty">×10 credits</span>
+                    <span class="tier-price">£380</span>
+                    <span class="tier-save">£38.00 each</span>
+                </button>
+                <button type="button" class="tier selected" data-qty="25">
+                    <span class="tier-qty">×25 credits</span>
+                    <span class="tier-price">£950</span>
+                    <span class="tier-save">£38.00 each</span>
+                </button>
+                <button type="button" class="tier" data-qty="50">
+                    <span class="tier-qty">×50 credits</span>
+                    <span class="tier-price">£1,900</span>
+                    <span class="tier-save">£38.00 each</span>
+                </button>
+            </div>
+
+            <label class="form-label" for="creditPurchaseQty">Quantity</label>
+            <div class="qty-stepper" style="margin-bottom:var(--spacing-narrow-l);">
+                <button type="button" class="qty-stepper-btn" aria-label="Decrease credits" onclick="adjustCreditPurchaseQty(-1)">−</button>
+                <input class="form-input qty-stepper-input" id="creditPurchaseQty" type="number" value="25" min="1" max="999" oninput="updateCreditPurchaseSummary()">
+                <button type="button" class="qty-stepper-btn" aria-label="Increase credits" onclick="adjustCreditPurchaseQty(1)">+</button>
+            </div>
+
+            <div class="purchase-summary">
+                <div class="summary-row"><span>Credits</span><span class="summary-val" id="purchaseCredits">25</span></div>
+                <div class="summary-row"><span>Unit price</span><span class="summary-val" id="purchaseUnit">£38.00</span></div>
+                <div class="summary-row"><span>Subtotal</span><span class="summary-val" id="purchaseSubtotal">£950.00</span></div>
+                <div class="summary-row"><span>VAT (20%)</span><span class="summary-val" id="purchaseVat">£190.00</span></div>
+                <div class="summary-row total"><span>Total due</span><span class="summary-val" id="purchaseTotal">£1,140.00</span></div>
+                <p class="cart-note">Invoice on Net 30 terms · prorated to contract renewal <span id="purchaseRenews">14 Aug 2026</span></p>
+            </div>
+
+            <div class="modal-actions">
+                <button class="secondary-button" type="button" onclick="closeModal('addCreditsModal')">Cancel</button>
+                <button class="primary-button" type="button" onclick="confirmCreditPurchase()">Confirm purchase</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="reallocateModal">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-head">
+                <h3>Reallocate credits</h3>
+                <button class="modal-close" onclick="closeModal('reallocateModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="card-content" style="color:var(--color-gray);margin-bottom:var(--spacing-narrow-l);">Move credits between teams or return them to the unallocated pool.</p>
+
+            <div class="reallocate-fields">
+                <div>
+                    <label class="form-label">From</label>
+                    <div class="dropdown">
+                        <button type="button" class="dropdown-trigger" onclick="toggleDropdown('reallocateFrom')"><span class="dropdown-label">Unallocated</span></button>
+                        <div class="dropdown-menu" id="reallocateFrom"></div>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">To</label>
+                    <div class="dropdown">
+                        <button type="button" class="dropdown-trigger" onclick="toggleDropdown('reallocateTo')"><span class="dropdown-label">Sales Coaches</span></button>
+                        <div class="dropdown-menu" id="reallocateTo"></div>
+                    </div>
+                </div>
+            </div>
+
+            <label class="form-label" style="margin-top:var(--spacing-narrow-m);">Credits</label>
+            <div class="qty-stepper" style="margin-bottom:var(--spacing-narrow-s);">
+                <button type="button" class="qty-stepper-btn" aria-label="Decrease credits" onclick="adjustReallocateQty(-1)">−</button>
+                <input class="form-input qty-stepper-input" id="reallocateQty" type="number" value="12" min="1" max="55" oninput="updateReallocateHint()">
+                <button type="button" class="qty-stepper-btn" aria-label="Increase credits" onclick="adjustReallocateQty(1)">+</button>
+            </div>
+            <p class="credit-adjust-hint" id="reallocateHint">55 credits available in Unallocated</p>
+
+            <div class="modal-actions">
+                <button class="secondary-button" type="button" onclick="closeModal('reallocateModal')">Cancel</button>
+                <button class="primary-button" type="button" onclick="confirmReallocate()">Confirm reallocation</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="setBudgetModal">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-head">
+                <h3>Set annual budget</h3>
+                <button class="modal-close" onclick="closeModal('setBudgetModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="card-content" style="color:var(--color-gray);margin-bottom:var(--spacing-narrow-l);">Set the total spend budget for this contract year. Spend to date cannot exceed the budget you set.</p>
+
+            <div class="credit-adjust-summary">
+                <div class="credit-adjust-stat">
+                    <span class="credit-adjust-label">Spent (YTD)</span>
+                    <span class="credit-adjust-value" id="budgetModalSpent">£31.6k</span>
+                </div>
+                <div class="credit-adjust-stat">
+                    <span class="credit-adjust-label">New budget</span>
+                    <span class="credit-adjust-value" id="budgetModalNew">£50k</span>
+                </div>
+                <div class="credit-adjust-stat">
+                    <span class="credit-adjust-label">Remaining</span>
+                    <span class="credit-adjust-value" id="budgetModalRemaining">£18.4k</span>
+                </div>
+            </div>
+
+            <p class="inv-reports-label">Quick select</p>
+            <div class="price-tiers" id="budgetTiers">
+                <button type="button" class="tier" data-amount="25000"><span class="tier-qty">£25k</span><span class="tier-save">per year</span></button>
+                <button type="button" class="tier selected" data-amount="50000"><span class="tier-qty">£50k</span><span class="tier-save">per year</span></button>
+                <button type="button" class="tier" data-amount="100000"><span class="tier-qty">£100k</span><span class="tier-save">per year</span></button>
+            </div>
+
+            <label class="form-label" for="budgetInput">Annual budget (£)</label>
+            <input class="form-input" id="budgetInput" type="number" value="50000" min="0" step="1000" oninput="updateBudgetModal()" style="margin-bottom:var(--spacing-narrow-s);">
+            <p class="credit-adjust-hint" id="budgetModalHint">No change from current budget</p>
+
+            <div class="modal-actions">
+                <button class="secondary-button" type="button" onclick="closeModal('setBudgetModal')">Cancel</button>
+                <button class="primary-button" type="button" onclick="saveBudget()">Save budget</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal" style="max-width:480px;">
+            <div class="modal-head">
+                <h3>Payment method</h3>
+                <button class="modal-close" onclick="closeModal('paymentModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="card-content" style="color:var(--color-gray);margin-bottom:var(--spacing-narrow-l);">Update the billing details used for invoices. Changes apply to future invoices.</p>
+            <div class="settings-fields">
+                <div>
+                    <label class="form-label">Billing method</label>
+                    <div class="dropdown">
+                        <button type="button" class="dropdown-trigger" onclick="toggleDropdown('payMethod')"><span class="dropdown-label">BACS · Invoice (Net 30)</span></button>
+                        <div class="dropdown-menu" id="payMethod">
+                            <button type="button" class="dropdown-option" onclick="selectOption('payMethod','BACS · Invoice (Net 30)')">BACS · Invoice (Net 30)</button>
+                            <button type="button" class="dropdown-option" onclick="selectOption('payMethod','Credit card')">Credit card</button>
+                            <button type="button" class="dropdown-option" onclick="selectOption('payMethod','Direct debit')">Direct debit</button>
+                        </div>
+                    </div>
+                </div>
+                <div><label class="form-label">Account reference</label><input class="form-input" value="Northwind ···· 8842"></div>
+                <div><label class="form-label">Billing email</label><input class="form-input" type="email" value="accounts@northwind.com"></div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" type="button" onclick="closeModal('paymentModal')">Cancel</button>
+                <button class="primary-button" type="button" onclick="closeModal('paymentModal');showToast('Billing details updated.');">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        /* ---------- Render from store ---------- */
+        function renderBilling() {
+            var d = PLStore.get();
+            var allocated = plTeamsAllocated();
+            var unalloc = plUnallocated();
+            var pct = plCreditsUsedPct();
+            var thresholdCount = Math.round(d.credits.contract * d.credits.threshold);
+
+            document.getElementById('usageAllocated').textContent = allocated;
+            document.getElementById('usageContract').textContent = d.credits.contract;
+            document.getElementById('usageAvailable').textContent = unalloc;
+            document.getElementById('usageRenews').textContent = d.credits.renews;
+            document.getElementById('usagePct').textContent = pct + '% allocated';
+            document.getElementById('usageMeter').style.width = pct + '%';
+            document.getElementById('usageThreshold').style.left = (d.credits.threshold * 100) + '%';
+            document.getElementById('usageThresholdLabel').textContent = 'Alert at ' + Math.round(d.credits.threshold * 100) + '% (' + thresholdCount + ')';
+            document.getElementById('usageContractEnd').textContent = d.credits.contract;
+
+            /* allocation bar + rows */
+            var bar = document.getElementById('allocBar');
+            var rows = document.getElementById('allocRows');
+            bar.innerHTML = '';
+            rows.innerHTML = '';
+            d.teams.forEach(function (t) {
+                var seg = document.createElement('div');
+                seg.className = 'credit-alloc-seg';
+                seg.style.flex = t.allocated;
+                seg.style.background = t.color;
+                bar.appendChild(seg);
+                rows.insertAdjacentHTML('beforeend', '<div class="inv-row"><span class="inv-name">' + t.name + '</span><span class="inv-count">' + t.allocated + '</span></div>');
+            });
+            var useg = document.createElement('div');
+            useg.className = 'credit-alloc-seg';
+            useg.style.flex = unalloc;
+            useg.style.background = 'var(--color-light-gray)';
+            bar.appendChild(useg);
+            rows.insertAdjacentHTML('beforeend', '<div class="inv-row"><span class="inv-name">Unallocated</span><span class="inv-count">' + unalloc + '</span></div>');
+
+            /* budget */
+            var bpct = plBudgetSpentPct();
+            document.getElementById('budgetSpent').textContent = plMoney0(d.budget.spent);
+            document.getElementById('budgetAnnual').textContent = plMoney0(d.budget.annual);
+            document.getElementById('budgetRemaining').textContent = plMoney0(plBudgetRemaining());
+            document.getElementById('budgetPct').textContent = bpct + '% spent';
+            document.getElementById('budgetMeter').style.width = Math.min(100, bpct) + '%';
+            document.getElementById('contractPlan').textContent = d.org.plan;
+            document.getElementById('contractRenewal').textContent = d.credits.renews;
+
+            /* invoices */
+            var inv = document.getElementById('invoiceRows');
+            inv.innerHTML = '';
+            d.invoices.forEach(function (r) {
+                inv.insertAdjacentHTML('beforeend',
+                    '<div class="pl-table-row">' +
+                    '<div data-label="Date">' + r.date + '</div>' +
+                    '<div data-label="Description"><b>' + r.desc + '</b></div>' +
+                    '<div data-label="Credits">' + (r.desc.indexOf('add-on') > -1 ? '+' : '') + r.credits + '</div>' +
+                    '<div data-label="Total" class="cell-total">' + plMoney(r.total) + '</div>' +
+                    '<div><a class="pl-action-button ghost" href="#" onclick="showToast(\'Invoice download started.\');return false;" style="width:auto;">Invoice</a></div>' +
+                    '</div>');
+            });
+        }
+
+        /* ---------- Add credits ---------- */
+        function adjustCreditPurchaseQty(delta) {
+            var input = document.getElementById('creditPurchaseQty');
+            var val = parseInt(input.value, 10) || 1;
+            input.value = Math.max(1, Math.min(999, val + delta));
+            updateCreditPurchaseSummary();
+        }
+        function updateCreditPurchaseSummary() {
+            var d = PLStore.get();
+            var input = document.getElementById('creditPurchaseQty');
+            var qty = parseInt(input.value, 10);
+            if (isNaN(qty)) return;
+            qty = Math.max(1, Math.min(999, qty));
+            input.value = qty;
+            var subtotal = qty * d.credits.unitPrice;
+            var vat = subtotal * d.credits.vatRate;
+            document.getElementById('purchaseCredits').textContent = qty;
+            document.getElementById('purchaseUnit').textContent = plMoney(d.credits.unitPrice);
+            document.getElementById('purchaseSubtotal').textContent = plMoney(subtotal);
+            document.getElementById('purchaseVat').textContent = plMoney(vat);
+            document.getElementById('purchaseTotal').textContent = plMoney(subtotal + vat);
+            document.getElementById('purchaseRenews').textContent = d.credits.renews;
+            document.querySelectorAll('#creditTiers .tier').forEach(function (tier) {
+                tier.classList.toggle('selected', parseInt(tier.dataset.qty, 10) === qty);
+            });
+        }
+        function confirmCreditPurchase() {
+            var qty = parseInt(document.getElementById('creditPurchaseQty').value, 10) || 0;
+            if (qty < 1) { showToast('Enter a valid credit amount.'); return; }
+            var total = document.getElementById('purchaseTotal').textContent;
+            PLStore.update(function (d) {
+                d.credits.contract += qty;
+                d.invoices.unshift({ date: plToday(), desc: 'Credit add-on', credits: qty, total: qty * d.credits.unitPrice });
+            });
+            renderBilling();
+            closeModal('addCreditsModal');
+            showToast('Purchase confirmed · ' + qty + ' credits · ' + total + ' invoiced.');
+        }
+
+        /* ---------- Reallocate ---------- */
+        function reallocPools() {
+            var pools = { 'Unallocated': plUnallocated() };
+            PLStore.get().teams.forEach(function (t) { pools[t.name] = t.allocated; });
+            return pools;
+        }
+        function buildReallocateOptions() {
+            var names = ['Unallocated'].concat(PLStore.get().teams.map(function (t) { return t.name; }));
+            ['reallocateFrom', 'reallocateTo'].forEach(function (id) {
+                var menu = document.getElementById(id);
+                menu.innerHTML = names.map(function (n) {
+                    return '<button type="button" class="dropdown-option" onclick="selectReallocateTeam(\'' + id + '\',\'' + n.replace(/'/g, "\\'") + '\')">' + n + '</button>';
+                }).join('');
+            });
+        }
+        function openReallocateModal() {
+            buildReallocateOptions();
+            selectOption('reallocateFrom', 'Unallocated');
+            var firstTeam = PLStore.get().teams[0];
+            selectOption('reallocateTo', firstTeam ? firstTeam.name : 'Unallocated');
+            document.getElementById('reallocateQty').value = 1;
+            updateReallocateHint();
+            openModal('reallocateModal');
+        }
+        function getReallocateLabel(id) {
+            return document.querySelector('#' + id).previousElementSibling.querySelector('.dropdown-label').textContent;
+        }
+        function selectReallocateTeam(dropdownId, label) {
+            selectOption(dropdownId, label);
+            updateReallocateHint();
+        }
+        function adjustReallocateQty(delta) {
+            var input = document.getElementById('reallocateQty');
+            var from = getReallocateLabel('reallocateFrom');
+            var max = reallocPools()[from] || 1;
+            var val = parseInt(input.value, 10) || 1;
+            input.value = Math.max(1, Math.min(max, val + delta));
+            updateReallocateHint();
+        }
+        function updateReallocateHint() {
+            var pools = reallocPools();
+            var from = getReallocateLabel('reallocateFrom');
+            var to = getReallocateLabel('reallocateTo');
+            var input = document.getElementById('reallocateQty');
+            var available = pools[from] || 0;
+            var qty = parseInt(input.value, 10);
+            if (isNaN(qty)) return;
+            qty = Math.max(1, Math.min(available, qty));
+            input.value = qty;
+            input.max = available;
+            var hint = document.getElementById('reallocateHint');
+            if (from === to) {
+                hint.textContent = 'Choose a different source and destination';
+                hint.className = 'credit-adjust-hint down';
+            } else if (available === 0) {
+                hint.textContent = 'No credits available in ' + from;
+                hint.className = 'credit-adjust-hint down';
+            } else if (qty === available) {
+                hint.textContent = 'Moving all ' + qty + ' credits from ' + from + ' to ' + to;
+                hint.className = 'credit-adjust-hint up';
+            } else {
+                hint.textContent = qty + ' of ' + available + ' credits available in ' + from;
+                hint.className = 'credit-adjust-hint';
+            }
+        }
+        function confirmReallocate() {
+            var pools = reallocPools();
+            var from = getReallocateLabel('reallocateFrom');
+            var to = getReallocateLabel('reallocateTo');
+            var qty = parseInt(document.getElementById('reallocateQty').value, 10);
+            if (from === to) { showToast('Source and destination must be different.'); return; }
+            if (!qty || qty > (pools[from] || 0)) { showToast('Enter a valid credit amount.'); return; }
+            PLStore.update(function (d) {
+                d.teams.forEach(function (t) {
+                    if (t.name === from) t.allocated -= qty;
+                    if (t.name === to) t.allocated += qty;
+                });
+                /* moving to/from Unallocated is implicit via contract - sum(allocated) */
+            });
+            renderBilling();
+            closeModal('reallocateModal');
+            showToast(qty + ' credits reallocated to ' + to + '.');
+        }
+
+        /* ---------- Set budget ---------- */
+        function openSetBudgetModal() {
+            var d = PLStore.get();
+            document.getElementById('budgetInput').value = d.budget.annual;
+            updateBudgetModal();
+            openModal('setBudgetModal');
+        }
+        function updateBudgetModal() {
+            var d = PLStore.get();
+            var val = parseInt(document.getElementById('budgetInput').value, 10);
+            if (isNaN(val)) val = 0;
+            document.getElementById('budgetModalSpent').textContent = plMoneyShort(d.budget.spent);
+            document.getElementById('budgetModalNew').textContent = plMoneyShort(val);
+            document.getElementById('budgetModalRemaining').textContent = plMoneyShort(Math.max(0, val - d.budget.spent));
+            var hint = document.getElementById('budgetModalHint');
+            if (val < d.budget.spent) {
+                hint.textContent = 'Budget cannot be below spend to date (' + plMoney0(d.budget.spent) + ')';
+                hint.className = 'credit-adjust-hint down';
+            } else if (val > d.budget.annual) {
+                hint.textContent = '+' + plMoney0(val - d.budget.annual) + ' vs current budget';
+                hint.className = 'credit-adjust-hint up';
+            } else if (val < d.budget.annual) {
+                hint.textContent = plMoney0(d.budget.annual - val) + ' lower than current budget';
+                hint.className = 'credit-adjust-hint down';
+            } else {
+                hint.textContent = 'No change from current budget';
+                hint.className = 'credit-adjust-hint';
+            }
+            document.querySelectorAll('#budgetTiers .tier').forEach(function (tier) {
+                tier.classList.toggle('selected', parseInt(tier.dataset.amount, 10) === val);
+            });
+        }
+        function saveBudget() {
+            var d = PLStore.get();
+            var val = parseInt(document.getElementById('budgetInput').value, 10);
+            if (isNaN(val) || val < d.budget.spent) { showToast('Budget cannot be below spend to date.'); return; }
+            PLStore.update(function (s) { s.budget.annual = val; });
+            renderBilling();
+            closeModal('setBudgetModal');
+            showToast('Annual budget set to ' + plMoney0(val) + '.');
+        }
+
+        function plToday() {
+            var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            var now = new Date();
+            return String(now.getDate()).padStart(2, '0') + ' ' + mo[now.getMonth()] + ' ' + now.getFullYear();
+        }
+
+        document.querySelectorAll('#creditTiers .tier').forEach(function (tier) {
+            tier.addEventListener('click', function () {
+                document.getElementById('creditPurchaseQty').value = tier.dataset.qty;
+                updateCreditPurchaseSummary();
+            });
+        });
+        document.querySelectorAll('#budgetTiers .tier').forEach(function (tier) {
+            tier.addEventListener('click', function () {
+                document.getElementById('budgetInput').value = tier.dataset.amount;
+                updateBudgetModal();
+            });
+        });
+
+        renderBilling();
+        updateCreditPurchaseSummary();
+    </script>
+</body>
+</html>

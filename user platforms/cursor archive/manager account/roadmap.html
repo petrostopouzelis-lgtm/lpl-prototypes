@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feature Roadmap | Psychometric Laboratory for Managers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-page="roadmap" data-title="Feature Roadmap" data-subtitle="Vote for the capabilities you would like us to build next.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+        <section class="page-content">
+            <div class="card" style="margin-bottom:var(--spacing-narrow-l);background:var(--color-primary-gradient);color:#fff;">
+                <h2 class="card-title" style="color:#fff;margin-bottom:8px;">Help shape the Manager platform</h2>
+                <p style="font-family:var(--font-inter);font-size:14px;opacity:0.92;line-height:1.5;">Upvote features below. We review votes each quarter when planning our roadmap.</p>
+            </div>
+
+            <div class="toolbar" style="margin-bottom:var(--spacing-narrow-l);">
+                <div class="seg">
+                    <button class="active">Most voted</button>
+                    <button>Recently added</button>
+                    <button>Shipped</button>
+                </div>
+                <button class="secondary-button" onclick="openModal('suggestModal')">Suggest a feature</button>
+            </div>
+
+            <div class="roadmap-grid">
+                <div class="roadmap-card">
+                    <span class="highlight-tag green">Considering</span>
+                    <h3>Per-team cost centres</h3>
+                    <p>Allocate budget and billing reports separately for each coach team within your organisation.</p>
+                    <div class="roadmap-foot">
+                        <span class="vote-count">47 votes</span>
+                        <button class="primary-button" onclick="voteFeature(this)">Upvote</button>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <span class="highlight-tag primary">Planned</span>
+                    <h3>SCIM user provisioning</h3>
+                    <p>Automatically provision and deprovision coach accounts from your identity provider.</p>
+                    <div class="roadmap-foot">
+                        <span class="vote-count">39 votes</span>
+                        <button class="primary-button" onclick="voteFeature(this)">Upvote</button>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <span class="highlight-tag yellow">Considering</span>
+                    <h3>Coach utilisation alerts</h3>
+                    <p>Get notified when a linked coach has not logged in or used allocated credits within a set period.</p>
+                    <div class="roadmap-foot">
+                        <span class="vote-count">31 votes</span>
+                        <button class="primary-button" onclick="voteFeature(this)">Upvote</button>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <span class="highlight-tag green">Considering</span>
+                    <h3>Bulk coach import</h3>
+                    <p>Upload a CSV to invite multiple coaches and assign them to teams in one step.</p>
+                    <div class="roadmap-foot">
+                        <span class="vote-count">28 votes</span>
+                        <button class="primary-button" onclick="voteFeature(this)">Upvote</button>
+                    </div>
+                </div>
+                <div class="roadmap-card voted">
+                    <span class="highlight-tag">Shipped</span>
+                    <h3>Audit log export</h3>
+                    <p>Download a CSV of all administrative actions for compliance and internal review.</p>
+                    <div class="roadmap-foot">
+                        <span class="vote-count">52 votes</span>
+                        <button class="secondary-button" disabled>Voted</button>
+                    </div>
+                </div>
+                <div class="roadmap-card">
+                    <span class="highlight-tag yellow">Considering</span>
+                    <h3>Custom engagement dashboards</h3>
+                    <p>Build saved analytics views with the metrics your leadership team cares about most.</p>
+                    <div class="roadmap-foot">
+                        <span class="vote-count">22 votes</span>
+                        <button class="primary-button" onclick="voteFeature(this)">Upvote</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="suggestModal">
+        <div class="modal">
+            <div class="modal-head"><h3>Suggest a feature</h3><button class="modal-close" onclick="closeModal('suggestModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button></div>
+            <label class="form-label">Title</label>
+            <input class="form-input" placeholder="Brief feature name" style="margin-bottom:var(--spacing-narrow-m);">
+            <label class="form-label">Description</label>
+            <textarea class="form-textarea" rows="3" placeholder="What problem would this solve for your organisation?"></textarea>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('suggestModal')">Cancel</button>
+                <button class="primary-button" onclick="closeModal('suggestModal');showToast('Suggestion submitted — thank you.');">Submit</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
