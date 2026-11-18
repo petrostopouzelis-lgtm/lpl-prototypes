@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leadership Cohort | Psychometric Laboratory for Business</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .profile-card { margin-bottom: var(--spacing-narrow-l); }
+        .member-scroll { max-height: 420px; overflow-y: auto; }
+        #memberList.collapsed .member-extra { display: none; }
+        .grp-assign-table .pl-table-header,
+        .grp-assign-table .crow { grid-template-columns: 2.4fr 1.2fr 1.3fr 56px; }
+        .modal .member-box.wiz-candlist { max-height: 260px; overflow-y: auto; }
+        @media (max-width: 680px) {
+            .grp-assign-table .crow { grid-template-columns: 1fr 1fr !important; }
+            .grp-assign-table .cell-assignment { grid-column: 1 / -1; }
+        }
+    </style>
+</head>
+<!-- Purple group example -->
+<body data-page="groups" data-title="Group" data-subtitle="" style="--group-color:#7569a1;--group-gradient:linear-gradient(180deg,#7569a1 0%,#9e96bd 100%);">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <a class="back-link" href="groups.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+                Back to Groups
+            </a>
+
+            <!-- Group header -->
+            <div class="card profile-card">
+                <div class="profile-head">
+                    <span class="avatar-lg group-avatar">LC</span>
+                    <div class="pinfo">
+                        <h2>Leadership Cohort</h2>
+                        <div class="pemail">15 members</div>
+                        <span class="group-pill"><span class="gp-dot" style="background:#7569a1;"></span>Purple</span>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <button class="primary-button" onclick="location.href='assignments.html'">New assignment</button>
+                        <button class="secondary-button" onclick="openModal('editGroupModal')">Edit</button>
+                        <button class="danger-button" onclick="openModal('deleteGroupModal')">Delete</button>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="assign-meta">
+                    <span><b>Created</b> 28 Apr 2026</span>
+                    <span><b>Members</b> 15</span>
+                    <span><b>Group assignments</b> 2</span>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <!-- LEFT: Members -->
+                <div class="card">
+                    <div class="section-head">
+                        <h2 class="card-title">Members</h2>
+                        <a href="#" onclick="openModal('addMembersModal');return false;">Add members</a>
+                    </div>
+                    <input class="form-input" id="memberSearch" placeholder="Search members" style="margin-bottom:var(--spacing-narrow-m);">
+                    <div class="member-box member-scroll collapsed" id="memberList">
+                        <div class="cand-row" data-name="James Okoro">
+                            <span class="avatar-sm">JO</span>
+                            <div class="cand-info"><div class="cand-name"><b>James Okoro</b></div><div class="cand-email">james.okoro@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" class="danger">Remove from group</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cand-row" data-name="Sofia Almeida">
+                            <span class="avatar-sm">SA</span>
+                            <div class="cand-info"><div class="cand-name"><b>Sofia Almeida</b></div><div class="cand-email">sofia.almeida@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" class="danger">Remove from group</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cand-row" data-name="Liam Chen">
+                            <span class="avatar-sm">LC</span>
+                            <div class="cand-info"><div class="cand-name"><b>Liam Chen</b></div><div class="cand-email">liam.chen@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" class="danger">Remove from group</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cand-row" data-name="Priya Nair">
+                            <span class="avatar-sm">PN</span>
+                            <div class="cand-info"><div class="cand-name"><b>Priya Nair</b></div><div class="cand-email">priya.nair@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" class="danger">Remove from group</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cand-row" data-name="Marcus Webb">
+                            <span class="avatar-sm">MW</span>
+                            <div class="cand-info"><div class="cand-name"><b>Marcus Webb</b></div><div class="cand-email">marcus.webb@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" class="danger">Remove from group</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cand-row" data-name="Noah Schmidt">
+                            <span class="avatar-sm">NS</span>
+                            <div class="cand-info"><div class="cand-name"><b>Noah Schmidt</b></div><div class="cand-email">noah.schmidt@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu">
+                                    <a href="candidate.html">View profile</a>
+                                    <button type="button" class="danger">Remove from group</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cand-row member-extra" data-name="Yuki Tanaka">
+                            <span class="avatar-sm">YT</span>
+                            <div class="cand-info"><div class="cand-name"><b>Yuki Tanaka</b></div><div class="cand-email">yuki.tanaka@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu"><a href="candidate.html">View profile</a><button type="button" class="danger">Remove from group</button></div>
+                            </div>
+                        </div>
+                        <div class="cand-row member-extra" data-name="Fatima Zahra">
+                            <span class="avatar-sm">FZ</span>
+                            <div class="cand-info"><div class="cand-name"><b>Fatima Zahra</b></div><div class="cand-email">fatima.zahra@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu"><a href="candidate.html">View profile</a><button type="button" class="danger">Remove from group</button></div>
+                            </div>
+                        </div>
+                        <div class="cand-row member-extra" data-name="David Park">
+                            <span class="avatar-sm">DP</span>
+                            <div class="cand-info"><div class="cand-name"><b>David Park</b></div><div class="cand-email">david.park@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu"><a href="candidate.html">View profile</a><button type="button" class="danger">Remove from group</button></div>
+                            </div>
+                        </div>
+                        <div class="cand-row member-extra" data-name="Hannah Berg">
+                            <span class="avatar-sm">HB</span>
+                            <div class="cand-info"><div class="cand-name"><b>Hannah Berg</b></div><div class="cand-email">hannah.berg@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu"><a href="candidate.html">View profile</a><button type="button" class="danger">Remove from group</button></div>
+                            </div>
+                        </div>
+                        <div class="cand-row member-extra" data-name="Omar Haddad">
+                            <span class="avatar-sm">OH</span>
+                            <div class="cand-info"><div class="cand-name"><b>Omar Haddad</b></div><div class="cand-email">omar.haddad@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu"><a href="candidate.html">View profile</a><button type="button" class="danger">Remove from group</button></div>
+                            </div>
+                        </div>
+                        <div class="cand-row member-extra" data-name="Lucia Moreno">
+                            <span class="avatar-sm">LM</span>
+                            <div class="cand-info"><div class="cand-name"><b>Lucia Moreno</b></div><div class="cand-email">lucia.moreno@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu"><a href="candidate.html">View profile</a><button type="button" class="danger">Remove from group</button></div>
+                            </div>
+                        </div>
+                        <div class="cand-row member-extra" data-name="Ethan Brooks">
+                            <span class="avatar-sm">EB</span>
+                            <div class="cand-info"><div class="cand-name"><b>Ethan Brooks</b></div><div class="cand-email">ethan.brooks@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu"><a href="candidate.html">View profile</a><button type="button" class="danger">Remove from group</button></div>
+                            </div>
+                        </div>
+                        <div class="cand-row member-extra" data-name="Mei Lin">
+                            <span class="avatar-sm">ML</span>
+                            <div class="cand-info"><div class="cand-name"><b>Mei Lin</b></div><div class="cand-email">mei.lin@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu"><a href="candidate.html">View profile</a><button type="button" class="danger">Remove from group</button></div>
+                            </div>
+                        </div>
+                        <div class="cand-row member-extra" data-name="Carlos Vega">
+                            <span class="avatar-sm">CV</span>
+                            <div class="cand-info"><div class="cand-name"><b>Carlos Vega</b></div><div class="cand-email">carlos.vega@acme.com</div></div>
+                            <div class="row-actions">
+                                <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                <div class="row-menu"><a href="candidate.html">View profile</a><button type="button" class="danger">Remove from group</button></div>
+                            </div>
+                        </div>
+                    </div>
+                    <p style="text-align:center;margin-top:var(--spacing-narrow-m);"><a class="pl-action-button ghost" id="toggleMembers" href="#" style="width:auto;">View all 15 members</a></p>
+                </div>
+
+                <!-- RIGHT: Group assignments -->
+                <div class="card">
+                    <h2 class="card-title">Group assignments</h2>
+                    <div class="grp-assign-table" style="margin-top:var(--spacing-narrow-m);">
+                        <div class="pl-table-header">
+                            <div>Assignment</div>
+                            <div>Assigned</div>
+                            <div>Status</div>
+                            <div></div>
+                        </div>
+                        <div class="pl-table-row assign-row crow" onclick="location.href='assignment.html'">
+                            <div data-label="Assignment" class="cell-assignment">
+                                <div><div class="assign-name"><b>TEIQue Leadership</b></div><div class="assign-target">15 candidates</div></div>
+                            </div>
+                            <div data-label="Assigned">2 Jun 2026</div>
+                            <div data-label="Status"><div class="progress"><div class="progress-track"><div class="progress-fill" style="width:80%"></div></div><span class="progress-label">12/15</span></div></div>
+                            <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                        </div>
+                        <div class="pl-table-row assign-row crow" onclick="location.href='assignment.html'">
+                            <div data-label="Assignment" class="cell-assignment">
+                                <div><div class="assign-name"><b>TEIQue Team Report</b></div><div class="assign-target">15 candidates</div></div>
+                            </div>
+                            <div data-label="Assigned">10 May 2026</div>
+                            <div data-label="Status"><span class="highlight-tag green">Completed</span></div>
+                            <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add members modal -->
+    <div class="modal-overlay" id="addMembersModal">
+        <div class="modal">
+            <div class="modal-head">
+                <h3>Add members</h3>
+                <button class="modal-close" onclick="closeModal('addMembersModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <input class="form-input" placeholder="Search candidates" style="margin-bottom:var(--spacing-narrow-m);">
+            <div class="member-box wiz-candlist">
+                <div class="cand-row">
+                    <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                    <span class="avatar-sm">JR</span>
+                    <div class="cand-info"><div class="cand-name"><b>Jordan Rivera</b></div><div class="cand-email">jordan.rivera@acme.com</div></div>
+                    <span class="group-pill none">No group</span>
+                </div>
+                <div class="cand-row">
+                    <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                    <span class="avatar-sm">MP</span>
+                    <div class="cand-info"><div class="cand-name"><b>Maya Patel</b></div><div class="cand-email">maya.patel@acme.com</div></div>
+                    <span class="group-pill none">No group</span>
+                </div>
+                <div class="cand-row">
+                    <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                    <span class="avatar-sm">DP</span>
+                    <div class="cand-info"><div class="cand-name"><b>Daniel Price</b></div><div class="cand-email">daniel.price@acme.com</div></div>
+                    <span class="group-pill"><span class="gp-dot" style="background:#f3792a;"></span>Sales Team</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('addMembersModal')">Cancel</button>
+                <button class="primary-button" onclick="closeModal('addMembersModal')">Add to group</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Group modal -->
+    <div class="modal-overlay" id="editGroupModal">
+        <div class="modal">
+            <div class="modal-head">
+                <h3>Edit Group</h3>
+                <button class="modal-close" onclick="closeModal('editGroupModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <div style="margin-bottom:var(--spacing-narrow-l);">
+                <label class="form-label">Group name</label>
+                <input class="form-input" value="Leadership Cohort">
+            </div>
+            <div>
+                <label class="form-label">Group colour</label>
+                <div class="color-swatches">
+                    <button class="swatch" style="background:linear-gradient(180deg,#259dd5 0%,#66bae2 100%);color:#259dd5;" onclick="pickEditColor(this)" aria-label="Blue"></button>
+                    <button class="swatch" style="background:linear-gradient(180deg,#f26065 0%,#ec1c24 100%);color:#ec1c24;" onclick="pickEditColor(this)" aria-label="Red"></button>
+                    <button class="swatch" style="background:linear-gradient(180deg,#f3792a 0%,#eba97c 100%);color:#f3792a;" onclick="pickEditColor(this)" aria-label="Orange"></button>
+                    <button class="swatch" style="background:linear-gradient(180deg,#ebbb3d 0%,#f1cf77 100%);color:#ebbb3d;" onclick="pickEditColor(this)" aria-label="Yellow"></button>
+                    <button class="swatch" style="background:linear-gradient(180deg,#3aa756 0%,#75c188 100%);color:#3aa756;" onclick="pickEditColor(this)" aria-label="Green"></button>
+                    <button class="swatch selected" style="background:linear-gradient(180deg,#7569a1 0%,#9e96bd 100%);color:#7569a1;" onclick="pickEditColor(this)" aria-label="Purple"></button>
+                    <button class="swatch" style="background:linear-gradient(180deg,#b271a4 0%,#c99bbf 100%);color:#b271a4;" onclick="pickEditColor(this)" aria-label="Magenta"></button>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('editGroupModal')">Cancel</button>
+                <button class="primary-button" onclick="closeModal('editGroupModal')">Save changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Group modal -->
+    <div class="modal-overlay" id="deleteGroupModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>Delete group?</h3>
+                <button class="modal-close" onclick="closeModal('deleteGroupModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);">
+                Deleting <b>Leadership Cohort</b> does not delete its candidates — they simply become ungrouped. Active group assignments tied to this group will be cancelled.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('deleteGroupModal')">Keep group</button>
+                <button class="danger-button" onclick="window.location.href='groups.html'">Delete group</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        (function () {
+            // Member search + expand/collapse
+            const memberList = document.getElementById('memberList');
+            const search = document.getElementById('memberSearch');
+            const toggleMembers = document.getElementById('toggleMembers');
+            const rows = Array.prototype.slice.call(document.querySelectorAll('#memberList .cand-row'));
+
+            search.addEventListener('input', function () {
+                const t = search.value.trim().toLowerCase();
+                filterAnimate(rows, function (r) {
+                    return t === '' || r.dataset.name.toLowerCase().indexOf(t) !== -1;
+                });
+            });
+
+            toggleMembers.addEventListener('click', function (e) {
+                e.preventDefault();
+                const collapsed = memberList.classList.toggle('collapsed');
+                toggleMembers.textContent = collapsed ? 'View all 15 members' : 'Show fewer members';
+            });
+
+            // Edit modal colour swatch
+            window.pickEditColor = function (sw) {
+                sw.parentElement.querySelectorAll('.swatch').forEach(function (s) { s.classList.remove('selected'); });
+                sw.classList.add('selected');
+            };
+
+            // Row option menus
+            document.querySelectorAll('.row-actions-btn').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const ra = btn.closest('.row-actions');
+                    document.querySelectorAll('.row-actions.open').forEach(function (o) { if (o !== ra) o.classList.remove('open'); });
+                    ra.classList.toggle('open');
+                });
+            });
+            document.addEventListener('click', function () {
+                document.querySelectorAll('.row-actions.open').forEach(function (o) { o.classList.remove('open'); });
+            });
+        })();
+    </script>
+</body>
+</html>

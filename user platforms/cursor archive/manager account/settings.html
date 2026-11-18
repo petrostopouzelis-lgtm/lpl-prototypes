@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Psychometric Laboratory for Managers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-page="settings" data-title="Settings" data-subtitle="Organisation profile, admin account, and notification preferences.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+        <section class="page-content">
+            <div class="settings-bento">
+                <div class="card">
+                    <h2 class="card-title">Organisation profile</h2>
+                    <p class="settings-intro">Details used on invoices and coach invitation emails.</p>
+                    <div class="field-row">
+                        <div><label class="form-label">Organisation name</label><input class="form-input" id="orgName" value="Northwind Coaching Group"></div>
+                        <div><label class="form-label">Primary contact email</label><input class="form-input" id="orgEmail" type="email" value="admin@northwind.com"></div>
+                    </div>
+                    <div class="field-row settings-field-gap">
+                        <div>
+                            <label class="form-label">Account type</label>
+                            <div class="dropdown">
+                                <button type="button" class="dropdown-trigger" onclick="toggleDropdown('acctType')"><span class="dropdown-label">Enterprise</span></button>
+                                <div class="dropdown-menu" id="acctType">
+                                    <button type="button" class="dropdown-option" onclick="selectOption('acctType','Enterprise')">Enterprise</button>
+                                    <button type="button" class="dropdown-option" onclick="selectOption('acctType','Regional distributor')">Regional distributor</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div><label class="form-label">Contract plan</label><input class="form-input" id="orgPlan" value="Manager 300" readonly></div>
+                    </div>
+                    <div class="settings-card-foot"><button class="primary-button" onclick="saveOrg()">Save changes</button></div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">New coach defaults</h2>
+                    <p class="settings-intro">Choose the permissions applied when a new coach is invited. You can override them on each coach profile.</p>
+                    <div class="set-row">
+                        <div class="set-row-text">
+                            <div class="set-row-title">Manage own candidates</div>
+                            <div class="set-row-desc">Allow new coaches to add and remove candidates.</div>
+                        </div>
+                        <div class="set-row-control">
+                            <button type="button" class="toggle-switch" id="defaultCandidateToggle" role="switch" onclick="toggleDefaultCandidatePermission()"></button>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="subhead">Default product access</div>
+                    <div class="member-box" id="defaultProductList"></div>
+                    <div class="settings-card-foot"><button class="primary-button" onclick="saveCoachDefaults()">Save defaults</button></div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Admin account</h2>
+                    <div class="avatar-upload">
+                        <div class="avatar-upload-wrap"><div class="avatar-lg" id="adminAvatar">AM</div></div>
+                        <span class="avatar-upload-hint">Your photo appears in the top bar and audit log entries.</span>
+                    </div>
+                    <div class="field-row settings-field-gap">
+                        <div><label class="form-label">First name</label><input class="form-input" id="adminFirst" value="Alex"></div>
+                        <div><label class="form-label">Last name</label><input class="form-input" id="adminLast" value="Morgan"></div>
+                    </div>
+                    <label class="form-label">Email</label>
+                    <input class="form-input" id="adminEmail" type="email" value="alex.morgan@northwind.com">
+                    <div class="settings-card-foot"><button class="primary-button" onclick="saveAdmin()">Save changes</button></div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Security</h2>
+                    <p class="settings-intro">Change the password you use to sign in to this account.</p>
+                    <div class="settings-fields">
+                        <div><label class="form-label">Current password</label><input class="form-input" type="password" autocomplete="current-password"></div>
+                        <div><label class="form-label">New password</label><input class="form-input" type="password" autocomplete="new-password"></div>
+                        <div><label class="form-label">Confirm password</label><input class="form-input" type="password" autocomplete="new-password"></div>
+                    </div>
+                    <div class="settings-card-foot"><button class="primary-button" onclick="showToast('Password updated.');">Update password</button></div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Alerts &amp; preferences</h2>
+                    <p class="settings-intro">Control when the platform notifies you about usage and budget.</p>
+                    <label class="form-label">Credit &amp; budget alert threshold</label>
+                    <div class="dropdown" style="margin-bottom:var(--spacing-narrow-m);">
+                        <button type="button" class="dropdown-trigger" onclick="toggleDropdown('threshold')"><span class="dropdown-label">90%</span></button>
+                        <div class="dropdown-menu" id="threshold">
+                            <button type="button" class="dropdown-option" onclick="selectOption('threshold','75%')">75%</button>
+                            <button type="button" class="dropdown-option" onclick="selectOption('threshold','80%')">80%</button>
+                            <button type="button" class="dropdown-option" onclick="selectOption('threshold','90%')">90%</button>
+                            <button type="button" class="dropdown-option" onclick="selectOption('threshold','95%')">95%</button>
+                        </div>
+                    </div>
+                    <div class="toggle-line"><span class="toggle-switch" onclick="toggleSwitch(this)"></span> Coach invitation accepted</div>
+                    <div class="toggle-line"><span class="toggle-switch" onclick="toggleSwitch(this)"></span> Credit threshold alerts</div>
+                    <div class="toggle-line"><span class="toggle-switch off" onclick="toggleSwitch(this)"></span> Weekly organisation summary</div>
+                    <div class="toggle-line"><span class="toggle-switch" onclick="toggleSwitch(this)"></span> Billing and invoice notices</div>
+                    <div class="settings-card-foot"><button class="primary-button" onclick="savePrefs()">Save preferences</button></div>
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Prototype data</h2>
+                    <p class="settings-intro">This prototype stores demo changes in your browser. Reset to restore the original sample organisation, credits, and budget.</p>
+                    <div class="settings-card-foot"><button class="danger-button" onclick="plResetDemo()">Reset demo data</button></div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="app.js"></script>
+    <script>
+        (function hydrateSettings() {
+            var d = PLStore.get();
+            document.getElementById('orgName').value = d.org.name;
+            document.getElementById('orgEmail').value = d.org.contactEmail;
+            document.getElementById('orgPlan').value = d.org.plan;
+            selectOption('acctType', d.org.accountType || 'Enterprise');
+            var parts = (d.user.name || '').split(' ');
+            document.getElementById('adminFirst').value = parts[0] || '';
+            document.getElementById('adminLast').value = parts.slice(1).join(' ');
+            document.getElementById('adminEmail').value = d.user.email;
+            document.getElementById('adminAvatar').textContent = d.user.initials;
+            selectOption('threshold', Math.round(d.credits.threshold * 100) + '%');
+            renderCoachDefaults();
+        })();
+
+        function dropdownVal(id) { return document.querySelector('#' + id).previousElementSibling.querySelector('.dropdown-label').textContent; }
+
+        function saveOrg() {
+            var name = document.getElementById('orgName').value.trim();
+            PLStore.update(function (d) {
+                d.org.name = name || d.org.name;
+                d.org.contactEmail = document.getElementById('orgEmail').value.trim();
+                d.org.accountType = dropdownVal('acctType');
+                var words = d.org.name.split(' ');
+                d.org.initials = ((words[0] || '').charAt(0) + (words[1] || '').charAt(0)).toUpperCase();
+            });
+            showToast('Organisation profile saved.');
+            setTimeout(function () { window.location.reload(); }, 400);
+        }
+        function saveAdmin() {
+            PLStore.update(function (d) {
+                var first = document.getElementById('adminFirst').value.trim();
+                var last = document.getElementById('adminLast').value.trim();
+                d.user.name = (first + ' ' + last).trim() || d.user.name;
+                d.user.email = document.getElementById('adminEmail').value.trim();
+                d.user.initials = ((first.charAt(0)) + (last.charAt(0))).toUpperCase() || d.user.initials;
+            });
+            showToast('Admin account saved.');
+            setTimeout(function () { window.location.reload(); }, 400);
+        }
+        function savePrefs() {
+            var pct = parseInt(dropdownVal('threshold'), 10) / 100;
+            PLStore.update(function (d) { d.credits.threshold = pct; d.budget.threshold = pct; });
+            showToast('Preferences saved.');
+        }
+        function renderCoachDefaults() {
+            var d = PLStore.get();
+            document.getElementById('defaultCandidateToggle').classList.toggle('off', !d.org.defaultCanManageCandidates);
+            document.getElementById('defaultProductList').innerHTML = PL_PRODUCTS.map(function (p) {
+                var on = d.org.defaultProducts.indexOf(p.id) > -1;
+                return '<div class="cand-row product-row" onclick="toggleDefaultProduct(\'' + p.id + '\')">' +
+                    '<div class="custom-checkbox sm' + (on ? ' checked' : '') + '"></div>' +
+                    '<div class="cand-info"><div class="cand-name"><b>' + p.label + '</b></div><div class="cand-email">' + p.description + '</div></div>' +
+                    '<span class="highlight-tag ' + (on ? 'green' : '') + '">' + (on ? 'Available' : 'Restricted') + '</span></div>';
+            }).join('');
+        }
+        function toggleDefaultCandidatePermission() {
+            PLStore.update(function (d) { d.org.defaultCanManageCandidates = !d.org.defaultCanManageCandidates; });
+            renderCoachDefaults();
+        }
+        function toggleDefaultProduct(id) {
+            PLStore.update(function (d) {
+                var i = d.org.defaultProducts.indexOf(id);
+                if (i > -1) d.org.defaultProducts.splice(i, 1); else d.org.defaultProducts.push(id);
+            });
+            renderCoachDefaults();
+        }
+        function saveCoachDefaults() { PLStore.save(); showToast('New coach defaults saved.'); }
+    </script>
+</body>
+</html>

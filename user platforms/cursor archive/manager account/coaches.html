@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coaches | Psychometric Laboratory for Managers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .coach-table .pl-table-header,
+        .coach-table .pl-table-row { grid-template-columns: 1.8fr 1.1fr .8fr .8fr .8fr 1fr 56px; }
+        @media (max-width: 680px) {
+            .coach-table .pl-table-row { grid-template-columns: 1fr 1fr !important; }
+            .coach-table .cell-action { grid-column: 1 / -1; }
+        }
+    </style>
+</head>
+<body data-page="coaches" data-title="Coaches" data-subtitle="Linked coach accounts">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+        <section class="page-content">
+            <div class="panel">
+                <div class="panel-head">
+                    <h2 class="card-title">Linked coach accounts</h2>
+                    <button class="primary-button" onclick="openInviteModal()">
+                        <img class="btn-icon" src="../../005_PLATFORM ICONS/other icons/request demo button arrow icon.svg" alt="">
+                        Invite coach
+                    </button>
+                </div>
+
+                <div class="toolbar" style="padding:0 var(--spacing-narrow-l) var(--spacing-narrow-m);">
+                    <input class="form-input" id="coachSearch" placeholder="Search coaches" style="max-width:280px;" oninput="filterCoaches()">
+                    <div class="seg" id="coachStatusSeg">
+                        <button class="active" data-filter="all" onclick="setCoachFilter('all',this)">All</button>
+                        <button data-filter="active" onclick="setCoachFilter('active',this)">Active</button>
+                        <button data-filter="invited" onclick="setCoachFilter('invited',this)">Invited</button>
+                        <button data-filter="suspended" onclick="setCoachFilter('suspended',this)">Suspended</button>
+                    </div>
+                </div>
+
+                <div class="coach-table" style="padding:0 var(--spacing-narrow-l) var(--spacing-narrow-l);">
+                    <div class="pl-table-header">
+                        <div>Coach</div>
+                        <div>Team</div>
+                        <div>Status</div>
+                        <div>Candidates</div>
+                        <div>Credits</div>
+                        <div>Last active</div>
+                        <div></div>
+                    </div>
+                    <div id="coachRows"></div>
+                </div>
+                <div class="empty-state" id="coachEmpty" style="display:none;margin:var(--spacing-narrow-l);">No coaches match your filters.</div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="inviteCoachModal">
+        <div class="modal">
+            <div class="modal-head">
+                <h3>Invite coach</h3>
+                <button class="modal-close" onclick="closeModal('inviteCoachModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="card-content" style="margin-bottom:var(--spacing-narrow-l);color:var(--color-gray);">Send an invitation to link an accredited coach account to your organisation.</p>
+            <div style="display:flex;flex-direction:column;gap:var(--spacing-narrow-m);">
+                <div>
+                    <label class="form-label">Email address</label>
+                    <input class="form-input" id="inviteEmail" type="email" placeholder="coach@company.com">
+                </div>
+                <div>
+                    <label class="form-label">Team (optional)</label>
+                    <div class="dropdown">
+                        <button class="dropdown-trigger" onclick="toggleDropdown('inviteTeam')"><span class="dropdown-label">No team</span></button>
+                        <div class="dropdown-menu" id="inviteTeam"></div>
+                    </div>
+                </div>
+                <div>
+                    <label class="form-label">Initial credit allocation</label>
+                    <input class="form-input" id="inviteCredits" type="number" value="10" min="0" max="50">
+                    <p class="credit-adjust-hint" id="inviteCreditsHint"></p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('inviteCoachModal')">Cancel</button>
+                <button class="primary-button" onclick="sendInvite()">Send invitation</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        var coachFilter = 'all';
+        var inviteTeamId = null;
+
+        function renderCoaches() {
+            var rows = document.getElementById('coachRows');
+            var coaches = PLStore.get().coaches;
+            rows.innerHTML = '';
+            coaches.forEach(function (c) {
+                var team = c.teamId ? plTeamById(c.teamId) : null;
+                var teamName = team ? team.name : '—';
+                var statusTag = c.status === 'active' ? '<span class="highlight-tag green">Active</span>'
+                    : c.status === 'invited' ? '<span class="highlight-tag yellow">Invited</span>'
+                    : '<span class="highlight-tag">Suspended</span>';
+                var credits = c.status === 'active' ? (c.inUse + ' / ' + c.allocated) : '—';
+                rows.insertAdjacentHTML('beforeend',
+                    '<div class="pl-table-row coach-row" data-status="' + c.status + '" data-name="' + c.name.toLowerCase() + '" data-team="' + (c.teamId || '') + '">' +
+                        '<div data-label="Coach"><b>' + c.name + '</b><br><span style="font-size:12px;color:var(--color-gray)">' + c.email + '</span></div>' +
+                        '<div data-label="Team">' + teamName + '</div>' +
+                        '<div data-label="Status">' + statusTag + '</div>' +
+                        '<div data-label="Candidates"><b>' + plCoachCandidates(c.id).length + '</b></div>' +
+                        '<div data-label="Credits">' + credits + '</div>' +
+                        '<div data-label="Last active">' + c.lastActive + '</div>' +
+                        '<div class="cell-action"><a class="pl-action-button" href="coach.html?coach=' + c.id + '">View</a></div>' +
+                    '</div>');
+            });
+            var active = plActiveCoaches().length, pending = plPendingCoaches().length;
+            document.body.setAttribute('data-subtitle', active + ' active coach' + (active === 1 ? '' : 'es') + ' · ' + pending + ' pending invitation' + (pending === 1 ? '' : 's'));
+            var sub = document.querySelector('.topbar-subtitle');
+            if (sub) sub.textContent = active + ' active coach' + (active === 1 ? '' : 'es') + ' · ' + pending + ' pending invitation' + (pending === 1 ? '' : 's');
+            filterCoaches();
+        }
+
+        function setCoachFilter(f, btn) {
+            coachFilter = f;
+            document.querySelectorAll('#coachStatusSeg button').forEach(function (b) { b.classList.toggle('active', b === btn); });
+            filterCoaches();
+        }
+        function filterCoaches() {
+            var q = (document.getElementById('coachSearch').value || '').toLowerCase();
+            var rows = Array.prototype.slice.call(document.querySelectorAll('.coach-row'));
+            filterAnimate(rows, function (row) {
+                var name = row.getAttribute('data-name') || '';
+                var status = row.getAttribute('data-status') || '';
+                if (coachFilter !== 'all' && status !== coachFilter) return false;
+                if (q && name.indexOf(q) === -1) return false;
+                return true;
+            }, document.getElementById('coachEmpty'));
+        }
+
+        function openInviteModal() {
+            document.getElementById('inviteEmail').value = '';
+            document.getElementById('inviteCredits').value = 10;
+            inviteTeamId = null;
+            var menu = document.getElementById('inviteTeam');
+            var opts = '<button class="dropdown-option" onclick="selectInviteTeam(null,\'No team\')">No team</button>';
+            PLStore.get().teams.forEach(function (t) {
+                opts += '<button class="dropdown-option" onclick="selectInviteTeam(\'' + t.id + '\',\'' + t.name.replace(/'/g, "\\'") + '\')">' + t.name + '</button>';
+            });
+            menu.innerHTML = opts;
+            menu.previousElementSibling.querySelector('.dropdown-label').textContent = 'No team';
+            updateInviteHint();
+            openModal('inviteCoachModal');
+        }
+        function selectInviteTeam(id, label) {
+            inviteTeamId = id;
+            selectOption('inviteTeam', label);
+            updateInviteHint();
+        }
+        function updateInviteHint() {
+            var hint = document.getElementById('inviteCreditsHint');
+            hint.textContent = plUnallocated() + ' credits available in the unallocated pool';
+            hint.className = 'credit-adjust-hint';
+        }
+        function sendInvite() {
+            var email = document.getElementById('inviteEmail').value.trim();
+            var credits = parseInt(document.getElementById('inviteCredits').value, 10) || 0;
+            if (!email || email.indexOf('@') === -1) { showToast('Enter a valid email address.'); return; }
+            var name = email.split('@')[0].replace(/[._-]+/g, ' ').replace(/\b\w/g, function (m) { return m.toUpperCase(); });
+            var initials = name.split(' ').map(function (w) { return w.charAt(0); }).join('').slice(0, 2).toUpperCase();
+            var id = email.split('@')[0].replace(/[^a-z0-9]+/gi, '') + '-' + Date.now().toString(36).slice(-4);
+            PLStore.update(function (d) {
+                d.coaches.push({ id: id, name: name, email: email, initials: initials, teamId: inviteTeamId, status: 'invited', allocated: credits, inUse: 0, spent: 0, lastActive: '—', linkedSince: '—', allowedProducts: d.org.defaultProducts.slice(), canManageCandidates: d.org.defaultCanManageCandidates });
+            });
+            renderCoaches();
+            closeModal('inviteCoachModal');
+            showToast('Invitation sent to ' + email + '.');
+        }
+
+        renderCoaches();
+    </script>
+</body>
+</html>

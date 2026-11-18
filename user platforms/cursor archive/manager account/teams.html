@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teams | Psychometric Laboratory for Managers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-page="teams" data-title="Teams" data-subtitle="Organise linked coaches into teams and manage shared credit pools.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+        <section class="page-content">
+            <div class="panel">
+                <div class="panel-head">
+                    <h2 class="card-title">Coach teams</h2>
+                    <button class="primary-button" onclick="openNewTeamModal()">
+                        <img class="btn-icon" src="../../005_PLATFORM ICONS/other icons/request demo button arrow icon.svg" alt="">
+                        New team
+                    </button>
+                </div>
+                <div style="padding:0 var(--spacing-narrow-l) var(--spacing-narrow-l);">
+                    <div class="group-grid" id="teamsGrid"></div>
+                    <div class="empty-state" id="teamsEmpty" style="display:none;">No teams yet. Create your first team to organise coaches.</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="newTeamModal">
+        <div class="modal">
+            <div class="modal-head"><h3>New team</h3><button class="modal-close" onclick="closeModal('newTeamModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button></div>
+            <label class="form-label">Team name</label>
+            <input class="form-input" id="newTeamName" placeholder="e.g. Leadership Coaches" style="margin-bottom:var(--spacing-narrow-m);">
+            <label class="form-label">Team colour</label>
+            <div class="color-swatches" id="newTeamColors" style="margin-bottom:var(--spacing-narrow-m);"></div>
+            <label class="form-label">Shared credit pool</label>
+            <input class="form-input" id="newTeamPool" type="number" value="20" min="0">
+            <p class="credit-adjust-hint" id="newTeamPoolHint"></p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('newTeamModal')">Cancel</button>
+                <button class="primary-button" onclick="createTeam()">Create team</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="editTeamModal">
+        <div class="modal" style="max-width:480px;">
+            <div class="modal-head"><h3>Edit team</h3><button class="modal-close" onclick="closeModal('editTeamModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button></div>
+            <p class="card-content" style="color:var(--color-gray);margin-bottom:var(--spacing-narrow-l);">Update how this team appears across your organisation.</p>
+            <div class="team-edit-fields">
+                <div>
+                    <label class="form-label" for="editTeamName">Team name</label>
+                    <input class="form-input" id="editTeamName" value="">
+                </div>
+                <div>
+                    <label class="form-label">Team colour</label>
+                    <div class="color-swatches" id="editTeamColors"></div>
+                </div>
+                <div>
+                    <label class="form-label" for="editTeamDesc">Description (optional)</label>
+                    <textarea class="form-input" id="editTeamDesc" rows="3" placeholder="Brief note about this team’s focus…"></textarea>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" type="button" onclick="closeModal('editTeamModal')">Cancel</button>
+                <button class="primary-button" type="button" onclick="saveTeamEdits()">Save changes</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteTeamModal">
+        <div class="modal">
+            <div class="modal-head"><h3>Delete team</h3><button class="modal-close" onclick="closeModal('deleteTeamModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button></div>
+            <p class="card-content" style="color:var(--color-gray);">Coaches will be unassigned but their accounts remain linked. Credit allocations return to the unallocated pool.</p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('deleteTeamModal')">Cancel</button>
+                <button class="danger-button" onclick="confirmDeleteTeam()">Delete team</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        var TEAM_PALETTE = [
+            { color: '#259dd5', gradient: 'linear-gradient(180deg,#259dd5 0%,#66bae2 100%)', label: 'Blue' },
+            { color: '#f3792a', gradient: 'linear-gradient(180deg,#f3792a 0%,#eba97c 100%)', label: 'Orange' },
+            { color: '#3aa756', gradient: 'linear-gradient(180deg,#3aa756 0%,#75c188 100%)', label: 'Green' },
+            { color: '#7569a1', gradient: 'linear-gradient(180deg,#7569a1 0%,#9e96bd 100%)', label: 'Purple' }
+        ];
+        var editingTeamId = null, deletingTeamId = null;
+
+        function renderTeams() {
+            var grid = document.getElementById('teamsGrid');
+            var teams = PLStore.get().teams;
+            grid.innerHTML = '';
+            document.getElementById('teamsEmpty').style.display = teams.length ? 'none' : '';
+            teams.forEach(function (t) {
+                var coaches = plTeamCoaches(t.id);
+                var avatars = coaches.slice(0, 3).map(function (c) { return '<span class="avatar-sm">' + c.initials + '</span>'; }).join('');
+                if (coaches.length > 3) avatars += '<span class="avatar-sm avatar-more">+' + (coaches.length - 3) + '</span>';
+                if (!coaches.length) avatars = '<span class="cand-email" style="font-size:12px;">No coaches yet</span>';
+                grid.insertAdjacentHTML('beforeend',
+                    '<div class="group-card" style="--group-color:' + t.color + ';--group-gradient:' + t.gradient + ';" onclick="location.href=\'team.html?team=' + t.id + '\'">' +
+                        '<div class="group-card-head">' +
+                            '<span class="group-dot"></span>' +
+                            '<span class="group-card-title">' + t.name + '</span>' +
+                            '<span class="group-count">' + coaches.length + ' coaches</span>' +
+                            '<div class="row-actions" onclick="event.stopPropagation()">' +
+                                '<button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>' +
+                                '<div class="row-menu">' +
+                                    '<a href="team.html?team=' + t.id + '">View team</a>' +
+                                    '<button type="button" onclick="openEditTeam(\'' + t.id + '\')">Edit</button>' +
+                                    '<button type="button" class="danger" onclick="openDeleteTeam(\'' + t.id + '\')">Delete</button>' +
+                                '</div>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="gc-body">' +
+                            '<div class="avatar-stack">' + avatars + '</div>' +
+                            '<div class="gc-meta"><b>' + t.allocated + '</b> credits · <b>' + t.engagement + '%</b> engagement</div>' +
+                        '</div>' +
+                    '</div>');
+            });
+            wireRowActions();
+        }
+
+        function renderSwatches(containerId, selectedColor) {
+            var c = document.getElementById(containerId);
+            c.innerHTML = TEAM_PALETTE.map(function (p) {
+                var sel = p.color === selectedColor ? ' selected' : '';
+                return '<button type="button" class="swatch' + sel + '" data-color="' + p.color + '" data-gradient="' + p.gradient + '" style="background:' + p.gradient + ';color:' + p.color + ';" aria-label="' + p.label + '"></button>';
+            }).join('');
+            c.querySelectorAll('.swatch').forEach(function (sw) {
+                sw.addEventListener('click', function () {
+                    c.querySelectorAll('.swatch').forEach(function (s) { s.classList.remove('selected'); });
+                    sw.classList.add('selected');
+                });
+            });
+        }
+
+        /* ---- New team ---- */
+        function openNewTeamModal() {
+            document.getElementById('newTeamName').value = '';
+            document.getElementById('newTeamPool').value = Math.min(20, plUnallocated());
+            document.getElementById('newTeamPool').max = plUnallocated();
+            document.getElementById('newTeamPoolHint').textContent = plUnallocated() + ' credits available to allocate';
+            document.getElementById('newTeamPoolHint').className = 'credit-adjust-hint';
+            renderSwatches('newTeamColors', TEAM_PALETTE[0].color);
+            openModal('newTeamModal');
+        }
+        function createTeam() {
+            var name = document.getElementById('newTeamName').value.trim();
+            var pool = parseInt(document.getElementById('newTeamPool').value, 10) || 0;
+            if (!name) { showToast('Enter a team name.'); return; }
+            if (pool > plUnallocated()) { showToast('Not enough unallocated credits.'); return; }
+            var sw = document.querySelector('#newTeamColors .swatch.selected') || document.querySelector('#newTeamColors .swatch');
+            var id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now().toString(36).slice(-4);
+            PLStore.update(function (d) {
+                d.teams.push({
+                    id: id, name: name, color: sw.dataset.color, gradient: sw.dataset.gradient,
+                    lead: '—', desc: '', allocated: pool, inUse: 0, engagement: 0, spend: 0, created: plTodayShort()
+                });
+            });
+            renderTeams();
+            closeModal('newTeamModal');
+            showToast('Team “' + name + '” created.');
+        }
+
+        /* ---- Edit team ---- */
+        function openEditTeam(id) {
+            editingTeamId = id;
+            var t = plTeamById(id);
+            if (!t) return;
+            document.getElementById('editTeamName').value = t.name;
+            document.getElementById('editTeamDesc').value = t.desc || '';
+            renderSwatches('editTeamColors', t.color);
+            openModal('editTeamModal');
+        }
+        function saveTeamEdits() {
+            var t = plTeamById(editingTeamId);
+            if (!t) return;
+            var name = document.getElementById('editTeamName').value.trim() || t.name;
+            var desc = document.getElementById('editTeamDesc').value.trim();
+            var sw = document.querySelector('#editTeamColors .swatch.selected');
+            PLStore.update(function () {
+                t.name = name; t.desc = desc;
+                if (sw) { t.color = sw.dataset.color; t.gradient = sw.dataset.gradient; }
+            });
+            renderTeams();
+            closeModal('editTeamModal');
+            showToast('Team updated.');
+        }
+
+        /* ---- Delete team ---- */
+        function openDeleteTeam(id) { deletingTeamId = id; openModal('deleteTeamModal'); }
+        function confirmDeleteTeam() {
+            var t = plTeamById(deletingTeamId);
+            PLStore.update(function (d) {
+                d.coaches.forEach(function (c) { if (c.teamId === deletingTeamId) c.teamId = null; });
+                d.teams = d.teams.filter(function (x) { return x.id !== deletingTeamId; });
+            });
+            renderTeams();
+            closeModal('deleteTeamModal');
+            showToast('Team' + (t ? ' “' + t.name + '”' : '') + ' deleted.');
+        }
+
+        function plTodayShort() {
+            var mo = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            var now = new Date();
+            return String(now.getDate()).padStart(2, '0') + ' ' + mo[now.getMonth()] + ' ' + now.getFullYear();
+        }
+
+        renderTeams();
+    </script>
+</body>
+</html>

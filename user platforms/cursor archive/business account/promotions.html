@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promotions | Psychometric Laboratory for Business</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-page="promotions" data-title="Promotions" data-subtitle="Offers that reduce administration credit costs on assignments — personal and platform-wide.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+
+            <div id="promoSpotlight"></div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <div class="promo-section-head" style="margin-bottom:0;width:100%;">
+                        <h3>For you</h3>
+                        <p>Personalised to your organisation</p>
+                    </div>
+                </div>
+                <div style="padding: 0 var(--spacing-narrow-l) var(--spacing-narrow-l);">
+                    <div class="promo-grid" id="promoForYou"></div>
+                </div>
+            </div>
+
+            <div class="panel" style="margin-top:var(--spacing-narrow-l);">
+                <div class="panel-head">
+                    <div class="promo-section-head" style="margin-bottom:0;width:100%;">
+                        <h3>Current store offers</h3>
+                        <p>Sale prices from the bi-weekly catalogue — shown in administration credits where applicable.</p>
+                    </div>
+                </div>
+                <div style="padding: 0 var(--spacing-narrow-l) var(--spacing-narrow-l);">
+                    <div class="promo-grid" id="promoGeneral"></div>
+                </div>
+            </div>
+
+            <div class="panel promo-code-panel">
+                <div class="panel-head">
+                    <h2 class="card-title">Have a promo code?</h2>
+                </div>
+                <div style="padding: 0 var(--spacing-narrow-l) var(--spacing-narrow-l);">
+                    <label class="form-label" for="promoCodeInput">Promo code</label>
+                    <div class="promo-code-row">
+                        <input class="form-input" type="text" id="promoCodeInput" placeholder="Enter promo code" autocomplete="off">
+                        <button class="primary-button" type="button" onclick="applyPromoCode()">Apply</button>
+                    </div>
+                    <p class="promo-code-hint">Enter a code to highlight the matching offer below. Apply it when you create an assignment.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script src="../shared/admin-credits.js"></script>
+    <script src="../shared/promotions.js"></script>
+    <script src="app.js"></script>
+    <script>
+        var highlightedPromoId = null;
+        var PROMO_CTX = { accountType: 'business', isPremium: false };
+
+        function tagClass(tag) {
+            if (tag === 'Spotlight') return 'spotlight';
+            if (tag === 'Welcome' || tag === 'For you' || tag === 'Loyalty' || tag === 'Premium') return 'user';
+            return '';
+        }
+
+        function renderPromoCard(promo, highlighted) {
+            var hl = highlighted ? ' highlighted' : '';
+            var scopeLabel = promo.scope === 'user' ? 'For you' : 'All users';
+            return '<div class="promo-card' + hl + '" id="promo-card-' + promo.id + '" data-promo-id="' + promo.id + '">' +
+                '<div class="promo-card-top">' +
+                '<span class="promo-tag-pill ' + tagClass(promo.tag) + '">' + promo.tag + '</span>' +
+                '<span class="promo-tag-pill user" style="background:rgba(128,128,128,0.1);color:var(--color-gray);">' + scopeLabel + '</span>' +
+                '</div>' +
+                '<div class="promo-card-title">' + promo.title + '</div>' +
+                '<p class="promo-card-desc">' + promo.description + '</p>' +
+                '<p class="promo-card-applies">Applies to: <b>' + promo.appliesLabel + '</b></p>' +
+                '<div class="promo-savings">' + Promotions.savingsLabel(promo) + '</div>' +
+                '<div class="promo-card-foot">' +
+                '<span class="promo-card-expires">Expires ' + promo.expires + '</span>' +
+                '<a class="secondary-button promo-card-cta" href="assignments.html?new=1">Use on assignment</a>' +
+                '</div></div>';
+        }
+
+        function renderSpotlightCard(promo) {
+            var variantClass = promo.hero === 'secondary' ? ' promo-spotlight-secondary' : '';
+            return '<div class="promo-spotlight' + variantClass + '">' +
+                '<div class="promo-spotlight-body">' +
+                '<span class="promo-spotlight-tag">' + promo.tag + ' offer</span>' +
+                '<div class="promo-spotlight-title">' + promo.title + '</div>' +
+                '<p class="promo-spotlight-desc">' + promo.description + '</p>' +
+                '<div class="promo-spotlight-save">' + Promotions.savingsLabel(promo) + '</div>' +
+                '</div>' +
+                '<div class="promo-spotlight-actions">' +
+                '<a class="primary-button" href="assignments.html?new=1">Use on next assignment</a>' +
+                '</div></div>';
+        }
+
+        function renderHeroRow(heroes) {
+            var el = document.getElementById('promoSpotlight');
+            if (!heroes.length) {
+                el.innerHTML = '';
+                return;
+            }
+            el.innerHTML = '<div class="promo-spotlight-row">' +
+                heroes.map(renderSpotlightCard).join('') +
+                '</div>';
+        }
+
+        function renderPage() {
+            var promos = Promotions.getPromosForUser(PROMO_CTX);
+            var heroes = Promotions.getHeroPromos(PROMO_CTX);
+            var heroIds = heroes.map(function (p) { return p.id; });
+            var forYou = promos.filter(function (p) { return p.scope === 'user'; });
+            var general = promos.filter(function (p) {
+                return p.scope === 'all' && heroIds.indexOf(p.id) === -1;
+            });
+
+            renderHeroRow(heroes);
+
+            var forYouEl = document.getElementById('promoForYou');
+            forYouEl.innerHTML = forYou.length
+                ? forYou.map(function (p) { return renderPromoCard(p, p.id === highlightedPromoId); }).join('')
+                : '<p class="promo-code-hint">No personalised offers right now. Check back soon or browse platform-wide deals below.</p>';
+
+            var generalEl = document.getElementById('promoGeneral');
+            generalEl.innerHTML = general.length
+                ? general.map(function (p) { return renderPromoCard(p, p.id === highlightedPromoId); }).join('')
+                : '<p class="promo-code-hint">No store offers at the moment.</p>';
+        }
+
+        function applyPromoCode() {
+            var code = document.getElementById('promoCodeInput').value;
+            var promo = Promotions.findPromoByCode(code);
+            if (!promo) {
+                highlightedPromoId = null;
+                renderPage();
+                showToast('Invalid promo code');
+                return;
+            }
+            var visible = Promotions.getPromosForUser(PROMO_CTX).some(function (p) { return p.id === promo.id; });
+            if (!visible) {
+                showToast('This code is not available on your account');
+                return;
+            }
+            highlightedPromoId = promo.id;
+            renderPage();
+            var card = document.getElementById('promo-card-' + promo.id);
+            if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            showToast('Code applied — ' + promo.title);
+        }
+
+        renderPage();
+    </script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment · TEIQue Leadership | Psychometric Laboratory for Business</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .status-card { margin-bottom: var(--spacing-narrow-l); }
+        .cand-list { max-height: 360px; overflow-y: auto; }
+    </style>
+</head>
+<!-- Group assignment example — group accent set via --group-color / --group-gradient -->
+<body data-page="assignments" data-title="Assignment" data-subtitle="">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <a class="back-link" href="assignments.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+                Back to Assignments
+            </a>
+
+            <!-- Status / overview header -->
+            <div class="card status-card">
+                <div class="status-bar">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:var(--spacing-narrow-s);">
+                            <span class="status-dot"></span>
+                            <span class="subhead" style="margin-bottom:0;">Active assignment</span>
+                        </div>
+                        <h2 class="assign-h-title" style="margin-top:var(--spacing-narrow-s);">TEIQue Leadership</h2>
+                        <p class="assign-h-sub">Leadership Cohort · Group assignment</p>
+                        <div class="assign-meta">
+                            <span><b>Assigned</b> 2 Jun 2026</span>
+                            <span><b>Due</b> 16 Jun 2026</span>
+                            <span><b>Progress</b> 12 / 15 completed</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <button class="secondary-button" onclick="alert('Demo: invites resent')">Resend invites</button>
+                        <button class="danger-button" onclick="openModal('cancelModal')">Cancel assignment</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <!-- LEFT: Report + (group) list of all reports -->
+                <div class="card">
+                    <h2 class="card-title">Report</h2>
+                    <div class="type-block">
+                        <img class="report-thumb" src="../../006_RASTER/report covers/leadership cover 2023-01.png" alt="TEIQue Leadership report cover">
+                        <div class="type-info">
+                            <div class="type-name">TEIQue Leadership Report</div>
+                            <p class="type-desc">The interpreted report generated for each completed questionnaire in this assignment.</p>
+                            <div class="type-actions">
+                                <button class="pl-action-button" style="width:auto;">Download all</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <p class="subhead">All reports · 12 ready of 15</p>
+                    <div class="report-item">
+                        <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                        <div class="report-meta">
+                            <div class="report-name">James Okoro</div>
+                            <div class="report-sub">TEIQue Leadership Report</div>
+                        </div>
+                        <div class="report-actions">
+                            <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                        </div>
+                    </div>
+                    <div class="report-item">
+                        <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                        <div class="report-meta">
+                            <div class="report-name">Sofia Almeida</div>
+                            <div class="report-sub">TEIQue Leadership Report</div>
+                        </div>
+                        <div class="report-actions">
+                            <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                        </div>
+                    </div>
+                    <div class="report-item">
+                        <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                        <div class="report-meta">
+                            <div class="report-name">Liam Chen</div>
+                            <div class="report-sub">Questionnaire in progress</div>
+                        </div>
+                        <div class="report-actions">
+                            <span class="highlight-tag yellow">In progress</span>
+                        </div>
+                    </div>
+                    <div class="report-item">
+                        <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                        <div class="report-meta">
+                            <div class="report-name">Priya Nair</div>
+                            <div class="report-sub">Not started yet</div>
+                        </div>
+                        <div class="report-actions">
+                            <span class="highlight-tag gray">Not started</span>
+                        </div>
+                    </div>
+                    <div class="report-item">
+                        <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                        <div class="report-meta">
+                            <div class="report-name">Marcus Webb</div>
+                            <div class="report-sub">TEIQue Leadership Report</div>
+                        </div>
+                        <div class="report-actions">
+                            <a class="pl-action-button" href="#" style="width:auto;">Read</a>
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">Download</a>
+                        </div>
+                    </div>
+                    <div id="moreReports" style="display:none;">
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta"><div class="report-name">Hannah Berg</div><div class="report-sub">TEIQue Leadership Report</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta"><div class="report-name">David Cohen</div><div class="report-sub">TEIQue Leadership Report</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta"><div class="report-name">Mei Lin</div><div class="report-sub">TEIQue Leadership Report</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta"><div class="report-name">Omar Farah</div><div class="report-sub">TEIQue Leadership Report</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta"><div class="report-name">Lucia Ferrari</div><div class="report-sub">TEIQue Leadership Report</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta"><div class="report-name">Carlos Mendez</div><div class="report-sub">TEIQue Leadership Report</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta"><div class="report-name">Ava Robinson</div><div class="report-sub">TEIQue Leadership Report</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta"><div class="report-name">Noah Schmidt</div><div class="report-sub">Questionnaire in progress</div></div>
+                            <div class="report-actions"><span class="highlight-tag yellow">In progress</span></div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta"><div class="report-name">Yuki Tanaka</div><div class="report-sub">TEIQue Leadership Report</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                        <div class="report-item">
+                            <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                            <div class="report-meta"><div class="report-name">Fatima Zahra</div><div class="report-sub">TEIQue Leadership Report</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                        </div>
+                    </div>
+                    <div style="text-align:center;margin-top:var(--spacing-narrow-m);">
+                        <a class="pl-action-button ghost" id="toggleReports" href="#" style="width:auto;">Show all 15 reports</a>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Target (group + candidates) -->
+                <div class="card">
+                    <div class="section-head">
+                        <h2 class="card-title">Target</h2>
+                        <a href="groups.html">Go to group</a>
+                    </div>
+
+                    <!-- Group card — accent colour + gradient set per group (purple here) -->
+                    <div class="group-card" style="--group-color:#7569a1;--group-gradient:linear-gradient(180deg,#7569a1 0%,#9e96bd 100%);">
+                        <div class="group-card-head">
+                            <span class="group-dot"></span>
+                            <span class="group-card-title">Leadership Cohort</span>
+                            <span class="group-count">15 candidates</span>
+                        </div>
+                        <div class="group-search">
+                            <input class="form-input" id="candSearch" placeholder="Search candidate">
+                        </div>
+                        <div class="cand-list" id="candList">
+                            <div class="cand-row">
+                                <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                                <span class="avatar-sm">JO</span>
+                                <div class="cand-info"><div class="cand-name"><b>James Okoro</b></div><div class="cand-email">james.okoro@acme.com</div></div>
+                                <span class="highlight-tag green">Completed</span>
+                                <div class="row-actions">
+                                    <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                    <div class="row-menu">
+                                        <a href="#">View report</a>
+                                        <a href="#">Download report</a>
+                                        <button type="button" class="danger">Remove from assignment</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cand-row">
+                                <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                                <span class="avatar-sm">SA</span>
+                                <div class="cand-info"><div class="cand-name"><b>Sofia Almeida</b></div><div class="cand-email">sofia.almeida@acme.com</div></div>
+                                <span class="highlight-tag green">Completed</span>
+                                <div class="row-actions">
+                                    <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                    <div class="row-menu">
+                                        <a href="#">View report</a>
+                                        <a href="#">Download report</a>
+                                        <button type="button" class="danger">Remove from assignment</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cand-row">
+                                <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                                <span class="avatar-sm">LC</span>
+                                <div class="cand-info"><div class="cand-name"><b>Liam Chen</b></div><div class="cand-email">liam.chen@acme.com</div></div>
+                                <span class="highlight-tag yellow">In progress</span>
+                                <div class="row-actions">
+                                    <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                    <div class="row-menu">
+                                        <button type="button">Resend invite</button>
+                                        <button type="button" class="danger">Remove from assignment</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cand-row">
+                                <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                                <span class="avatar-sm">PN</span>
+                                <div class="cand-info"><div class="cand-name"><b>Priya Nair</b></div><div class="cand-email">priya.nair@acme.com</div></div>
+                                <span class="highlight-tag gray">Not started</span>
+                                <div class="row-actions">
+                                    <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                    <div class="row-menu">
+                                        <button type="button">Resend invite</button>
+                                        <button type="button" class="danger">Remove from assignment</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cand-row">
+                                <div class="custom-checkbox sm" onclick="toggleCheckbox(this)"></div>
+                                <span class="avatar-sm">MW</span>
+                                <div class="cand-info"><div class="cand-name"><b>Marcus Webb</b></div><div class="cand-email">marcus.webb@acme.com</div></div>
+                                <span class="highlight-tag green">Completed</span>
+                                <div class="row-actions">
+                                    <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                    <div class="row-menu">
+                                        <a href="#">View report</a>
+                                        <a href="#">Download report</a>
+                                        <button type="button" class="danger">Remove from assignment</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cand-row" style="justify-content:center;">
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">View all 15 candidates</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cancel assignment confirm modal -->
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>Cancel assignment?</h3>
+                <button class="modal-close" onclick="closeModal('cancelModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);">
+                Candidates who have not finished their questionnaire will lose access immediately. Reports that are already complete will be kept and remain readable.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('cancelModal')">Keep assignment</button>
+                <button class="danger-button" onclick="closeModal('cancelModal')">Cancel assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        (function () {
+            document.querySelectorAll('.row-actions-btn').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const ra = btn.closest('.row-actions');
+                    document.querySelectorAll('.row-actions.open').forEach(function (o) { if (o !== ra) o.classList.remove('open'); });
+                    ra.classList.toggle('open');
+                });
+            });
+            document.addEventListener('click', function () {
+                document.querySelectorAll('.row-actions.open').forEach(function (o) { o.classList.remove('open'); });
+            });
+
+            // Expand / collapse the rest of the reports in place
+            const toggleReports = document.getElementById('toggleReports');
+            const moreReports = document.getElementById('moreReports');
+            if (toggleReports && moreReports) toggleReports.addEventListener('click', function (e) {
+                e.preventDefault();
+                const open = moreReports.style.display !== 'none';
+                moreReports.style.display = open ? 'none' : '';
+                toggleReports.textContent = open ? 'Show all 15 reports' : 'Show fewer reports';
+            });
+
+            const search = document.getElementById('candSearch');
+            const candRows = Array.prototype.slice.call(document.querySelectorAll('#candList .cand-row'));
+            if (search) search.addEventListener('input', function () {
+                const q = search.value.trim().toLowerCase();
+                filterAnimate(candRows, function (row) {
+                    return q === '' || row.textContent.toLowerCase().indexOf(q) !== -1;
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

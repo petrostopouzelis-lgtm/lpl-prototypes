@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications &amp; Audit Log | Psychometric Laboratory for Managers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-page="notifications" data-title="Notifications &amp; Audit Log" data-subtitle="Alerts, billing notices, and administrative action history.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+        <section class="page-content">
+            <div class="seg page-tabs" id="notifPageSeg">
+                <button class="active" onclick="setNotifTab('notifications',this)">Notifications</button>
+                <button onclick="setNotifTab('audit',this)">Audit Log</button>
+            </div>
+
+            <div id="tab-notifications" class="panel">
+                <div class="panel-head">
+                    <h2 class="card-title">Notifications</h2>
+                    <button class="secondary-button" onclick="document.querySelectorAll('.notif-row.unread').forEach(function(r){r.classList.remove('unread')});showToast('All marked as read.');">Mark all as read</button>
+                </div>
+                <div class="toolbar notif-toolbar">
+                    <div class="seg" id="readSeg">
+                        <button class="active">All</button>
+                        <button>Unread</button>
+                    </div>
+                </div>
+                <div class="notif-list">
+                    <div class="notif-group-label">Today</div>
+                    <div class="notif-row unread">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=USR.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text"><b>Elena Rivera</b> accepted her coach invitation.</div>
+                            <div class="notif-meta"><span class="notif-cat">Coaches</span>·<span>20 minutes ago</span></div>
+                        </div>
+                        <div class="notif-side"><a class="pl-action-button ghost" href="coach.html">View</a></div>
+                    </div>
+                    <div class="notif-row unread">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=BIL.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text">Credit usage reached <b>82%</b> of contract capacity.</div>
+                            <div class="notif-meta"><span class="notif-cat">Billing</span>·<span>2 hours ago</span></div>
+                        </div>
+                        <div class="notif-side"><a class="pl-action-button ghost" href="billing.html">Manage</a></div>
+                    </div>
+                    <div class="notif-row">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=USR.svg" alt="">
+                        <div class="notif-body"><div class="notif-text"><b>James Okoro</b> was assigned to Elena Rivera.</div><div class="notif-meta"><span class="notif-cat">Candidates</span>·<span>Yesterday</span></div></div>
+                        <div class="notif-side"><a class="pl-action-button ghost" href="candidate.html?candidate=james">View</a></div>
+                    </div>
+                    <div class="notif-group-label">Yesterday</div>
+                    <div class="notif-row">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=REM.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text"><b>12 credits</b> reallocated to Sales Coaches team.</div>
+                            <div class="notif-meta"><span class="notif-cat">Teams</span>·<span>Yesterday</span></div>
+                        </div>
+                        <div class="notif-side"><a class="pl-action-button ghost" href="team.html">View team</a></div>
+                    </div>
+                    <div class="notif-row">
+                        <img class="notif-icon" src="../../005_PLATFORM ICONS/notification icons/notification ID=SYS.svg" alt="">
+                        <div class="notif-body">
+                            <div class="notif-text">New sign-in from <b>Chrome on Windows</b> — London, UK.</div>
+                            <div class="notif-meta"><span class="notif-cat">Security</span>·<span>Yesterday</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-audit" class="panel" style="display:none;">
+                <div class="panel-head">
+                    <h2 class="card-title">Audit log</h2>
+                    <div class="export-menu">
+                        <button type="button" class="export-trigger" onclick="toggleExportMenu(this)">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                            Export
+                            <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="export-dropdown">
+                            <button type="button" onclick="exportData('Audit log','CSV')"><img src="../../005_PLATFORM ICONS/file icons/csv state=Default.svg" alt="">Export as CSV</button>
+                            <button type="button" onclick="exportData('Audit log','Excel')"><img src="../../005_PLATFORM ICONS/file icons/excel state=Default-1.svg" alt="">Export as Excel</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="toolbar" style="padding:0 var(--spacing-narrow-l) var(--spacing-narrow-m);">
+                    <input class="form-input" placeholder="Search actor or action" style="max-width:280px;">
+                    <div class="seg">
+                        <button class="active">All</button>
+                        <button>Coaches</button>
+                        <button>Billing</button>
+                        <button>Settings</button>
+                    </div>
+                </div>
+                <div class="audit-table" style="padding:0 var(--spacing-narrow-l) var(--spacing-narrow-l);">
+                    <div class="pl-table-header"><div>Time</div><div>Action</div><div>Actor</div><div>Kind</div></div>
+                    <div class="pl-table-row">
+                        <div data-label="Time">Today, 09:14</div>
+                        <div data-label="Action">Invited coach <b>Joaquin Souza</b></div>
+                        <div data-label="Actor">Alex Morgan</div>
+                        <div data-label="Kind"><span class="highlight-tag purple">Coach</span></div>
+                    </div>
+                    <div class="pl-table-row">
+                        <div data-label="Time">Yesterday, 16:02</div>
+                        <div data-label="Action">Reallocated <b>12 credits</b> to Sales Coaches</div>
+                        <div data-label="Actor">Alex Morgan</div>
+                        <div data-label="Kind"><span class="highlight-tag primary">Billing</span></div>
+                    </div>
+                    <div class="pl-table-row">
+                        <div data-label="Time">Yesterday, 14:20</div>
+                        <div data-label="Action">Assigned <b>James Okoro</b> to Elena Rivera</div>
+                        <div data-label="Actor">Alex Morgan</div>
+                        <div data-label="Kind"><span class="highlight-tag green">Candidate</span></div>
+                    </div>
+                    <div class="pl-table-row">
+                        <div data-label="Time">28 May, 11:30</div>
+                        <div data-label="Action">Updated organisation profile</div>
+                        <div data-label="Actor">Alex Morgan</div>
+                        <div data-label="Kind"><span class="highlight-tag yellow">Settings</span></div>
+                    </div>
+                    <div class="pl-table-row">
+                        <div data-label="Time">27 May, 09:00</div>
+                        <div data-label="Action">Created team <b>Wellbeing Network</b></div>
+                        <div data-label="Actor">Alex Morgan</div>
+                        <div data-label="Kind"><span class="highlight-tag green">Team</span></div>
+                    </div>
+                    <div class="pl-table-row">
+                        <div data-label="Time">12 Jan, 14:22</div>
+                        <div data-label="Action">Linked coach account <b>Elena Rivera</b></div>
+                        <div data-label="Actor">Alex Morgan</div>
+                        <div data-label="Kind"><span class="highlight-tag purple">Coach</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="app.js"></script>
+    <script>
+        function setNotifTab(tab, btn) {
+            document.getElementById('tab-notifications').style.display = tab === 'notifications' ? '' : 'none';
+            document.getElementById('tab-audit').style.display = tab === 'audit' ? '' : 'none';
+            document.querySelectorAll('#notifPageSeg button').forEach(function(b) { b.classList.toggle('active', b === btn); });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coach profile | Psychometric Laboratory for Managers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-page="coaches" data-title="Coach profile" data-subtitle="">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+        <section class="page-content">
+            <a class="back-link" href="coaches.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+                Back to Coaches
+            </a>
+
+            <div class="card profile-card">
+                <div class="profile-head">
+                    <span class="avatar-lg" id="coachAvatar">ER</span>
+                    <div class="pinfo">
+                        <h2 id="coachName">Elena Rivera</h2>
+                        <div class="pemail" id="coachEmail">elena.rivera@northwind.com</div>
+                        <div class="profile-tags">
+                            <span class="highlight-tag green" id="coachStatusTag">Active</span>
+                            <div class="team-tag-row">
+                                <span class="group-pill" id="coachTeamPill"><span class="gp-dot" style="background:#7569a1;"></span>Leadership Coaches</span>
+                                <button type="button" class="team-change-link" onclick="openChangeTeamModal()">Change</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <button class="primary-button" onclick="openAdjustModal()">Adjust credits</button>
+                        <button class="secondary-button" id="suspendBtn" onclick="toggleSuspend()">Suspend</button>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="assign-meta">
+                    <span><b>Linked since</b> <span id="coachLinked">12 Jan 2026</span></span>
+                    <span><b>Credits</b> <span id="coachCreditsMeta">8 of 10 used</span></span>
+                    <span><b>Last active</b> <span id="coachLastActive">Today</span></span>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <div class="card">
+                    <h2 class="card-title" style="margin-bottom:var(--spacing-narrow-m);">Credit utilisation</h2>
+                    <div class="credit-meter" style="margin-bottom:var(--spacing-narrow-s);">
+                        <div class="credit-used" id="coachMeter" style="width:80%"></div>
+                    </div>
+                    <p class="card-content" id="coachUtilText" style="color:var(--color-gray);">8 of 10 allocated credits in use · £640 spent this year</p>
+                    <div class="divider" style="margin:var(--spacing-narrow-l) 0;"></div>
+                    <h3 class="card-title" style="font-size:16px;margin-bottom:var(--spacing-narrow-m);">30-day activity</h3>
+                    <div class="stats-grid mini-stats-grid">
+                        <div class="mini-stat">
+                            <span class="stat-label">Logins</span>
+                            <span class="stat-value">18</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="stat-label">Credit changes</span>
+                            <span class="stat-value">3</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="stat-label">Spent (YTD)</span>
+                            <span class="stat-value" id="coachSpent">£640</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="section-head">
+                        <h2 class="card-title">Recent activity</h2>
+                    </div>
+                    <div class="activity-item">
+                        <img src="../../005_PLATFORM ICONS/notification icons/notification ID=BIL.svg" alt="">
+                        <div><div class="activity-text">Credit allocation reviewed.</div><div class="activity-time">3 days ago</div></div>
+                    </div>
+                    <div class="activity-item">
+                        <img src="../../005_PLATFORM ICONS/notification icons/notification ID=USR.svg" alt="">
+                        <div><div class="activity-text">Joined <b id="coachActivityTeam">Leadership Coaches</b> team.</div><div class="activity-time" id="coachActivityJoined">12 Jan 2026</div></div>
+                    </div>
+                    <div class="activity-item">
+                        <img src="../../005_PLATFORM ICONS/notification icons/notification ID=QUA.svg" alt="">
+                        <div><div class="activity-text">Coach account linked to organisation.</div><div class="activity-time" id="coachActivityLinked">12 Jan 2026</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="coach-governance-grid">
+                <div class="card coach-candidates-card">
+                    <div class="section-head"><div><h2 class="card-title">Candidates</h2><p class="settings-intro" id="coachCandidateCount">0 assigned</p></div></div>
+                    <div class="managed-candidate-list" id="coachCandidateList"></div>
+                    <div class="empty-state compact" id="coachCandidateEmpty" style="display:none"><h3>No candidates assigned</h3><p>Assign an existing candidate to this coach.</p></div>
+                    <div class="coach-candidate-actions">
+                        <button class="secondary-button" onclick="openAssignCandidateModal()">Add candidate</button>
+                        <a class="secondary-button" id="viewCoachCandidates" href="candidates.html">View all candidates</a>
+                    </div>
+                </div>
+                <div class="card coach-permissions-card">
+                    <div class="section-head"><div><h2 class="card-title">Coach permissions</h2><p class="settings-intro">Controls the managed coach account.</p></div><span class="highlight-tag primary" id="productAccessCount">0 products</span></div>
+                    <div class="set-row">
+                        <div class="set-row-text">
+                            <div class="set-row-title">Manage own candidates</div>
+                            <div class="set-row-desc">Allow this coach to add and remove candidate records.</div>
+                        </div>
+                        <div class="set-row-control">
+                            <button type="button" class="toggle-switch" id="candidateManageToggle" role="switch" aria-label="Manage own candidates" onclick="toggleCandidatePermission()"></button>
+                        </div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="subhead">Available products</div>
+                    <div class="member-box" id="productAccessList"></div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:var(--spacing-narrow-l);">
+                <h2 class="card-title" style="margin-bottom:var(--spacing-narrow-m);">Allocation history</h2>
+                <div class="alloc-table">
+                    <div class="pl-table-header alloc-table-header">
+                        <div>Date</div>
+                        <div>Change</div>
+                        <div>Credits</div>
+                        <div>By</div>
+                    </div>
+                    <div id="allocHistory"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal-overlay" id="adjustCreditsModal">
+        <div class="modal" style="max-width:480px;">
+            <div class="modal-head">
+                <h3>Adjust credit allocation</h3>
+                <button class="modal-close" onclick="closeModal('adjustCreditsModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="card-content" style="color:var(--color-gray);margin-bottom:var(--spacing-narrow-l);">Set how many credits <b id="adjustCoachName">Elena Rivera</b> can use. In-use credits cannot be reduced below the current count.</p>
+
+            <div class="credit-adjust-summary">
+                <div class="credit-adjust-stat">
+                    <span class="credit-adjust-label">Allocated</span>
+                    <span class="credit-adjust-value" id="creditAdjustCurrent">10</span>
+                </div>
+                <div class="credit-adjust-stat">
+                    <span class="credit-adjust-label">In use</span>
+                    <span class="credit-adjust-value" id="creditAdjustInUse">8</span>
+                </div>
+                <div class="credit-adjust-stat">
+                    <span class="credit-adjust-label">Pool available</span>
+                    <span class="credit-adjust-value" id="creditAdjustPool">55</span>
+                </div>
+            </div>
+
+            <div class="credit-adjust-preview">
+                <div class="credit-adjust-preview-head">
+                    <span class="form-label" style="margin:0;">Utilisation preview</span>
+                    <span class="credit-adjust-preview-meta"><span id="creditAdjustInUsePreview">8</span> of <span id="creditAdjustNew">10</span> credits</span>
+                </div>
+                <div class="credit-meter">
+                    <div class="credit-used" id="creditAdjustMeter" style="width:80%"></div>
+                </div>
+            </div>
+
+            <label class="form-label">New allocation</label>
+            <div class="qty-stepper">
+                <button type="button" class="qty-stepper-btn" aria-label="Decrease credits" onclick="adjustCreditQty(-1)">−</button>
+                <input class="form-input qty-stepper-input" id="creditQty" type="number" value="10" min="8" max="65" oninput="updateCreditHint()">
+                <button type="button" class="qty-stepper-btn" aria-label="Increase credits" onclick="adjustCreditQty(1)">+</button>
+            </div>
+            <p class="credit-adjust-hint" id="creditAdjustHint">No change from current allocation</p>
+
+            <label class="form-label" style="margin-top:var(--spacing-narrow-m);">Note (optional)</label>
+            <input class="form-input" type="text" placeholder="e.g. Expanded coaching capacity for Q3">
+
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('adjustCreditsModal')">Cancel</button>
+                <button class="primary-button" onclick="saveCreditAllocation()">Save allocation</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="assignCandidateModal">
+        <div class="modal" style="max-width:520px">
+            <div class="modal-head"><h3>Assign candidate</h3><button class="modal-close" onclick="closeModal('assignCandidateModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button></div>
+            <p class="settings-intro">Select a candidate to move to this coach. Their product history remains unchanged.</p>
+            <input class="form-input" id="assignCandidateSearch" placeholder="Search candidates" oninput="filterAssignableCandidates()" style="margin-bottom:var(--spacing-narrow-m)">
+            <div class="coach-picker-list" id="assignCandidateList"></div>
+            <div class="modal-actions"><button class="secondary-button" onclick="closeModal('assignCandidateModal')">Cancel</button><button class="primary-button" id="confirmAssignCandidate" disabled onclick="confirmAssignCandidate()">Assign candidate</button></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="changeTeamModal">
+        <div class="modal" style="max-width:440px;">
+            <div class="modal-head">
+                <h3>Team</h3>
+                <button class="modal-close" onclick="closeModal('changeTeamModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="card-content" style="color:var(--color-gray);margin-bottom:var(--spacing-narrow-l);"><span id="changeTeamCoachName">Elena Rivera</span>’s credit allocation stays with the coach when you move teams.</p>
+
+            <div class="team-picker-current" id="teamPickerCurrent">
+                <span class="team-picker-label">Current team</span>
+                <span class="team-picker-name" id="teamPickerCurrentName">Leadership Coaches</span>
+                <span class="team-picker-meta" id="teamPickerCurrentMeta">5 coaches</span>
+            </div>
+
+            <p class="team-picker-section-label">Move to another team</p>
+            <div class="team-picker-list" id="teamPickerList"></div>
+
+            <div class="modal-actions">
+                <button class="secondary-button" type="button" onclick="closeModal('changeTeamModal')">Cancel</button>
+                <button class="primary-button" type="button" id="saveTeamBtn" disabled onclick="saveCoachTeam()">Save changes</button>
+            </div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    <script>
+        var NO_TEAM = { id: null, name: 'No team', color: '#808080', gradient: 'linear-gradient(180deg,#cccccc 0%,#979797 100%)' };
+
+        function getParam(name) { return new URLSearchParams(window.location.search).get(name); }
+        var coachId = getParam('coach');
+        if (!coachId || !plCoachById(coachId)) { var c0 = PLStore.get().coaches[0]; coachId = c0 ? c0.id : null; }
+        var selectedTeamId = undefined;
+
+        function coachTeamObj(c) { return c.teamId ? plTeamById(c.teamId) : NO_TEAM; }
+
+        function renderCoach() {
+            var c = plCoachById(coachId);
+            if (!c) { document.querySelector('.page-content').innerHTML = '<a class="back-link" href="coaches.html">Back to Coaches</a><div class="empty-state" style="margin-top:var(--spacing-narrow-l);">Coach not found.</div>'; return; }
+            var team = coachTeamObj(c);
+            document.title = c.name + ' | Psychometric Laboratory for Managers';
+            var sub = document.querySelector('.topbar-subtitle');
+            var subText = c.name + ' · ' + team.name;
+            document.body.setAttribute('data-subtitle', subText);
+            if (sub) sub.textContent = subText;
+
+            document.getElementById('coachAvatar').textContent = c.initials;
+            document.getElementById('coachName').textContent = c.name;
+            document.getElementById('coachEmail').textContent = c.email;
+
+            var statusTag = document.getElementById('coachStatusTag');
+            statusTag.className = 'highlight-tag ' + (c.status === 'active' ? 'green' : c.status === 'invited' ? 'yellow' : '');
+            statusTag.textContent = c.status.charAt(0).toUpperCase() + c.status.slice(1);
+            document.getElementById('suspendBtn').textContent = c.status === 'suspended' ? 'Reactivate' : 'Suspend';
+
+            var pill = document.getElementById('coachTeamPill');
+            if (!c.teamId) { pill.className = 'group-pill none'; pill.textContent = 'No team'; }
+            else { pill.className = 'group-pill'; pill.innerHTML = '<span class="gp-dot" style="background:' + team.color + ';"></span>' + team.name; }
+
+            document.getElementById('coachLinked').textContent = c.linkedSince;
+            document.getElementById('coachCreditsMeta').textContent = c.inUse + ' of ' + c.allocated + ' used';
+            document.getElementById('coachLastActive').textContent = c.lastActive;
+
+            var pct = c.allocated ? Math.round((c.inUse / c.allocated) * 100) : 0;
+            document.getElementById('coachMeter').style.width = pct + '%';
+            document.getElementById('coachUtilText').textContent = c.inUse + ' of ' + c.allocated + ' allocated credits in use · ' + plMoney0(c.spent) + ' spent this year';
+            document.getElementById('coachSpent').textContent = plMoney0(c.spent);
+            document.getElementById('coachActivityTeam').textContent = team.name;
+            document.getElementById('coachActivityJoined').textContent = c.linkedSince;
+            document.getElementById('coachActivityLinked').textContent = c.linkedSince;
+            renderCoachGovernance();
+
+            var hist = document.getElementById('allocHistory');
+            hist.innerHTML =
+                '<div class="pl-table-row alloc-table-row"><div data-label="Date">' + c.linkedSince + '</div><div data-label="Change">Initial</div><div data-label="Credits"><b>' + c.allocated + '</b></div><div data-label="By">' + PLStore.get().user.name + '</div></div>';
+        }
+
+        var selectedCandidateId = null;
+        function renderCoachGovernance() {
+            var c = plCoachById(coachId);
+            var candidates = plCoachCandidates(coachId);
+            var list = document.getElementById('coachCandidateList');
+            list.innerHTML = '';
+            candidates.slice(0, 4).forEach(function (candidate) {
+                list.insertAdjacentHTML('beforeend',
+                    '<a class="managed-candidate-row" href="candidate.html?candidate=' + candidate.id + '">' +
+                    '<span class="avatar-sm">' + candidate.initials + '</span><span><b>' + candidate.name + '</b><small>' + candidate.email + '</small></span>' +
+                    '<span class="highlight-tag ' + (candidate.status === 'active' ? 'green' : '') + '">' + candidate.status + '</span></a>');
+            });
+            document.getElementById('coachCandidateCount').textContent = candidates.length + ' assigned';
+            document.getElementById('coachCandidateEmpty').style.display = candidates.length ? 'none' : '';
+            document.getElementById('viewCoachCandidates').href = 'candidates.html?coach=' + coachId;
+            document.getElementById('candidateManageToggle').classList.toggle('off', !c.canManageCandidates);
+            document.getElementById('candidateManageToggle').setAttribute('aria-checked', c.canManageCandidates ? 'true' : 'false');
+            document.getElementById('productAccessCount').textContent = c.allowedProducts.length + ' of ' + PL_PRODUCTS.length + ' products';
+            document.getElementById('productAccessList').innerHTML = PL_PRODUCTS.map(function (p) {
+                var on = c.allowedProducts.indexOf(p.id) > -1;
+                return '<div class="cand-row product-row" onclick="toggleCoachProduct(\'' + p.id + '\')">' +
+                    '<div class="custom-checkbox sm' + (on ? ' checked' : '') + '"></div>' +
+                    '<div class="cand-info"><div class="cand-name"><b>' + p.label + '</b></div><div class="cand-email">' + p.description + '</div></div>' +
+                    '<span class="highlight-tag ' + (on ? 'green' : '') + '">' + (on ? 'Available' : 'Restricted') + '</span></div>';
+            }).join('');
+        }
+        function toggleCandidatePermission() {
+            var c = plCoachById(coachId);
+            PLStore.update(function () { c.canManageCandidates = !c.canManageCandidates; });
+            renderCoachGovernance();
+            showToast(c.canManageCandidates ? 'Coach can now manage candidates.' : 'Candidate management disabled.');
+        }
+        function toggleCoachProduct(productId) {
+            var c = plCoachById(coachId);
+            PLStore.update(function () {
+                var i = c.allowedProducts.indexOf(productId);
+                if (i > -1) c.allowedProducts.splice(i, 1); else c.allowedProducts.push(productId);
+            });
+            renderCoachGovernance();
+            showToast(plProductById(productId).label + (c.allowedProducts.indexOf(productId) > -1 ? ' enabled.' : ' restricted.'));
+        }
+        function openAssignCandidateModal() {
+            selectedCandidateId = null;
+            document.getElementById('assignCandidateSearch').value = '';
+            document.getElementById('confirmAssignCandidate').disabled = true;
+            renderAssignableCandidates();
+            openModal('assignCandidateModal');
+        }
+        function renderAssignableCandidates() {
+            var q = (document.getElementById('assignCandidateSearch').value || '').toLowerCase();
+            var list = document.getElementById('assignCandidateList');
+            list.innerHTML = '';
+            PLStore.get().candidates.filter(function (candidate) {
+                return candidate.coachId !== coachId && (!q || (candidate.name + ' ' + candidate.email).toLowerCase().indexOf(q) > -1);
+            }).forEach(function (candidate) {
+                var owner = plCoachById(candidate.coachId);
+                list.insertAdjacentHTML('beforeend', '<button class="coach-picker-option" data-id="' + candidate.id + '" onclick="selectAssignableCandidate(\'' + candidate.id + '\')"><span class="avatar">' + candidate.initials + '</span><span><b>' + candidate.name + '</b><small>Currently with ' + (owner ? owner.name : 'another coach') + '</small></span></button>');
+            });
+        }
+        function filterAssignableCandidates() { renderAssignableCandidates(); }
+        function selectAssignableCandidate(id) {
+            selectedCandidateId = id;
+            document.querySelectorAll('#assignCandidateList .coach-picker-option').forEach(function (x) { x.classList.toggle('selected', x.dataset.id === id); });
+            document.getElementById('confirmAssignCandidate').disabled = false;
+        }
+        function confirmAssignCandidate() {
+            if (!selectedCandidateId) return;
+            plReassignCandidate(selectedCandidateId, coachId);
+            closeModal('assignCandidateModal');
+            renderCoachGovernance();
+            showToast('Candidate assigned to ' + plCoachById(coachId).name + '.');
+        }
+
+        /* ---- Suspend / reactivate ---- */
+        function toggleSuspend() {
+            var c = plCoachById(coachId);
+            PLStore.update(function () { c.status = (c.status === 'suspended') ? 'active' : 'suspended'; });
+            renderCoach();
+            showToast(c.status === 'suspended' ? 'Coach suspended.' : 'Coach reactivated.');
+        }
+
+        /* ---- Adjust credits ---- */
+        function openAdjustModal() {
+            var c = plCoachById(coachId);
+            var pool = plUnallocated();
+            document.getElementById('adjustCoachName').textContent = c.name;
+            var input = document.getElementById('creditQty');
+            input.value = c.allocated; input.min = c.inUse; input.max = c.allocated + pool;
+            document.getElementById('creditAdjustCurrent').textContent = c.allocated;
+            document.getElementById('creditAdjustInUse').textContent = c.inUse;
+            document.getElementById('creditAdjustInUsePreview').textContent = c.inUse;
+            document.getElementById('creditAdjustPool').textContent = pool;
+            document.getElementById('creditAdjustNew').textContent = c.allocated;
+            document.getElementById('creditAdjustMeter').style.width = (c.allocated ? Math.round((c.inUse / c.allocated) * 100) : 0) + '%';
+            updateCreditHint();
+            openModal('adjustCreditsModal');
+        }
+        function adjustCreditQty(delta) {
+            var c = plCoachById(coachId), pool = plUnallocated();
+            var input = document.getElementById('creditQty');
+            var val = parseInt(input.value, 10) || c.allocated;
+            val = Math.max(c.inUse, Math.min(c.allocated + pool, val + delta));
+            input.value = val;
+            updateCreditHint();
+        }
+        function updateCreditHint() {
+            var c = plCoachById(coachId), pool = plUnallocated();
+            var input = document.getElementById('creditQty');
+            var val = parseInt(input.value, 10);
+            if (isNaN(val)) return;
+            val = Math.max(c.inUse, Math.min(c.allocated + pool, val));
+            input.value = val;
+            var hint = document.getElementById('creditAdjustHint');
+            var delta = val - c.allocated;
+            if (delta > 0) { hint.textContent = '+' + delta + ' credits from the unallocated pool'; hint.className = 'credit-adjust-hint up'; }
+            else if (delta < 0) { hint.textContent = Math.abs(delta) + ' credits returned to the unallocated pool'; hint.className = 'credit-adjust-hint down'; }
+            else { hint.textContent = 'No change from current allocation'; hint.className = 'credit-adjust-hint'; }
+            document.getElementById('creditAdjustNew').textContent = val;
+            document.getElementById('creditAdjustMeter').style.width = (val ? Math.round((c.inUse / val) * 100) : 0) + '%';
+        }
+        function saveCreditAllocation() {
+            var val = parseInt(document.getElementById('creditQty').value, 10);
+            var c = plCoachById(coachId);
+            var delta = val - c.allocated;
+            PLStore.update(function () {
+                c.allocated = val;
+                var t = c.teamId ? plTeamById(c.teamId) : null;
+                if (t) t.allocated = Math.max(t.allocated + delta, plTeamCoaches(t.id).reduce(function (s, x) { return s + x.inUse; }, 0));
+            });
+            renderCoach();
+            closeModal('adjustCreditsModal');
+            showToast('Credit allocation updated.');
+        }
+
+        /* ---- Change team ---- */
+        function openChangeTeamModal() {
+            var c = plCoachById(coachId);
+            selectedTeamId = undefined;
+            var team = coachTeamObj(c);
+            document.getElementById('changeTeamCoachName').textContent = c.name;
+            document.getElementById('teamPickerCurrent').style.setProperty('--team-gradient', team.gradient);
+            document.getElementById('teamPickerCurrentName').textContent = team.name;
+            document.getElementById('teamPickerCurrentMeta').textContent = c.teamId ? (plTeamCoaches(c.teamId).length + ' coaches') : 'Not assigned to a team';
+
+            var list = document.getElementById('teamPickerList');
+            list.innerHTML = '';
+            var options = PLStore.get().teams.filter(function (t) { return t.id !== c.teamId; }).concat(c.teamId ? [NO_TEAM] : []);
+            options.forEach(function (t) {
+                var meta = t.id ? (plTeamCoaches(t.id).length + ' coaches · ' + t.allocated + ' credits') : 'Remove from current team';
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'team-picker-option';
+                btn.setAttribute('data-team', t.id === null ? '__none__' : t.id);
+                btn.style.setProperty('--team-gradient', t.gradient);
+                btn.innerHTML = '<span class="team-picker-option-body"><b>' + t.name + '</b><span class="team-picker-option-meta">' + meta + '</span></span>';
+                btn.onclick = function () { pickTeam(t.id); };
+                list.appendChild(btn);
+            });
+            document.getElementById('saveTeamBtn').disabled = true;
+            openModal('changeTeamModal');
+        }
+        function pickTeam(id) {
+            selectedTeamId = id;
+            document.querySelectorAll('.team-picker-option').forEach(function (btn) {
+                btn.classList.toggle('selected', btn.getAttribute('data-team') === (id === null ? '__none__' : id));
+            });
+            document.getElementById('saveTeamBtn').disabled = false;
+        }
+        function saveCoachTeam() {
+            if (selectedTeamId === undefined) return;
+            var c = plCoachById(coachId);
+            PLStore.update(function () { c.teamId = selectedTeamId; });
+            renderCoach();
+            closeModal('changeTeamModal');
+            showToast(selectedTeamId === null ? 'Coach removed from team.' : 'Moved to ' + plTeamById(selectedTeamId).name + '.');
+        }
+
+        renderCoach();
+    </script>
+</body>
+</html>

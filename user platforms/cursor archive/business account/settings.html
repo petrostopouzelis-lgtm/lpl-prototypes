@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | Psychometric Laboratory for Business</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+</head>
+<body data-page="settings" data-title="Settings" data-subtitle="Account details, notifications, and admin preferences.">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <div class="settings-bento">
+
+                <!-- Organisation -->
+                <div class="card">
+                    <h2 class="card-title">Account profile</h2>
+                    <p class="settings-intro">Organisation-level details used on invoices and assignment emails.</p>
+                    <div class="field-row">
+                        <div>
+                            <label class="form-label" for="orgName">Organisation name</label>
+                            <input class="form-input" id="orgName" type="text" value="Marsden HR Consulting">
+                        </div>
+                        <div>
+                            <label class="form-label" for="orgEmail">Primary contact email</label>
+                            <input class="form-input" id="orgEmail" type="email" value="holly.m@marsdenhr.co.uk">
+                        </div>
+                    </div>
+                    <div class="settings-card-foot">
+                        <button class="primary-button" onclick="openModal('savedModal')">Save changes</button>
+                    </div>
+                </div>
+
+                <!-- Personal information -->
+                <div class="card">
+                    <h2 class="card-title">Personal information</h2>
+
+                    <div class="avatar-upload">
+                        <div class="avatar-upload-wrap">
+                            <div class="avatar-lg">MC</div>
+                            <button class="avatar-upload-btn" type="button" aria-label="Change profile photo" onclick="openModal('photoModal')">
+                                <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                            </button>
+                        </div>
+                        <span class="avatar-upload-hint">Your photo appears in the top bar and on assignment invites.</span>
+                    </div>
+
+                    <label class="form-label">Name</label>
+                    <div class="field-row settings-field-gap">
+                        <div>
+                            <input class="form-input" id="firstName" type="text" value="Maria" placeholder="First name">
+                        </div>
+                        <div>
+                            <input class="form-input" id="lastName" type="text" value="Chen" placeholder="Last name">
+                        </div>
+                    </div>
+
+                    <label class="form-label">Middle name</label>
+                    <div class="middle-name-row settings-field-gap">
+                        <span class="toggle-switch off" id="middleToggle" onclick="toggleMiddleName(this)" role="switch" aria-checked="false" aria-label="Include middle name"></span>
+                        <input class="form-input is-off" id="middleName" type="text" placeholder="Middle name" disabled>
+                    </div>
+
+                    <p class="set-subhead">Contact information</p>
+                    <div class="settings-field-gap">
+                        <label class="form-label" for="personalEmail">Email</label>
+                        <input class="form-input" id="personalEmail" type="email" value="holly.m@marsdenhr.co.uk">
+                    </div>
+                    <div>
+                        <label class="form-label" for="personalPhone">Phone number</label>
+                        <input class="form-input" id="personalPhone" type="tel" placeholder="Phone number">
+                    </div>
+
+                    <div class="settings-card-foot">
+                        <button class="primary-button" onclick="openModal('savedModal')">Save changes</button>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="card">
+                    <h2 class="card-title">Security</h2>
+                    <p class="settings-intro">Change the password you use to sign in to this account.</p>
+                    <div class="settings-fields">
+                        <div>
+                            <label class="form-label" for="oldPass">Old password</label>
+                            <input class="form-input" id="oldPass" type="password" placeholder="Enter current password" autocomplete="current-password">
+                        </div>
+                        <div>
+                            <label class="form-label" for="newPass">New password</label>
+                            <input class="form-input" id="newPass" type="password" placeholder="Enter new password" autocomplete="new-password">
+                        </div>
+                        <div>
+                            <label class="form-label" for="confirmPass">Confirm password</label>
+                            <input class="form-input" id="confirmPass" type="password" placeholder="Confirm new password" autocomplete="new-password">
+                        </div>
+                    </div>
+                    <div class="settings-card-foot">
+                        <button class="primary-button" onclick="openModal('savedModal')">Save changes</button>
+                    </div>
+                </div>
+
+                <!-- Email preferences -->
+                <div class="card">
+                    <h2 class="card-title">Email preferences</h2>
+                    <p class="settings-intro">What type of information do you want to receive by email?</p>
+                    <div class="check-grid">
+                        <label class="check-item" onclick="toggleCheckbox(this.querySelector('.custom-checkbox'))"><span class="custom-checkbox sm checked"></span><span>Updates</span></label>
+                        <label class="check-item" onclick="toggleCheckbox(this.querySelector('.custom-checkbox'))"><span class="custom-checkbox sm checked"></span><span>Activity notifications</span></label>
+                        <label class="check-item" onclick="toggleCheckbox(this.querySelector('.custom-checkbox'))"><span class="custom-checkbox sm checked"></span><span>Security</span></label>
+                        <label class="check-item" onclick="toggleCheckbox(this.querySelector('.custom-checkbox'))"><span class="custom-checkbox sm"></span><span>Newsletters</span></label>
+                        <label class="check-item" onclick="toggleCheckbox(this.querySelector('.custom-checkbox'))"><span class="custom-checkbox sm"></span><span>Personalised advertising</span></label>
+                    </div>
+                    <div class="settings-card-foot">
+                        <button class="primary-button" onclick="openModal('savedModal')">Save changes</button>
+                    </div>
+                </div>
+
+                <!-- Platform automation -->
+                <div class="card">
+                    <h2 class="card-title">Platform automation</h2>
+                    <p class="settings-intro">Automatic actions the platform can take on your behalf.</p>
+
+                    <div class="set-row">
+                            <div class="set-row-text">
+                                <div class="set-row-title">Candidate reminders</div>
+                                <div class="set-row-desc">Auto-send reminder emails 3 days before due date</div>
+                            </div>
+                            <div class="set-row-control">
+                                <span class="toggle-switch" onclick="toggleSwitch(this)" role="switch" aria-checked="true" aria-label="Candidate reminders"></span>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-text">
+                                <div class="set-row-title">Low credit balance alerts</div>
+                                <div class="set-row-desc">Notify me when your administration credit balance drops below 20%</div>
+                            </div>
+                            <div class="set-row-control">
+                                <span class="toggle-switch" onclick="toggleSwitch(this)" role="switch" aria-checked="true" aria-label="Low credit balance alerts"></span>
+                            </div>
+                        </div>
+                        <div class="set-row">
+                            <div class="set-row-text">
+                                <div class="set-row-title">Auto-replenish</div>
+                                <div class="set-row-desc">Automatically purchase credits when your balance runs low</div>
+                            </div>
+                            <div class="set-row-control">
+                                <span class="toggle-switch off" onclick="toggleSwitch(this)" role="switch" aria-checked="false" aria-label="Auto-replenish"></span>
+                            </div>
+                        </div>
+                </div>
+
+                <!-- Data & privacy -->
+                <div class="card">
+                    <h2 class="card-title">Data &amp; privacy</h2>
+                    <div class="set-row">
+                        <div class="set-row-text">
+                            <div class="set-row-title">Export candidate data</div>
+                            <div class="set-row-desc">Download a copy of all candidate metadata you&rsquo;ve collected</div>
+                        </div>
+                        <div class="set-row-control">
+                            <button class="secondary-button" onclick="openModal('exportModal')">Request export</button>
+                        </div>
+                    </div>
+                    <div class="set-row">
+                        <div class="set-row-text">
+                            <div class="set-row-title">Candidate data ownership</div>
+                            <div class="set-row-desc">Candidates always own their reports &mdash; you cannot delete a candidate&rsquo;s report</div>
+                        </div>
+                        <div class="set-row-control">
+                            <span class="highlight-tag green">Always on</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Capabilities -->
+                <div class="card">
+                    <h2 class="card-title">What this account can and can&rsquo;t do</h2>
+                    <p class="settings-intro">Your organisation is on the <b>Business</b> plan. Compare with the Coach tier below.</p>
+
+                    <div class="cap-table pl-table-card">
+                        <div class="pl-table-header">
+                            <div>Capability</div>
+                            <div>Business</div>
+                            <div>Coach</div>
+                        </div>
+                        <div class="pl-table-row"><div data-label="Capability">Issue assignments from purchased credits</div><div data-label="Business" class="cap-yes">✓</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                        <div class="pl-table-row"><div data-label="Capability">Cancel assignments</div><div data-label="Business" class="cap-yes">✓</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                        <div class="pl-table-row"><div data-label="Capability">Download reports</div><div data-label="Business" class="cap-yes">✓</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                        <div class="pl-table-row"><div data-label="Capability">Purchase additional reports &amp; toolkits</div><div data-label="Business" class="cap-yes">✓</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                        <div class="pl-table-row"><div data-label="Capability">Hide reports from candidates</div><div data-label="Business" class="cap-no">✗</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                        <div class="pl-table-row"><div data-label="Capability">Create custom assignments &amp; add-ons</div><div data-label="Business" class="cap-no">✗</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                        <div class="pl-table-row"><div data-label="Capability">Create groups &amp; issue group assignments</div><div data-label="Business" class="cap-no">✗</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                        <div class="pl-table-row"><div data-label="Capability">Track same candidate across multiple assessments</div><div data-label="Business" class="cap-no">✗</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                        <div class="pl-table-row"><div data-label="Capability">Receive client recommendations from LPL</div><div data-label="Business" class="cap-no">✗</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                        <div class="pl-table-row"><div data-label="Capability">Use administration credits with generalised pricing</div><div data-label="Business" class="cap-yes">✓</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                        <div class="pl-table-row"><div data-label="Capability">Coach-specific analytics &amp; reporting</div><div data-label="Business" class="cap-no">✗</div><div data-label="Coach" class="cap-yes">✓</div></div>
+                    </div>
+
+                    <div class="settings-card-foot">
+                        <button class="primary-button" onclick="openModal('upgradeModal')">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+                            Upgrade via TEIQue Accreditation
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Saved confirmation -->
+    <div class="modal-overlay" id="savedModal">
+        <div class="modal" style="max-width:420px;">
+            <div class="modal-head">
+                <h3>Changes saved</h3>
+                <button class="modal-close" onclick="closeModal('savedModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);">Your settings have been updated.</p>
+            <div class="modal-actions">
+                <button class="primary-button" onclick="closeModal('savedModal')">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export request -->
+    <div class="modal-overlay" id="exportModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>Request data export</h3>
+                <button class="modal-close" onclick="closeModal('exportModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);margin-bottom:var(--spacing-narrow-l);">
+                We&rsquo;ll compile a CSV of all candidate metadata in your account and email a download link to <b>holly.m@marsdenhr.co.uk</b>. Exports are usually ready within 24 hours.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('exportModal')">Cancel</button>
+                <button class="primary-button" onclick="closeModal('exportModal')">Request export</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photo upload (demo) -->
+    <div class="modal-overlay" id="photoModal">
+        <div class="modal" style="max-width:420px;">
+            <div class="modal-head">
+                <h3>Profile photo</h3>
+                <button class="modal-close" onclick="closeModal('photoModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-gray);line-height:var(--line-height-normal);margin-bottom:var(--spacing-narrow-l);">Upload a JPG or PNG, at least 200&times;200 px.</p>
+            <button class="secondary-button" style="width:100%;" onclick="closeModal('photoModal')">Choose file</button>
+        </div>
+    </div>
+
+    <!-- Upgrade -->
+    <div class="modal-overlay" id="upgradeModal">
+        <div class="modal" style="max-width:480px;">
+            <div class="modal-head">
+                <h3>Upgrade to Coach</h3>
+                <button class="modal-close" onclick="closeModal('upgradeModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);margin-bottom:var(--spacing-narrow-l);">
+                The Coach tier is available through TEIQue Accreditation. Your account manager will walk you through eligibility, pricing, and migration.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('upgradeModal')">Not now</button>
+                <button class="primary-button" onclick="closeModal('upgradeModal')">Contact us</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        function toggleMiddleName(el) {
+            toggleSwitch(el);
+            var input = document.getElementById('middleName');
+            var on = !el.classList.contains('off');
+            input.disabled = !on;
+            input.classList.toggle('is-off', !on);
+            el.setAttribute('aria-checked', on ? 'true' : 'false');
+            if (on) input.focus();
+        }
+
+        /* Keep toggle aria in sync */
+        document.querySelectorAll('.toggle-switch[role="switch"]').forEach(function (t) {
+            if (t.id === 'middleToggle') return;
+            t.addEventListener('click', function () {
+                setTimeout(function () {
+                    t.setAttribute('aria-checked', t.classList.contains('off') ? 'false' : 'true');
+                }, 0);
+            });
+        });
+    </script>
+</body>
+</html>

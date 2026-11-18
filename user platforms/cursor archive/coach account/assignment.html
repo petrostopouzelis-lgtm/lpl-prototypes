@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment · TEIQue Full Form | Psychometric Laboratory for Coaches</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .status-card { margin-bottom: var(--spacing-narrow-l); }
+        .cand-list { max-height: 360px; overflow-y: auto; }
+        /* Completion accordion */
+        .comp-head {
+            display: flex; align-items: center; gap: var(--spacing-narrow-m); width: 100%;
+            background: none; border: none; border-top: 1px solid var(--color-light-gray);
+            cursor: pointer; padding: var(--spacing-narrow-m) 4px; text-align: left;
+            transition: background 0.2s ease;
+        }
+        .comp-list .assign-group:first-child .comp-head { border-top: none; }
+        .comp-head:hover { background: #f7fbfe; }
+        .comp-head .cand-info { flex: 1; min-width: 0; }
+        .comp-data-head { font-family: var(--font-manrope); font-weight: var(--font-weight-semibold); font-size: 13px; color: var(--color-primary-full); margin: var(--spacing-narrow-m) 0 var(--spacing-narrow-s); }
+        .assign-detail .type-actions { margin-top: var(--spacing-narrow-s); }
+    </style>
+</head>
+<!-- Group assignment example — group accent set via --group-color / --group-gradient -->
+<body data-page="assignments" data-title="Assignment" data-subtitle="">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <a class="back-link" href="assignments.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+                Back to Assignments
+            </a>
+
+            <!-- Status / overview header -->
+            <div class="card status-card">
+                <div class="status-bar">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:var(--spacing-narrow-s);">
+                            <span class="status-dot"></span>
+                            <span class="subhead" style="margin-bottom:0;">Active assignment</span>
+                        </div>
+                        <h2 class="assign-h-title" style="margin-top:var(--spacing-narrow-s);display:flex;align-items:center;gap:var(--spacing-narrow-s);flex-wrap:wrap;">TEIQue <span class="form-tag">Full</span></h2>
+                        <p class="assign-h-sub">Leadership Cohort · Group assignment</p>
+                        <div class="assign-meta">
+                            <span><b>Issued</b> 2 Jun 2026</span>
+                            <span><b>Due</b> 16 Jun 2026</span>
+                            <span><b>Completion</b> 12 / 15 completed</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <button class="secondary-button" onclick="showToast('Invites resent to pending candidates')">Resend invites</button>
+                        <div class="export-menu">
+                            <button class="export-trigger" onclick="toggleExportMenu(this)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Export data
+                                <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                            <div class="export-dropdown">
+                                <button onclick="exportData('Assignment data','CSV')"><img src="../../005_PLATFORM ICONS/file icons/csv state=Default.svg" alt="">Export as CSV</button>
+                                <button onclick="exportData('Assignment data','Excel')"><img src="../../005_PLATFORM ICONS/file icons/excel state=Default-1.svg" alt="">Export as Excel</button>
+                            </div>
+                        </div>
+                        <button class="danger-button" onclick="openModal('cancelModal')">Cancel assignment</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <!-- LEFT: Completions (per-candidate) + bulk data -->
+                <div class="card">
+                    <div class="section-head">
+                        <h2 class="card-title">Completions</h2>
+                        <span class="highlight-tag primary">12 / 15</span>
+                    </div>
+                    <p class="settings-intro">Each completed questionnaire holds the candidate's answers and scores. Expand a candidate to view generated reports, generate a new report type, or download the underlying data.</p>
+
+                    <p class="comp-data-head" style="margin-top:0;">Download data · all completions</p>
+                    <div class="data-downloads">
+                        <button class="data-dl" onclick="downloadData('Questionnaire answers')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Answers</span><span class="data-dl-format">CSV</span></button>
+                        <button class="data-dl" onclick="downloadData('Raw scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Raw scores</span><span class="data-dl-format">CSV</span></button>
+                        <button class="data-dl" onclick="downloadData('Normed scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Normed scores</span><span class="data-dl-format">CSV</span></button>
+                        <button class="data-dl" onclick="downloadData('Percentile scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Percentile scores</span><span class="data-dl-format">CSV</span></button>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <div class="comp-list">
+                        <!-- Completed — expandable -->
+                        <div class="assign-group">
+                            <button class="comp-head" onclick="toggleComp(this)">
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+                                <span class="avatar-sm">JO</span>
+                                <div class="cand-info"><div class="cand-name"><b>James Okoro</b></div><div class="cand-email">Completed 6 Jun 2026</div></div>
+                                <span class="highlight-tag green">Completed</span>
+                            </button>
+                            <div class="assign-detail">
+                                <p class="comp-data-head" style="margin-top:0;">Generated reports</p>
+                                <div class="gen-reports">
+                                    <div class="gen-report-row">
+                                        <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                                        <div class="gen-report-meta"><div class="gen-report-name">Personal Report</div><div class="gen-report-sub">Generated 6 Jun 2026 · PDF</div></div>
+                                        <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                                    </div>
+                                </div>
+                                <div class="type-actions">
+                                    <button class="secondary-button" onclick="openGenerateReport('James Okoro')">+ Generate report</button>
+                                </div>
+                                <p class="comp-data-head">Download data</p>
+                                <div class="data-downloads">
+                                    <button class="data-dl" onclick="downloadData('James Okoro · answers')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Answers</span></button>
+                                    <button class="data-dl" onclick="downloadData('James Okoro · raw scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Raw scores</span></button>
+                                    <button class="data-dl" onclick="downloadData('James Okoro · normed scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Normed scores</span></button>
+                                    <button class="data-dl" onclick="downloadData('James Okoro · percentile scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Percentile scores</span></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Completed — multiple reports already generated -->
+                        <div class="assign-group">
+                            <button class="comp-head" onclick="toggleComp(this)">
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+                                <span class="avatar-sm">SA</span>
+                                <div class="cand-info"><div class="cand-name"><b>Sofia Almeida</b></div><div class="cand-email">Completed 5 Jun 2026</div></div>
+                                <span class="highlight-tag green">Completed</span>
+                            </button>
+                            <div class="assign-detail">
+                                <p class="comp-data-head" style="margin-top:0;">Generated reports</p>
+                                <div class="gen-reports">
+                                    <div class="gen-report-row">
+                                        <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                                        <div class="gen-report-meta"><div class="gen-report-name">Personal Report</div><div class="gen-report-sub">Generated 5 Jun 2026 · PDF</div></div>
+                                        <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                                    </div>
+                                    <div class="gen-report-row">
+                                        <img class="file-icon" src="../../005_PLATFORM ICONS/file icons/pdf state=available.svg" alt="PDF">
+                                        <div class="gen-report-meta"><div class="gen-report-name">Leadership Report</div><div class="gen-report-sub">Generated 7 Jun 2026 · PDF</div></div>
+                                        <div class="report-actions"><a class="pl-action-button" href="#" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" style="width:auto;">Download</a></div>
+                                    </div>
+                                </div>
+                                <div class="type-actions">
+                                    <button class="secondary-button" onclick="openGenerateReport('Sofia Almeida')">+ Generate report</button>
+                                </div>
+                                <p class="comp-data-head">Download data</p>
+                                <div class="data-downloads">
+                                    <button class="data-dl" onclick="downloadData('Sofia Almeida · answers')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Answers</span></button>
+                                    <button class="data-dl" onclick="downloadData('Sofia Almeida · raw scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Raw scores</span></button>
+                                    <button class="data-dl" onclick="downloadData('Sofia Almeida · normed scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Normed scores</span></button>
+                                    <button class="data-dl" onclick="downloadData('Sofia Almeida · percentile scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Percentile scores</span></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- In progress — not expandable -->
+                        <div class="assign-group">
+                            <div class="comp-head" style="cursor:default;">
+                                <span style="width:20px;flex-shrink:0;"></span>
+                                <span class="avatar-sm">LC</span>
+                                <div class="cand-info"><div class="cand-name"><b>Liam Chen</b></div><div class="cand-email">Questionnaire in progress</div></div>
+                                <span class="highlight-tag yellow">In progress</span>
+                            </div>
+                        </div>
+
+                        <!-- Not started — not expandable -->
+                        <div class="assign-group">
+                            <div class="comp-head" style="cursor:default;">
+                                <span style="width:20px;flex-shrink:0;"></span>
+                                <span class="avatar-sm">PN</span>
+                                <div class="cand-info"><div class="cand-name"><b>Priya Nair</b></div><div class="cand-email">Not started yet</div></div>
+                                <span class="highlight-tag gray">Not started</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="text-align:center;margin-top:var(--spacing-narrow-m);">
+                        <a class="pl-action-button ghost" href="#" style="width:auto;">View all</a>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Target (group + candidates) -->
+                <div class="card">
+                    <div class="section-head">
+                        <h2 class="card-title">Target</h2>
+                        <a href="group.html">Go to group</a>
+                    </div>
+
+                    <!-- Group card — accent colour + gradient set per group (purple here) -->
+                    <div class="group-card" style="--group-color:#7569a1;--group-gradient:linear-gradient(180deg,#7569a1 0%,#9e96bd 100%);">
+                        <div class="group-card-head">
+                            <span class="group-dot"></span>
+                            <span class="group-card-title">Leadership Cohort</span>
+                            <span class="group-count">15 candidates</span>
+                        </div>
+                        <div class="group-search">
+                            <input class="form-input" id="candSearch" placeholder="Search candidate">
+                        </div>
+                        <div class="cand-list" id="candList">
+                            <div class="cand-row">
+                                <span class="avatar-sm">JO</span>
+                                <div class="cand-info"><div class="cand-name"><b>James Okoro</b></div><div class="cand-email">james.okoro@acme.com</div></div>
+                                <span class="highlight-tag green">Completed</span>
+                                <div class="row-actions">
+                                    <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                    <div class="row-menu">
+                                        <a href="candidate.html">Open profile</a>
+                                        <button type="button" onclick="openGenerateReport('James Okoro')">Generate report</button>
+                                        <button type="button" onclick="downloadData('James Okoro · data')">Download data</button>
+                                        <button type="button" class="danger">Remove from assignment</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cand-row">
+                                <span class="avatar-sm">SA</span>
+                                <div class="cand-info"><div class="cand-name"><b>Sofia Almeida</b></div><div class="cand-email">sofia.almeida@acme.com</div></div>
+                                <span class="highlight-tag green">Completed</span>
+                                <div class="row-actions">
+                                    <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                    <div class="row-menu">
+                                        <a href="candidate.html">Open profile</a>
+                                        <button type="button" onclick="openGenerateReport('Sofia Almeida')">Generate report</button>
+                                        <button type="button" onclick="downloadData('Sofia Almeida · data')">Download data</button>
+                                        <button type="button" class="danger">Remove from assignment</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cand-row">
+                                <span class="avatar-sm">LC</span>
+                                <div class="cand-info"><div class="cand-name"><b>Liam Chen</b></div><div class="cand-email">liam.chen@acme.com</div></div>
+                                <span class="highlight-tag yellow">In progress</span>
+                                <div class="row-actions">
+                                    <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                    <div class="row-menu">
+                                        <button type="button" onclick="showToast('Invite resent to Liam Chen')">Resend invite</button>
+                                        <button type="button" class="danger">Remove from assignment</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cand-row">
+                                <span class="avatar-sm">PN</span>
+                                <div class="cand-info"><div class="cand-name"><b>Priya Nair</b></div><div class="cand-email">priya.nair@acme.com</div></div>
+                                <span class="highlight-tag gray">Not started</span>
+                                <div class="row-actions">
+                                    <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                    <div class="row-menu">
+                                        <button type="button" onclick="showToast('Invite resent to Priya Nair')">Resend invite</button>
+                                        <button type="button" class="danger">Remove from assignment</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cand-row">
+                                <span class="avatar-sm">MW</span>
+                                <div class="cand-info"><div class="cand-name"><b>Marcus Webb</b></div><div class="cand-email">marcus.webb@acme.com</div></div>
+                                <span class="highlight-tag green">Completed</span>
+                                <div class="row-actions">
+                                    <button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button>
+                                    <div class="row-menu">
+                                        <a href="candidate.html">Open profile</a>
+                                        <button type="button" onclick="openGenerateReport('Marcus Webb')">Generate report</button>
+                                        <button type="button" onclick="downloadData('Marcus Webb · data')">Download data</button>
+                                        <button type="button" class="danger">Remove from assignment</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cand-row" style="justify-content:center;">
+                            <a class="pl-action-button ghost" href="#" style="width:auto;">View all 15 candidates</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Generate report modal -->
+    <div class="modal-overlay" id="generateReportModal">
+        <div class="modal" style="max-width:560px;">
+            <div class="modal-head">
+                <h3>Generate report</h3>
+                <button class="modal-close" onclick="closeModal('generateReportModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p class="settings-intro">Generate a new report for <b id="genReportFor">this completed questionnaire</b>. The questionnaire data already exists — pick another report type to interpret it.</p>
+            <div class="report-pick-grid" id="genReportGrid">
+                <div class="report-pick-card" data-report="Personal"><img class="report-thumb" src="../../006_RASTER/report covers/personal cover 2023-01.png" alt="Personal"><b>Personal</b></div>
+                <div class="report-pick-card" data-report="Corporate"><img class="report-thumb" src="../../006_RASTER/report covers/corporate cover 2023-01.png" alt="Corporate"><b>Corporate</b></div>
+                <div class="report-pick-card" data-report="Leadership"><img class="report-thumb" src="../../006_RASTER/report covers/leadership cover 2023-01.png" alt="Leadership"><b>Leadership</b></div>
+                <div class="report-pick-card" data-report="Developmental"><img class="report-thumb" src="../../006_RASTER/report covers/developmental cover-01.png" alt="Developmental"><b>Developmental</b></div>
+                <div class="report-pick-card" data-report="Recruitment"><img class="report-thumb" src="../../006_RASTER/report covers/recruitment cover 2023-01.png" alt="Recruitment"><b>Recruitment</b></div>
+            </div>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('generateReportModal')">Cancel</button>
+                <button class="primary-button" onclick="confirmGenerateReport()">Generate</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cancel assignment confirm modal -->
+    <div class="modal-overlay" id="cancelModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-head">
+                <h3>Cancel assignment?</h3>
+                <button class="modal-close" onclick="closeModal('cancelModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button>
+            </div>
+            <p style="font-family:var(--font-inter);font-size:var(--font-size-content);color:var(--color-black);line-height:var(--line-height-normal);">
+                Candidates who have not finished their questionnaire will lose access immediately. Reports that are already complete will be kept and remain readable.
+            </p>
+            <div class="modal-actions">
+                <button class="secondary-button" onclick="closeModal('cancelModal')">Keep assignment</button>
+                <button class="danger-button" onclick="closeModal('cancelModal')">Cancel assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="report-covers.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Expand / collapse a completion row
+        function toggleComp(el) {
+            const group = el.closest('.assign-group');
+            if (group) group.classList.toggle('open');
+        }
+
+        (function () {
+            document.querySelectorAll('.row-actions-btn').forEach(function (btn) {
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const ra = btn.closest('.row-actions');
+                    document.querySelectorAll('.row-actions.open').forEach(function (o) { if (o !== ra) o.classList.remove('open'); });
+                    ra.classList.toggle('open');
+                });
+            });
+            document.addEventListener('click', function () {
+                document.querySelectorAll('.row-actions.open').forEach(function (o) { o.classList.remove('open'); });
+            });
+
+            const search = document.getElementById('candSearch');
+            const candRows = Array.prototype.slice.call(document.querySelectorAll('#candList .cand-row'));
+            if (search) search.addEventListener('input', function () {
+                const q = search.value.trim().toLowerCase();
+                filterAnimate(candRows, function (row) {
+                    return q === '' || row.textContent.toLowerCase().indexOf(q) !== -1;
+                });
+            });
+        })();
+    </script>
+</body>
+</html>

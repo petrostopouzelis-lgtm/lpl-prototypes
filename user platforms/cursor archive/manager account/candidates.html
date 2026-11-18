@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidates | Psychometric Laboratory for Managers</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .candidate-table .pl-table-header,.candidate-table .candidate-row{grid-template-columns:2.2fr 1.35fr .9fr 1.25fr 56px}
+        .candidate-row{cursor:pointer}.candidate-toolbar{padding:0 var(--spacing-narrow-l) var(--spacing-narrow-m)}
+        .candidate-search{position:relative;flex:1;max-width:360px}.candidate-search img{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;opacity:.55}.candidate-search input{padding-left:42px}
+        @media(max-width:760px){.candidate-table .pl-table-header{display:none}.candidate-table .candidate-row{grid-template-columns:1fr 1fr!important}.candidate-table .cell-candidate{grid-column:1/-1}}
+    </style>
+</head>
+<body data-page="candidates" data-title="Candidates" data-subtitle="Manage candidate records and their assigned coaches.">
+<main class="app-main"><header class="app-topbar" data-topbar></header>
+<section class="page-content">
+    <div class="stats-grid mini-stats-grid candidate-summary">
+        <div class="card mini-stat"><span class="stat-label">Total candidates</span><span class="stat-value" id="candidateTotal">0</span></div>
+        <div class="card mini-stat"><span class="stat-label">Active</span><span class="stat-value" id="candidateActive">0</span></div>
+        <div class="card mini-stat"><span class="stat-label">Products completed</span><span class="stat-value" id="candidateProducts">0</span></div>
+    </div>
+    <div class="panel">
+        <div class="panel-head">
+            <h2 class="card-title">Candidate directory</h2>
+            <div class="candidate-actions">
+                <div class="export-menu">
+                    <button class="export-trigger" onclick="toggleExportMenu(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>Export<svg class="caret" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+                    <div class="export-dropdown"><button onclick="exportData('Candidates','CSV')">Export as CSV</button><button onclick="exportData('Candidates','Excel')">Export as Excel</button></div>
+                </div>
+                <button class="secondary-button" onclick="openImportModal()">Import</button>
+                <button class="primary-button" onclick="openCandidateModal()"><img class="btn-icon" src="../../005_PLATFORM ICONS/other icons/request demo button arrow icon.svg" alt="">Add candidate</button>
+            </div>
+        </div>
+        <div class="toolbar candidate-toolbar">
+            <div class="candidate-search"><img src="../../005_PLATFORM ICONS/other icons/search icon.svg" alt=""><input class="form-input" id="candidateSearch" placeholder="Search by name, email or company" oninput="filterCandidates()"></div>
+            <div class="dropdown" style="width:auto;min-width:200px"><button class="dropdown-trigger" onclick="toggleDropdown('coachFilter')"><span class="dropdown-label">All coaches</span></button><div class="dropdown-menu" id="coachFilter"></div></div>
+            <div class="seg" id="candidateStatus"><button class="active" onclick="setStatus('all',this)">All</button><button onclick="setStatus('active',this)">Active</button><button onclick="setStatus('inactive',this)">Inactive</button></div>
+        </div>
+        <div class="candidate-table">
+            <div class="pl-table-header"><div>Candidate</div><div>Assigned coach</div><div>Status</div><div>Product activity</div><div></div></div>
+            <div id="candidateRows"></div>
+            <div class="empty-state" id="candidateEmpty" style="display:none"><h3>No candidates found</h3><p>Try changing the search or filters.</p></div>
+        </div>
+    </div>
+</section></main>
+
+<div class="modal-overlay" id="candidateModal"><div class="modal" style="max-width:560px">
+    <div class="modal-head"><h3 id="candidateModalTitle">Add candidate</h3><button class="modal-close" onclick="closeModal('candidateModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button></div>
+    <p class="settings-intro">Create the record and assign it to a coach. Managers can move candidates between coaches at any time.</p>
+    <div class="field-row"><div><label class="form-label">Full name</label><input class="form-input" id="candidateName" placeholder="e.g. Jordan Lee"></div><div><label class="form-label">Email</label><input class="form-input" id="candidateEmail" type="email" placeholder="jordan@company.com"></div></div>
+    <div class="field-row settings-field-gap"><div><label class="form-label">Company</label><input class="form-input" id="candidateCompany" placeholder="Organisation"></div><div><label class="form-label">Role</label><input class="form-input" id="candidateRole" placeholder="Job title"></div></div>
+    <label class="form-label">Assigned coach</label><div class="dropdown"><button class="dropdown-trigger" onclick="toggleDropdown('candidateCoach')"><span class="dropdown-label">Select coach</span></button><div class="dropdown-menu" id="candidateCoach"></div></div>
+    <div class="modal-actions"><button class="secondary-button" onclick="closeModal('candidateModal')">Cancel</button><button class="primary-button" onclick="saveCandidate()">Save candidate</button></div>
+</div></div>
+
+<div class="modal-overlay" id="deleteCandidateModal"><div class="modal" style="max-width:460px">
+    <div class="modal-head"><h3>Delete candidate?</h3><button class="modal-close" onclick="closeModal('deleteCandidateModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button></div>
+    <p class="card-content" style="color:var(--color-gray)">This removes the candidate record from the manager and assigned coach accounts. Aggregate history is not shown to managers.</p>
+    <div class="modal-actions"><button class="secondary-button" onclick="closeModal('deleteCandidateModal')">Keep candidate</button><button class="danger-button" onclick="confirmDeleteCandidate()">Delete candidate</button></div>
+</div></div>
+
+<div class="modal-overlay" id="importCandidatesModal"><div class="modal" style="max-width:560px">
+    <div class="modal-head"><h3>Import candidates</h3><button class="modal-close" onclick="closeModal('importCandidatesModal')"><img src="../../005_PLATFORM ICONS/other icons/X icon.svg" alt="Close"></button></div>
+    <p class="settings-intro">Upload a CSV with name, email, company and role columns. All imported candidates will be assigned to the selected coach.</p>
+    <div class="import-dropzone" id="importDropzone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 20h16"/></svg><b>Drop a CSV here</b><span>or choose a demo file</span><button class="secondary-button" onclick="selectDemoImport()">Choose file</button></div>
+    <label class="form-label" style="margin-top:var(--spacing-narrow-m)">Assign imported candidates to</label><div class="dropdown"><button class="dropdown-trigger" onclick="toggleDropdown('importCoach')"><span class="dropdown-label">Select coach</span></button><div class="dropdown-menu" id="importCoach"></div></div>
+    <div class="modal-actions"><button class="secondary-button" onclick="closeModal('importCandidatesModal')">Cancel</button><button class="primary-button" onclick="confirmImport()">Import candidates</button></div>
+</div></div>
+
+<script src="app.js"></script>
+<script>
+var candidateStatus='all',candidateCoach='all',editingCandidateId=null,deletingCandidateId=null,selectedCoachId=null,importCoachId=null,importReady=false;
+function coachOptions(menuId,callback){var menu=document.getElementById(menuId);menu.innerHTML=PLStore.get().coaches.filter(function(c){return c.status==='active'}).map(function(c){return '<button class="dropdown-option" onclick="'+callback+'(\''+c.id+'\',\''+c.name.replace(/'/g,"\'")+'\')">'+c.name+'</button>'}).join('')}
+function renderCoachFilter(){var m=document.getElementById('coachFilter');m.innerHTML='<button class="dropdown-option" onclick="setCoachFilter(\'all\',\'All coaches\')">All coaches</button>'+PLStore.get().coaches.filter(function(c){return c.status==='active'}).map(function(c){return '<button class="dropdown-option" onclick="setCoachFilter(\''+c.id+'\',\''+c.name.replace(/'/g,"\'")+'\')">'+c.name+'</button>'}).join('')}
+function renderCandidates(){
+ var d=PLStore.get(),rows=document.getElementById('candidateRows');rows.innerHTML='';
+ d.candidates.forEach(function(c){var coach=plCoachById(c.coachId),count=(c.products||[]).reduce(function(s,p){return s+p.count},0),last=(c.products||[]).slice().sort(function(a,b){return b.last.localeCompare(a.last)})[0];
+ rows.insertAdjacentHTML('beforeend','<div class="pl-table-row candidate-row" data-id="'+c.id+'" data-name="'+(c.name+' '+c.email+' '+c.company).toLowerCase()+'" data-coach="'+c.coachId+'" data-status="'+c.status+'" onclick="location.href=\'candidate.html?candidate='+c.id+'\'"><div class="cell-candidate cell-assignment"><span class="avatar-sm">'+c.initials+'</span><div><div class="assign-name"><b>'+c.name+'</b></div><div class="assign-target">'+c.email+' · '+c.company+'</div></div></div><div data-label="Coach"><span class="coach-assignment-pill">'+(coach?coach.name:'Not assigned')+'</span></div><div data-label="Status"><span class="highlight-tag '+(c.status==='active'?'green':'')+'">'+c.status.charAt(0).toUpperCase()+c.status.slice(1)+'</span></div><div data-label="Products"><b>'+count+'</b> completed'+(last?' · '+last.last:'')+'</div><div class="cell-action"><div class="row-actions" onclick="event.stopPropagation()"><button class="row-actions-btn" aria-label="Options"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="12" cy="19" r="2"/></svg></button><div class="row-menu"><a href="candidate.html?candidate='+c.id+'">View profile</a><button onclick="openCandidateModal(\''+c.id+'\')">Edit</button><button class="danger" onclick="openDeleteCandidate(\''+c.id+'\')">Delete</button></div></div></div></div>')});
+ document.getElementById('candidateTotal').textContent=d.candidates.length;document.getElementById('candidateActive').textContent=d.candidates.filter(function(c){return c.status==='active'}).length;document.getElementById('candidateProducts').textContent=d.candidates.reduce(function(s,c){return s+(c.products||[]).reduce(function(a,p){return a+p.count},0)},0);wireRowActions();filterCandidates()
+}
+function setStatus(s,b){candidateStatus=s;document.querySelectorAll('#candidateStatus button').forEach(function(x){x.classList.toggle('active',x===b)});filterCandidates()}
+function setCoachFilter(id,label){candidateCoach=id;selectOption('coachFilter',label);filterCandidates()}
+function filterCandidates(){var q=(document.getElementById('candidateSearch').value||'').toLowerCase(),rows=Array.from(document.querySelectorAll('.candidate-row'));filterAnimate(rows,function(r){return(!q||r.dataset.name.indexOf(q)>-1)&&(candidateCoach==='all'||r.dataset.coach===candidateCoach)&&(candidateStatus==='all'||r.dataset.status===candidateStatus)},document.getElementById('candidateEmpty'))}
+function selectCandidateCoach(id,label){selectedCoachId=id;selectOption('candidateCoach',label)}
+function openCandidateModal(id){editingCandidateId=id||null;selectedCoachId=null;coachOptions('candidateCoach','selectCandidateCoach');var c=id?plCandidateById(id):null;document.getElementById('candidateModalTitle').textContent=c?'Edit candidate':'Add candidate';['Name','Email','Company','Role'].forEach(function(k){document.getElementById('candidate'+k).value=c?(c[k.toLowerCase()]||''):''});if(c){selectedCoachId=c.coachId;selectOption('candidateCoach',plCoachById(c.coachId).name)}else selectOption('candidateCoach','Select coach');openModal('candidateModal')}
+function saveCandidate(){var name=document.getElementById('candidateName').value.trim(),email=document.getElementById('candidateEmail').value.trim();if(!name||email.indexOf('@')<1){showToast('Enter a name and valid email.');return}if(!selectedCoachId){showToast('Select an assigned coach.');return}PLStore.update(function(d){if(editingCandidateId){var c=plCandidateById(editingCandidateId);c.name=name;c.email=email;c.company=document.getElementById('candidateCompany').value.trim();c.role=document.getElementById('candidateRole').value.trim();c.coachId=selectedCoachId;c.initials=name.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase()}else d.candidates.push({id:name.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-'+Date.now().toString(36).slice(-3),name:name,email:email,company:document.getElementById('candidateCompany').value.trim(),role:document.getElementById('candidateRole').value.trim(),phone:'',initials:name.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase(),coachId:selectedCoachId,status:'active',added:'15 Jul 2026',products:[]})});closeModal('candidateModal');renderCandidates();showToast(editingCandidateId?'Candidate updated.':'Candidate added.')}
+function openDeleteCandidate(id){deletingCandidateId=id;openModal('deleteCandidateModal')}function confirmDeleteCandidate(){PLStore.update(function(d){d.candidates=d.candidates.filter(function(c){return c.id!==deletingCandidateId})});closeModal('deleteCandidateModal');renderCandidates();showToast('Candidate deleted.')}
+function openImportModal(){importReady=false;importCoachId=null;coachOptions('importCoach','selectImportCoach');selectOption('importCoach','Select coach');document.getElementById('importDropzone').classList.remove('ready');openModal('importCandidatesModal')}function selectImportCoach(id,label){importCoachId=id;selectOption('importCoach',label)}function selectDemoImport(){importReady=true;document.getElementById('importDropzone').classList.add('ready');document.getElementById('importDropzone').querySelector('span').textContent='candidates-july.csv · 3 records ready'}function confirmImport(){if(!importReady){showToast('Choose a CSV file first.');return}if(!importCoachId){showToast('Select a coach for imported candidates.');return}var names=['Noah Wilson','Leila Ahmed','Daniel Kim'];PLStore.update(function(d){names.forEach(function(n,i){d.candidates.push({id:'import-'+Date.now().toString(36)+'-'+i,name:n,email:n.toLowerCase().replace(' ','.')+'@example.com',company:'Imported organisation',role:'Participant',phone:'',initials:n.split(' ').map(function(w){return w[0]}).join(''),coachId:importCoachId,status:'active',added:'15 Jul 2026',products:[]})})});closeModal('importCandidatesModal');renderCandidates();showToast('3 candidates imported.')}
+renderCoachFilter();renderCandidates();
+</script>
+</body></html>
