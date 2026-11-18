@@ -19,6 +19,8 @@
             margin: calc(-1 * var(--spacing-narrow-s)) calc(-1 * var(--spacing-narrow-s)) var(--spacing-narrow-m); padding: var(--spacing-narrow-s);
             background: var(--color-white); }   /* white like the page and the top bar, so content scrolling under it does not show through */
         .r360-bar::-webkit-scrollbar { display: none; }
+        .r360-bar .seg { flex: 1 0 auto; }                        /* edge to edge across the content */
+        .r360-bar .seg button { flex: 1 0 auto; text-align: center; }
         #r360tip { position: fixed; z-index: 90; pointer-events: none; background: var(--color-black); color: #fff; font: 500 12px/1.35 var(--font-inter); padding: 6px 9px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity .08s; }
         #r360tip.on { opacity: 1; }
         @media (max-width: 680px) { .r360-cover { display: none; } }
@@ -62,10 +64,11 @@
             <!-- Section bar: jumps to a part of the report; follows the part being read -->
             <nav class="r360-bar" aria-label="Report sections">
                 <div class="seg" id="r360Seg">
-                    <button class="active" type="button" data-part="results" aria-current="true">Results</button>
+                    <button class="active" type="button" data-part="intro" aria-current="true">Introduction</button>
+                    <button type="button" data-part="results">Results</button>
                     <button type="button" data-part="factors">Factors and facets</button>
                     <button type="button" data-part="development">Development</button>
-                    <button type="button" data-part="about">About the report</button>
+                    <button type="button" data-part="ack">Acknowledgement</button>
                     <button type="button" data-part="coach">Coach data</button>
                 </div>
             </nav>
@@ -83,7 +86,6 @@
             * { box-sizing: border-box; }
             .r360-part { display: flex; flex-direction: column; gap: var(--spacing-narrow-l, 24px); }
             .r360-body { display: flex; flex-direction: column; gap: var(--spacing-standard-s, 32px); }
-            .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: var(--spacing-narrow-l, 24px); align-items: start; }
 
             .sec { --c: var(--color-primary-full); background: var(--color-white, #fff); border-radius: var(--radius-standard, 16px); box-shadow: var(--shadow-card);
               padding: 28px; display: flex; flex-direction: column; gap: 18px; min-width: 0;
@@ -91,7 +93,7 @@
             .sec > * { min-width: 0; }
             h1.title { font: 700 22px/1.3 var(--font-manrope, Manrope), sans-serif; color: var(--c); margin: 0; }
             .eyebrow { font: 700 11px/1.3 var(--font-manrope, Manrope), sans-serif; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
-            p { margin: 0; max-width: 78ch; }
+            p { margin: 0; }
             p + p { margin-top: 10px; }
             p.lead { font-weight: 600; color: var(--c); }
             p.note { font-size: 13px; color: var(--muted); }
@@ -171,7 +173,6 @@
 
             @media (max-width: 900px) {
               .sec { padding: 20px 16px; }
-              .grid2 { grid-template-columns: 1fr; }
               .coachrow { grid-template-columns: 1fr; }
               .fmap .grp { grid-template-columns: 1fr; }
               .fmap .r { grid-template-columns: 130px 1fr; }
@@ -195,14 +196,17 @@
             const T = window.TEIQ, data = window.TEIQ_COACH_360, lib = window.TEIQ_TEXT;
             const esc = T.svg.esc;
 
-            // The parts of the report, in page order, with the report sections (ids from content.js) in each.
-            // Sections side by side in a row are listed together.
+            // The report in its own order (as content.js builds it, and as the PDF prints it), one card per row.
+            // Each part is a stretch of that order with a button in the section bar. Left out: the cover,
+            // the contents page and the back cover (the page has its own header and bar), and the action plan
+            // (blank boxes to fill in on paper; it is in the PDF).
             const PARTS = [
-                { id: 'results', rows: [['global', 'profile'], ['raters'], ['summary'], ['map', 'gap']] },
-                { id: 'factors', rows: [['wellbeing'], ['self_control'], ['emotionality'], ['sociability'], ['independent']] },
-                { id: 'development', rows: [['development']] },
-                { id: 'about', rows: [['about', 'measures'], ['contents', 'ack']] },
-                { id: 'coach', rows: [['coach']] }
+                { id: 'intro', sections: ['about', 'measures', 'contents', 'raters'] },
+                { id: 'results', sections: ['global', 'profile', 'summary', 'map', 'gap'] },
+                { id: 'factors', sections: ['wellbeing', 'self_control', 'emotionality', 'sociability', 'independent'] },
+                { id: 'development', sections: ['development'] },
+                { id: 'ack', sections: ['ack'] },
+                { id: 'coach', sections: ['coach'] }
             ];
 
             // header
@@ -240,10 +244,7 @@
                     return '<section class="sec" style="--c:' + (s.color || '') + '">' + s.blocks.map(function (b) { return typeof b === 'string' ? b : b.html; }).join('') + '</section>';
                 };
                 partHtml = PARTS.map(function (part) {
-                    return part.rows.map(function (row) {
-                        const parts = row.filter(function (id) { return byId[id]; }).map(function (id) { return sec(byId[id]); });
-                        return parts.length > 1 ? '<div class="grid2">' + parts.join('') + '</div>' : parts.join('');
-                    }).join('');
+                    return part.sections.filter(function (id) { return byId[id]; }).map(function (id) { return sec(byId[id]); }).join('');
                 });
             }
             // Fill a part; hover values: each chart's <title> becomes the tooltip text
@@ -295,7 +296,7 @@
                 ind.style.left = (b.left - s.left) + 'px'; ind.style.top = (b.top - s.top) + 'px';
                 ind.style.width = b.width + 'px'; ind.style.height = b.height + 'px';
             }
-            let activeId = 'results';
+            let activeId = 'intro';
             function setActive(id) {
                 if (id === activeId) return;
                 activeId = id;
@@ -373,7 +374,7 @@
                 placeBar();
                 const hash = (location.hash || '').slice(1);
                 fillRest().then(function () {
-                    if (hash && hash !== 'results' && PARTS.some(function (p) { return p.id === hash; })) goTo(hash, false); else follow();
+                    if (hash && hash !== PARTS[0].id && PARTS.some(function (p) { return p.id === hash; })) goTo(hash, false); else follow();
                 });
             }
             if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { requestAnimationFrame(start); });
