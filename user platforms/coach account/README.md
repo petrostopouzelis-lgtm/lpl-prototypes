@@ -24,6 +24,6 @@ James Okoro (the candidate with a full profile page) has a completed TEIQue 360Â
 
 ## Still missing
 
-- `shared/admin-credits.js` and `shared/promotions.js` (in the original folder they sat next to the account folders, as `../shared/`). Without them the **Credits** page shows no prices or basket totals and the **Promotions** page shows no offers. Put the two files in `shared/` here (or in `../cursor archive/shared/` and re-run the script) and both pages work.
+- `shared/admin-credits.js` and `shared/promotions.js` (in the original folder they sat next to the account folders, as `../shared/`). Without them the **Credits** page shows no prices or basket totals and the **Promotions** page shows no offers. Put the two files in `shared/` here and both pages work (copy them in by hand: re-running the restore script would replace this folder).
 - The **Log out** item in the profile menu points at a design-system showcase page outside the account; it leads nowhere here.
 - Fixed: at phone width the assignment pages scrolled sideways (also in the archive); one line in `app.css` (`.detail-grid > * { min-width: 0 }`).
