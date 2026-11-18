@@ -17,6 +17,8 @@
   const FILLER = 'This paragraph stands in for text that has not been written yet, so that the page shows a realistic amount of copy and the layout can be judged. It will be replaced by the approved wording for this score.';
 
   R.build = (data, lib, opt = {}) => {
+    // opt.chartWidths { summary, gap (or wide for both), strip }: wider drawings of the bar charts for a wide screen (web view); the PDF uses the defaults
+    const cw = opt.chartWidths || {};
     const v = T.view(data, opt.view), pg = lib.pages, fill = opt.fill || 'typical', st = data.settings || {};
     const year = String(data.report.date || '').slice(0, 4) || new Date().getFullYear();
     // which score picks the wording for a scale: the person's own (as in the 2010 report) or the raters' average
@@ -127,10 +129,10 @@
       const strengths = facets.filter(f => f.self >= 71 && f.oth >= 71).sort((a, b) => b.oth - a.oth).slice(0, 4);
       const hiddenS = facets.filter(f => f.gap > agree).sort((a, b) => b.gap - a.gap).slice(0, 4);
       const blind = facets.filter(f => f.gap < -agree).sort((a, b) => a.gap - b.gap).slice(0, 4);
-      add('summary', ex.summary.title, T.BLUE, [head('', ex.summary.title, 'Added page'), chart(C.summary(v))]);
+      add('summary', ex.summary.title, T.BLUE, [head('', ex.summary.title, 'Added page'), chart(C.summary(v, { width: cw.summary || cw.wide }))]);
       add('map', ex.map.title, T.BLUE, [head('', ex.map.title, 'Added page'), chart(C.map(v), 460, 'center'), P(ex.map.caption, 'note'),
         `<div class="cols3"><div class="card mini"><h5>${esc(ex.map.strengths)}</h5>${list(strengths, ex.map.none)}</div><div class="card mini"><h5>${esc(ex.map.hidden)}</h5>${list(hiddenS, ex.map.none)}</div><div class="card mini"><h5>${esc(ex.map.blind)}</h5>${list(blind, ex.map.none)}</div></div>`]);
-      add('gap', ex.gap.title, T.BLUE, [head('', ex.gap.title, 'Added page'), P(ex.gap.caption), chart(C.gap(v, { agree }))]);
+      add('gap', ex.gap.title, T.BLUE, [head('', ex.gap.title, 'Added page'), P(ex.gap.caption), chart(C.gap(v, { agree, width: cw.gap || cw.wide }))]);
     }
 
     // ---- one section per factor: the factor, then each of its facets, each with its chart and its text
@@ -141,7 +143,7 @@
     const single = opt.scales !== 'pair';
     const scoreCharts = id => single
       ? `<div class="scores big"><div class="chart wheel">${C.gauge(v, id)}${mark('Added chart')}</div><div class="chart strip">${C.strip(v, id)}</div></div>`
-      : `<div class="scores"><div class="chart wheel">${C.gauge(v, id, { compact: true })}${mark('Added chart')}</div><div class="chart strip">${C.strip(v, id, { width: 324 })}</div></div>`;
+      : `<div class="scores"><div class="chart wheel">${C.gauge(v, id, { compact: true })}${mark('Added chart')}</div><div class="chart strip">${C.strip(v, id, { width: cw.strip || 324 })}</div></div>`;
     const scaleBlock = (id, heading) => ({ split: '.card',
       html: `<div>${heading ? `<h4 class="sub">${esc(T.nameOf(id))}</h4>` : ''}${scoreCharts(id)}<div class="card">${interpretation(id)}</div></div>` });
     T.GROUPS.forEach(g => {

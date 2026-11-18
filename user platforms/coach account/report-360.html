@@ -102,20 +102,26 @@
             .needed { border: 1px dashed #C9A227; background: #FFF9E5; border-radius: 8px; padding: 6px 10px; font: 500 12px/1.4 var(--font-inter, Inter), sans-serif; color: #7A5B00; margin-bottom: 10px; }
             .filler { color: #8A8F98; }
 
-            .chart { width: 100% !important; max-width: 640px; overflow-x: auto; }
+            /* Charts fit the card and the screen. Bar charts span the card: they are drawn for its width
+               (chartWidths below), so their text keeps its size. Round charts (profile wheel, perception map)
+               are centred and no taller than the screen below the bars. */
+            .chart { width: 100% !important; max-width: none; overflow-x: auto; }
             .chart.center { align-self: center; }
+            .chart.round { align-self: center; width: min(100%, 760px, calc((100vh - 220px) * 0.94)) !important; }
+            .chart.round.square { width: min(100%, 700px, calc((100vh - 220px) * 1.04)) !important; }
+            .chart.mid { align-self: center; width: min(100%, 680px) !important; }
             .chart svg { display: block; width: 100%; max-width: none !important; height: auto; }
             .chart.wide svg { min-width: 480px; }
             [data-tip] { cursor: default; }
 
             .stack { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-            .stack .chart { width: 250px !important; }
+            .stack .chart { width: 260px !important; }
             p.note.mid { text-align: center; font-style: italic; max-width: none; }
             p.tight + p.tight { margin-top: 2px; }
             .chart + .card, .scores + .card { margin-top: 12px; }
             .scores { display: flex; gap: 12px 28px; align-items: center; flex-wrap: wrap; }
             .scores .wheel { width: 190px !important; flex: none; margin: 0 auto; overflow: visible; }
-            .scores .strip { flex: 1 1 360px; min-width: 0; max-width: 620px; }
+            .scores .strip { flex: 1 1 360px; min-width: 0; }
             .card ul { margin: 0; padding-left: 20px; }
             .list2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 24px; }
 
@@ -235,9 +241,27 @@
             body.innerHTML = PARTS.map(function (part) { return '<div class="r360-part" data-part="' + part.id + '"></div>'; }).join('');
             shadow.appendChild(body);
 
-            let partHtml = null;
+            // Bar charts are drawn for the card's width, so they span it while their text keeps its size: one
+            // chart unit is shown at about 1.15 px. The summary and gap charts are tall, so on a short screen they
+            // are shown smaller (down to 0.9 px a unit) to fit below the bars. 'strip' is the rater-group chart
+            // beside a score wheel.
+            const UNIT = 1.15, MIN_UNIT = 0.9;
+            const tallH = (function () {      // their heights in chart units do not depend on the width
+                const vb = function (svg) { return +svg.match(/viewBox="0 0 [\d.]+ ([\d.]+)"/)[1]; };
+                const v0 = T.view(data);
+                return { summary: vb(T.charts.summary(v0)), gap: vb(T.charts.gap(v0)) };
+            })();
+            function chartWidths() {
+                const inner = host.clientWidth - (window.innerWidth <= 900 ? 32 : 56);        // card padding (.sec)
+                const room = window.innerHeight - 180;                                       // below the top bar and section bar
+                const fit = function (h) { return Math.max(540, Math.round(inner / Math.max(MIN_UNIT, Math.min(UNIT, room / h)))); };
+                const stripPx = inner - 190 - 28 >= 360 ? inner - 190 - 28 : inner;           // beside the wheel, or below it
+                return { summary: fit(tallH.summary), gap: fit(tallH.gap), strip: Math.max(324, Math.round(stripPx / UNIT)) };
+            }
+            let partHtml = null, widths = null;
             function buildAll() {
-                const built = T.report.build(data, lib, { fill: 'none', marks: false, scales: 'pair' });
+                widths = chartWidths();
+                const built = T.report.build(data, lib, { fill: 'none', marks: false, scales: 'pair', chartWidths: widths });
                 const byId = {};
                 built.sections.forEach(function (s) { byId[s.id] = s; });
                 const sec = function (s) {
@@ -254,7 +278,29 @@
                 el.innerHTML = partHtml[i];
                 el.dataset.ready = '1';
                 el.querySelectorAll('svg title').forEach(function (t) { t.parentNode.setAttribute('data-tip', t.textContent); t.remove(); });
+                // round and fixed-layout charts, by what they are (their accessible name)
+                el.querySelectorAll('.chart').forEach(function (c) {
+                    const svg = c.querySelector('svg'), name = svg ? svg.getAttribute('aria-label') || '' : '';
+                    if (/petal chart/.test(name)) c.classList.add('round');
+                    else if (/^Perception map/.test(name)) c.classList.add('round', 'square');
+                    else if (/^Raters:/.test(name)) c.classList.add('mid');
+                });
             }
+            // a much wider or narrower window: draw the bar charts again for the new width, keeping the place
+            let resizeTimer = 0;
+            window.addEventListener('resize', function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function () {
+                    if (!widths) return;
+                    const w = chartWidths();
+                    if (Math.abs(w.summary - widths.summary) / widths.summary < 0.06 && Math.abs(w.strip - widths.strip) / widths.strip < 0.06) return;
+                    const at = partEls.findIndex(function (p) { return p.getBoundingClientRect().bottom > 0; });
+                    const before = at >= 0 ? partEls[at].getBoundingClientRect().top : 0;
+                    buildAll();
+                    Array.prototype.forEach.call(body.children, function (el, i) { if (el.dataset.ready) { delete el.dataset.ready; fill(i); } });
+                    if (at >= 0) window.scrollBy({ top: partEls[at].getBoundingClientRect().top - before, behavior: 'instant' });
+                }, 200);
+            });
             // two animation frames: the second only starts once the first frame has been drawn
             const afterPaint = function (fn) { requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(fn, 0); }); }); };
             // The first part right after the first paint; the others once this block has risen in

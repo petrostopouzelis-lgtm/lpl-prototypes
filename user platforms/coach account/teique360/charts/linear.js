@@ -115,8 +115,9 @@
   // ---------------------------------------------------------------- summary, you vs others
   // Layout follows the Figma bar graph (900:1667). Variants: A two bars per row.
   // B dot for each, joined by a line. C others bar with a marker for you.
+  // opt.width: a wider drawing (at least 540) whose tracks take the extra room and whose text keeps its size (web view)
   C.summary = (v, opt = {}) => {
-    const variant = opt.variant || 'C', W = 540, lx = 16, x0 = 143, w = 318, gap = 5, vx = 476, uid = S.id('sum');
+    const variant = opt.variant || 'C', W = Math.max(540, opt.width || 540), lx = 16, x0 = 143, gap = 5, vx = W - 64, w = vx - 15 - x0, uid = S.id('sum');
     const rows = [{ id: 'global', level: 0 }];
     T.GROUPS.forEach(g => { rows.push({ id: g.id, level: 1, scored: g.scored }); g.facets.forEach(f => rows.push({ id: f, level: 2 })); });
     let out = gradDefs(uid, opt) + S.bandHeader(x0, 14, w, gap), y = 34;
@@ -164,8 +165,9 @@
   // B arrows from your score to others' score on the band tracks.
   // In A the bar wears the colour of whoever scored higher: the factor gradient where others
   // rate you higher, the deeper shade where you rate yourself higher.
+  // opt.width (variant A): a wider drawing (at least 540) whose bars take the extra room, text keeping its size (web view)
   C.gap = (v, opt = {}) => {
-    const variant = opt.variant || 'A', W = 540, agree = opt.agree == null ? 10 : opt.agree, uid = S.id('gap');
+    const variant = opt.variant || 'A', W = variant === 'B' ? 540 : Math.max(540, opt.width || 540), agree = opt.agree == null ? 10 : opt.agree, uid = S.id('gap');
     const rows = T.FACET_ORDER.map(id => ({ id, self: v.self[id], oth: v.others[id], gap: v.gap(id) })).sort((a, b) => b.gap - a.gap);
     const top = 42, pitch = 30, H = top + rows.length * pitch + 22, lx = 124;
     const sign = d => (d > 0 ? '+' : d < 0 ? '−' : '±') + Math.abs(d);
@@ -196,7 +198,7 @@
     }
 
     // the scale covers at least 50 points each way and grows when a gap is larger
-    const zx = 300, max = Math.max(50, Math.ceil(Math.max(...rows.map(r => Math.abs(r.gap))) / 10) * 10), px = 150 / max, bh = 14;
+    const extra = W - 540, zx = 300 + extra / 2, max = Math.max(50, Math.ceil(Math.max(...rows.map(r => Math.abs(r.gap))) / 10) * 10), px = (150 + extra / 2) / max, bh = 14;
     out += S.el('rect', { x: n(zx - agree * px), y: top - 17, width: n(2 * agree * px), height: rows.length * pitch + 4, fill: '#F1F2F4', rx: 5 });
     out += S.text(zx - agree * px - 8, 15, '◀  You rate yourself higher', { 'text-anchor': 'end', 'font-size': 9, 'font-weight': 700, fill: T.MUTED });
     out += S.text(zx + agree * px + 8, 15, 'Others rate you higher  ▶', { 'font-size': 9, 'font-weight': 700, fill: T.MUTED });
