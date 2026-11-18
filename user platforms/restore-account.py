@@ -9,8 +9,9 @@ system's asset library (design-system/assets), copied into <account>/assets/ und
 every reference in the pages, scripts and stylesheet is rewritten to it. The archive is not changed.
 
 Files with no counterpart are listed at the end and their references are left as they were.
-Run it again to start the working copy over from the archive (it deletes the working copy first,
-except a hand-made assets/illustrations folder, which it keeps).
+The working copy is where new work happens (the coach account has the TEIQue 360° pages), so the script
+will not overwrite one that exists. Add --force to start it over from the archive: that deletes the
+working copy, keeping only a hand-made assets/illustrations folder.
 """
 import os, re, shutil, sys, urllib.parse
 
@@ -60,6 +61,8 @@ def main(account):
     dst = os.path.join(HERE, account)
     if not os.path.isdir(src):
         sys.exit(f'No archived account at {src}')
+    if os.path.isdir(dst) and '--force' not in sys.argv:
+        sys.exit(f'{dst} exists and holds work made since the restore. Add --force to replace it with a fresh copy of the archive.')
     keep = os.path.join(dst, 'assets', 'illustrations')
     saved = None
     if os.path.isdir(keep):
@@ -137,4 +140,5 @@ def ensure(dst, rel):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1] if len(sys.argv) > 1 else 'coach account')
+    args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    main(args[0] if args else 'coach account')

@@ -759,6 +759,7 @@ button { font-family: inherit; }
 .assign-meta span b { color: var(--color-text-blue); font-family: var(--font-manrope); font-weight: var(--font-weight-semibold); }
 
 .detail-grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: var(--spacing-narrow-l); align-items: start; }
+.detail-grid > * { min-width: 0; } /* coach account working copy: lets the cards shrink on a phone */
 .subhead { font-family: var(--font-manrope); font-weight: var(--font-weight-semibold); font-size: 14px; color: var(--color-primary-full); margin-bottom: var(--spacing-narrow-m); }
 .divider { height: 1px; background: var(--color-light-gray); margin: var(--spacing-narrow-l) 0; }
 

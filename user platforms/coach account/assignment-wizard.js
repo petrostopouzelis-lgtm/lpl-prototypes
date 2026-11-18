@@ -18,8 +18,15 @@
             { name: 'Compatibility' },
             { name: 'Group-Sort' },
             { name: 'RoleSync' }
+        ],
+        /* TEIQue 360°: one report, for one candidate rated by themself and their raters */
+        '360': [
+            { name: 'TEIQue 360°' }
         ]
     };
+    const REPORT_360 = 'TEIQue 360°';
+    /* rater groups a 360° starts with (the groups of the 2010 TEIQue 360° report) */
+    const RATER_GROUPS = ['Boss', 'Other superiors', 'Direct reports', 'Peers'];
 
     function reportCoverSrc(name) {
         if (typeof coverForReport === 'function') {
@@ -40,6 +47,7 @@
         target: 1,
         'assessment-mode': 2,
         'teique-report': 2,
+        raters: 2,
         'rolesync-preset': 2,
         compatibility: 2,
         settings: 3,
@@ -98,8 +106,26 @@
         reminders: true,
         reportDelivery: 'coach',
         deadline: 'none',
-        selectedPromo: null
+        selectedPromo: null,
+        /* 360°: rater groups, each with its raters ({ name, email }) */
+        raterGroups: [],
+        minGroupSize: 1
     };
+
+    const is360 = function () { return state.instrument === 'teique' && state.teiqueReportScope === '360'; };
+    function freshRaterGroups() {
+        return RATER_GROUPS.map(function (g) { return { label: g, raters: [{ name: '', email: '' }] }; });
+    }
+    /* raters with something typed in; empty rows are ignored */
+    function filledRaters() {
+        const out = [];
+        state.raterGroups.forEach(function (g) {
+            g.raters.forEach(function (r) {
+                if ((r.name || '').trim() || (r.email || '').trim()) out.push({ group: g.label, name: r.name.trim(), email: r.email.trim() });
+            });
+        });
+        return out;
+    }
 
     function formatAC(n) {
         return AC ? AC.formatAC(n) : (Number(n).toFixed(1) + ' AC');
@@ -158,11 +184,13 @@
                 if (state.assessmentMode === 'toolkit') return 'settings';
                 return state.instrument === 'teique' ? 'teique-report' : 'settings';
             case 'teique-report':
+                if (is360()) return 'raters';
                 if (state.report === 'RoleSync') return 'rolesync-preset';
                 if (state.report === 'Compatibility') return 'compatibility';
                 return 'settings';
             case 'rolesync-preset':
             case 'compatibility':
+            case 'raters':
                 return 'settings';
             case 'settings':
                 return 'review';
@@ -199,11 +227,33 @@
                 }
                 return true;
             case 'teique-report':
+                if (is360()) {
+                    syncIndividuals();
+                    if (state.targetMode !== 'individuals' || state.individuals.length !== 1) {
+                        alert('A 360° is for one candidate at a time. Go back to Target and select one candidate.');
+                        return false;
+                    }
+                    state.report = REPORT_360;
+                    return true;
+                }
                 if (!state.report) {
                     alert('Select a report.');
                     return false;
                 }
                 return true;
+            case 'raters': {
+                const raters = filledRaters();
+                if (!raters.length) {
+                    alert('Add at least one rater.');
+                    return false;
+                }
+                const incomplete = raters.filter(function (r) { return !r.name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email); });
+                if (incomplete.length) {
+                    alert('Each rater needs a name and a valid email address (' + incomplete.length + ' to finish).');
+                    return false;
+                }
+                return true;
+            }
             case 'rolesync-preset':
                 if (!state.rolesyncPreset) {
                     alert('Choose a RoleSync preset.');
@@ -251,8 +301,15 @@
 
     function buildReportGrid() {
         const isGroup = state.teiqueReportScope === 'group';
+        const isThreeSixty = state.teiqueReportScope === '360';
 
-        /* Form toggle and add-ons are individual-only */
+        /* Form toggle and add-ons are individual-only; a 360° uses the full form and has one report */
+        if (isThreeSixty) {
+            state.teiqueForm = 'full';
+            state.addOns = [];
+            state.report = REPORT_360;
+            setSegActive('awFormSeg', 'full');
+        }
         if (isGroup) {
             state.teiqueForm = 'full';
             state.addOns = [];
@@ -262,12 +319,14 @@
         const list = REPORTS[state.teiqueReportScope] || REPORTS.individual;
         const grid = document.getElementById('awReportGrid');
         const hint = document.getElementById('awReportHint');
-        hint.textContent = isGroup
+        hint.textContent = isThreeSixty
+            ? 'The candidate rates themself, and the raters you add next rate them too. The report compares the two views, by rater group.'
+            : isGroup
             ? 'Select a group report. Some reports require 2+ completed questionnaires.'
             : 'Select an individual report.';
         grid.innerHTML = list.map(function (r) {
             const sel = state.report === r.name ? ' selected' : '';
-            const price = AC ? AC.reportCardPrice(r.name, state.teiqueReportScope, state.teiqueForm) : '';
+            const price = AC && !isThreeSixty ? AC.reportCardPrice(r.name, state.teiqueReportScope, state.teiqueForm) : '';
             return '<div class="report-pick-card' + sel + '" data-report="' + r.name + '">' +
                 reportCoverImg(r.name) +
                 '<b>' + r.name + '</b>' +
@@ -286,12 +345,97 @@
         if (formHint) formHint.textContent = FORM_HINTS[state.teiqueForm] || '';
 
         const formSection = document.getElementById('awFormSection');
-        if (formSection) formSection.style.display = isGroup ? 'none' : '';
+        if (formSection) formSection.style.display = isGroup || isThreeSixty ? 'none' : '';
 
         const addonSection = document.getElementById('awAddonSection');
-        if (addonSection) addonSection.style.display = isGroup ? 'none' : '';
+        if (addonSection) addonSection.style.display = isGroup || isThreeSixty ? 'none' : '';
+
+        /* a 360° is for one candidate: say so here, before the Next button refuses */
+        let note = document.getElementById('aw360Note');
+        if (!note) {
+            note = document.createElement('div');
+            note.id = 'aw360Note';
+            note.className = 'aw-360-note';
+            grid.parentNode.appendChild(note);
+        }
+        syncIndividuals();
+        const picked = state.targetMode === 'individuals' ? state.individuals.length : 0;
+        note.textContent = state.targetMode !== 'individuals'
+            ? 'A 360° is for one candidate at a time, not a group. Go back to Target and select one candidate.'
+            : 'A 360° is for one candidate at a time. You selected ' + picked + '; go back to Target and keep one.';
+        note.hidden = !isThreeSixty || picked === 1;
 
         syncAddonCards();
+    }
+
+    /* ---------- 360° raters step ---------- */
+    function escHtml(s) {
+        return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+    }
+    function buildRaters() {
+        const who = state.individuals[0];
+        document.getElementById('awRaterSelf').innerHTML = who
+            ? '<span class="avatar-sm">' + escHtml(who.initials) + '</span><div><b>' + escHtml(who.name) + '</b><small>Rates themself (self-rating)</small></div>'
+            : '';
+        const box = document.getElementById('awRaterGroups');
+        box.innerHTML = state.raterGroups.map(function (g, gi) {
+            const n = g.raters.filter(function (r) { return (r.name || '').trim() || (r.email || '').trim(); }).length;
+            return '<div class="aw-rgroup" data-g="' + gi + '">' +
+                '<div class="aw-rgroup-head"><h4>' + escHtml(g.label) + '</h4><span class="aw-count">' + n + ' rater' + (n === 1 ? '' : 's') + '</span>' +
+                (RATER_GROUPS.indexOf(g.label) === -1 ? '<button type="button" class="aw-link aw-remove-group" data-act="remove-group">Remove group</button>' : '') + '</div>' +
+                g.raters.map(function (r, ri) {
+                    return '<div class="aw-rater" data-r="' + ri + '">' +
+                        '<input class="form-input aw-name" placeholder="Full name" aria-label="' + escHtml(g.label) + ' rater name" value="' + escHtml(r.name) + '">' +
+                        '<input class="form-input aw-email" type="email" placeholder="name@company.com" aria-label="' + escHtml(g.label) + ' rater email" value="' + escHtml(r.email) + '">' +
+                        '<button type="button" class="aw-x" data-act="remove" aria-label="Remove this rater">×</button></div>';
+                }).join('') +
+                '<button type="button" class="aw-link" data-act="add">+ Add ' + escHtml(g.label.toLowerCase()) + ' rater</button></div>';
+        }).join('');
+        document.getElementById('awMinGroup').value = String(state.minGroupSize);
+    }
+    function wireRaters() {
+        const box = document.getElementById('awRaterGroups');
+        box.addEventListener('input', function (e) {
+            const row = e.target.closest('.aw-rater'), grp = e.target.closest('.aw-rgroup');
+            if (!row || !grp) return;
+            const r = state.raterGroups[+grp.dataset.g].raters[+row.dataset.r];
+            if (e.target.classList.contains('aw-name')) r.name = e.target.value;
+            if (e.target.classList.contains('aw-email')) r.email = e.target.value;
+            const g = state.raterGroups[+grp.dataset.g];
+            const n = g.raters.filter(function (x) { return (x.name || '').trim() || (x.email || '').trim(); }).length;
+            grp.querySelector('.aw-count').textContent = n + ' rater' + (n === 1 ? '' : 's');
+        });
+        box.addEventListener('click', function (e) {
+            const btn = e.target.closest('[data-act]'), grp = e.target.closest('.aw-rgroup');
+            if (!btn || !grp) return;
+            const g = state.raterGroups[+grp.dataset.g];
+            if (btn.dataset.act === 'add') g.raters.push({ name: '', email: '' });
+            if (btn.dataset.act === 'remove') {
+                g.raters.splice(+btn.closest('.aw-rater').dataset.r, 1);
+                if (!g.raters.length) g.raters.push({ name: '', email: '' });
+            }
+            if (btn.dataset.act === 'remove-group') state.raterGroups.splice(+grp.dataset.g, 1);
+            buildRaters();
+            if (btn.dataset.act === 'add') {
+                const rows = box.querySelectorAll('.aw-rgroup[data-g="' + grp.dataset.g + '"] .aw-name');
+                if (rows.length) rows[rows.length - 1].focus();
+            }
+        });
+        document.getElementById('awAddGroup').addEventListener('click', function () {
+            const input = document.getElementById('awNewGroupName'), label = input.value.trim();
+            if (!label) { input.focus(); return; }
+            if (state.raterGroups.some(function (g) { return g.label.toLowerCase() === label.toLowerCase(); })) {
+                alert('There is already a group called ' + label + '.');
+                return;
+            }
+            state.raterGroups.push({ label: label, raters: [{ name: '', email: '' }] });
+            input.value = '';
+            buildRaters();
+        });
+        document.getElementById('awNewGroupName').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); document.getElementById('awAddGroup').click(); }
+        });
+        document.getElementById('awMinGroup').addEventListener('change', function (e) { state.minGroupSize = +e.target.value; });
     }
 
     function syncAddonCards() {
@@ -465,6 +609,7 @@
         finishBtn.style.display = slide === 'review' ? '' : 'none';
 
         if (slide === 'teique-report') buildReportGrid();
+        if (slide === 'raters') buildRaters();
         if (slide === 'review') buildReview();
     }
 
@@ -480,7 +625,7 @@
             targetHtml = '<div class="review-row"><span class="review-label">Candidates</span><span class="review-val">' +
                 state.individuals.map(function (i) { return i.name; }).join(', ') + '</span></div>';
             targetHtml += '<div class="review-row"><span class="review-label">Respondents</span><span class="review-val">' +
-                count + ' candidate' + (count === 1 ? '' : 's') + '</span></div>';
+                (is360() ? '1 candidate and ' + filledRaters().length + ' raters' : count + ' candidate' + (count === 1 ? '' : 's')) + '</span></div>';
         }
 
         let assessHtml = '';
@@ -491,7 +636,22 @@
         } else {
             assessHtml = '<div class="review-row"><span class="review-label">Instrument</span><span class="review-val">' +
                 (INSTRUMENT_LABELS[state.instrument] || state.instrument || '—') + '</span></div>';
-            if (state.instrument === 'teique') {
+            if (is360()) {
+                const raters = filledRaters();
+                const byGroup = state.raterGroups.map(function (g) {
+                    const n = raters.filter(function (r) { return r.group === g.label; }).length;
+                    return n ? g.label + ' ' + n : '';
+                }).filter(Boolean).join(' · ');
+                assessHtml += '<div class="review-row"><span class="review-label">Report scope</span><span class="review-val">360° report</span></div>';
+                assessHtml += '<div class="review-row"><span class="review-label">Form</span><span class="review-val">Full Form</span></div>';
+                assessHtml += '<div class="review-row"><span class="review-label">Report</span><span class="review-val">TEIQue 360° Report</span></div>';
+                assessHtml += '<div class="review-row"><span class="review-label">Self-rating</span><span class="review-val">' +
+                    escHtml(state.individuals.length ? state.individuals[0].name : '—') + '</span></div>';
+                assessHtml += '<div class="review-row"><span class="review-label">Raters</span><span class="review-val">' +
+                    raters.length + ' (' + escHtml(byGroup) + ')</span></div>';
+                assessHtml += '<div class="review-row"><span class="review-label">Group shown from</span><span class="review-val">' +
+                    state.minGroupSize + ' rater' + (state.minGroupSize === 1 ? '' : 's') + '</span></div>';
+            } else if (state.instrument === 'teique') {
                 assessHtml += '<div class="review-row"><span class="review-label">Report scope</span><span class="review-val">' +
                     (state.teiqueReportScope === 'group' ? 'Group report' : 'Individual report') + '</span></div>';
                 if (state.teiqueReportScope !== 'group') {
@@ -519,7 +679,7 @@
 
         const settingsHtml = buildSettingsReview();
         const promoHtml = buildPromoSection();
-        const cartHtml = buildCart();
+        const cartHtml = is360() && !AC ? '' : buildCart();
 
         document.getElementById('awReviewContent').innerHTML =
             '<div class="review-block"><h4>Target</h4>' + targetHtml + '</div>' +
@@ -656,6 +816,10 @@
         state.reportDelivery = 'coach';
         state.deadline = 'none';
         state.selectedPromo = null;
+        state.raterGroups = freshRaterGroups();
+        state.minGroupSize = 1;
+        const newGroup = document.getElementById('awNewGroupName');
+        if (newGroup) newGroup.value = '';
 
         document.querySelectorAll('#awCandList .cand-row[data-new]').forEach(function (r) { r.remove(); });
         document.querySelectorAll('#awCandList .custom-checkbox.checked').forEach(function (cb) {
@@ -975,6 +1139,7 @@
         }
 
         wireNewCandidate();
+        wireRaters();
     }
 
     function wireNewCandidate() {
@@ -1052,7 +1217,11 @@
             openAssignmentWizard({ mode: 'toolkit' });
             return;
         }
-        if (inst) {
+        if (inst === 'teique' && params.get('scope') === '360') {
+            openAssignmentWizard({ instrument: inst });
+            state.teiqueReportScope = '360';
+            setSegActive('awTeiqueScopeSeg', '360');
+        } else if (inst) {
             openAssignmentWizard({ instrument: inst });
         } else {
             openAssignmentWizard();

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEIQue 360° Report · James Okoro | Psychometric Laboratory for Coaches</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- the report's charts also use Inter 500/700 and Manrope 400-800 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .status-card { margin-bottom: var(--spacing-narrow-l); }
+        .r360-cover { width: 64px; height: 90px; border-radius: var(--radius-small); object-fit: cover; box-shadow: var(--shadow-card); flex-shrink: 0; }
+        .r360-head { display: flex; gap: var(--spacing-narrow-l); align-items: center; min-width: 0; }
+        .r360-nav { position: sticky; top: calc(var(--topbar-height) + 8px); z-index: 5; margin-bottom: var(--spacing-narrow-l); padding-bottom: 0; }
+        .r360-nav .tabs { overflow-x: auto; scrollbar-width: none; }
+        .r360-nav .tab { white-space: nowrap; }
+        .r360-groups { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: var(--spacing-narrow-m) 0; font-family: var(--font-inter); font-size: 13px; color: var(--color-gray); }
+        .r360-groups .chip { font-size: 13px; padding: 5px 12px; }
+        .r360-groups[hidden] { display: none; }
+        #r360tip { position: fixed; z-index: 60; pointer-events: none; background: var(--color-black); color: #fff; font: 500 12px/1.35 var(--font-inter); padding: 6px 9px; border-radius: 8px; max-width: 260px; opacity: 0; transition: opacity .08s; }
+        #r360tip.on { opacity: 1; }
+        @media (max-width: 680px) { .r360-cover { display: none; } }
+    </style>
+</head>
+<body data-page="reports" data-title="Report" data-subtitle="">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <a class="back-link" id="backLink" href="assignment-360.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+                <span id="backLabel">Back to assignment</span>
+            </a>
+
+            <!-- Report header -->
+            <div class="card status-card">
+                <div class="status-bar">
+                    <div class="r360-head">
+                        <img class="r360-cover" src="assets/report-covers/teique-360.png" alt="TEIQue 360° Report cover">
+                        <div style="min-width:0;">
+                            <div style="display:flex;align-items:center;gap:var(--spacing-narrow-s);">
+                                <span class="status-dot green"></span>
+                                <span class="subhead" style="margin-bottom:0;">Report ready</span>
+                            </div>
+                            <h2 class="assign-h-title" style="margin-top:var(--spacing-narrow-s);display:flex;align-items:center;gap:var(--spacing-narrow-s);flex-wrap:wrap;">TEIQue <span class="form-tag">360°</span> Report</h2>
+                            <p class="assign-h-sub" id="r360Who">James Okoro</p>
+                            <div class="assign-meta" id="r360Meta"></div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <button class="primary-button" onclick="Coach360.downloadPdf()">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                            Download PDF
+                        </button>
+                        <a class="secondary-button" href="assignment-360.html" style="text-decoration:none;">Open assignment</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sections and rater-group filter -->
+            <div class="card r360-nav">
+                <div class="tabs" role="tablist" id="r360Tabs">
+                    <button class="tab active" role="tab" data-tab="results" aria-selected="true">Results</button>
+                    <button class="tab" role="tab" data-tab="factors" aria-selected="false">Factors and facets</button>
+                    <button class="tab" role="tab" data-tab="development" aria-selected="false">Development</button>
+                    <button class="tab" role="tab" data-tab="about" aria-selected="false">About the report</button>
+                    <button class="tab" role="tab" data-tab="coach" aria-selected="false">Coach data</button>
+                </div>
+                <div class="r360-groups" id="r360Groups" aria-label="Rater groups in the charts"></div>
+            </div>
+
+            <!-- Report content (rendered into a shadow root so its styles stay apart from the app's) -->
+            <div id="r360"></div>
+        </section>
+    </main>
+    <div id="r360tip" role="tooltip"></div>
+
+    <script src="teique360/data-james-okoro.js"></script>
+    <script src="teique360/library.js"></script>
+    <script src="teique360/model.js"></script>
+    <script src="teique360/svg.js"></script>
+    <script src="teique360/charts/radial.js"></script>
+    <script src="teique360/charts/linear.js"></script>
+    <script src="teique360/charts/overview.js"></script>
+    <script src="teique360/content.js"></script>
+    <script src="teique360/coach360.js"></script>
+    <script src="app.js"></script>
+    <script>
+        (function () {
+            const T = window.TEIQ, data = window.TEIQ_COACH_360, lib = window.TEIQ_TEXT;
+            const esc = T.svg.esc;
+
+            // which report sections go under which tab (ids from content.js)
+            const TABS = {
+                results: [['global', 'profile'], ['raters'], ['summary'], ['map', 'gap']],
+                factors: [T.GROUPS.map(function (g) { return g.id; })],
+                development: [['development']],
+                about: [['about', 'measures'], ['contents', 'ack']],
+                coach: [['coach']]
+            };
+
+            // header: who, when, how many raters
+            const v = T.view(data);
+            document.getElementById('r360Who').textContent = data.subject.name + ' · 360° report';
+            document.getElementById('r360Meta').innerHTML =
+                '<span><b>Generated</b> ' + Coach360.date(data.report.date) + '</span>' +
+                '<span><b>Raters</b> ' + v.responded + ' of ' + v.invited + ' responded</span>' +
+                '<span><b>Norm</b> ' + esc(data.report.norm || '') + '</span>';
+
+            // back link follows where the coach came from
+            const from = new URLSearchParams(location.search).get('from');
+            if (from === 'reports') {
+                document.getElementById('backLink').href = 'reports.html';
+                document.getElementById('backLabel').textContent = 'Back to Reports';
+            }
+
+            // report content
+            const host = document.getElementById('r360');
+            const shadow = host.attachShadow({ mode: 'open' });
+            shadow.innerHTML = '<link rel="stylesheet" href="teique360/results.css">' +
+                Object.keys(TABS).map(function (t) { return '<div class="tab-panel" data-panel="' + t + '"' + (t === 'results' ? '' : ' hidden') + '></div>'; }).join('');
+            const hidden = new Set();
+            let current = 'results';
+
+            function render() {
+                const built = T.report.build(data, lib, { fill: 'none', marks: false, scales: 'pair', view: { hideGroups: Array.from(hidden) } });
+                const byId = {};
+                built.sections.forEach(function (s) { byId[s.id] = s; });
+                const sec = function (s) {
+                    return '<section class="sec" style="--c:' + (s.color || '') + '">' + s.blocks.map(function (b) { return typeof b === 'string' ? b : b.html; }).join('') + '</section>';
+                };
+                Object.keys(TABS).forEach(function (t) {
+                    shadow.querySelector('[data-panel="' + t + '"]').innerHTML = TABS[t].map(function (row) {
+                        const parts = row.filter(function (id) { return byId[id]; }).map(function (id) { return sec(byId[id]); });
+                        if (!parts.length) return '';
+                        return row.length > 1 && t !== 'factors' ? '<div class="grid2">' + parts.join('') + '</div>' : parts.join('');
+                    }).join('');
+                });
+                // hover values: each chart's <title> becomes the tooltip text
+                shadow.querySelectorAll('svg title').forEach(function (el) { el.parentNode.setAttribute('data-tip', el.textContent); el.remove(); });
+            }
+
+            // tabs
+            const tabs = Array.prototype.slice.call(document.querySelectorAll('#r360Tabs .tab'));
+            function show(t, scroll) {
+                if (!TABS[t]) t = 'results';
+                current = t;
+                tabs.forEach(function (b) { const on = b.dataset.tab === t; b.classList.toggle('active', on); b.setAttribute('aria-selected', on); });
+                shadow.querySelectorAll('.tab-panel').forEach(function (p) { p.hidden = p.dataset.panel !== t; });
+                document.getElementById('r360Groups').hidden = !(t === 'results' || t === 'factors') || !v.shownGroups.length;
+                if (scroll) {
+                    // bring the panel's first section just below the sticky tab bar
+                    const nav = document.querySelector('.r360-nav'), navTop = parseFloat(getComputedStyle(nav).top) || 0;
+                    const y = host.getBoundingClientRect().top + window.scrollY - navTop - nav.offsetHeight - 16;
+                    if (window.scrollY > y) window.scrollTo({ top: y, behavior: 'smooth' });
+                }
+                if (history.replaceState) history.replaceState(null, '', location.pathname + location.search + (t === 'results' ? '' : '#' + t));
+            }
+            tabs.forEach(function (b) { b.addEventListener('click', function () { show(b.dataset.tab, true); }); });
+
+            // rater groups the coach can switch off in the charts
+            const groupsEl = document.getElementById('r360Groups');
+            groupsEl.innerHTML = '<span>Rater groups in the charts:</span>' + v.shownGroups.map(function (g) {
+                return '<button type="button" class="chip active" data-g="' + esc(g.id) + '" aria-pressed="true">' + esc(g.label) + ' (' + g.responded + ')</button>';
+            }).join('');
+            groupsEl.addEventListener('click', function (e) {
+                const b = e.target.closest('[data-g]'); if (!b) return;
+                const id = b.dataset.g, wasHidden = hidden.has(id);
+                wasHidden ? hidden.delete(id) : hidden.add(id);
+                b.classList.toggle('active', wasHidden); b.setAttribute('aria-pressed', wasHidden);
+                render(); show(current, false);
+            });
+
+            // tooltip
+            const tip = document.getElementById('r360tip');
+            function showTip(e) {
+                const el = e.composedPath ? e.composedPath().find(function (n) { return n.getAttribute && n.getAttribute('data-tip'); }) : null;
+                if (!el) { tip.classList.remove('on'); return; }
+                tip.textContent = el.getAttribute('data-tip');
+                const w = tip.offsetWidth, h = tip.offsetHeight;
+                tip.style.left = Math.max(8, Math.min(innerWidth - w - 8, e.clientX + 14)) + 'px';
+                tip.style.top = (e.clientY + h + 24 > innerHeight ? e.clientY - h - 12 : e.clientY + 16) + 'px';
+                tip.classList.add('on');
+            }
+            host.addEventListener('pointermove', showTip);
+            host.addEventListener('pointerdown', showTip);
+            host.addEventListener('pointerleave', function () { tip.classList.remove('on'); });
+
+            render();
+            show((location.hash || '').slice(1) || 'results', false);
+        })();
+    </script>
+</body>
+</html>

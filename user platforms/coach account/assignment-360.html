@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment · TEIQue 360° | Psychometric Laboratory for Coaches</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="app.css">
+    <style>
+        .status-card { margin-bottom: var(--spacing-narrow-l); }
+        .comp-data-head { font-family: var(--font-manrope); font-weight: var(--font-weight-semibold); font-size: 13px; color: var(--color-primary-full); margin: var(--spacing-narrow-m) 0 var(--spacing-narrow-s); }
+        .rater-group-head { display: flex; align-items: center; gap: var(--spacing-narrow-s); padding: var(--spacing-narrow-s) var(--spacing-narrow-l); background: #f7fbfe; border-top: 1px solid var(--color-light-gray); font-family: var(--font-manrope); font-weight: var(--font-weight-semibold); font-size: 13px; color: var(--color-primary-full); }
+        .member-box .rater-group-head:first-child { border-top: none; }
+        .rater-group-head span { margin-left: auto; font-family: var(--font-inter); font-weight: 400; color: var(--color-gray); font-size: 12px; }
+        .member-box .cand-row { border-top: 1px solid var(--color-light-gray); }
+        .member-box .rater-group-head + .cand-row { border-top: none; }
+        .rater-self { border-bottom: 1px solid var(--color-light-gray); }
+    </style>
+</head>
+<!-- TEIQue 360° assignment (completed): the candidate rates themself and is rated by their raters. -->
+<body data-page="assignments" data-title="Assignment" data-subtitle="">
+    <main class="app-main">
+        <header class="app-topbar" data-topbar></header>
+
+        <section class="page-content">
+            <a class="back-link" href="assignments.html">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg>
+                Back to Assignments
+            </a>
+
+            <!-- Status / overview header -->
+            <div class="card status-card">
+                <div class="status-bar">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:var(--spacing-narrow-s);">
+                            <span class="status-dot green"></span>
+                            <span class="subhead" style="margin-bottom:0;">Completed assignment</span>
+                        </div>
+                        <h2 class="assign-h-title" style="margin-top:var(--spacing-narrow-s);display:flex;align-items:center;gap:var(--spacing-narrow-s);flex-wrap:wrap;">TEIQue <span class="form-tag">360°</span></h2>
+                        <p class="assign-h-sub">James Okoro · 360° assignment</p>
+                        <div class="assign-meta" id="a360Meta">
+                            <span><b>Issued</b> 1 Jun 2026</span>
+                            <span><b>Completed</b> 12 Jun 2026</span>
+                            <span><b>Raters</b> 9 of 9 responded</span>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:var(--spacing-narrow-s);flex-wrap:wrap;">
+                        <a class="primary-button" href="report-360.html" style="text-decoration:none;">
+                            <img class="btn-icon" src="assets/icons/arrow.svg" alt="">
+                            Read report
+                        </a>
+                        <div class="export-menu">
+                            <button class="export-trigger" onclick="toggleExportMenu(this)">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg>
+                                Export data
+                                <svg class="caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                            <div class="export-dropdown">
+                                <button onclick="exportData('James Okoro 360° data','CSV')"><img src="assets/icons/csv.svg" alt="">Export as CSV</button>
+                                <button onclick="exportData('James Okoro 360° data','Excel')"><img src="assets/icons/excel.svg" alt="">Export as Excel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-grid">
+                <!-- LEFT: Questionnaire + generated report + data -->
+                <div class="card">
+                    <h2 class="card-title">Questionnaire</h2>
+                    <div class="qnr-block">
+                        <span class="qnr-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M9 3.5h6v3H9z"/><path d="M8.5 11l1.6 1.6 3-3.2M8.5 16.5h7"/></svg></span>
+                        <div class="qnr-info">
+                            <div class="qnr-name">TEIQue <span class="form-tag">360°</span></div>
+                            <p class="qnr-meta">Self-rating and 9 rater questionnaires · English (UK) · Completed 12 Jun 2026</p>
+                        </div>
+                    </div>
+
+                    <div class="divider"></div>
+
+                    <p class="comp-data-head" style="margin-top:0;">Generated report</p>
+                    <div class="gen-reports">
+                        <div class="gen-report-row">
+                            <img class="file-icon" src="assets/icons/pdf.svg" alt="PDF">
+                            <div class="gen-report-meta"><div class="gen-report-name">TEIQue 360° Report</div><div class="gen-report-sub">Generated 12 Jun 2026 · PDF</div></div>
+                            <div class="report-actions"><a class="pl-action-button" href="report-360.html" style="width:auto;">Read</a><a class="pl-action-button ghost" href="#" onclick="Coach360.downloadPdf();return false;" style="width:auto;">Download</a></div>
+                        </div>
+                    </div>
+                    <p class="settings-intro" style="margin-top:var(--spacing-narrow-m);">The report combines James's own ratings with the raters' answers, by rater group. A 360° has one report type.</p>
+
+                    <div class="divider"></div>
+
+                    <p class="comp-data-head" style="margin-top:0;">Download data</p>
+                    <div class="data-downloads">
+                        <button class="data-dl" onclick="downloadData('Questionnaire answers (self and raters)')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Answers</span><span class="data-dl-format">CSV</span></button>
+                        <button class="data-dl" onclick="downloadData('Raw scores')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Raw scores</span><span class="data-dl-format">CSV</span></button>
+                        <button class="data-dl" onclick="downloadData('Percentile scores by rater group')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 20h14"/></svg><span class="data-dl-label">Percentiles by group</span><span class="data-dl-format">CSV</span></button>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Target and raters -->
+                <div class="card">
+                    <div class="section-head">
+                        <h2 class="card-title">Target</h2>
+                        <a href="candidate.html">Go to candidate</a>
+                    </div>
+                    <div class="member-box">
+                        <div class="cand-row">
+                            <span class="avatar-sm">JO</span>
+                            <div class="cand-info"><div class="cand-name"><b>James Okoro</b></div><div class="cand-email">Self-rating · james.okoro@acme.com</div></div>
+                            <span class="highlight-tag green">Completed</span>
+                        </div>
+                    </div>
+
+                    <div class="section-head" style="margin-top:var(--spacing-narrow-l);">
+                        <h2 class="card-title">Raters</h2>
+                        <span class="highlight-tag green" id="a360RaterCount">9 / 9</span>
+                    </div>
+                    <div class="member-box" id="a360Raters"></div>
+
+                    <div class="divider"></div>
+                    <p class="subhead">Completion</p>
+                    <p style="font-family:var(--font-inter);font-size:14px;color:var(--color-gray);line-height:var(--line-height-normal);">
+                        Invited <b style="color:var(--color-black);">1 Jun 2026</b> · last rater completed <b style="color:var(--color-black);">12 Jun 2026</b>. Raters see only their own questionnaire; the report shows each group's average, not individual answers.
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="teique360/data-james-okoro.js"></script>
+    <script src="teique360/coach360.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Raters by group, from the same data the report is made from
+        (function () {
+            const d = window.TEIQ_COACH_360, esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+            let html = '';
+            (d.groups || []).forEach(function (g) {
+                html += '<div class="rater-group-head">' + esc(g.label) + '<span>' + g.responded + ' of ' + g.invited + ' responded</span></div>';
+                (g.raters || []).forEach(function (r) {
+                    const yrs = r.known_years === 1 ? '1 year' : r.known_years + ' years';
+                    html += '<div class="cand-row"><span class="avatar-sm">' + Coach360.initials(r.name) + '</span>' +
+                        '<div class="cand-info"><div class="cand-name"><b>' + esc(r.name) + '</b></div><div class="cand-email">Known for ' + yrs + ' · ' + esc(r.contact) + ' contact</div></div>' +
+                        '<span class="highlight-tag green">Completed</span></div>';
+                });
+            });
+            document.getElementById('a360Raters').innerHTML = html;
+            document.getElementById('a360RaterCount').textContent = d.others.responded + ' / ' + d.others.invited;
+        })();
+    </script>
+</body>
+</html>

@@ -71,6 +71,10 @@ Petros asked for better readability throughout, larger chart text, larger Low/Hi
 Nothing leaves the computer: files are read in the browser. Inside claude.ai (the published hub) the PDF button is hidden because pages there cannot print; use the HTML download.
 After changing `src/report/report.css`, the fonts or the report images, run `node tools/build-hub-embed.js` (it refreshes `src/hub/embed.js`, which the exports use).
 
+### In the coach account (2026-11-18)
+
+The 360° results also appear in the coach account prototype (`../user platforms/coach account/`): an assignment page, a results page in the app shell, a Reports entry and a 360° option in the Add Assignment wizard. `node tools/sync-coach-account.js` copies the report code, wording and a candidate's data there and builds that candidate's PDF; run it after changing the report.
+
 ## Look at it
 
 - `hub.html`: **the Report Hub**, for making reports and charts from a data file (above).

@@ -14,6 +14,27 @@
         .assign-table .assign-row { grid-template-columns: 2.6fr 1fr 1fr 1fr 1.6fr 56px; }
         .assign-toolbar { margin-bottom: var(--spacing-narrow-l); }
 
+        /* 360° raters step */
+        .aw-self { display: flex; align-items: center; gap: var(--spacing-narrow-m); padding: var(--spacing-narrow-m); border-radius: var(--radius-standard); background: #f7fbfe; border: 1px solid var(--color-light-gray); margin-bottom: var(--spacing-narrow-l); font-family: var(--font-inter); font-size: 14px; }
+        .aw-self b { font-weight: var(--font-weight-semibold); }
+        .aw-self small { display: block; color: var(--color-gray); font-size: 12px; }
+        .aw-rgroup { border: 1px solid var(--color-light-gray); border-radius: var(--radius-standard); padding: var(--spacing-narrow-m); margin-bottom: var(--spacing-narrow-m); }
+        .aw-rgroup-head { display: flex; align-items: center; gap: var(--spacing-narrow-s); margin-bottom: var(--spacing-narrow-s); }
+        .aw-rgroup-head h4 { margin: 0; font-family: var(--font-manrope); font-weight: var(--font-weight-bold); font-size: 15px; color: var(--color-primary-full); }
+        .aw-rgroup-head .aw-count { font-family: var(--font-inter); font-size: 12px; color: var(--color-gray); }
+        .aw-rgroup-head .aw-remove-group { margin-left: auto; }
+        .aw-rater { display: grid; grid-template-columns: 1fr 1.3fr 34px; gap: var(--spacing-narrow-s); margin-bottom: var(--spacing-narrow-s); align-items: center; }
+        .aw-rater .form-input { margin: 0; }
+        .aw-x { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--color-light-gray); background: var(--color-white); color: var(--color-gray); cursor: pointer; font-size: 18px; line-height: 1; }
+        .aw-x:hover { color: var(--color-error-full); border-color: var(--color-error-light); }
+        .aw-link { border: 0; background: none; padding: 4px 0; color: var(--color-primary-full); font-family: var(--font-manrope); font-weight: var(--font-weight-semibold); font-size: 13px; cursor: pointer; }
+        .aw-link:hover { color: var(--color-secondary-full); }
+        .aw-addgroup { display: flex; gap: var(--spacing-narrow-s); flex-wrap: wrap; }
+        .aw-addgroup .form-input { flex: 1; min-width: 180px; margin: 0; }
+        .aw-select { max-width: 220px; }
+        .aw-360-note { margin-top: var(--spacing-narrow-m); padding: var(--spacing-narrow-m); border-radius: var(--radius-small); background: #fff6df; color: #8a5a00; font-family: var(--font-inter); font-size: 13px; }
+        @media (max-width: 560px) { .aw-rater { grid-template-columns: 1fr 34px; } .aw-rater .aw-email { grid-column: 1; } .aw-rater .aw-x { grid-row: 1 / span 2; grid-column: 2; } }
+
         @media (max-width: 680px) {
             .assign-table .assign-row { grid-template-columns: 1fr 1fr !important; }
         }
@@ -118,6 +139,17 @@
                         <div data-label="Issued">28 May 2026</div>
                         <div data-label="Due">10 Jun 2026</div>
                         <div data-label="Completion"><div class="progress"><div class="progress-track"><div class="progress-fill" style="width:40%"></div></div><span class="progress-label">8/20</span></div></div>
+                        <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
+                    </div>
+
+                    <div class="pl-table-row assign-row" data-type="individual" data-status="completed" onclick="location.href='assignment-360.html'">
+                        <div data-label="Questionnaire" class="cell-assignment">
+                            <div><div class="assign-name"><b>TEIQue</b> <span class="form-tag">360°</span></div><div class="assign-target">James Okoro · 9 raters</div></div>
+                        </div>
+                        <div data-label="Type"><span class="highlight-tag">Individual</span></div>
+                        <div data-label="Issued">1 Jun 2026</div>
+                        <div data-label="Due">15 Jun 2026</div>
+                        <div data-label="Completion"><span class="highlight-tag green">Completed</span></div>
                         <div class="cell-open"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></div>
                     </div>
 
@@ -338,6 +370,7 @@
                 <div class="seg" id="awTeiqueScopeSeg">
                     <button class="active" data-scope="individual">Individual report</button>
                     <button data-scope="group">Group report</button>
+                    <button data-scope="360">360° report</button>
                 </div>
 
                 <div class="wiz-settings-block" id="awFormSection">
@@ -369,6 +402,27 @@
                             <span class="addon-info"><b>DISC Report</b><span class="pick-card-price"></span><span class="pick-card-desc">Behavioural style profile</span></span>
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <!-- SLIDE: 360° raters -->
+            <div class="wiz-slide" data-slide="raters">
+                <p class="aw-slide-hint" id="awRatersIntro">The candidate rates themself, and the people they work with rate them too. Add the raters by group; each receives their own questionnaire.</p>
+                <div class="aw-self" id="awRaterSelf"></div>
+                <div id="awRaterGroups"></div>
+                <div class="aw-addgroup">
+                    <input class="form-input" id="awNewGroupName" placeholder="Add another rater group, e.g. Clients" aria-label="New rater group name">
+                    <button class="secondary-button" type="button" id="awAddGroup">Add group</button>
+                </div>
+                <hr class="wiz-divider">
+                <div class="wiz-settings-block">
+                    <label class="form-label" for="awMinGroup">Show a rater group on its own from</label>
+                    <select class="form-input aw-select" id="awMinGroup">
+                        <option value="1">1 rater</option>
+                        <option value="2">2 raters</option>
+                        <option value="3">3 raters</option>
+                    </select>
+                    <p class="aw-slide-hint" style="margin-top:var(--spacing-narrow-s);margin-bottom:0;">A smaller group is not shown separately in the report; its raters still count in the average of all raters.</p>
                 </div>
             </div>
 

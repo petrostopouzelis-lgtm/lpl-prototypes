@@ -14,7 +14,8 @@
         groupSort: 'team-grouping.png',
         rolesync: 'rolesync.png',
         scanin: 'scan-in.png',
-        threeRs: '3rs-sample.png'
+        threeRs: '3rs-sample.png',
+        teique360: 'teique-360.png'
     };
 
     /* Wizard / inventory report display names → library file */
@@ -27,7 +28,8 @@
         'Team Report': FILES.teamReport,
         'Compatibility': FILES.compatibility,
         'Group-Sort': FILES.groupSort,
-        'RoleSync': FILES.rolesync
+        'RoleSync': FILES.rolesync,
+        'TEIQue 360°': FILES.teique360
     };
 
     function coverPath(filename) {
