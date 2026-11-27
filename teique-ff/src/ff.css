@@ -1,0 +1,24 @@
+/* TEIQue Full Form report: what its pages add to the 360's page styles (teique-360/src/report/report.css).
+   Units are points, as in the Figma frames (595 x 842). */
+h1.title i, .hdr .prod i { font-style: normal; color: #E47C2D; }
+h4.sub.blue { color: #42A2DA; margin: 0; }
+
+/* scale pages: definition beside the score wheel (Figma 238:1542, 238:1578) */
+.row .txt p.lead { margin: 0 0 10pt; }
+.row .gauge { width: 150pt; margin-top: -4pt; }
+
+/* structure page: the score explanation card with the three example wheels */
+.scores-card .lead-row { display: flex; gap: 12pt; align-items: center; margin-bottom: 8pt; }
+.scores-card .lead-row p { flex: 1; min-width: 0; }
+.examples { display: flex; gap: 4pt; flex: none; }
+.examples .ex { width: 62pt; display: flex; flex-direction: column; align-items: center; font: 300 7.5pt/9pt Inter, sans-serif; color: #808080; }
+.examples svg { width: 62pt; height: auto; display: block; }
+
+/* uses page */
+.chart.bubbles { width: 470pt; align-self: center; margin-top: 18pt; }
+
+/* wheel page */
+.chart.wheel-chart { width: 450pt; align-self: center; }
+.quote { margin: 0; text-align: center; }
+.quote blockquote { margin: 0; font: italic 300 12pt/16pt Inter, sans-serif; }
+.quote figcaption { margin-top: 8pt; font: 500 11pt/14pt Inter, sans-serif; }

@@ -61,6 +61,8 @@ The whole site's design system is in `../design-system/`.
 
 ## Current state
 
+- Fourth session (2026-11-27): the **TEIQue Full Form** report (`../teique-ff/`) now runs on this engine and is a second report type in the Report Hub. Shared code changed for it, with the 360 output unchanged (pixel-identical PDF): `build-pdf.js` takes `REPORT_ROOT`/`REPORT_PAGE`/`REPORT_SAMPLE`; the paginator takes `meta.logo`, `noToc`, `tocTitle` and `meta.tocSubNumbers`; the wheel, score wheel and summary graph have a one-score mode (`single`). See `../teique-ff/README.md`.
+
 - Second session (2026-11-14, in the cloud from this repo): equal-ring score wheel and a wheel on every scale, see the README's "Changed 2026-11-14". The page viewer is also published as a private claude.ai page for Petros to review.
 
 - All seven brief steps have a working version: data format and sample, chart options, final charts, A4 pages, PDF generator, web view, integration notes (`INTEGRATION.md`).

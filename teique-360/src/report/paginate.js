@@ -17,7 +17,7 @@
       page.dataset.section = section.id;
       if (!opts.bare) {
         const wm = meta.watermark ? `<div class="wm">${`<span>${meta.watermarkText}</span>`.repeat(18)}</div>` : '';
-        page.innerHTML = `${wm}<header class="hdr"><div class="prod">${meta.product}</div><img class="logo" src="assets/logo-monogram.png" alt="">
+        page.innerHTML = `${wm}<header class="hdr"><div class="prod">${meta.product}</div><img class="logo" src="${meta.logo || 'assets/logo-monogram.png'}" alt="">
           <div class="who"><div>${dateText}</div><div>${T.svg.esc(meta.name)}</div></div></header>
           <div class="body"></div><footer class="ftr"><div class="pg"></div><div class="cr">${T.svg.esc(meta.copyright)}</div></footer>`;
       }
@@ -103,10 +103,12 @@
       const esc = T.svg.esc;
       let items = '', i = 0;
       sections.forEach(s => {
-        if (s.kind !== 'flow' || s.parent) return;
+        // a section can stay out of the contents (noToc) or appear there under a shorter name (tocTitle)
+        if (s.kind !== 'flow' || s.parent || s.noToc) return;
         const subs = (s.tocSubs || []).map(q => ({ title: q.title, num: q.numbered ? s.page.num : '' }))
-          .concat(sections.filter(x => x.parent === s.id).map(x => ({ title: x.title, num: x.page.num })));
-        items += `<div class="grp" style="--c:${s.color || T.BLUE}"><div class="it"><span>${++i}. ${esc(s.title)}</span><span>${s.page.num || ''}</span></div>` +
+          .concat(sections.filter(x => x.parent === s.id && !x.noToc).map(x => ({ title: x.tocTitle || x.title, num: x.page.num })))
+          .map(q => meta.tocSubNumbers === false ? { title: q.title, num: '' } : q);   // the TEIQue report lists facets without page numbers
+        items += `<div class="grp" style="--c:${s.color || T.BLUE}"><div class="it"><span>${++i}. ${esc(s.tocTitle || s.title)}</span><span>${s.page.num || ''}</span></div>` +
           subs.map(q => `<div class="it sub"><span>${esc(q.title)}</span><span>${q.num || ''}</span></div>`).join('') + '</div>';
       });
       toc.page.body.innerHTML = `${toc.headHtml || `<h1 class="title">${esc(toc.title || 'Contents')}</h1>`}<div class="card toc">${items}</div>`;

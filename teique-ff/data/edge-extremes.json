@@ -1,0 +1,40 @@
+{
+ "schema": "teique-ff/1",
+ "report": {
+  "form": "TEIQue-FF",
+  "version": "personal",
+  "language": "en",
+  "norm": "UK",
+  "date": "2025-11-21",
+  "id": "EDGE-FF-EXTREMES",
+  "sample": true
+ },
+ "subject": {
+  "name": "Alexandra Konstantinopoulou-Whitfield"
+ },
+ "settings": {
+  "watermark": false
+ },
+ "self": {
+  "global": 1,
+  "wellbeing": 99,
+  "happiness": 30,
+  "optimism": 31,
+  "self_esteem": 70,
+  "self_control": 71,
+  "emotion_regulation": 50,
+  "impulse_control": 2,
+  "stress_management": 98,
+  "emotionality": 15,
+  "empathy": 85,
+  "emotion_perception": 45,
+  "emotion_expression": 1,
+  "relationships": 99,
+  "sociability": 29,
+  "emotion_management": 72,
+  "assertiveness": 60,
+  "social_awareness": 10,
+  "adaptability": 90,
+  "self_motivation": 40
+ }
+}

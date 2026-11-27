@@ -1,6 +1,7 @@
 // LPL Report Hub (hub.html): choose a report, load a data file, then make the full report or single charts.
-// Everything runs in the browser from the same code as report.html: T.report.build and T.report.paginate
-// for the report, T.charts for the charts. Nothing is uploaded anywhere; a chosen file is read locally.
+// Everything runs in the browser from the same code as the reports' own pages: T.report.build (360) or
+// T.ff.build (Full Form, from ../teique-ff/), T.report.paginate for the pages, T.charts for the charts.
+// Nothing is uploaded anywhere; a chosen file is read locally.
 //
 // Saving: opened by double-click or from a server, files download straight away and "Save as PDF" opens
 // the print dialog. Inside the claude.ai viewer, which allows neither, files go through the viewer's
@@ -14,38 +15,82 @@
   const downloadsReady = inViewer ? window.claude.use('downloads').catch(() => null) : Promise.resolve(null);
 
   // ---------------------------------------------------------------- the report types the hub knows
-  // One entry per report. A new report type adds an entry here with its own data check and outputs.
+  // One entry per report. A new report type adds an entry here, a data check, a build and its charts.
+  const REPORTS = {
+    '360': { schema: 'teique-360/1', form: 'TEIQue-360', sample: 'sample-360', file: 'teique360', title: 'TEIQue 360 Report',
+      files: () => window.TEIQ_FILE_LIST || Object.keys(window.TEIQ_FILES || {}), data: () => window.TEIQ_FILES || {} },
+    ff: { schema: 'teique-ff/1', form: 'TEIQue-FF', sample: 'sample-ff', file: 'teique-ff', title: 'TEIQue Full Form Report',
+      files: () => window.TEIQ_FF_FILE_LIST || [], data: () => window.TEIQ_FF_FILES || {} }
+  };
+  const R = () => REPORTS[state.report];
+  const isFF = () => state.report === 'ff';
+  // The Full Form's code, text and samples live in ../teique-ff/ and load when it is first chosen. In the
+  // published hub they sit in teique-ff/ next to this page instead, so both places are tried.
+  const loadScript = src => new Promise((res, rej) => {
+    const el = document.createElement('script'); el.src = src + V;
+    el.onload = res; el.onerror = () => { el.remove(); rej(new Error('Could not load ' + src)); };
+    document.head.appendChild(el);
+  });
+  let ffP = null;
+  const loadFF = () => ffP || (ffP = (async () => {
+    let base = null;
+    for (const b of ['../teique-ff/', 'teique-ff/']) { try { await loadScript(b + 'data/files.js'); base = b; break; } catch (e) { /* try the next place */ } }
+    if (!base) throw new Error('The Full Form files were not found: teique-ff/ should sit next to teique-360/.');
+    for (const n of window.TEIQ_FF_FILE_LIST || []) await loadScript(base + 'data/' + n + '.js');
+    await loadScript(base + 'text/library.js');
+    await loadScript(base + 'src/content.js');
+    await new Promise(res => { ffCss.onload = ffCss.onerror = res; ffCss.href = base + 'src/ff.css' + V; });
+    return base;
+  })().catch(e => { ffP = null; throw e; }));
+  const ffView = d => ({ data: d, self: d.self, others: d.self, groups: [], shownGroups: [], responded: 0, gap: () => 0 });
   const FACTORS = T.GROUPS.filter(g => g.scored).map(g => g.id);
   const SCALES = ['global'].concat(FACTORS, T.FACET_ORDER);
   const nameOf = id => (id === 'global' ? 'Global score' : T.nameOf(id));
 
   // ---------------------------------------------------------------- state
   const state = {
+    report: '360',
     mode: 'report',
     data: null, source: null, issues: { errors: [], warnings: [] },
     zoom: null,
-    charts: { types: new Set(['profile', 'summary', 'map', 'gap', 'raters', 'wheel', 'strip']), scales: new Set(['global'].concat(FACTORS)) }
+    charts: { types: new Set(['profile', 'summary', 'map', 'gap', 'raters', 'wheel', 'strip', 'wheel-chart']), scales: new Set(['global'].concat(FACTORS)) }
   };
 
   // ---------------------------------------------------------------- data check
   // Follows data/DATA-FORMAT.md. Errors stop the report; warnings are shown and the report still builds.
-  function check(d) {
-    const errors = [], warnings = [];
-    const isScore = x => typeof x === 'number' && isFinite(x) && x >= 1 && x <= 99;
-    const scores = (obj, where) => {
+  const isScore = x => typeof x === 'number' && isFinite(x) && x >= 1 && x <= 99;
+  const scoresCheck = (errors, warnings) => (obj, where) => {
       if (!obj || typeof obj !== 'object') { errors.push(`<b>${where}</b> is missing.`); return; }
       const missing = SCALES.filter(k => obj[k] == null), bad = SCALES.filter(k => obj[k] != null && !isScore(obj[k]));
       if (missing.length) errors.push(`<b>${where}</b> has no score for ${list(missing.map(nameOf))}.`);
       if (bad.length) errors.push(`<b>${where}</b>: ${list(bad.map(k => `${nameOf(k)} (${esc(String(obj[k]))})`))} ${bad.length > 1 ? 'are' : 'is'} not a percentile from 1 to 99.`);
       const odd = SCALES.filter(k => isScore(obj[k]) && !Number.isInteger(obj[k]));
       if (odd.length) warnings.push(`<b>${where}</b>: ${list(odd.map(nameOf))} ${odd.length > 1 ? 'are' : 'is'} not a whole number; the report prints it as given.`);
-    };
-    if (!d || typeof d !== 'object' || Array.isArray(d)) return { errors: ['The file does not hold a report: expected an object with <b>subject</b>, <b>self</b>, <b>others</b> and <b>groups</b>.'], warnings };
-    if (d.schema !== 'teique-360/1') warnings.push(`<b>schema</b> is ${d.schema ? `"${esc(String(d.schema))}"` : 'missing'}; this hub reads "teique-360/1".`);
+  };
+  // what every report needs: a name and a well-formed date
+  function checkCommon(d, errors, warnings) {
+    if (d.schema !== R().schema) warnings.push(`<b>schema</b> is ${d.schema ? `"${esc(String(d.schema))}"` : 'missing'}; this report reads "${R().schema}".`);
     if (!d.subject || !String(d.subject.name || '').trim()) errors.push('<b>subject.name</b> is missing: the person\'s name goes on the cover and every page.');
     const rep = d.report || {};
     if (!rep.date) warnings.push('<b>report.date</b> is missing; the cover and page headers will have no date.');
     else if (!/^\d{4}-\d{2}-\d{2}$/.test(rep.date)) warnings.push(`<b>report.date</b> "${esc(String(rep.date))}" is not in the form YYYY-MM-DD.`);
+    return rep;
+  }
+  function checkFF(d) {
+    const errors = [], warnings = [];
+    if (!d || typeof d !== 'object' || Array.isArray(d)) return { errors: ['The file does not hold a report: expected an object with <b>subject</b>, <b>report</b> and <b>self</b>.'], warnings };
+    const rep = checkCommon(d, errors, warnings), FFLIB = window.TEIQ_FF_TEXT || { versions: {} };
+    if (rep.form && rep.form !== 'TEIQue-FF') warnings.push(`<b>report.form</b> is "${esc(String(rep.form))}"; this report is the full form (TEIQue-FF).`);
+    if (!FFLIB.versions[rep.version]) warnings.push(`<b>report.version</b> is ${rep.version ? `"${esc(String(rep.version))}"` : 'missing'}; built so far: ${Object.keys(FFLIB.versions).join(', ')}. The Personal report is made.`);
+    scoresCheck(errors, warnings)(d.self, 'self');
+    if (d.others || d.groups) warnings.push('This file has rater scores (<b>others</b>, <b>groups</b>); the Full Form report uses the person\'s own scores only.');
+    return { errors, warnings };
+  }
+  function check(d) {
+    if (isFF()) return checkFF(d);
+    const errors = [], warnings = [], scores = scoresCheck(errors, warnings);
+    if (!d || typeof d !== 'object' || Array.isArray(d)) return { errors: ['The file does not hold a report: expected an object with <b>subject</b>, <b>self</b>, <b>others</b> and <b>groups</b>.'], warnings };
+    const rep = checkCommon(d, errors, warnings);
     if (rep.form && rep.form !== 'TEIQue-360') warnings.push(`<b>report.form</b> is "${esc(String(rep.form))}"; only the full form (TEIQue-360) is built so far.`);
     scores(d.self, 'self');
     const o = d.others;
@@ -110,8 +155,11 @@
       html += `<div class="who"><b>${esc(String(d.subject.name || 'No name'))}</b>${tag}</div><dl>`;
       if (rep.date) html += `<dt>Date</dt><dd>${esc(dmy(rep.date))}</dd>`;
       html += `<dt>Form</dt><dd>${esc(String(rep.form || 'not given'))}${rep.norm ? ` · ${esc(String(rep.norm))} norms` : ''}</dd>`;
-      html += `<dt>Raters</dt><dd>${o.responded != null ? `${o.responded}${o.invited != null ? ` of ${o.invited}` : ''} responded` : 'not given'}</dd>`;
-      if (groups.length) html += `<dt>Groups</dt><dd>${groups.map(g => `${esc(String(g.label || g.id))} ${g.responded != null ? g.responded : '?'}`).join(' · ')}</dd>`;
+      if (isFF()) {
+        html += `<dt>Version</dt><dd>${esc(String(rep.version || 'not given'))}</dd>`;
+        if (d.self && isScore(d.self.global)) html += `<dt>Global</dt><dd>${d.self.global}</dd>`;
+      } else html += `<dt>Raters</dt><dd>${o.responded != null ? `${o.responded}${o.invited != null ? ` of ${o.invited}` : ''} responded` : 'not given'}</dd>`;
+      if (!isFF() && groups.length) html += `<dt>Groups</dt><dd>${groups.map(g => `${esc(String(g.label || g.id))} ${g.responded != null ? g.responded : '?'}`).join(' · ')}</dd>`;
       html += '</dl>';
     } else html += `<div class="who">${tag}</div>`;
     if (is.errors.length || is.warnings.length)
@@ -135,13 +183,13 @@
   // The pages are laid out inside a shadow root, so the report's stylesheet applies to them and nothing
   // else, and printing the hub prints exactly these pages.
   const host = $('report-host'), shadow = host.attachShadow({ mode: 'open' });
-  shadow.innerHTML = `<link rel="stylesheet" href="src/report/report.css${V}">
+  shadow.innerHTML = `<link rel="stylesheet" href="src/report/report.css${V}"><link rel="stylesheet" id="ff-css" media="not all">
     <style>
       #report { zoom: var(--zoom, 1); padding: 22px 0 8px; }
       .page { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       @media print { #report { zoom: 1 !important; padding: 0; } .page { margin: 0 !important; box-shadow: none !important; } }
     </style><div id="report"></div>`;
-  const mount = shadow.getElementById('report');
+  const mount = shadow.getElementById('report'), ffCss = shadow.getElementById('ff-css');
   const cssReady = new Promise(res => { const l = shadow.querySelector('link'); l.onload = l.onerror = res; });
   const assetsReady = Promise.all(['assets/cover-2026.jpg', 'assets/back-cover.jpg', 'assets/logo-monogram.png'].map(src => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = src; })))
     .then(() => Promise.all([document.fonts.load('300 12pt Inter'), document.fonts.load('500 26pt Manrope'), document.fonts.load('700 12pt Manrope')]))
@@ -153,10 +201,13 @@
     await Promise.all([cssReady, assetsReady]);
     if (ticket !== building) return;
     const data = effectiveData();
-    const built = T.report.build(data, LIB, {
-      fill: $('o-fill').value, watermark: $('o-wm').checked, extras: $('o-extras').checked,
-      scales: $('o-scales').value, marks: $('o-marks').checked
-    });
+    ffCss.media = isFF() ? 'all' : 'not all';
+    const built = isFF()
+      ? T.ff.build(data, window.TEIQ_FF_TEXT, { fill: $('o-fill').value, watermark: $('o-wm').checked, assets: 'assets/' })
+      : T.report.build(data, LIB, {
+        fill: $('o-fill').value, watermark: $('o-wm').checked, extras: $('o-extras').checked,
+        scales: $('o-scales').value, marks: $('o-marks').checked
+      });
     mount.innerHTML = '';
     mount.style.setProperty('--zoom', 1);       // measured at full size
     const r = T.report.paginate(built, mount);
@@ -184,14 +235,21 @@
     { id: 'wheel', name: 'Score wheel', perScale: true, narrow: true, draw: (v, id) => C.gauge(v, id) },
     { id: 'strip', name: 'Rater-group chart', perScale: true, draw: (v, id) => C.strip(v, id) }
   ];
+  // the Full Form has one score per scale: its own wheel chart, summary graph and score wheel
+  const FF_CHART_TYPES = [
+    { id: 'wheel-chart', name: 'Wheel chart', wide: true, draw: v => C.wheel(v, { single: true, label: 'TEIQue wheel chart' }) },
+    { id: 'summary', name: 'Summary graph', wide: true, draw: v => C.summary(v, { single: true, label: 'TEIQue summary graph' }) },
+    { id: 'wheel', name: 'Score wheel', perScale: true, narrow: true, draw: (v, id) => C.gauge(v, id, { single: true }) }
+  ];
+  const chartTypes = () => (isFF() ? FF_CHART_TYPES : CHART_TYPES);
   function profileLegend(v) {
     const p = (LIB.pages && LIB.pages.profile) || {};
     return { legendOthers: p.legend_others ? p.legend_others.replace('{n}', v.responded) : undefined, legendYou: p.legend_self };
   }
   function chartJobs() {
-    const v = T.view(effectiveData()), jobs = [];
+    const v = isFF() ? ffView(effectiveData()) : T.view(effectiveData()), jobs = [];
     const scales = SCALES.filter(s => state.charts.scales.has(s));
-    CHART_TYPES.forEach(t => {
+    chartTypes().forEach(t => {
       if (!state.charts.types.has(t.id)) return;
       if (!t.perScale) jobs.push({ key: t.id, title: t.name, sub: '', type: t, svg: () => t.draw(v) });
       else scales.forEach(id => jobs.push({ key: `${t.id}-${id}`, title: nameOf(id), sub: t.name, type: t, scale: id, svg: () => t.draw(v, id) }));
@@ -210,11 +268,12 @@
     $('x-zip').textContent = n === 1 ? 'Download chart' : `Download ${n} charts (.zip)`;
     $('x-zip').disabled = !n;
     setStatus(n ? `${n} chart${n === 1 ? '' : 's'} <span>· ${esc(String(state.data.subject.name || ''))}</span>` : 'No charts picked');
-    $('empty').hidden = !!n; if (!n) $('empty-text').textContent = 'Pick at least one chart, and for score wheels and rater-group charts at least one scale.';
+    $('empty').hidden = !!n; if (!n) $('empty-text').textContent = isFF() ? 'Pick at least one chart, and for score wheels at least one scale.' : 'Pick at least one chart, and for score wheels and rater-group charts at least one scale.';
   }
   function renderChartPicker() {
     const counts = { perScale: state.charts.scales.size };
-    $('c-types').innerHTML = CHART_TYPES.map(t => `<label class="pick"><input type="checkbox" data-type="${t.id}"${state.charts.types.has(t.id) ? ' checked' : ''}><span>${esc(t.name)}</span><em>${t.perScale ? `× ${counts.perScale}` : ''}</em></label>`).join('');
+    $('c-scales-title').textContent = isFF() ? 'Scales for the score wheels' : 'Scales for the score wheels and rater-group charts';
+    $('c-types').innerHTML = chartTypes().map(t => `<label class="pick"><input type="checkbox" data-type="${t.id}"${state.charts.types.has(t.id) ? ' checked' : ''}><span>${esc(t.name)}</span><em>${t.perScale ? `× ${counts.perScale}` : ''}</em></label>`).join('');
     const chip = (id, color, head) => `<button type="button" class="chip${head ? ' head' : ''}" data-scale="${id}" style="--c:${color}" aria-pressed="${state.charts.scales.has(id)}">${esc(nameOf(id))}</button>`;
     let html = `<div class="sg">${chip('global', T.GLOBAL.fill, true)}</div>`;
     T.GROUPS.forEach(g => { html += `<div class="sg">${g.scored ? chip(g.id, g.fill, true) : ''}${g.facets.map(f => chip(f, g.fill)).join('')}</div>`; });
@@ -265,8 +324,8 @@
     return { status: 'saved' };
   }
   const slug = s => String(s).normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'report';
-  const fileBase = () => `teique360_${slug(state.data.subject.name)}`;
-  const reportName = () => `TEIQue 360 Report - ${String(state.data.subject.name).replace(/[\\/:*?"<>|]+/g, ' ').trim()}`;
+  const fileBase = () => `${R().file}_${slug(state.data.subject.name)}`;
+  const reportName = () => `${R().title} - ${String(state.data.subject.name).replace(/[\\/:*?"<>|]+/g, ' ').trim()}`;
 
   function note(text, bad) { const n = $('x-note'); n.textContent = text; n.classList.toggle('bad', !!bad); }
   function saveError(e) {
@@ -285,7 +344,7 @@
     const E = await loadEmbed();
     let body = mount.innerHTML;
     Object.keys(E.images).forEach(p => { body = body.split(`src="${p}"`).join(`src="${E.images[p]}"`); });
-    const css = E.reportCss.replace(/@font-face\s*{[^}]*}/g, '');
+    const css = (E.reportCss + (isFF() ? '\n' + (E.ffCss || '') : '')).replace(/@font-face\s*{[^}]*}/g, '');
     const html = `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">` +
       `<title>${esc(reportName())}</title><style>${fontFaces(E)}\n${css}\n.page{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head>` +
       `<body><!-- To make a PDF: open in Chrome or Edge, print (Ctrl+P / Cmd+P), Destination "Save as PDF", Margins "None", tick "Background graphics". -->${body}</body></html>`;
@@ -370,19 +429,44 @@
   $('mode-report').onclick = () => setMode('report');
   $('mode-charts').onclick = () => setMode('charts');
 
-  const files = window.TEIQ_FILE_LIST || Object.keys(window.TEIQ_FILES || {});
-  const label = n => n === 'sample-360' ? 'Sample report (Alex Morgan)' : 'Test: ' + n.replace(/^edge-/, '').replace(/-/g, ' ');
-  $('sample').innerHTML = '<option value="">Choose a sample…</option>' + files.map(n => `<option value="${esc(n)}">${esc(label(n))}</option>`).join('');
-  $('sample').onchange = e => { const n = e.target.value; if (n && window.TEIQ_FILES[n]) { $('file').value = ''; useData(JSON.parse(JSON.stringify(window.TEIQ_FILES[n])), { kind: 'sample', name: label(n) }); } };
+  const label = n => n === R().sample ? `Sample report (${(R().data()[n] || {}).subject ? R().data()[n].subject.name : n})` : 'Test: ' + n.replace(/^edge-/, '').replace(/-/g, ' ');
+  const listSamples = () => { $('sample').innerHTML = '<option value="">Choose a sample…</option>' + R().files().map(n => `<option value="${esc(n)}">${esc(label(n))}</option>`).join(''); };
+  const useSample = n => { const d = R().data()[n]; if (!d) return; $('sample').value = n; $('file').value = ''; useData(JSON.parse(JSON.stringify(d)), { kind: 'sample', name: label(n) }); };
+  $('sample').onchange = e => { if (e.target.value) useSample(e.target.value); };
   $('file').onchange = e => readFile(e.target.files[0]);
   const drop = $('drop');
   ['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add('over'); }));
   ['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove('over'); }));
   drop.addEventListener('drop', e => readFile(e.dataTransfer.files[0]));
-  $('template').onclick = () => {
-    const d = window.TEIQ_FILES['sample-360'];
-    busy($('template'), 'Preparing…', async () => { await saveBlob('teique360-data-template.json', new Blob([JSON.stringify(d, null, 2) + '\n'], { type: 'application/json' })); note('Template saved.'); });
-  };
+  document.querySelectorAll('[data-template]').forEach(btn => {
+    btn.onclick = () => {
+      const d = R().data()[R().sample];
+      busy(btn, 'Preparing…', async () => { await saveBlob(`${R().file}-data-template.json`, new Blob([JSON.stringify(d, null, 2) + '\n'], { type: 'application/json' })); note('Template saved.'); });
+    };
+  });
+
+  // switching the report type: its options, data description, samples and charts, then its sample data
+  async function setReport(r) {
+    if (r === state.report) return;
+    if (r === 'ff') {
+      setStatus('Loading the Full Form report…');
+      try { await loadFF(); } catch (e) { setStatus(`<span class="w">${esc(e.message)}</span>`); return; }
+    }
+    state.report = r;
+    document.querySelectorAll('#rtypes .rtype').forEach(b => b.setAttribute('aria-checked', b.dataset.report === r));
+    $('opts-360').hidden = $('opts-360b').hidden = r !== '360';
+    document.querySelectorAll('details.fmt[data-for]').forEach(el => { el.hidden = el.dataset.for !== r; });
+    listSamples(); renderChartPicker();
+    state.zoom = state.zoom == null ? null : Math.min(state.zoom, fitZoom());
+    useSample(R().sample);
+  }
+  $('rtypes').addEventListener('click', e => { const b = e.target.closest('[data-report]'); if (b) setReport(b.dataset.report); });
+  $('rtypes').addEventListener('keydown', e => {
+    if (!['ArrowDown', 'ArrowUp', 'ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+    e.preventDefault();
+    const next = state.report === '360' ? 'ff' : '360';
+    setReport(next).then(() => document.querySelector(`#rtypes [data-report="${state.report}"]`).focus());
+  });
 
   ['o-fill', 'o-scales', 'o-follows', 'o-min', 'o-extras', 'o-marks', 'o-wm'].forEach(id => { $(id).onchange = refresh; });
   ['c-format', 'c-scale', 'c-bg'].forEach(id => { $(id).onchange = () => note(''); });
@@ -426,6 +510,8 @@
   // start with the sample, options as in the page viewer's defaults
   $('o-fill').value = 'typical'; $('o-scales').value = 'single'; $('o-extras').checked = true; $('o-marks').checked = false;
   renderChartPicker();
-  $('sample').value = 'sample-360';
-  useData(JSON.parse(JSON.stringify(window.TEIQ_FILES['sample-360'])), { kind: 'sample', name: label('sample-360') });
+  listSamples();
+  useSample('sample-360');
+  // hub.html?report=ff opens on the Full Form
+  if (new URLSearchParams(location.search).get('report') === 'ff') setReport('ff');
 })();

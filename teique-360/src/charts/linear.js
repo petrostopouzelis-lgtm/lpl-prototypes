@@ -116,21 +116,27 @@
   // Layout follows the Figma bar graph (900:1667). Variants: A two bars per row.
   // B dot for each, joined by a line. C others bar with a marker for you.
   // opt.width: a wider drawing (at least 540) whose tracks take the extra room and whose text keeps its size (web view)
+  // opt.single: one score per row (TEIQue report, Figma bar graph 900:1667): a bar per scale on the three band
+  // tracks, factor rows taller than facet rows, no numbers and no key.
   C.summary = (v, opt = {}) => {
-    const variant = opt.variant || 'C', W = Math.max(540, opt.width || 540), lx = 16, x0 = 143, gap = 5, vx = W - 64, w = vx - 15 - x0, uid = S.id('sum');
+    const single = !!opt.single;
+    const variant = opt.variant || 'C', W = Math.max(540, opt.width || 540), lx = 16, x0 = 143, gap = 5, vx = W - 64, w = single ? W - 16 - x0 : vx - 15 - x0, uid = S.id('sum');
     const rows = [{ id: 'global', level: 0 }];
     T.GROUPS.forEach(g => { rows.push({ id: g.id, level: 1, scored: g.scored }); g.facets.forEach(f => rows.push({ id: f, level: 2 })); });
     let out = gradDefs(uid, opt) + S.bandHeader(x0, 14, w, gap), y = 34;
     const tw = (w - 2 * gap) / 3;
     [[1, x0], [30, x0 + tw + gap / 2], [70, x0 + 2 * tw + 1.5 * gap], [99, x0 + w]].forEach(([t, x]) => { out += S.text(x, 24.5, t, { 'text-anchor': 'middle', 'font-size': 8, fill: '#808080' }); });
-    out += S.text(vx + 9, 14, 'Others', { 'text-anchor': 'middle', 'font-size': 8.5, 'font-weight': 700, fill: T.MUTED }) + S.text(vx + 43, 14, 'You', { 'text-anchor': 'middle', 'font-size': 8.5, 'font-weight': 700, fill: T.MUTED });
+    if (!single) out += S.text(vx + 9, 14, 'Others', { 'text-anchor': 'middle', 'font-size': 8.5, 'font-weight': 700, fill: T.MUTED }) + S.text(vx + 43, 14, 'You', { 'text-anchor': 'middle', 'font-size': 8.5, 'font-weight': 700, fill: T.MUTED });
 
     rows.forEach(r => {
-      const g = colour(r.id), Y = T.youStyle(opt.you, g), head = r.level < 2, h = head ? 13 : 9, gO = `url(#${uid}-o-${g.id})`, gY = `url(#${uid}-y-${g.id})`;
+      const g = colour(r.id), Y = T.youStyle(opt.you, g), head = r.level < 2, h = single ? (head ? 15 : 10) : head ? 13 : 9, gO = `url(#${uid}-o-${g.id})`, gY = `url(#${uid}-y-${g.id})`;
       if (r.level === 1) y += 10;
       const cyR = y + h / 2;
       out += S.text(lx, cyR + 3.6, T.nameOf(r.id), { 'font-size': head ? 11.5 : 11, 'font-weight': head ? 700 : 400, fill: g.text });
-      if (r.scored !== false) {
+      if (single && r.scored !== false) {
+        out += S.tracks(x0, y, w, h, gap) + S.trackFill(v.self[r.id], x0, y, w, h, gap, gO);
+        out += S.el('rect', { x: x0, y, width: w, height: h, fill: 'transparent' }, S.title(`${T.nameOf(r.id)}: ${v.self[r.id]}`));
+      } else if (r.scored !== false) {
         const self = v.self[r.id], oth = v.others[r.id], xs = T.trackX(self, x0, w, gap), xo = T.trackX(oth, x0, w, gap);
         const tip = `${T.nameOf(r.id)}: others ${oth}, you ${self}`;
         if (variant === 'A') {
@@ -150,6 +156,7 @@
       }
       y += h + (head ? 14 : 15);
     });
+    if (single) return S.root(W, y + 2, out, opt.label || 'Summary graph');
     // key, drawn in the first factor's colours
     const ky = y + 4, sw = T.GROUPS[0], YS = T.youStyle(opt.you, sw), kO = `url(#${uid}-o-${sw.id})`, kY = `url(#${uid}-y-${sw.id})`, lab = { 'font-size': 9.5, fill: T.MUTED };
     let key = '';

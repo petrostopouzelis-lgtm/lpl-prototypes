@@ -1,0 +1,349 @@
+{
+  "schema": "teique-ff-text/1",
+  "language": "en",
+  "source": "TEIQue-FF Personal/Counselling Report [SAMPLE] (2025), word for word. Built by tools/build-library.py.",
+  "footer": {
+    "copyright": "© K. V. Petrides {year}. All rights reserved.",
+    "legal": "A product of London Psychometric Laboratory Ltd."
+  },
+  "versions": {
+    "personal": {
+      "name": "Personal",
+      "cover": "Personal Report",
+      "header": "Personal"
+    }
+  },
+  "pages": {
+    "intro": {
+      "title": "Introduction to Your TEIQue Report",
+      "paragraphs": [
+        "This is your Trait Emotional Intelligence Questionnaire (TEIQue – pronounced TQ) report. It is based on a new text that I have personally written and edited for the 20th anniversary of the trait emotional intelligence research program. The text reflects the culmination of 20 years of internationally leading psychological research. In this brief introduction, I cover some essential pointers concerning the interpretation of this report, but I would also like to refer you to the additional information and resources that you can find in our websites.",
+        "I have personally written these reports with the sole aim of helping you understand your personality – your strengths and weaknesses, opportunities and threats. If accepted in the right spirit and interpreted correctly (that is, in line with Trait Emotional Intelligence theory), this report will shed light on latent aspects of your personality and put you on track to overcome psychological blind spots that have been holding you back in ways of which you may not even be conscious.",
+        "Analysis and interpretation of this report, by an established practitioner with thorough understanding of Trait Emotional Intelligence theory and adequate internalization of its principles, will be invaluable for understanding its ramifications in their full depth and profundity. Attempting to understand, interpret and internalize this report on your own will almost certainly minimize its potential benefits. This is because it is not the purpose of these reports to feed back to you what you already presume to know about yourself.",
+        "For example, some information may not ring true to you or may seem irrelevant. That may appear to be obvious in some cases (e.g., if I am making a point about performance at work when you have retired). However, even these examples contain lessons for you because through the understanding of other people and their predicaments, you can learn much about your own self – and painlessly. Vicarious learning is one of the smartest and fastest ways to learn about life, although it does require a heightened level of psychological maturity to be effective.",
+        "At other times, the feedback may appear untrue to you because your conscious mind is simply unwilling to recognize facts that have been repressed or subconsciously held at bay through psychological defense mechanisms, such as denial. If such instances do occur, they will be few in number. However, the adverse reaction of the conscious mind might be so intense that it could lead you to set aside the entire report. Again, the availability of an experienced consultant, well versed in trait emotional intelligence theory, will be essential to surmount such obstacles and start reaping the rich rewards of a more profound understanding of yourself and your immense capabilities."
+      ]
+    },
+    "structure": {
+      "title": "Structure of the TEIQue",
+      "paragraph": "The 15-4-1 structure of the TEIQue is depicted in the graph below. The graph shows the hierarchical structure of the instrument, comprising 15 specific facets at the bottom, four factors in the intermediate level, and global trait EI at the apex. The full form of the TEIQue yields scores on all 20 of those domains (15 facets + 4 factors + global trait), while the short form yields five scores (4 factors and the global trait).",
+      "diagram_top": "Trait Emotional Intelligence",
+      "scores_title": "Scores",
+      "scores": [
+        "Your score is presented as a percentile, showing your position with reference to other people in the comparison norms. Percentile scores are banded in three tiers for ease of interpretation:",
+        "It must be understood and born in mind that higher scores are not necessarily good or desirable and lower scores are not necessarily bad or undesirable. Low, average, and high scores all have positive as well as negative implications.",
+        "If anything, my emphasis is on the latter, since the purpose of these reports is to inspire and boost psychological growth, rather than to instill or buttress a sense of complacency and self-satisfaction within your current comfort zone. Simply put, the purpose of this report is to provide a mirror of your personality. It will then be up to you whether you choose to act on the information provided, igniting a process that can unlock the astonishing potential laying dormant in every human being or ignore it and continue as before. Contrary to what you may have been led to believe, you have complete control over your destiny in life; contrary to what may seem obvious to you, your true nature is genuinely unlimited. It is my hope that this report will prompt you to start investigating these truths and prove them conclusively to your own self."
+      ]
+    },
+    "uses": {
+      "title": "Uses of the TEIQue report",
+      "paragraph": "The TEIQue report can be used in all life domains in which emotions are relevant. Our research has demonstrated that this includes most areas of life experience. Examples are provided below, but it should be borne in mind that the list is indicative, rather than exhaustive:",
+      "items": [
+        "Selection and Recruitment",
+        "Academic Counselling and Performance",
+        "Career Counselling and Development",
+        "Communication skills",
+        "Teamwork",
+        "Life Coaching",
+        "Benchmarking",
+        "Decision Making",
+        "Self Development",
+        "Relationship Counselling",
+        "Work Engagement and Productivity",
+        "Mental Health and Resilience",
+        "Performance Appraisals",
+        "Leadership and Management",
+        "Subconscious Reprogramming"
+      ]
+    },
+    "wheel": {
+      "title": "Your TEIQue Wheel Chart",
+      "quote": "“Your perceptions create your reality and your self-perceptions create yourself.”",
+      "quote_by": "Konstantinos V. Petrides",
+      "title_source": "Figma (the sample page has no title); contents entry: Wheel Chart"
+    },
+    "summary": {
+      "title": "Your TEIQue Summary Graph",
+      "title_source": "Figma (the sample page has no title); contents entry: Summary Graphs"
+    },
+    "scale": {
+      "your_score": "Your Score",
+      "source": "Figma global and factor pages (the sample has no heading above the card)"
+    },
+    "contents": {
+      "title": "Contents",
+      "intro": "Introduction",
+      "wheel": "Wheel Chart",
+      "summary": "Summary Graphs",
+      "global": "Global Score",
+      "independent": "Independent Facets"
+    }
+  },
+  "scales": {
+    "global": {
+      "title": "Global Score",
+      "lead": "The Global score gives you a snapshot of your general emotional functioning.",
+      "definition": "It is an index of your perceived ability to understand, process, and utilize emotion-related information in your everyday life. According to trait emotional intelligence theory, these perceptions are completely central and vital because they have a creative influence in your life, in the specific sense that they create the reality you are experiencing. Changing your perceptions directly contributes to changing your reality.",
+      "interpretation": {
+        "personal": {
+          "low": "Overall, your TEIQue score indicates general dissatisfaction with your emotional functioning. You are more likely than most to experience difficulties in social contexts, to overreact in situations that you find unpleasant, and to undergo bouts of worry, gloom, and unease. The TEIQue report presents the detailed profile that yields this low global trait EI score, while the TEIQue Developmental Reports describe ways in which the profile may be managed or even permanently altered. It is important to remember that a low global trait EI score has its advantages (most importantly, modesty and unpretentiousness, but also less preoccupation with feelings, greater willingness to receive feedback and to seek help, etc).\n\nThe consequences of a low trait EI score can be managed, in the first instance, by addressing the specific pattern of facets and factors that give rise to it without embarking on a conscious effort to change your level on the trait itself, which is a more arduous process. Changes in the core of such a central, fundamental, and broad constellation of perceptions as those encompassed by trait EI, require equally broad methodologies, of which generalized mindfulness (unbiased awareness) is the most effective.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 8; interpretation for a score of 8 (low band)"
+    },
+    "wellbeing": {
+      "title": "Well-Being Factor",
+      "lead": "The Well-being factor essentially reflects the common, overlapping core of the three facets it comprises, i.e., Happiness, Optimism, and Self-esteem.",
+      "definition": "The factor is more basic than the facets it encompasses, meaning that changes in the factor are more readily fed through to the facets than the other way around. Well-being is one of the most essential areas of life. Many people consciously view it as their main goal in life, with study after study showing that it is associated with manifold benefits in the domains of health, work, family, relationships, and others. Such findings are emulated at macro levels, where many organisations, and even countries, utilise ‘well-being’ or ‘better life’ indices.",
+      "interpretation": {
+        "personal": {
+          "low": "The Well-being factor of the TEIQue comprises the facets of Happiness, Optimism, and Self-esteem. As such, it concerns a generalized sense of well-being extending from past achievements to future expectations. Your score suggests that you are not satisfied with yourself in this area. While this has certain advantages, many of which will have been mentioned under the relevant facets in this report and are further discussed in the TEIQue Developmental reports (e.g., you are quite unlikely to be haughty and self-important), a sense of dissatisfaction or concern with life is certainly something that requires attention. In many cases, that very sense itself will be what prompts you to look deep into your life experiences and act because most people tend to find it unbearable after some time. Changes in Well-being are eminently possible and, although they do require commitment and systematic application over time, they are very much worth it.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 9; interpretation for a score of 8 (low band)"
+    },
+    "happiness": {
+      "title": "Happiness",
+      "lead": "",
+      "definition": "Happiness is a major outcome in life that every one of us, consciously or unconsciously, craves. All action, if fully analyzed can be traced to some need to be happy. TEIQue happiness is generalized in that it concerns happiness with life, rather than happiness with your job, spouse, health, etc. It is also present-oriented in that it concerns your assessment of your current circumstances, rather than the past (which is “satisfaction with life”) or the future (which is “optimism”). Along with the facets of Optimism and Self-esteem, Happiness is a strong indicator of overall psychological well-being.",
+      "interpretation": {
+        "personal": {
+          "low": "At present, you are neither very cheerful nor especially happy with yourself. This low mood interacts with – and adversely affects – many areas of your life. It is a mistake to assume that any unhappiness or negativity can be contained within a particular area of life, as it is liable to fester and contaminate other areas. On a positive note, you are unlikely to be complacent because unsatisfied individuals are often motivated to apply effort to improve their circumstances. Unhappiness is always externally caused, thus, you can be sure, based on your score on this facet, that you have gradually surrendered much of your emotional freedom to external circumstances. This must be reclaimed as a priority in your life.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 10; interpretation for a score of 8 (low band)"
+    },
+    "optimism": {
+      "title": "Optimism",
+      "lead": "",
+      "definition": "Optimism is a forward-oriented facet concerning one’s perspective on the goodness of life, with special emphasis on the future. Together with Happiness and Self-esteem, Optimism defines the Well-being factor of the TEIQue. Optimism is a key facet in the construction of the TEIQue profile because, on the surface, it can reveal whether someone is positively (or negatively) oriented in their approach to life and through a deeper interpretation (which must explore the causes and mechanisms underlying a particular score), it can raise awareness about carelessness, fantastic thinking, or self-defeating patterns of cognition.",
+      "interpretation": {
+        "personal": {
+          "low": "You have a tendency towards pessimism and seeing things from a negative angle. You are inclined to worry about the future and to get anxious. When positive things happen to you, you are quick to attribute them to passing circumstances and are apt to discount or forget them. You may even believe that negative events happen more often to you because of who you are. Unfortunately, negative expectations and fears have a way of manifesting into reality (e.g., through self-fulfilling prophecies), perhaps not always as expected, but with a similar intensity of miserableness. Needless to say, this is a clear area of self-improvement for you. On the positive side, you may be valued by others for your sober outlook and ability to identify potential threats and weaknesses, which they are more likely to overlook.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 11; interpretation for a score of 9 (low band)"
+    },
+    "self_esteem": {
+      "title": "Self-Esteem",
+      "lead": "",
+      "definition": "Self-esteem concerns your overall evaluation of yourself, including your perceived achievements, capabilities, and potential to realize your goals. Self-esteem emanates from your underlying self-image that, in most people, remains latent and unexplored. A low self-esteem can have diverse causes and – more importantly – dire consequences, if not realigned and corrected. At the other end, a high self-esteem is a tremendously powerful asset in life, but only if rooted in the right self-image. Otherwise, as is too frequently the case, it becomes the source of narcissism, hubris, and self-aggrandizement.",
+      "interpretation": {
+        "personal": {
+          "low": "You lack confidence and do not value yourself highly enough. You tend to focus on weaknesses and are doubtful about your abilities and potential. The causes of weak self-esteem are diverse and may even stretch as far back as childhood. But the consequences are even worse. While you are unlikely to suffer from the dangerous condition of narcissism and all that it entails (arguments, conflict, alienation), you are also removing yourself from much that is good in life (prosperity, fulfilling relationships, and even physical health). Modesty is a rare and powerful virtue in today’s world, but it must never be based on a deficient sense of self.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 12; interpretation for a score of 14 (low band)"
+    },
+    "self_control": {
+      "title": "Self-Control Factor",
+      "lead": "The Self-control factor essentially reflects the common, overlapping core of the three facets it comprises, i.e., Emotion regulation, Impulse control, and Stress management.",
+      "definition": "The factor is more basic than the facets it encompasses, meaning that changes in the factor are more readily fed through to the facets, rather than the other way around. This also means that your factor score may be misaligned with some of your facet scores For example, a high Self-control score could be coupled with an average score on, say, Emotion regulation. This would suggest that the broad Self-control process is at a high level (with all the advantages and disadvantages this entails), but certain narrow, identifiable factors are specifically diminishing the Emotion regulation score (with all the advantages and disadvantages this entails). Self-control is perhaps the TEIQue factor most readily responsive to training, although it is not necessary to change your standing on the factor in order to manage some of its consequences that may be troubling you.",
+      "interpretation": {
+        "personal": {
+          "low": "Your low score on the Self-control factor suggests that you are prone to impulsive behavior and uncontrolled emotions. These challenges are not confined to a specific domain, but are generalized and could be manifested in many different areas, such as addictions of various kinds, eating behavior disorders, rules- or law-breaking, stress and temper problems, etc. It is also possible that they may interfere with your ability or willingness to be flexible in your approach to life. A low Self-control score comes with its own advantages, many of which will have been mentioned under the relevant facets in this report and are further discussed in the TEIQue Developmental reports. Weak Self-control renders you much more susceptible to your existing habits and routines, an unexpected benefit of which is that it can entrench any healthy habits that you have already firmly established in your life (exercising, fasting, meditation, etc.).",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 13; interpretation for a score of 25 (low band)"
+    },
+    "emotion_regulation": {
+      "title": "Emotion Regulation",
+      "lead": "",
+      "definition": "Emotion regulation measures your perceived control of your emotions and mood states. High scorers can achieve control over their emotions through personal insight and effort. They are psychologically stable and know how to pick themselves up after emotional setbacks. Low scorers are subject to emotional seizures and periods of prolonged anxiety or even depression. They find it difficult to deal with their feelings and can become moody and irritable. However, emotion regulation can get out of hand when the individual refuses psychologically to experience the entire range of feelings, typically by trying to suppress negative emotions.",
+      "interpretation": {
+        "personal": {
+          "low": "It’s often a problem for you to regulate your emotions. You can become overwhelmed by them, which renders you prone to anxiety attacks or even depression. Uncontrolled emotions can have an adverse impact on all spheres of your life, including personal relationships (they may be incomprehensible or painful to your loved ones), social relationships (they may lead you to violate established display rules), and work (they may subvert planning, analysis, and decision-making). While low emotion regulation does have its advantages (e.g., you are much less likely to be perceived as aloof or uninvolved), it would be good to develop the mastery of your emotions through relevant training and techniques, some of which you can find in the TEIQue Developmental Reports.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 14; interpretation for a score of 14 (low band)"
+    },
+    "impulse_control": {
+      "title": "Impulse Control",
+      "lead": "",
+      "definition": "Impulse control involves thinking before acting and reflecting before making decisions. Sometimes, circumstances require us to take quick decisions based on incomplete information and limited evidence. Do you feel able you can take such decisions successfully? At other times, life demands on deliberation and strategic thinking. Do you have the patience and analytical skills for those? Impulsivity is a double-edged sword: it can help you grasp great opportunities, but it may also multiply risks and lead to harsh failures. This facet is about the art of balancing risk and reward, but also about reining in one’s urges and cravings without becoming rigid and compulsive.",
+      "interpretation": {
+        "personal": {
+          "low": "",
+          "average": "You tend to think things through and to reflect before making decisions. You are happy to entertain some risk, but you don’t chase it. At the same time, you are unlikely to over-deliberate and suffer from “analysis paralysis”. Your profile suggests that you are capable of acting on the spur of the moment, but also of careful planning and considered action. The threat in this balance is that there is no guarantee that you will be swift when a situation calls for haste and deliberative when it calls for thorough analysis. If, through insight and intuition, you can ascertain what type of response a situation calls for, then you are in a good position (perhaps with some effort), to act accordingly.",
+          "high": ""
+        }
+      },
+      "source": "sample page 15; interpretation for a score of 59 (average band)"
+    },
+    "stress_management": {
+      "title": "Stress Management",
+      "lead": "",
+      "definition": "Stress is a personal response to life’s changes. Since change is inevitable, stress cannot be avoided. Nor should one attempt to avoid it, as this approach ultimately leads to repression and fear-driven living. The goal is not to wish for a stress-free life but rather to develop effective ways to manage stress when it arises. These strategies must acknowledge the evolutionary value of stress as a motivator. Resilience should not be mistaken for complacency, and refusing to take action when necessary – hoping that things will simply work out – should not be confused with an effective stress management technique.",
+      "interpretation": {
+        "personal": {
+          "low": "Your score suggests that you are vulnerable to stress and face difficulties when trying to handle it because you have not yet developed effective coping strategies. This lack of stress management skills is usually felt by most respondents in the low range of this facet, although there are some who have not yet experienced the full impact of their vulnerability because of implementing strategies of avoidance or repression. It is important to replace such strategies with healthy alternatives (e.g., detachment) that will allow you, in time, to present winning responses to stress. On the positive side, your sensitivity to pressure means that you are unlikely to overlook external challenges or be complacent in their midst.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 16; interpretation for a score of 22 (low band)"
+    },
+    "emotionality": {
+      "title": "Emotionality Factor",
+      "lead": "The Emotionality factor essentially reflects the common, overlapping core of the four facets it comprises, i.e., Emotion expression, Emotion perception, Empathy, and Relationships.",
+      "definition": "The factor is more basic than the facets it encompasses, meaning that changes in the factor are more readily fed through to the facets, rather than the other way around. This also means that your factor score may be misaligned with some of your facet scores. For example, an average Emotionality score could be coupled with a low score on, say, Relationships. This would suggest that while the broad process underpinning Emotionality is at average levels (with all the advantages and disadvantages this entails), certain narrow, identifiable issues are specifically diminishing the Relationships facet score (with all the advantages and disadvantages this entails). Emotionality is a central factor in trait emotional intelligence and many of the advantages and disadvantages its various possible profiles involve have the potential to influence your personality more broadly.",
+      "interpretation": {
+        "personal": {
+          "low": "Your score on the factor of Emotionality falls in the low end, which suggests that you are quite uncertain about your emotional world. This can be manifested in some, or indeed all, of the facets in the Emotionality factor. A low Emotionality score has certain advantages, many of which will have been mentioned under the relevant facets in this report and are further discussed in the TEIQue Developmental reports (e.g., you are less susceptible to emotional thinking). Nevertheless, as noted in the description of this factor, its centrality in trait emotional intelligence means that its disadvantages may well spill over – to various degrees – into your broader personality. Thus, even if you are not keen to change your Emotionality profile, you should take care to manage its consequences for yourself and others.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 17; interpretation for a score of 8 (low band)"
+    },
+    "empathy": {
+      "title": "Empathy",
+      "lead": "",
+      "definition": "At its core, TEIQue empathy concerns ‘perspective-taking,’ i. e., the willingness to see the world from someone else’s point of view. Can you understand other people’s opinions, needs, and desires? Empathy is the first step towards sympathy and compassion. Lack of empathy makes people self-centered and opinionated and also undermines their ability to deal effectively with others in all spheres of life. On the other hand, if empathetic thinking is left unrestrained, it may lead to a preoccupation with others’ feelings and create possibilities for psychological exploitation.",
+      "interpretation": {
+        "personal": {
+          "low": "You find it difficult to understand the feelings and moods of others. This may be because of sheer indifference or because you wish to protect yourself by creating psychological distance between “you” and the “other”. You may have a preference for dealing with data and systems rather than with people and feelings. This, of course, is a disadvantage for certain things, but an advantage for others. A genuine willingness to see things from another person’s vantage point is not only the first step towards sympathy and compassion, but a powerful trait in its own right.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 18; interpretation for a score of 2 (low band)"
+    },
+    "emotion_perception": {
+      "title": "Emotion Perception",
+      "lead": "",
+      "definition": "Emotion perception is about whether you think you can understand your own and other people’s feelings and the origins of feelings. Do you know why you and other people feel the way they do or are feelings a mystery to you – some aspect of human irrationality? Emotion perception is a central part of the individual’s emotional world, with problems in this facet likely to spill over into related areas (like Emotion expression, Empathy, and Emotion regulation). As with all trait emotional intelligence facets, such problems may affect high, average, and low scorers alike, although the nature of the impact will naturally vary. This facet provides broader support for one’s emotional world and his or her personal and social interactions, more generally.",
+      "interpretation": {
+        "personal": {
+          "low": "You do not pay much attention to your feelings and may even become confused by them. Similarly, you do not really focus on others’ emotions and the signals they send out, intentionally or unintentionally (e.g., through their body language). There are various causes for this, including the possibility that you regard feelings as something secondary or even contrary to rationality, which you see as the supreme virtue. Of course, it is also possible that your low score is the result of ignorance of the importance of this area or of the techniques and resources available to you to boost your performance in it. On the positive side, you are unlikely to become oversensitive or excessively preoccupied with emotions and moods, which also has its advantages (e.g., facilitates clearer thought in a range of circumstances).",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 19; interpretation for a score of 13 (low band)"
+    },
+    "emotion_expression": {
+      "title": "Emotion Expression",
+      "lead": "",
+      "definition": "Emotion expression concerns how fluently one can communicate one’s moods and emotions to others. It is one of the facets where there are reliable gender differences, with women outscoring men. There are many ways to express emotions: verbally, using spoken and written words or non-verbally, using body language. Emotions can also be expressed intentionally, to obtain a desired response or unintentionally, as an instinctive reaction to something. Mastering emotional expression will be advantageous for personal relationships as well as for many jobs and roles. On the other hand, excessive emotional expression makes one transparent and, in extreme cases, histrionic.",
+      "interpretation": {
+        "personal": {
+          "low": "It is difficult for you to communicate your emotions and you may even find it a challenge to tell others directly how you feel about certain things. Emotion expression is an asset for many jobs and roles, especially leadership roles that require one to inspire and energize subordinates. It is also relevant in personal relationships that are generally characterized by the transmission and exchange of feelings. Of course, lack of expression does not mean lack of emotion. There are cases where you don’t have the confidence or the words to convey your feelings even though you want to. Difficulties in emotional expression can be a sign of a more generalized challenge in emotional functioning, which would become apparent in the Emotionality factor of the TEIQue. On the positive side, being inexpressive and maintaining a “poker face” makes you opaque and difficult to read, which can be an advantage, especially in business or negotiation contexts.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 20; interpretation for a score of 22 (low band)"
+    },
+    "relationships": {
+      "title": "Relationships",
+      "lead": "",
+      "definition": "The Relationships facet of the TEIQue is mainly concerned with the one’s personal relationships, whereas the Social awareness facet is concerned with social relationships, more broadly. Personal relationships are built on love, support, and trust. They play a key role in our mental, and even physical, well-being and contribute to the meaning we create for our life. They are also a prime area of attachment, which means they have the capacity to become a major source of joy and suffering for us. Carefully observing our behavior in our personal relationships can reveal many hidden aspects of ourselves to us.",
+      "interpretation": {
+        "personal": {
+          "low": "You may find it difficult to bond with others or you are just not particularly invested in your personal relationships. There are many possible reasons, for example, an excessive preoccupation with digital communications (virtual and long-distance connections, video gaming, social media, etc.) or excessive self-centeredness, whereby you are focused on the attainment of your personal goals to the exclusion of almost everything else, or a craving to control and subjugate others. These are just some among many possibilities to explain relationship difficulties. What they all have in common is a need for psychological retraining, which may need to reach deep inside the individual. On the positive side, a low score on relationships means you are less likely to become dependent on others and may have extra time available for other activities, including work or leisure.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 21; interpretation for a score of 17 (low band)"
+    },
+    "sociability": {
+      "title": "Sociability Factor",
+      "lead": "The Sociability factor essentially reflects the common, overlapping core of the three facets it comprises, i.e., Assertiveness, Emotion management, and Social awareness.",
+      "definition": "The factor is more basic than the facets it encompasses, meaning that changes in the factor are more readily fed through to the facets, rather than the other way around. This also means that your factor score may be misaligned with some of your facet scores. For example, an average Sociability score could be coupled with a high score on, say, Assertiveness. This would suggest that the broad Sociability process is at an average level (with all the advantages and disadvantages this entails), but certain narrow, identifiable factors are specifically inflating the Assertiveness score (with all the advantages and disadvantages this entails). The Sociability factor differs from the Emotionality factor in that it emphasizes social relationships and social influence. In other words, the former is intrapersonally oriented, while the latter is interpersonally oriented. That said, TEIQue Sociability touches on only a small part of the interpersonal domain, which is comprehensively covered in my cognate construct of trait social intelligence.",
+      "interpretation": {
+        "personal": {
+          "low": "You have scored within the low range on the Sociability factor, which suggests that you lack confidence in your social skills. This can be manifested in many different areas and ways, some of which will have been mentioned under the relevant facets in this report and are further discussed in the TEIQue Developmental Reports (e.g., small social networks and inability to influence others). These difficulties can render you introverted or otherwise force you to expend disproportional amounts of effort and energy in the interpersonal domain. Of course, there are also advantages to a low Sociability score, including, importantly, that a lack of interest in social relationships allows for a more introspective approach to life that may, potentially, prove exceptionally fruitful. Like for its sister Emotionality factor, changes in your Sociability profile are undoubtedly possible, although managing its consequences is both easier and, typically, a prerequisite for deeper and more lasting change.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 22; interpretation for a score of 10 (low band)"
+    },
+    "emotion_management": {
+      "title": "Emotion Management",
+      "lead": "",
+      "definition": "Where Emotion regulation is concerned with your perceived ability to manage your own feelings, Emotion management is concerned with your perceived ability to manage other people’s feelings. Are you able to console others, motivate them, help them deal with their problems? Emotion management is not only about feelings per se, but also about contributing to a constructive environment in which people are encouraged to meet each other’s needs, helped to feel positive, and work together towards the achievement of common goals. All this needs to be realized without being (or appearing to be) overbearing, intrusive or downright nosy.",
+      "interpretation": {
+        "personal": {
+          "low": "You do not feel able to influence and manage others people’s emotions and moods. You are more likely to run away from emotional turmoil than to engage and help people snap out of it. Although not necessarily, this perceived inability to affect, or even handle, other people’s feelings may stem from a more generalized lack of concern with others’ lives. It could also stem from an inability to deal with your own emotional reactions. On the positive side, you are unlikely to be seen as manipulative or meddling. However, this is not a sufficient substitute for the joy you are missing by not being able to uplift others’ spirits and help them improve their lives.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 23; interpretation for a score of 22 (low band)"
+    },
+    "assertiveness": {
+      "title": "Assertiveness",
+      "lead": "",
+      "definition": "Assertiveness gauges how direct and forthright you are. Under certain circumstances, it is an indicator of strength of convictions. How willing are you to stand up for what you believe to be right? Assertiveness is different from aggression, although the behavior of assertive individuals often spills over into aggression, if they are psychologically immature. All in all, assertiveness is a double-edged sword that requires wisdom and careful self-management.",
+      "interpretation": {
+        "personal": {
+          "low": "You are not as assertive as other people. It is often difficult for you to say ‘no’ or to reject requests even if they are beyond your capabilities or time constraints. You may back off to avoid an argument, although, in your heart, you believe you are right. It is important not to allow people to take advantage of you or ignore your opinions and wishes. That said, non-assertiveness can be an asset for teamwork and personal relationships. A willingness to compromise, reconcile and take directions is in as short supply today as it ever was, and can prove surprisingly valuable, provided it is not rooted in fear.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 24; interpretation for a score of 22 (low band)"
+    },
+    "social_awareness": {
+      "title": "Social Awareness",
+      "lead": "",
+      "definition": "Social awareness is about connecting with others, not necessarily deeply, but at least at a surface level. Like certain aspects of extraversion, it makes us conscious of other people and propels us towards interacting with them or seeking their company. Man (woman) is a social animal and social awareness is per se important to him (her), but it is also an effective mechanism for building a social network that can be most useful in all sorts of circumstances, especially work. Uncontrolled social awareness may, in time, render someone unable to focus or to work independently in relative isolation when this is required.",
+      "interpretation": {
+        "personal": {
+          "low": "You are convincing yourself that you have limited social skills, which often makes you feel awkward or unsure in social settings. You find it difficult or pointless to engage in small talk and you are unlikely to want to mediate and broker deals between other people. It is not unusual to find yourself mulling over with regret or worry something that you said or did in the presence of acquaintances. You may prefer working by yourself or with a small number of people you know well in jobs that do not require extensive interactions with many others. If you are concerned about your social skills, the best place to look is within you. Understanding your own self is the first step towards understanding others and it is the understanding of others that removes most communication obstacles.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 25; interpretation for a score of 6 (low band)"
+    },
+    "adaptability": {
+      "title": "Adaptability",
+      "lead": "",
+      "definition": "Adaptability measures the degree of flexibility in your approach to work and life. To what extent are you willing and able to adapt to new environments, conditions and people? High scores indicate openness to change, while low scores indicate resistance to change. Awareness of your score on this Facet will help you deal with changes in your personal life (marriage, children, separation), social life (aging, friendships, relocation), and work life (acquisition, merger, restructuring).",
+      "interpretation": {
+        "personal": {
+          "low": "You are change-resistant. You feel at home in well-organized and predictable environments. You don’t particularly like surprises, unexpected events or projects, and find it difficult to adjust to changes in your life. It is important to understand and accept that changes are inevitable in a constantly changing world and some of them might actually help you achieve your objectives.\n\nYou should be mindful not to reject out of hand the possibility of change and make your best efforts to positively endorse it when it is inevitable.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 26; interpretation for a score of 28 (low band)"
+    },
+    "self_motivation": {
+      "title": "Self-Motivation",
+      "lead": "",
+      "definition": "Self-motivation is about inner drive – a hunger to achieve. Achievement is multifaceted and not necessarily externally-oriented, although most people practically (i.e., by means of their actions) define it as such. Even external success is multifaceted, since there are more than a few ways to be recognized by others as successful that may well vary according to gender, age, cultural norms, etc. Motivation stemming from performing an activity for its own sake is known as intrinsic motivation, whereas motivation stemming from performing an activity for external rewards (or for the avoidance of punishment) is known as extrinsic motivation. The former is based on deeply-rooted desires and is, therefore, generally more powerful than the latter, which can be useful for unpleasant tasks or for important tasks in which an individual is uninterested.",
+      "interpretation": {
+        "personal": {
+          "low": "You seem to have a difficulty motivating and perhaps also disciplining yourself. Your impetus for exerting effort, in those cases where you do so, typically involves the prospect of obtaining an external reward or avoiding an external punishment. This means that you are unlikely to set ambitious goals for yourself or, if you have set such goals, that you are unlikely to be close to achieving them. If you are ready to reconcile with this state of affairs, you could be OK, otherwise you will need to work on boosting your self-discipline, persistence, and inner strength. Your score also suggests that you are unlikely to suffer from common weaknesses of highly self-motivated people, such as the need for control and disapproval, or even scorn, for those apparently less driven.",
+          "average": "",
+          "high": ""
+        }
+      },
+      "source": "sample page 27; interpretation for a score of 14 (low band)"
+    }
+  },
+  "cover": {
+    "report": "Personal Report",
+    "form": "Full Form",
+    "source": "cover template (teique-360/brief/cover-template-2026-11.pdf: TEIQue / Personal Report / Full Form)"
+  }
+}

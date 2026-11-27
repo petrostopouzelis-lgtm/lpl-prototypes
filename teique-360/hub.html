@@ -63,12 +63,16 @@ input[type=number] { background-image: none; padding-right: 11px; }
 .check small { display: block; color: var(--muted); font-weight: 400; font-size: 12px; }
 .group-title { margin: 16px 0 8px; font: 700 11px/1 var(--title); letter-spacing: .08em; text-transform: uppercase; color: var(--faint); }
 
-/* report type */
-.rtype { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border: 1.5px solid var(--blue); border-radius: 12px; background: var(--blue-soft); }
+/* report type: one card per report, the chosen one in blue */
+.rtypes { display: flex; flex-direction: column; gap: 8px; }
+.rtype { display: flex; gap: 12px; align-items: center; width: 100%; text-align: left; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 12px; background: var(--card); cursor: pointer; }
+.rtype:hover { border-color: var(--blue-line); }
+.rtype[aria-checked=true] { border-color: var(--blue); background: var(--blue-soft); }
 .rtype b { display: block; font: 700 15px/1.2 var(--title); }
 .rtype b i { font-style: normal; color: var(--orange); }
 .rtype span { color: var(--muted); font-size: 12.5px; }
-.rtype .dot { flex: none; width: 16px; height: 16px; border-radius: 50%; border: 5px solid var(--blue); background: #fff; }
+.rtype .dot { flex: none; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--faint); background: #fff; }
+.rtype[aria-checked=true] .dot { border: 5px solid var(--blue); }
 .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; margin-top: 12px; background: var(--sunk); border-radius: 12px; }
 .seg button { border: 0; border-radius: 9px; padding: 9px 8px; background: transparent; cursor: pointer; font-weight: 600; color: var(--muted); }
 .seg button small { display: block; font-weight: 400; font-size: 11.5px; }
@@ -185,9 +189,13 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
     <div class="steps">
       <section class="step">
         <h2><i>1</i>Report</h2>
-        <div class="rtype" role="radiogroup" aria-label="Report type">
-          <span class="dot" role="radio" aria-checked="true" tabindex="0" aria-label="TEIQue 360°"></span>
-          <div><b>TEIQ<i>ue</i> 360°</b><span>Self and rater scores, full form · A4</span></div>
+        <div class="rtypes" role="radiogroup" aria-label="Report type" id="rtypes">
+          <button type="button" class="rtype" role="radio" aria-checked="true" data-report="360">
+            <span class="dot"></span><div><b>TEIQ<i>ue</i> 360°</b><span>Self and rater scores, full form · A4</span></div>
+          </button>
+          <button type="button" class="rtype" role="radio" aria-checked="false" data-report="ff">
+            <span class="dot"></span><div><b>TEIQ<i>ue</i> Full Form</b><span>Personal report: one person's scores · A4</span></div>
+          </button>
         </div>
         <div class="seg" role="group" aria-label="What to make">
           <button type="button" id="mode-report" aria-pressed="true">Full report<small>PDF or HTML</small></button>
@@ -208,7 +216,7 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
           </label>
         </div>
         <div class="loaded" id="loaded" hidden></div>
-        <details class="fmt">
+        <details class="fmt" data-for="360">
           <summary>What the data file holds</summary>
           <ul>
             <li><code>subject</code>: the person's name, and optionally their role and time in role.</li>
@@ -218,7 +226,17 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
             <li><code>groups</code>: each rater group with its counts and scores, and optionally the raters' names.</li>
             <li>Optional: <code>self_raw</code> (raw scores for the coach table) and <code>settings</code>.</li>
           </ul>
-          <p class="hint" style="margin-top:8px"><button type="button" class="linkbtn" id="template">Download a data template</button> (the sample, to fill in). Full description: <code>data/DATA-FORMAT.md</code>.</p>
+          <p class="hint" style="margin-top:8px"><button type="button" class="linkbtn" data-template>Download a data template</button> (the sample, to fill in). Full description: <code>data/DATA-FORMAT.md</code>.</p>
+        </details>
+        <details class="fmt" data-for="ff" hidden>
+          <summary>What the data file holds</summary>
+          <ul>
+            <li><code>subject</code>: the person's name.</li>
+            <li><code>report</code>: date, form (<code>TEIQue-FF</code>), version (<code>personal</code>), norm and participant ID.</li>
+            <li><code>self</code>: the 20 scores (Global, 4 factors, 15 facets), as percentiles 1 to 99.</li>
+            <li>Optional: <code>settings</code> (<code>watermark</code>).</li>
+          </ul>
+          <p class="hint" style="margin-top:8px"><button type="button" class="linkbtn" data-template>Download a data template</button> (the sample, to fill in). Full description: <code>teique-ff/README.md</code>.</p>
         </details>
       </section>
 
@@ -231,6 +249,7 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
             <option value="long">Marker and long filler text</option>
           </select>
         </label>
+        <div id="opts-360">
         <label class="f">Layout
           <select id="o-scales">
             <option value="single">One factor or facet per page</option>
@@ -248,16 +267,19 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
             <option value="1">1 rater</option><option value="2">2 raters</option><option value="3">3 raters</option><option value="4">4 raters</option><option value="5">5 raters</option>
           </select>
         </label>
+        </div>
         <div class="group-title">Pages and marks</div>
+        <div id="opts-360b">
         <label class="check"><input type="checkbox" id="o-extras"><span>Summary graph, perception map and gap chart<small>Three pages the 2010 report did not have</small></span></label>
         <label class="check"><input type="checkbox" id="o-marks"><span>Mark additions<small>"+ Added" tags for review; switch off for a finished report</small></span></label>
-        <label class="check"><input type="checkbox" id="o-wm"><span>Sample watermark</span></label>
+        </div>
+        <label class="check" style="margin-top:9px"><input type="checkbox" id="o-wm"><span>Sample watermark</span></label>
       </section>
 
       <section class="step" id="opts-charts" hidden>
         <h2><i>3</i>Charts<small id="c-count"></small></h2>
         <div class="picks" id="c-types"></div>
-        <div class="group-title">Scales for the score wheels and rater-group charts</div>
+        <div class="group-title" id="c-scales-title">Scales for the score wheels and rater-group charts</div>
         <div class="scales" id="c-scales"></div>
         <div class="mini-actions"><button type="button" class="linkbtn" id="c-all">Select all scales</button><button type="button" class="linkbtn" id="c-none">Clear</button></div>
         <div class="group-title">Export</div>
