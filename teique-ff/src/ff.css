@@ -2,10 +2,21 @@
    Units are points, as in the Figma frames (595 x 842). */
 h1.title i, .hdr .prod i { font-style: normal; color: #E47C2D; }
 h4.sub.blue { color: #42A2DA; margin: 0; }
+h1.title.second { margin-top: 6pt; }
+
+/* headings inside an interpretation card (Leadership: "Possible Positive", "Possible Negative") */
+.card h5.ch { font: 600 12pt/14.5pt Inter, sans-serif; margin: 0 0 6pt; }
+.card p + .ch-group, .card .ch-group + p, .card .ch-group + .ch-group { margin-top: 12pt; }
 
 /* scale pages: definition beside the score wheel (Figma 238:1542, 238:1578) */
 .row .txt p.lead { margin: 0 0 10pt; }
 .row .gauge { width: 150pt; margin-top: -4pt; }
+
+/* a scale page whose text would not fit tries slightly smaller type before the card moves on to a new page */
+.page.tight .body { gap: 12pt; }
+.page.tight .row .txt p, .page.tight .card p { font-size: 11pt; line-height: 13.4pt; }
+.page.tight .card h5.ch { font-size: 11pt; line-height: 13.4pt; }
+.page.tight .row .gauge { width: 132pt; }
 
 /* structure page: the score explanation card with the three example wheels */
 .scores-card .lead-row { display: flex; gap: 12pt; align-items: center; margin-bottom: 8pt; }

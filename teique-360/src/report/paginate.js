@@ -32,8 +32,9 @@
     function place(page, section, node, splitSel, depth = 0) {
       page.body.appendChild(node);
       if (!over(page)) return page;
-      // a page with one large score wheel first tries the smaller wheel before anything moves
-      if (!page.el.classList.contains('tight') && page.body.querySelector('.scores.big')) {
+      // a page with one large score wheel first tries the smaller wheel before anything moves; a page
+      // marked .can-tighten (TEIQue Full Form scale pages) tries its tighter type the same way
+      if (!page.el.classList.contains('tight') && page.body.querySelector('.scores.big, .can-tighten')) {
         page.el.classList.add('tight');
         if (!over(page)) return page;
         page.el.classList.remove('tight');

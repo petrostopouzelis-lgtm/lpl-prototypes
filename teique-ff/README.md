@@ -1,9 +1,18 @@
 # TEIQue Full Form report
 
 The TEIQue Full Form (TEIQue-FF) report generator, built on the TEIQue 360° report's engine. It turns one person's
-20 TEIQue scores into the A4 report. So far it makes the **Personal/Counselling** version.
+20 TEIQue scores into the A4 report, in one of three **versions**, which share the page design and differ in wording:
 
-Started 2026-11-27. Source of every word: the 2025 sample `2025/Samples/Sample Reports 28-11-2025/TEIQue-FF Personal_Counselling Report [SAMPLE].pdf`.
+| Version | Source of every word (`2025/Samples/Sample Reports 28-11-2025/`) | What differs from Personal |
+|---|---|---|
+| `personal` | `TEIQue-FF Personal_Counselling Report [SAMPLE].pdf` | (the base) |
+| `corporate` | `TEIQue-FF Corporate Report [SAMPLE].pdf` | Introduction, Scores card, a "Factor and Facets" text above the uses, a lead line on every facet page, definitions, interpretations |
+| `leadership` | `TEIQue-FF Leadership Report [SAMPLE].pdf` | Introduction, structure paragraph, a third Scores paragraph, definitions, interpretations in "Possible Positive" / "Possible Negative" parts, "Emotion Perception (self and others)" |
+
+Pick the version in the page viewer's **Version** menu (`report.html?version=corporate`), with the **Version** buttons
+in the Report Hub, with `--version=` on the PDF builder, or in the data file (`report.version`).
+
+Started 2026-11-27 (Personal; Corporate and Leadership the same day).
 Page design: Figma file `OABrZx0GBrroCvGFQfj89Z`, page "TEIQue + TSIQue" (frame list in `../teique-360/brief/TEIQUE-360-FIGMA-NOTES.md`).
 
 ## Where things are
@@ -13,11 +22,11 @@ Page design: Figma file `OABrZx0GBrroCvGFQfj89Z`, page "TEIQue + TSIQue" (frame 
 | `report.html` | **Page viewer**: every PDF page as it prints, with a data-file switcher. Printing it gives the PDF |
 | `src/content.js` | Builds the pages' content (`T.ff.build`) from a data file and the text library |
 | `src/ff.css` | Styles this report adds to the 360's page styles |
-| `text/library.json` | All report wording (`text/library.js` is the same, for double-click use). **Generated**: edit `tools/build-library.py`, not the JSON |
-| `data/` | Made-up data: `sample-ff.json` (the sample's own scores), `edge-extremes.json` (1, 99, every band, a long name), `edge-watermark.json` |
-| `reference/` | What was read out of the 2025 sample: its text layer, and the OCR of its text cards (which are pictures) |
-| `tools/build-pdf.js` | `node teique-ff/tools/build-pdf.js` makes `out/sample-ff.pdf`; give a data file to build another |
-| `tools/audit-text.py` | Checks a built PDF against the sample, both ways (see below) |
+| `text/library.json` | All report wording, one block per version under `versions` (`text/library.js` is the same, for double-click use). **Generated**: edit `tools/build-library.py`, not the JSON |
+| `data/` | Sample data: `sample-ff.json`, `sample-ff-corporate.json`, `sample-ff-leadership.json` (each sample report's own name and scores, read from its score wheels); tests: `edge-extremes.json` (1, 99, every band, a long name), `edge-watermark.json` |
+| `reference/` | What was read out of each 2025 sample: `<version>-text-layer.json` (its text) and `<version>-cards-ocr.json` (OCR of its text cards, which are pictures) |
+| `tools/build-pdf.js` | `node teique-ff/tools/build-pdf.js` makes `out/sample-ff.pdf`; give a data file to build another, `--version=` to pick the wording |
+| `tools/audit-text.py` | Checks a built PDF against its version's sample, both ways (see below) |
 | `tools/build-library.py` | Makes `text/library.json` from `reference/`, with every proofreading correction listed |
 | `tools/extract-sample.py`, `tools/ocr-cards.py` | How `reference/` was made (pypdf; RapidOCR for the cards). Needed again for the other versions |
 | `tools/wrap-json.js` | After adding or editing a data file: writes the `data/*.js` scripts and `data/files.js` |
@@ -32,14 +41,15 @@ The **Report Hub** (`../teique-360/hub.html`) makes this report too: pick "TEIQu
 ## Running it
 
 - Open `report.html` by double-click, or serve the **repo folder** (the page loads `../teique-360/`): `py -m http.server 4360` in the repo root, then `http://localhost:4360/teique-ff/report.html`.
-- PDF: `node teique-ff/tools/build-pdf.js [data.json] [out.pdf] [--fill=none|typical|long] [--watermark] [--png=<dir>]`. Needs Node 22+ and Chrome or Edge (`CHROME_PATH` to choose).
-- Wording check: `python teique-ff/tools/audit-text.py` after building `out/sample-ff.pdf`. It must print 0 missing and 0 pieces not in the sample.
+- PDF: `node teique-ff/tools/build-pdf.js [data.json] [out.pdf] [--version=personal|corporate|leadership] [--fill=none|typical|long] [--watermark] [--png=<dir>]`. Needs Node 22+ and Chrome or Edge (`CHROME_PATH` to choose).
+- Wording check, per version: build its sample (`node teique-ff/tools/build-pdf.js teique-ff/data/sample-ff-corporate.json`), then `python teique-ff/tools/audit-text.py corporate`. It must print 0 missing and 0 pieces not in the sample.
+- After editing `tools/build-library.py`: run it. After adding or editing a data file: `node teique-ff/tools/wrap-json.js`.
 
 ## Data file
 
 ```json
 { "schema": "teique-ff/1",
-  "report": { "form": "TEIQue-FF", "version": "personal", "language": "en", "norm": "UK", "date": "2025-11-21", "id": "SAMPLE-FF-0001" },
+  "report": { "form": "TEIQue-FF", "version": "personal (or corporate, leadership)", "language": "en", "norm": "UK", "date": "2025-11-21", "id": "SAMPLE-FF-0001" },
   "subject": { "name": "Maria Green" },
   "settings": { "watermark": false },
   "self": { "global": 8, "wellbeing": 8, "happiness": 8, "...": "all 20 scales, percentiles 1 to 99" } }
@@ -53,16 +63,19 @@ Cover · Contents · Introduction · Structure of the TEIQue (15-4-1 tree, "Scor
 Uses of the TEIQue report (15 circles) · Wheel chart and quote · Summary graph · Global Score · each factor page followed by
 its facets · Independent Facets (Adaptability, Self-Motivation) · back cover.
 
-Each scale page: title, lead line (Global and factors), the definition beside the score wheel, "Your Score", and the card
-with the interpretation for the person's band (Low 1–30, Average 31–70, High 71–99, the 360's bands).
+Each scale page: title, lead line (Global and factors; every page in Corporate), the definition beside the score wheel,
+"Your Score", and the card with the interpretation for the person's band (Low 1–30, Average 31–70, High 71–99, the
+360's bands). A page whose text would not fit first tries slightly smaller type (11pt), so every version keeps the
+sample's 28 pages.
 
 ## Wording: where it comes from
 
-- Everything on the pages is the sample's text, word for word: the text layer for titles, introduction, definitions and
-  lead lines; the card pictures (OCR, then proofread line by line against the pictures) for the interpretations and the
-  score explanation. `tools/build-library.py` lists every correction made to the OCR.
+- Everything on the pages is the version's sample text, word for word: the text layer for titles, introduction,
+  definitions and lead lines; the card pictures (OCR, then proofread line by line against the pictures) for the
+  interpretations and the score explanation. `tools/build-library.py` lists every correction made to the OCR.
 - From Figma or the cover template, not the sample: "Your Score", "Your TEIQue Wheel Chart", "Your TEIQue Summary Graph",
-  the header "TEIQue Personal", the factor titles in the contents ("Well-Being Factor"), the cover's "Full Form".
+  the header "TEIQue Personal" (and, on the same pattern, "TEIQue Corporate", "TEIQue Leadership"; the samples say
+  "TEIQue Report"), the factor titles in the contents ("Well-Being Factor"), the cover's "Full Form".
 - Left out because they are only in one of the two: Figma's sign-off under the introduction ("Sincerely, Konstantinos V.
   Petrides", not in the sample) and Figma's structure page title ("The Structure of Trait Emotional Intelligence"; the sample's
   "Structure of the TEIQue" is used). The back cover is the 360's (Figma's "Get to Know Thyself"); the sample's says
@@ -70,8 +83,12 @@ with the interpretation for the person's band (Low 1–30, Average 31–70, High
 
 ## Open items
 
-1. **Missing wording (needs LPL):** the sample shows one band per scale, so 40 of 60 interpretation texts are missing
-   (filled: Low for 19 scales, Average for Impulse Control). The report shows the "Text needed" marker for them.
-2. Band thresholds (1–30, 31–70, 71–99) are the 360's; the sample does not state them. Confirm.
-3. Next versions, as agreed: Corporate and Leadership (same pages, other wording), then Developmental and Recruitment
-   (their own page types). Each needs its sample read with `extract-sample.py` and `ocr-cards.py`, then proofread.
+1. **Missing wording (needs LPL):** each sample shows one band per scale, so in every version 40 of 60 interpretation
+   texts are missing. Filled: Personal, Low for 19 scales and Average for Impulse Control; Corporate, Low for 15 and
+   Average for 5; Leadership, High for 17 and Average for 3. The report shows the "Text needed" marker for the rest.
+2. Band thresholds (1–30, 31–70, 71–99) are the 360's. The Corporate sample states "1-30% = Low, 31-70% = Average,
+   71-100% = High", which agrees. Confirm.
+3. **Errors in the samples, copied as printed** (`flag` in the library): Leadership's Emotion Regulation page has an
+   Emotion Management definition; Leadership's Emotion Management definition has "feelings.How" with no space.
+4. Next: the reports with their own templates (Developmental, Recruitment, and the others in the samples folder).
+   Each needs its sample read with `extract-sample.py` and `ocr-cards.py`, then proofread.

@@ -50,6 +50,7 @@
   // ---------------------------------------------------------------- state
   const state = {
     report: '360',
+    ffVersion: 'personal',      // the Full Form version picked under Report: its wording
     mode: 'report',
     data: null, source: null, issues: { errors: [], warnings: [] },
     zoom: null,
@@ -81,7 +82,7 @@
     if (!d || typeof d !== 'object' || Array.isArray(d)) return { errors: ['The file does not hold a report: expected an object with <b>subject</b>, <b>report</b> and <b>self</b>.'], warnings };
     const rep = checkCommon(d, errors, warnings), FFLIB = window.TEIQ_FF_TEXT || { versions: {} };
     if (rep.form && rep.form !== 'TEIQue-FF') warnings.push(`<b>report.form</b> is "${esc(String(rep.form))}"; this report is the full form (TEIQue-FF).`);
-    if (!FFLIB.versions[rep.version]) warnings.push(`<b>report.version</b> is ${rep.version ? `"${esc(String(rep.version))}"` : 'missing'}; built so far: ${Object.keys(FFLIB.versions).join(', ')}. The Personal report is made.`);
+    if (!FFLIB.versions[rep.version]) warnings.push(`<b>report.version</b> is ${rep.version ? `"${esc(String(rep.version))}"` : 'missing'}; built so far: ${Object.keys(FFLIB.versions).join(', ')}. The version picked under Report is made.`);
     scoresCheck(errors, warnings)(d.self, 'self');
     if (d.others || d.groups) warnings.push('This file has rater scores (<b>others</b>, <b>groups</b>); the Full Form report uses the person\'s own scores only.');
     return { errors, warnings };
@@ -119,6 +120,7 @@
   // ---------------------------------------------------------------- data in
   function useData(d, source) {
     state.data = d; state.source = source; state.issues = check(d);
+    if (isFF()) { const fv = d && d.report && d.report.version; if (fv && window.TEIQ_FF_TEXT.versions[fv]) setVersion(fv, false); }
     // settings from the file become the starting options
     const st = (d && d.settings) || {};
     $('o-follows').value = st.textFollows === 'others' ? 'others' : 'self';
@@ -156,7 +158,8 @@
       if (rep.date) html += `<dt>Date</dt><dd>${esc(dmy(rep.date))}</dd>`;
       html += `<dt>Form</dt><dd>${esc(String(rep.form || 'not given'))}${rep.norm ? ` · ${esc(String(rep.norm))} norms` : ''}</dd>`;
       if (isFF()) {
-        html += `<dt>Version</dt><dd>${esc(String(rep.version || 'not given'))}</dd>`;
+        const VL = window.TEIQ_FF_TEXT.versions, fileV = rep.version && VL[rep.version] ? VL[rep.version].name : (rep.version || 'not given');
+        html += `<dt>Version</dt><dd>${esc(VL[state.ffVersion].name)}${String(fileV) !== VL[state.ffVersion].name ? ` <span class="muted">(file: ${esc(String(fileV))})</span>` : ''}</dd>`;
         if (d.self && isScore(d.self.global)) html += `<dt>Global</dt><dd>${d.self.global}</dd>`;
       } else html += `<dt>Raters</dt><dd>${o.responded != null ? `${o.responded}${o.invited != null ? ` of ${o.invited}` : ''} responded` : 'not given'}</dd>`;
       if (!isFF() && groups.length) html += `<dt>Groups</dt><dd>${groups.map(g => `${esc(String(g.label || g.id))} ${g.responded != null ? g.responded : '?'}`).join(' · ')}</dd>`;
@@ -203,7 +206,7 @@
     const data = effectiveData();
     ffCss.media = isFF() ? 'all' : 'not all';
     const built = isFF()
-      ? T.ff.build(data, window.TEIQ_FF_TEXT, { fill: $('o-fill').value, watermark: $('o-wm').checked, assets: 'assets/' })
+      ? T.ff.build(data, window.TEIQ_FF_TEXT, { fill: $('o-fill').value, watermark: $('o-wm').checked, assets: 'assets/', version: state.ffVersion })
       : T.report.build(data, LIB, {
         fill: $('o-fill').value, watermark: $('o-wm').checked, extras: $('o-extras').checked,
         scales: $('o-scales').value, marks: $('o-marks').checked
@@ -324,8 +327,8 @@
     return { status: 'saved' };
   }
   const slug = s => String(s).normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '').toLowerCase() || 'report';
-  const fileBase = () => `${R().file}_${slug(state.data.subject.name)}`;
-  const reportName = () => `${R().title} - ${String(state.data.subject.name).replace(/[\\/:*?"<>|]+/g, ' ').trim()}`;
+  const fileBase = () => `${R().file}${isFF() ? '-' + state.ffVersion : ''}_${slug(state.data.subject.name)}`;
+  const reportName = () => `${isFF() ? `TEIQue ${window.TEIQ_FF_TEXT.versions[state.ffVersion].name} Report (Full Form)` : R().title} - ${String(state.data.subject.name).replace(/[\\/:*?"<>|]+/g, ' ').trim()}`;
 
   function note(text, bad) { const n = $('x-note'); n.textContent = text; n.classList.toggle('bad', !!bad); }
   function saveError(e) {
@@ -429,9 +432,15 @@
   $('mode-report').onclick = () => setMode('report');
   $('mode-charts').onclick = () => setMode('charts');
 
-  const label = n => n === R().sample ? `Sample report (${(R().data()[n] || {}).subject ? R().data()[n].subject.name : n})` : 'Test: ' + n.replace(/^edge-/, '').replace(/-/g, ' ');
+  // samples: "Sample report (name)", with the version for the Full Form's; edge cases: "Test: ..."
+  const label = n => {
+    const d = R().data()[n] || {}, who = d.subject ? d.subject.name : n;
+    if (!/^sample/.test(n)) return 'Test: ' + n.replace(/^edge-/, '').replace(/-/g, ' ');
+    const VL = isFF() && window.TEIQ_FF_TEXT && window.TEIQ_FF_TEXT.versions, ver = VL && d.report && VL[d.report.version];
+    return ver ? `Sample ${ver.name.toLowerCase()} report (${who})` : `Sample report (${who})`;
+  };
   const listSamples = () => { $('sample').innerHTML = '<option value="">Choose a sample…</option>' + R().files().map(n => `<option value="${esc(n)}">${esc(label(n))}</option>`).join(''); };
-  const useSample = n => { const d = R().data()[n]; if (!d) return; $('sample').value = n; $('file').value = ''; useData(JSON.parse(JSON.stringify(d)), { kind: 'sample', name: label(n) }); };
+  const useSample = n => { const d = R().data()[n]; if (!d) return; $('sample').value = n; $('file').value = ''; useData(JSON.parse(JSON.stringify(d)), { kind: 'sample', id: n, name: label(n) }); };
   $('sample').onchange = e => { if (e.target.value) useSample(e.target.value); };
   $('file').onchange = e => readFile(e.target.files[0]);
   const drop = $('drop');
@@ -445,6 +454,24 @@
     };
   });
 
+  // the Full Form's version: its buttons come from the text library, so a new version appears by itself.
+  // Picking one changes the wording; on a version's sample data it also loads the new version's own sample.
+  function renderVersions() {
+    const VL = window.TEIQ_FF_TEXT.versions, ids = Object.keys(VL);
+    $('ff-versions').style.setProperty('--n', ids.length);
+    $('ff-versions').innerHTML = ids.map(k => `<button type="button" role="radio" data-version="${k}" aria-checked="${k === state.ffVersion}">${esc(VL[k].name)}</button>`).join('');
+  }
+  function setVersion(v, rebuild = true) {
+    state.ffVersion = v;
+    document.querySelectorAll('#ff-versions [data-version]').forEach(b => b.setAttribute('aria-checked', b.dataset.version === v));
+    if (!rebuild) return;
+    const own = R().files().find(n => (R().data()[n].report || {}).version === v && /^sample/.test(n));
+    // a version's own sample swaps for the new version's; a test file or the reader's own file keeps its data
+    if (state.source && /^sample/.test(state.source.id || '') && own) useSample(own);
+    else { renderLoaded(); note(''); refresh(); }
+  }
+  $('ff-versions').addEventListener('click', e => { const b = e.target.closest('[data-version]'); if (b && b.dataset.version !== state.ffVersion) setVersion(b.dataset.version); });
+
   // switching the report type: its options, data description, samples and charts, then its sample data
   async function setReport(r) {
     if (r === state.report) return;
@@ -455,6 +482,8 @@
     state.report = r;
     document.querySelectorAll('#rtypes .rtype').forEach(b => b.setAttribute('aria-checked', b.dataset.report === r));
     $('opts-360').hidden = $('opts-360b').hidden = r !== '360';
+    $('ff-version').hidden = r !== 'ff';
+    if (r === 'ff') renderVersions();
     document.querySelectorAll('details.fmt[data-for]').forEach(el => { el.hidden = el.dataset.for !== r; });
     listSamples(); renderChartPicker();
     state.zoom = state.zoom == null ? null : Math.min(state.zoom, fitZoom());
@@ -512,6 +541,7 @@
   renderChartPicker();
   listSamples();
   useSample('sample-360');
-  // hub.html?report=ff opens on the Full Form
-  if (new URLSearchParams(location.search).get('report') === 'ff') setReport('ff');
+  // hub.html?report=ff opens on the Full Form (&version=corporate on one of its versions)
+  const qs = new URLSearchParams(location.search);
+  if (qs.get('report') === 'ff') setReport('ff').then(() => { if (qs.get('version') && window.TEIQ_FF_TEXT.versions[qs.get('version')]) setVersion(qs.get('version')); });
 })();

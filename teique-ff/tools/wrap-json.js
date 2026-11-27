@@ -3,7 +3,8 @@
 // text/library.js is written by tools/build-library.py.
 const fs = require('fs'), path = require('path'), root = path.join(__dirname, '..');
 const names = fs.readdirSync(path.join(root, 'data')).filter(f => f.endsWith('.json')).map(f => f.slice(0, -5))
-  .sort((a, b) => (a === 'sample-ff' ? -1 : b === 'sample-ff' ? 1 : a.localeCompare(b)));
+  // the Personal sample first, then the other versions' samples, then the edge cases
+  .sort((a, b) => (a === 'sample-ff' ? -1 : b === 'sample-ff' ? 1 : /^sample/.test(b) - /^sample/.test(a) || a.localeCompare(b)));
 names.forEach(n => {
   const json = `data/${n}.json`, body = fs.readFileSync(path.join(root, json), 'utf8').trim();
   JSON.parse(body);

@@ -1,0 +1,40 @@
+{
+  "schema": "teique-ff/1",
+  "report": {
+    "form": "TEIQue-FF",
+    "version": "corporate",
+    "language": "en",
+    "norm": "UK",
+    "date": "2025-11-21",
+    "id": "SAMPLE-FF-CORPORATE",
+    "sample": true
+  },
+  "subject": {
+    "name": "Jimmy Jhonson"
+  },
+  "settings": {
+    "watermark": false
+  },
+  "self": {
+    "global": 17,
+    "wellbeing": 15,
+    "happiness": 18,
+    "optimism": 24,
+    "self_esteem": 16,
+    "self_control": 22,
+    "emotion_regulation": 60,
+    "impulse_control": 12,
+    "stress_management": 10,
+    "emotionality": 14,
+    "empathy": 3,
+    "emotion_perception": 52,
+    "emotion_expression": 12,
+    "relationships": 29,
+    "sociability": 19,
+    "emotion_management": 2,
+    "assertiveness": 25,
+    "social_awareness": 57,
+    "adaptability": 32,
+    "self_motivation": 63
+  }
+}

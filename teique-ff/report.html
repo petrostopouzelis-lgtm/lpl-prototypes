@@ -6,6 +6,7 @@
   The layout engine, charts, fonts and cover artwork are the 360 report's, loaded from ../teique-360/.
   Query options:
     file=<name>       one of the data files in data/ (default: sample-ff)
+    version=<id>      the report version, its wording: personal, corporate, leadership (default: the data file's)
     data=<url>        report data JSON from any address (needs a server; used by build-pdf.js)
     fill=none|typical|long   how much filler to show where text is still missing (default typical)
     watermark=1       force the sample watermark on
@@ -42,6 +43,7 @@
 <body>
 <div class="viewer" id="viewer" hidden>
   <label>Report <select id="v-file"></select></label>
+  <label>Version <select id="v-version"></select></label>
   <label>Missing text <select id="v-fill"><option value="none">marker only</option><option value="typical">with filler</option><option value="long">long filler</option></select></label>
   <label><input type="checkbox" id="v-wm"> Watermark</label>
   <span class="seg"><button type="button" id="v-single" aria-pressed="true">Page by page</button><button type="button" id="v-grid" aria-pressed="false">All pages</button></span>
@@ -87,7 +89,10 @@
     $('v-file').innerHTML = list.map(n => `<option value="${n}"${n === file ? ' selected' : ''}>${n}</option>`).join('');
     $('v-fill').value = q.get('fill') || 'typical';
     $('v-wm').checked = q.get('watermark') === '1';
-    $('v-file').onchange = e => go('file', e.target.value === 'sample-ff' ? '' : e.target.value);
+    $('v-file').onchange = e => { q.delete('version'); go('file', e.target.value === 'sample-ff' ? '' : e.target.value); };
+    const LIBV = window.TEIQ_FF_TEXT.versions;
+    $('v-version').innerHTML = Object.keys(LIBV).map(k => `<option value="${k}">${LIBV[k].name}</option>`).join('');
+    $('v-version').onchange = e => go('version', e.target.value);
     $('v-fill').onchange = e => go('fill', e.target.value === 'typical' ? '' : e.target.value);
     $('v-wm').onchange = e => go('watermark', e.target.checked ? '1' : '');
     $('v-single').onclick = () => { grid = false; applyView(); };
@@ -108,15 +113,15 @@
   async function savePdf() {
     const dl = await Promise.race([downloadsReady, new Promise(res => setTimeout(() => res(null), 1500))]);
     if (!dl) { window.print(); return; }
-    const standard = !q.get('fill') && q.get('watermark') !== '1';
+    const standard = !q.get('fill') && q.get('watermark') !== '1' && !q.get('version');
     const btn = $('v-print'), label = btn.textContent;
     btn.disabled = true; btn.textContent = 'Preparing PDF…';
     try {
       const res = await fetch(`pdf/${file}.pdf`);
       if (!res.ok) throw { code: 'missing' };
       const name = (window.__REPORT_NAME || 'Report').replace(/[\\/:*?"<>|]+/g, ' ').trim();
-      await dl.save({ filename: `TEIQue Full Form Report - ${name}.pdf`, data: await res.blob() });
-      note(standard ? 'PDF saved' : 'PDF saved, in the standard layout: filler and watermark settings are not in it', !standard);
+      await dl.save({ filename: `TEIQue ${window.__REPORT_VERSION || ''} Report (Full Form) - ${name}.pdf`.replace('  ', ' '), data: await res.blob() });
+      note(standard ? 'PDF saved' : 'PDF saved, as the data file\'s own version and without filler or watermark settings', !standard);
     } catch (e) {
       const code = e && e.code;
       if (code === 'declined') note('PDF not saved');
@@ -134,8 +139,10 @@
     const images = ['cover-2026.jpg', 'back-cover.jpg', 'logo-monogram.png'].map(src => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = '../teique-360/assets/' + src; }));
     await Promise.all([document.fonts.load('300 12pt Inter'), document.fonts.load('500 26pt Manrope'), ...images]);
     await document.fonts.ready;
-    const built = T.ff.build(data, window.TEIQ_FF_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1' });
-    document.title = 'TEIQue Full Form Report: ' + data.subject.name;
+    const built = T.ff.build(data, window.TEIQ_FF_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', version: q.get('version') });
+    if ($('v-version')) $('v-version').value = built.version;
+    window.__REPORT_VERSION = window.TEIQ_FF_TEXT.versions[built.version].name;
+    document.title = `TEIQue ${window.__REPORT_VERSION} Report: ` + data.subject.name;
     window.__REPORT_NAME = data.subject.name;
     const r = window.__REPORT = T.report.paginate(built, mount);   // measured at 100%, before any zoom
     const missing = mount.querySelectorAll('.needed').length;

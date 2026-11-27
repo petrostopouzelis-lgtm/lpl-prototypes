@@ -1,6 +1,7 @@
 // Builds a TEIQue Full Form report PDF from a data file.
 //
-//   node teique-ff/tools/build-pdf.js [data.json] [out.pdf] [--fill=none|typical|long] [--watermark] [--png=<dir>]
+//   node teique-ff/tools/build-pdf.js [data.json] [out.pdf] [--version=personal|corporate|leadership] [--fill=none|typical|long] [--watermark] [--png=<dir>]
+// --version picks the wording; without it the data file's report.version is used.
 //
 // Uses the 360 report's PDF builder (teique-360/tools/build-pdf.js): it serves the repository folder,
 // so this report can load the shared code in teique-360/, opens teique-ff/report.html in a headless

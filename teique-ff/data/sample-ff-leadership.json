@@ -1,0 +1,40 @@
+{
+  "schema": "teique-ff/1",
+  "report": {
+    "form": "TEIQue-FF",
+    "version": "leadership",
+    "language": "en",
+    "norm": "UK",
+    "date": "2025-11-21",
+    "id": "SAMPLE-FF-LEADERSHIP",
+    "sample": true
+  },
+  "subject": {
+    "name": "Victoria Chen"
+  },
+  "settings": {
+    "watermark": false
+  },
+  "self": {
+    "global": 99,
+    "wellbeing": 98,
+    "happiness": 99,
+    "optimism": 82,
+    "self_esteem": 99,
+    "self_control": 98,
+    "emotion_regulation": 97,
+    "impulse_control": 93,
+    "stress_management": 99,
+    "emotionality": 94,
+    "empathy": 61,
+    "emotion_perception": 99,
+    "emotion_expression": 99,
+    "relationships": 51,
+    "sociability": 99,
+    "emotion_management": 96,
+    "assertiveness": 99,
+    "social_awareness": 99,
+    "adaptability": 60,
+    "self_motivation": 98
+  }
+}

@@ -63,7 +63,7 @@ Petros asked for better readability throughout, larger chart text, larger Low/Hi
 
 `hub.html` is the tool for making reports and charts. Open it by double-click in Chrome or Edge.
 
-1. **Report**: TEIQue 360°, or TEIQue Full Form (the Personal report, from `../teique-ff/`, loaded when it is first picked; `hub.html?report=ff` opens on it). New types are added in `src/hub/hub.js` (`REPORTS`). Choose **Full report** or **Charts only**.
+1. **Report**: TEIQue 360°, or TEIQue Full Form (from `../teique-ff/`, loaded when it is first picked; `hub.html?report=ff&version=corporate` opens on it). For the Full Form, **Version** picks the wording: Personal, Corporate or Leadership. New types are added in `src/hub/hub.js` (`REPORTS`). Choose **Full report** or **Charts only**.
 2. **Data**: drop a report data file (`.json`, see `data/DATA-FORMAT.md`) or pick a sample. The hub checks the file and lists what is wrong (missing or out-of-range scores, missing name, counts that do not add up); errors stop the report, warnings do not. "Download a data template" saves the sample to fill in.
 3. **Options**: missing-text filler, one or two scales per page, which score the text follows, smallest rater group shown on its own, extra pages, "Added" tags, watermark. Or, for charts: which charts (profile wheel, summary graph, perception map, gap chart, raters overview, and a score wheel and rater-group chart per chosen scale), PNG or SVG, PNG size 1× to 4×, white or transparent background.
 4. **Export**: *Save as PDF* (the browser's print dialog, the same 37 pages `build-pdf.js` makes); *Download HTML* (the whole report as one file with its fonts and images, which prints to PDF from any browser); for charts, one PNG/SVG per chart or all of them in a `.zip`.

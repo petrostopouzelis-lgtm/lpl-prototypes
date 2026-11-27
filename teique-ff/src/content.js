@@ -12,6 +12,16 @@
   const fmt = (t, vars) => String(t).replace(/\{(\w+)\}/g, (m, k) => (vars[k] != null ? vars[k] : m));
   const P = (t, cls) => `<p${cls ? ` class="${cls}"` : ''}>${esc(t)}</p>`;
   const paras = t => String(t).split(/\n\n+/).map(x => P(x)).join('');
+  // an interpretation card: its paragraphs, with the library's card headings ("Possible Positive") as headings.
+  // A heading and the paragraph after it stay together, so a card split across pages never ends on a heading.
+  const cardParas = (t, heads) => {
+    const parts = String(t).split(/\n\n+/), out = [];
+    for (let i = 0; i < parts.length; i++) {
+      if (heads.includes(parts[i]) && i + 1 < parts.length) { out.push(`<div class="ch-group"><h5 class="ch">${esc(parts[i])}</h5>${P(parts[i + 1])}</div>`); i++; }
+      else out.push(P(parts[i]));
+    }
+    return out.join('');
+  };
   // "TEIQue" is set with an orange "ue" wherever it appears in a title (Figma)
   const brand = t => esc(t).replace(/TEIQue/g, 'TEIQ<i>ue</i>');
   const FILLER = 'This paragraph stands in for text that has not been written yet, so that the page shows a realistic amount of copy and the layout can be judged. It will be replaced by the approved wording for this score.';
@@ -44,12 +54,16 @@
     return S.root(W, top + (rows.length - 1) * dy + r + 6, `<defs>${defs}</defs>${out}`, items.join(', '));
   }
 
+  // The version (Personal, Corporate, Leadership...) picks the wording: opt.version, else the data file's
+  // report.version, else Personal. Each version's pages, definitions and interpretations are in
+  // lib.versions[version]; the page design is the same.
+  F.versionOf = (data, lib, want) => [want, data && data.report && data.report.version].find(x => x && lib.versions[x]) || 'personal';
   // opt.assets: where the 360's cover, back cover and logo images are, seen from the page (the Report Hub
   // sits next to them); opt.fill and opt.watermark as in the 360 report
   F.build = (data, lib, opt = {}) => {
     const ASSETS = opt.assets || '../teique-360/assets/';
-    const fill = opt.fill || 'typical', st = data.settings || {}, pg = lib.pages;
-    const ver = lib.versions[data.report.version] ? data.report.version : 'personal', V = lib.versions[ver];
+    const ver = F.versionOf(data, lib, opt.version), V = lib.versions[ver], pg = V.pages, SC = V.scales, heads = lib.card_headings || [];
+    const fill = opt.fill || 'typical', st = data.settings || {};
     const year = String(data.report.date || '').slice(0, 4) || new Date().getFullYear();
     // the charts read a "view" of the scores; the Full Form has one score per scale, the person's own
     const v = { data, self: data.self, others: data.self, groups: [], shownGroups: [], responded: 0, gap: () => 0 };
@@ -63,8 +77,8 @@
       return out;
     };
     const interpretation = id => {
-      const band = T.bandOf(data.self[id]), t = ((lib.scales[id].interpretation || {})[ver] || {})[band.id];
-      return t ? paras(t) : needed(`interpretation for ${T.nameOf(id)} in the ${band.label} band`, 2);
+      const band = T.bandOf(data.self[id]), t = (SC[id].interpretation || {})[band.id];
+      return t ? cardParas(t, heads) : needed(`interpretation for ${T.nameOf(id)} in the ${band.label} band`, 2);
     };
 
     // ---- cover: the 2026 cover template, as on the 360 report
@@ -73,7 +87,7 @@
     const nameLen = String(data.subject.name).length, whoSize = nameLen > 24 ? Math.max(14, Math.round(22 * 24 / nameLen * 10) / 10) : 22;
     sections.push({ id: 'cover', kind: 'cover', title: 'Cover',
       html: `<img class="bg" src="${ASSETS}cover-2026.jpg" alt=""><div class="cr">${esc(fmt(lib.footer.copyright, { year }))}</div>
-        <div class="ttl"><div>TEIQ<i>ue</i></div><div>${esc(V.cover || cv.report)}</div>${cv.form ? `<div class="form">${esc(cv.form)}</div>` : ''}</div>
+        <div class="ttl"><div>TEIQ<i>ue</i></div><div>${esc(V.cover)}</div>${cv.form ? `<div class="form">${esc(cv.form)}</div>` : ''}</div>
         <div class="who" style="font-size:${whoSize}pt"><span>${esc(data.subject.name)}</span>${coverDate ? `<i></i><span>${esc(coverDate)}</span>` : ''}</div>
         <div class="legal">${esc(lib.footer.legal)}</div>` });
 
@@ -89,7 +103,10 @@
       `<h4 class="sub blue">${esc(st4.scores_title)}</h4>`,
       { html: `<div><div class="card scores-card"><div class="lead-row">${P(st4.scores[0])}<div class="examples">${examples}</div></div>${st4.scores.slice(1).map(t => P(t)).join('')}</div></div>`, split: '.card' }],
       { noToc: true });
-    add('uses', pg.uses.title, T.BLUE, [head(pg.uses.title), P(pg.uses.paragraph), `<div class="chart bubbles">${bubbles(pg.uses.items)}</div>`], { noToc: true });
+    // Corporate opens this page with "Factor and Facets", then the uses under their own title
+    const uses = [head(pg.uses.title, pg.factors ? 'second' : ''), P(pg.uses.paragraph), `<div class="chart bubbles">${bubbles(pg.uses.items)}</div>`];
+    if (pg.factors) add('uses', pg.factors.title, T.BLUE, [head(pg.factors.title), `<div>${pg.factors.paragraphs.map(t => P(t)).join('')}</div>`].concat(uses), { noToc: true });
+    else add('uses', pg.uses.title, T.BLUE, uses, { noToc: true });
 
     // ---- wheel chart and summary graph
     add('wheel', pg.wheel.title, T.BLUE, [head(pg.wheel.title), `<div class="chart wheel-chart">${C.wheel(v, { single: true, label: 'TEIQue wheel chart' })}</div>`,
@@ -99,21 +116,21 @@
     // ---- one page per scale: title, lead line (Global and factors), definition beside the score wheel,
     // "Your Score", and the interpretation card for the person's band
     const scalePage = id => {
-      const sc = lib.scales[id];
+      const sc = SC[id];
       return [head(sc.title),
-        `<div class="row"><div class="txt">${sc.lead ? P(sc.lead, 'lead') : ''}${paras(sc.definition)}</div><div class="gauge chart">${C.gauge(v, id, { single: true })}</div></div>`,
+        `<div class="row can-tighten"><div class="txt">${sc.lead ? P(sc.lead, 'lead') : ''}${paras(sc.definition)}</div><div class="gauge chart">${C.gauge(v, id, { single: true })}</div></div>`,
         { html: `<div><h4 class="sub">${esc(pg.scale.your_score)}</h4><div class="card">${interpretation(id)}</div></div>`, split: '.card' }];
     };
-    add('global', lib.scales.global.title, T.GLOBAL.text, scalePage('global'), { tocTitle: ct.global });
+    add('global', SC.global.title, T.GLOBAL.text, scalePage('global'), { tocTitle: ct.global });
     T.GROUPS.forEach(g => {
       if (g.scored) {
-        add(g.id, lib.scales[g.id].title, g.text, scalePage(g.id));
-        g.facets.forEach(f => add(f, lib.scales[f].title, g.text, scalePage(f), { parent: g.id }));
+        add(g.id, SC[g.id].title, g.text, scalePage(g.id));
+        g.facets.forEach(f => add(f, SC[f].title, g.text, scalePage(f), { parent: g.id }));
       } else {
         // the independent facets have no factor page: their first facet opens the entry
         const [first, ...rest] = g.facets;
-        add(g.id, ct.independent, g.text, scalePage(first), { tocSubs: [{ title: lib.scales[first].title }] });
-        rest.forEach(f => add(f, lib.scales[f].title, g.text, scalePage(f), { parent: g.id }));
+        add(g.id, ct.independent, g.text, scalePage(first), { tocSubs: [{ title: SC[first].title }] });
+        rest.forEach(f => add(f, SC[f].title, g.text, scalePage(f), { parent: g.id }));
       }
     });
 
@@ -121,6 +138,7 @@
 
     return {
       sections,
+      version: ver,
       meta: { product: `TEIQ<i>ue</i> ${esc(V.header)}`, name: data.subject.name, date: data.report.date, copyright: fmt(lib.footer.copyright, { year }),
         logo: ASSETS + 'logo-monogram.png', tocSubNumbers: false,
         watermark: !!st.watermark || opt.watermark, watermarkText: 'London Psychometric Laboratory Sample' }

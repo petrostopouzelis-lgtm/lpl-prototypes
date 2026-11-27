@@ -1,3 +1,5 @@
-# Test output from tools/build-pdf.js can always be rebuilt; only the sample PDF is kept in git.
+# Test output from tools/build-pdf.js can always be rebuilt; only the sample PDFs are kept in git.
 out/*
 !out/sample-ff.pdf
+!out/sample-ff-corporate.pdf
+!out/sample-ff-leadership.pdf

@@ -77,6 +77,11 @@ input[type=number] { background-image: none; padding-right: 11px; }
 .seg button { border: 0; border-radius: 9px; padding: 9px 8px; background: transparent; cursor: pointer; font-weight: 600; color: var(--muted); }
 .seg button small { display: block; font-weight: 400; font-size: 11.5px; }
 .seg button[aria-pressed=true] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(20, 40, 60, .14); }
+/* the Full Form's versions (Personal, Corporate, Leadership...): one button each, as many columns as versions */
+.seg.vers { grid-template-columns: repeat(var(--n, 3), 1fr); margin-top: 0; }
+.seg.vers button[aria-checked=true] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(20, 40, 60, .14); }
+.group-title .gt-note { margin-left: 8px; font: 500 11.5px var(--body); letter-spacing: 0; text-transform: none; color: var(--faint); }
+#ff-version .group-title { margin-top: 14px; }
 
 /* data */
 .drop { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 18px 14px; border: 1.5px dashed var(--blue-line); border-radius: 12px; background: #FAFDFF; text-align: center; cursor: pointer; transition: background .15s, border-color .15s; }
@@ -93,6 +98,7 @@ input[type=number] { background-image: none; padding-right: 11px; }
 .loaded dl { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; margin: 8px 0 0; font-size: 12.5px; }
 .loaded dt { color: var(--muted); }
 .loaded dd { margin: 0; font-weight: 500; font-variant-numeric: tabular-nums; }
+.loaded dd .muted { color: var(--muted); font-weight: 400; }
 .issues { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
 .issue { padding: 8px 10px; border-radius: var(--r-s); font-size: 12.5px; line-height: 1.4; }
 .issue.err { background: var(--err-soft); color: var(--err); }
@@ -197,6 +203,10 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
             <span class="dot"></span><div><b>TEIQ<i>ue</i> Full Form</b><span>Personal report: one person's scores · A4</span></div>
           </button>
         </div>
+        <div id="ff-version" hidden>
+          <div class="group-title">Version<span class="gt-note">sets the wording</span></div>
+          <div class="seg vers" role="radiogroup" aria-label="Report version" id="ff-versions"></div>
+        </div>
         <div class="seg" role="group" aria-label="What to make">
           <button type="button" id="mode-report" aria-pressed="true">Full report<small>PDF or HTML</small></button>
           <button type="button" id="mode-charts" aria-pressed="false">Charts only<small>PNG or SVG</small></button>
@@ -232,7 +242,7 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
           <summary>What the data file holds</summary>
           <ul>
             <li><code>subject</code>: the person's name.</li>
-            <li><code>report</code>: date, form (<code>TEIQue-FF</code>), version (<code>personal</code>), norm and participant ID.</li>
+            <li><code>report</code>: date, form (<code>TEIQue-FF</code>), version (<code>personal</code>, <code>corporate</code> or <code>leadership</code>; the Version buttons above can change it), norm and participant ID.</li>
             <li><code>self</code>: the 20 scores (Global, 4 factors, 15 facets), as percentiles 1 to 99.</li>
             <li>Optional: <code>settings</code> (<code>watermark</code>).</li>
           </ul>

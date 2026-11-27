@@ -84,6 +84,7 @@ function connect(wsUrl) {
     if (flag('no-extras')) query.set('extras', '0');
     if (flag('scales')) query.set('scales', flag('scales'));
     if (flag('no-marks')) query.set('marks', '0');
+    if (flag('version')) query.set('version', flag('version'));   // TEIQue Full Form: the report version
     await call('Page.enable');
     await call('Page.navigate', { url: `http://127.0.0.1:${port}/${reportPage.split(path.sep).join('/')}?${query}` });
     const started = Date.now();
