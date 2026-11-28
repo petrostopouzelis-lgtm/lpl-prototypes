@@ -854,6 +854,21 @@ main{display:flex;flex-direction:column;gap:24px}
           x.shadowColor = 'rgba(25,35,70,0.28)'; x.shadowBlur = 5 * s; x.shadowOffsetX = 1.2 * s; x.shadowOffsetY = 2 * s;
           bandPath(x, fn); x.fillStyle = pat; x.fill('evenodd');
           x.restore();
+          // white contour lines along the band, like the shape's line texture
+          if (lines > 0) {
+            x.save(); bandPath(x, fn); x.clip('evenodd');
+            [-0.55, 0, 0.55].forEach(f => {
+              x.beginPath();
+              for (let k = 0; k <= M; k++) {
+                const th = TAU * (k % M) / M, base = Rmax * core + Rmax * span * Math.max(0, Math.min(1.05, fn(th - rot0)));
+                const h = half * Math.max(0.3, Math.min(1.9, 0.85 + 3 * (fn.dev ? fn.dev(th - rot0) : 0)));
+                const r = base + h * f, px = (cx + r * Math.sin(th)) * s, py = (cy - r * Math.cos(th)) * s;
+                k ? x.lineTo(px, py) : x.moveTo(px, py);
+              }
+              x.lineWidth = 0.45 * s; x.strokeStyle = `rgba(255,255,255,${(0.75 * lines).toFixed(3)})`; x.stroke();
+            });
+            x.restore();
+          }
         });
       }
     }
