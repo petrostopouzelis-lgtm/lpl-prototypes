@@ -26,6 +26,7 @@ The live version is kept in Claude Design on claude.ai. This folder is an export
 | Folder | What | Status |
 |---|---|---|
 | `teique-360/` | TEIQue 360 report: PDF generator and the matching web "View report" page | First version of every step done; waiting on missing report wording from LPL |
+| `report-covers/` | Generator for the new report cover illustrations, drawn from each report's scores | Illustration step working; cover layout not started |
 
 Add a row for every new project.
 

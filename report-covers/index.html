@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cover Illustrations</title>
+<link rel="stylesheet" href="../design-system/tokens.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f4f6f8; color: var(--color-black); font: 300 14px/1.45 Inter, sans-serif; }
+  h1, h2, h3, label.h, button { font-family: Manrope, sans-serif; }
+  .app { display: grid; grid-template-columns: 320px 1fr; gap: 24px; padding: 24px; align-items: start; }
+  .card { background: #fff; border-radius: 16px; box-shadow: var(--shadow-card); padding: 20px; }
+  aside { position: sticky; top: 24px; display: flex; flex-direction: column; gap: 18px; max-height: calc(100vh - 48px); overflow: auto; }
+  h1 { font-size: 20px; margin: 0; color: var(--color-primary-full); }
+  .sub { color: var(--color-gray); margin: 2px 0 0; font-size: 12px; }
+  label.h { display: block; font-weight: 600; font-size: 12px; margin-bottom: 6px; }
+  .seg { display: flex; background: #eef2f5; border-radius: 50px; padding: 3px; }
+  .seg button { flex: 1; border: 0; background: none; padding: 7px 4px; border-radius: 50px; font-weight: 600; font-size: 12px; cursor: pointer; color: #555; }
+  .seg button.on { background: linear-gradient(90deg, var(--color-primary-full), var(--color-primary-light)); color: #fff; box-shadow: var(--shadow-light); }
+  .row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+  .row span.n { width: 100px; flex: none; }
+  .row input[type=range] { min-width: 0; }
+  .row output { width: 26px; text-align: right; font-variant-numeric: tabular-nums; }
+  .row .dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+  input[type=range] { flex: 1; accent-color: var(--color-primary-full); }
+  .btn { border: 0; border-radius: 50px; padding: 10px 16px; font-weight: 600; font-size: 13px; cursor: pointer; color: #fff; background: linear-gradient(90deg, var(--color-primary-full), var(--color-primary-light)); box-shadow: var(--shadow-light); }
+  .btn.ghost { background: #fff; color: var(--color-primary-full); box-shadow: inset 0 0 0 1px var(--color-primary-full); }
+  .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .note { font-size: 11px; color: var(--color-gray); }
+  .note b { color: var(--color-secondary-full); font-weight: 600; }
+  main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+  .stage { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }
+  .page { background: #fff; box-shadow: var(--shadow-card); aspect-ratio: 595 / 842; width: min(560px, 100%); position: relative; }
+  .page canvas { width: 100%; height: 100%; display: block; }
+  .page .zones { position: absolute; inset: 0; pointer-events: none; display: none; }
+  .page.showzones .zones { display: block; }
+  .zones div { position: absolute; border: 1px dashed rgba(0,0,0,.25); border-radius: 6px; font: 400 10px Inter; color: rgba(0,0,0,.4); padding: 4px 6px; }
+  .why { flex: 1; min-width: 260px; }
+  .why h2 { font-size: 16px; margin: 0 0 8px; }
+  .why table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .why td { padding: 6px 4px; border-bottom: 1px solid var(--color-light-gray); vertical-align: top; }
+  .why td:first-child { font-weight: 400; width: 42%; }
+  .gallery h2 { font-size: 16px; margin: 0 0 4px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 12px; }
+  .grid figure { margin: 0; cursor: pointer; }
+  .grid canvas { width: 100%; aspect-ratio: 595/842; background: #fff; box-shadow: var(--shadow-light); border-radius: 4px; display: block; transition: transform .2s ease, box-shadow .2s ease; }
+  .grid figure:hover canvas { transform: translateY(-2px); box-shadow: var(--shadow-card); }
+  .grid figcaption { font-size: 11px; color: var(--color-gray); margin-top: 6px; }
+  @media (max-width: 860px) { .app { grid-template-columns: 1fr; padding: 16px; } aside { position: static; max-height: none; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="card">
+    <div><h1>Cover illustrations</h1><p class="sub">Report cover artwork generated from scores. A4 portrait.</p></div>
+    <div><label class="h">Theory</label><div class="seg" id="theory"><button data-v="teique" class="on">TEIQue</button><button data-v="tsique">TSIQue</button><button data-v="scanin">Scan-In</button></div></div>
+    <div><label class="h">Report</label><div class="seg" id="type"><button data-v="individual" class="on">Individual</button><button data-v="group">Group</button></div></div>
+    <div id="membersBox" hidden><label class="h">Group members</label><div class="row"><input type="range" id="members" min="2" max="20" value="6"><output id="membersOut">6</output></div></div>
+    <div id="modeBox"><label class="h">Colours</label><div class="seg" id="colorMode"><button data-v="pair" class="on">Top two factors</button><button data-v="all">Every factor</button></div></div>
+    <div id="scores"></div>
+    <div><label class="h">Finish</label>
+      <div class="row"><span class="n">Softness</span><input type="range" id="softness" min="0" max="100" value="70"><output></output></div>
+      <div class="row"><span class="n">Pastel</span><input type="range" id="pastel" min="0" max="100" value="40"><output></output></div>
+      <div class="row"><span class="n">Grain</span><input type="range" id="grain" min="0" max="100" value="20"><output></output></div>
+      <div class="row"><span class="n">Variation</span><input type="range" id="variation" min="0" max="20" value="0"><output></output></div>
+    </div>
+    <div class="btns">
+      <button class="btn" id="random">New sample person</button>
+      <button class="btn ghost" id="download">Download PNG (300 dpi)</button>
+    </div>
+    <label class="row"><input type="checkbox" id="zones"> Show where the cover text will sit</label>
+    <p class="note" id="themeNote"></p>
+  </aside>
+
+  <main>
+    <div class="stage">
+      <div class="page" id="page"><canvas id="main"></canvas>
+        <div class="zones">
+          <div style="left:4.4%;top:9%;width:55%;height:10%">logo</div>
+          <div style="left:4.4%;top:24.5%;width:52%;height:14%">title</div>
+          <div style="left:4.2%;top:64.8%;width:91.6%;height:9.3%">name and date bar</div>
+        </div>
+      </div>
+      <div class="why card">
+        <h2>How this one was made</h2>
+        <table id="why"></table>
+      </div>
+    </div>
+    <section class="gallery card">
+      <h2>Compare</h2>
+      <p class="note">Twelve made-up people with the same settings. Click one to open it above.</p>
+      <div class="grid" id="grid"></div>
+    </section>
+  </main>
+</div>
+
+<script src="src/theories.js"></script>
+<script src="src/cover.js"></script>
+<script src="src/samples.js"></script>
+<script>
+const L = window.LPLCovers;
+const state = { theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null };
+const $ = id => document.getElementById(id);
+const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode });
+
+function seg(id, key) {
+  $(id).addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    [...$(id).children].forEach(x => x.classList.toggle('on', x === b));
+    state[key] = b.dataset.v; newData(); renderAll();
+  });
+}
+seg('theory', 'theory'); seg('type', 'type'); seg('colorMode', 'colorMode');
+
+function newData() {
+  state.data = L.sample(state.theory, state.type, state.members, state.seed * 7919 + 13);
+  $('membersBox').hidden = state.type !== 'group';
+  $('modeBox').hidden = state.type === 'group' || state.theory === 'scanin';
+  buildScores();
+}
+
+// sliders for the main scores of an individual report
+function buildScores() {
+  const box = $('scores'), T = L.THEORIES[state.theory], d = state.data;
+  box.innerHTML = '';
+  if (state.type === 'group') { box.innerHTML = `<label class="h">Scores</label><p class="note">${d.people.length} made-up members. Use “New sample person” for another team.</p>`; return; }
+  const p = d.people[0];
+  const rows = [];
+  if (T.id === 'scanin') {
+    rows.push(`<label class="h">Belief by domain <span class="note">(bends the curve)</span></label>`);
+    T.domains.forEach(dm => rows.push(row(dm, T.scales.belief.color.full, p.belief[dm], v => (p.belief[dm] = v))));
+  } else {
+    rows.push(`<label class="h">Factor scores <span class="note">(bend the curve)</span></label>`);
+    T.factors.forEach(f => rows.push(row(f.name, f.color.full, p.factors[f.id], v => {
+      const old = p.factors[f.id]; p.factors[f.id] = v; f.facets.forEach(n => (p.facets[n] = Math.max(1, Math.min(99, p.facets[n] + v - old))));
+    })));
+    rows.push(row(T.global.name, T.global.color.full, p.global, v => (p.global = v)));
+  }
+  box.innerHTML = rows.map(r => r.html || r).join('');
+  rows.filter(r => r.bind).forEach(r => r.bind());
+}
+let rid = 0;
+function row(name, color, val, set) {
+  const id = 'r' + (rid++);
+  return { html: `<div class="row"><span class="dot" style="background:${color}"></span><span class="n">${name}</span><input type="range" id="${id}" min="1" max="99" value="${val}"><output>${val}</output></div>`,
+    bind: () => { const el = $(id); el.addEventListener('input', () => { el.nextElementSibling.value = el.value; set(+el.value); renderMain(); }); } };
+}
+
+document.querySelectorAll('#softness,#grain,#pastel,#variation').forEach(el => {
+  const out = el.nextElementSibling; out.value = el.value;
+  el.addEventListener('input', () => { out.value = el.value; renderMain(); });
+  el.addEventListener('change', renderGrid);
+});
+$('members').addEventListener('input', e => { $('membersOut').value = e.target.value; state.members = +e.target.value; newData(); renderMain(); });
+$('members').addEventListener('change', renderGrid);
+$('random').addEventListener('click', () => { state.seed++; newData(); renderMain(); });
+$('zones').addEventListener('change', e => $('page').classList.toggle('showzones', e.target.checked));
+$('download').addEventListener('click', () => {
+  const c = document.createElement('canvas');
+  L.renderIllustration(c, state.data, Object.assign(opts(), { scale: 300 / 72 }));
+  c.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `cover-${state.theory}-${state.type}-${(state.data.name || 'sample').replace(/\W+/g, '-')}.png`; a.click(); });
+});
+
+let pending = 0;
+function renderMain() {
+  cancelAnimationFrame(pending);
+  pending = requestAnimationFrame(() => { L.renderIllustration($('main'), state.data, Object.assign(opts(), { scale: 2 })); explain(); });
+}
+function explain() {
+  const T = L.THEORIES[state.theory], d = state.data, { people } = L._internal.normalise(d);
+  const pct = v => Math.round(v * 100);
+  const rows = [];
+  if (state.type === 'group') {
+    const team = people[0].factors.map((_, i) => people.reduce((s, p) => s + p.factors[i], 0) / people.length);
+    const [a, b] = L._internal.topPair(T, team);
+    rows.push(['Shape', `one sheet of ${people.length} lanes, one per member, twisting together`]);
+    rows.push(['Colours', `the team’s two highest ${T.id === 'scanin' ? 'scales' : 'factors'}, ${sw(a)} to ${sw(b)}, blended across the lanes; members sorted by which of the two they lean to`]);
+    rows.push(['Bends', 'the team’s average factor scores']);
+    rows.push(['Lane widths', 'each lane swells where its member scores high, along the factor sequence']);
+  } else {
+    const p = people[0];
+    if (T.id === 'scanin') {
+      rows.push(['Colours', `${sw(T.scales.belief.color)} belief, ${sw(T.scales.importance.color)} importance`]);
+      rows.push(['Bends', `belief per domain, compared with the person’s own average: ${p.factors.map(pct).join(', ')}`]);
+      rows.push(['Width along the ribbon', 'importance per domain']);
+    } else {
+      const order = p.factors.map((v, i) => [v, i]).sort((x, y) => y[0] - x[0] || x[1] - y[1]);
+      if (state.colorMode === 'all') rows.push(['Colours', `one ribbon per factor, width by score: ${T.factors.map(f => sw(f.color)).join(' ')}`]);
+      else rows.push(['Colours', `top two factors: ${sw(T.factors[order[0][1]].color)} ${T.factors[order[0][1]].name} (front), ${sw(T.factors[order[1][1]].color)} ${T.factors[order[1][1]].name} (behind)`]);
+      rows.push(['Bends', 'each factor compared with this person’s own average: ' + T.factors.map((f, i) => `${f.name} ${pct(p.factors[i])}`).join(', ')]);
+      rows.push(['Width along the ribbon', `${p.facets.length} facet scores, in order`]);
+    }
+    rows.push(['Twists and width', `${T.global.name} ${pct(p.global)}: higher scores twist more and run wider`]);
+  }
+  rows.push(['Uniqueness', 'small variations seeded by name, date and scores']);
+  $('why').innerHTML = rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+  $('themeNote').innerHTML = T.proposed ? `<b>Proposed colours.</b> The design system only defines factor colours for TEIQue. ${T.label}’s are picked from the same palette and need confirming (src/theories.js).` : 'Colours: the design system’s TEIQue factor palette.';
+}
+const sw = c => `<span class="dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${c.full};vertical-align:-1px"></span>`;
+
+function renderGrid() {
+  const grid = $('grid'); grid.innerHTML = '';
+  for (let i = 0; i < 12; i++) {
+    const seed = 1000 + i * 31 + state.seed * 3;
+    const d = L.sample(state.theory, state.type, state.members, seed);
+    const f = document.createElement('figure'), c = document.createElement('canvas');
+    f.append(c); const cap = document.createElement('figcaption'); cap.textContent = d.name; f.append(cap);
+    grid.append(f);
+    f.addEventListener('click', () => { state.data = d; buildScores(); renderMain(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    setTimeout(() => L.renderIllustration(c, d, Object.assign(opts(), { scale: 0.6 })), 30 * i);
+  }
+}
+function renderAll() { renderMain(); renderGrid(); }
+newData(); renderAll();
+</script>
+</body>
+</html>
