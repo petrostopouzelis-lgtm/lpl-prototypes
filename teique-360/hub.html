@@ -259,6 +259,12 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
             <option value="long">Marker and long filler text</option>
           </select>
         </label>
+        <label class="f">Cover
+          <select id="o-cover">
+            <option value="generated">Drawn from the person's scores</option>
+            <option value="picture">Illustrated cover (design system) or 360° template</option>
+          </select>
+        </label>
         <div id="opts-360">
         <label class="f">Layout
           <select id="o-scales">
@@ -343,7 +349,7 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
 </script>
 <script>
   (window.TEIQ_FILE_LIST || ['sample-360']).map(function (n) { return 'data/' + n + '.js'; })
-    .concat(['text/library.js', 'src/model.js', 'src/svg.js', 'src/charts/radial.js', 'src/charts/linear.js', 'src/charts/overview.js', 'src/report/content.js', 'src/report/paginate.js', 'src/hub/hub.js'])
+    .concat(['text/library.js', 'src/model.js', 'src/svg.js', 'src/charts/radial.js', 'src/charts/linear.js', 'src/charts/overview.js', 'src/cover-art.js', 'src/report/content.js', 'src/report/paginate.js', 'src/hub/hub.js'])
     .forEach(function (src) { document.write('<script src="' + src + HUB_V + '"><\/script>'); });
 </script>
 </body>

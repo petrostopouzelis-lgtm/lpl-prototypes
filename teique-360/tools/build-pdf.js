@@ -11,10 +11,12 @@ const { spawn } = require('child_process');
 
 // Other report projects reuse this builder: REPORT_ROOT is the folder to serve (default: this project),
 // REPORT_PAGE the page to print inside it, REPORT_SAMPLE the default data file.
-const root = path.resolve(process.env.REPORT_ROOT || path.join(__dirname, '..'));
-const reportPage = process.env.REPORT_PAGE || 'report.html';
+// The repository folder is served (not just this project), so the report can load the cover generator in
+// ../report-covers/ and the design system's logo.
+const root = path.resolve(process.env.REPORT_ROOT || path.join(__dirname, '..', '..'));
+const reportPage = process.env.REPORT_PAGE || 'teique-360/report.html';
 const args = process.argv.slice(2), flags = args.filter(a => a.startsWith('--')), files = args.filter(a => !a.startsWith('--'));
-const dataFile = path.resolve(files[0] || process.env.REPORT_SAMPLE || path.join(root, 'data', 'sample-360.json'));
+const dataFile = path.resolve(files[0] || process.env.REPORT_SAMPLE || path.join(__dirname, '..', 'data', 'sample-360.json'));
 const outFile = path.resolve(files[1] || path.join(path.dirname(path.join(root, reportPage)), 'out', path.basename(dataFile, '.json') + '.pdf'));
 const flag = name => { const f = flags.find(x => x === '--' + name || x.startsWith('--' + name + '=')); return f ? (f.includes('=') ? f.split('=')[1] : true) : null; };
 
@@ -84,12 +86,13 @@ function connect(wsUrl) {
     if (flag('no-extras')) query.set('extras', '0');
     if (flag('scales')) query.set('scales', flag('scales'));
     if (flag('no-marks')) query.set('marks', '0');
-    if (flag('version')) query.set('version', flag('version'));   // TEIQue Full Form: the report version
+    if (flag('version')) query.set('version', flag('version'));
+    if (flag('cover')) query.set('cover', flag('cover'));         // --cover=design: the illustrated or template cover, not the one drawn from the scores   // TEIQue Full Form: the report version
     await call('Page.enable');
     await call('Page.navigate', { url: `http://127.0.0.1:${port}/${reportPage.split(path.sep).join('/')}?${query}` });
     const started = Date.now();
     while (!(await evaluate("document.documentElement.dataset.ready === '1'"))) {
-      if (Date.now() - started > 60000) throw new Error('The report page did not finish within 60 seconds');
+      if (Date.now() - started > 120000) throw new Error('The report page did not finish within 60 seconds');
       await new Promise(r => setTimeout(r, 150));
     }
     const result = await evaluate('window.__REPORT');

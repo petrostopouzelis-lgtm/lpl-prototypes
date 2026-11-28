@@ -13,6 +13,8 @@
     watermark=1       force the sample watermark on
     view=grid         start in the all-pages overview
     print=1           open the browser's print dialog once the pages are ready
+    cover=design      the design system's illustrated cover instead of the cover drawn from the scores
+                      (the default: report-covers/, the cover generator, via ../teique-360/src/cover-art.js)
   Save as PDF: opened on its own it opens the print dialog. Inside the claude.ai viewer, where pages
   may not open a print dialog, it saves the ready-made PDF from pdf/ next to this page instead.
 -->
@@ -45,6 +47,7 @@
 <div class="viewer" id="viewer" hidden>
   <label>Report <select id="v-file"></select></label>
   <label>Version <select id="v-version"></select></label>
+  <label>Cover <select id="v-cover"><option value="">drawn from the scores</option><option value="design">design-system illustration</option></select></label>
   <label>Missing text <select id="v-fill"><option value="none">marker only</option><option value="typical">with filler</option><option value="long">long filler</option></select></label>
   <label><input type="checkbox" id="v-wm"> Watermark</label>
   <span class="seg"><button type="button" id="v-single" aria-pressed="true">Page by page</button><button type="button" id="v-grid" aria-pressed="false">All pages</button></span>
@@ -58,7 +61,7 @@
   // running old cached scripts draws nothing.
   (function () {
     var v = '?v=' + Date.now(), shared = '../teique-360/src/';
-    ['data/files.js', 'text/library.js', shared + 'model.js', shared + 'svg.js', shared + 'charts/radial.js', shared + 'charts/linear.js', 'src/content.js', shared + 'report/paginate.js'].forEach(function (src) { document.write('<script src="' + src + v + '"><\/script>'); });
+    ['data/files.js', 'text/library.js', shared + 'model.js', shared + 'svg.js', shared + 'charts/radial.js', shared + 'charts/linear.js', shared + 'cover-art.js', 'src/content.js', shared + 'report/paginate.js'].forEach(function (src) { document.write('<script src="' + src + v + '"><\/script>'); });
   })();
 </script>
 <script>
@@ -94,6 +97,8 @@
     const LIBV = window.TEIQ_FF_TEXT.versions;
     $('v-version').innerHTML = Object.keys(LIBV).map(k => `<option value="${k}">${LIBV[k].name}</option>`).join('');
     $('v-version').onchange = e => go('version', e.target.value);
+    $('v-cover').value = q.get('cover') === 'design' ? 'design' : '';
+    $('v-cover').onchange = e => go('cover', e.target.value);
     $('v-fill').onchange = e => go('fill', e.target.value === 'typical' ? '' : e.target.value);
     $('v-wm').onchange = e => go('watermark', e.target.checked ? '1' : '');
     $('v-single').onclick = () => { grid = false; applyView(); };
@@ -141,7 +146,14 @@
     const images = ['back-cover.jpg', 'logo-monogram.png'].map(src => '../teique-360/assets/' + src).concat(cover).map(src => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = src; }));
     await Promise.all([document.fonts.load('300 12pt Inter'), document.fonts.load('500 26pt Manrope'), ...images]);
     await document.fonts.ready;
-    const built = T.ff.build(data, window.TEIQ_FF_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', version: q.get('version') });
+    // the cover drawn from the scores (the default); if the cover generator cannot run, the design-system cover
+    let coverImage = null;
+    if (q.get('cover') !== 'design') {
+      $('v-status').textContent = 'Drawing the cover…';
+      try { coverImage = await T.coverArt.render(data, T.ff.coverTitles(data, window.TEIQ_FF_TEXT, q.get('version'))); }
+      catch (e) { console.warn('Cover generator unavailable, using the design-system cover:', e); }
+    }
+    const built = T.ff.build(data, window.TEIQ_FF_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', version: q.get('version'), coverImage });
     if ($('v-version')) $('v-version').value = built.version;
     window.__REPORT_VERSION = window.TEIQ_FF_TEXT.versions[built.version].name;
     document.title = `TEIQue ${window.__REPORT_VERSION} Report: ` + data.subject.name;

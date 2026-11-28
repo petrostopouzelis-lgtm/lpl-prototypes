@@ -13,6 +13,8 @@
     scales=pair       two factors or facets share a page, each with a small wheel (default: one per page, large wheel)
     view=grid         start in the all-pages overview
     print=1           open the browser's print dialog once the pages are ready
+    cover=template    the 2026 template cover instead of the cover drawn from the self scores
+                      (the default: report-covers/, the cover generator, via src/cover-art.js)
   Save as PDF: opened on its own (a file, a local server) it opens the print dialog. Inside the
   claude.ai viewer, where pages may not open a print dialog, it saves a ready-made PDF instead,
   from pdf/ next to this page (made by tools/build-viewer-pdfs.js): one per data file, with and
@@ -50,6 +52,7 @@
   <label><input type="checkbox" id="v-wm"> Watermark</label>
   <label><input type="checkbox" id="v-extras"> Summary, map and gap pages</label>
   <label><input type="checkbox" id="v-marks"> Mark additions</label>
+  <label>Cover <select id="v-cover"><option value="">drawn from the scores</option><option value="template">2026 template</option></select></label>
   <label>Scores <select id="v-scales"><option value="single">one per page</option><option value="pair">two per page</option></select></label>
   <span class="seg"><button type="button" id="v-single" aria-pressed="true">Page by page</button><button type="button" id="v-grid" aria-pressed="false">All pages</button></span>
   <span class="seg"><button type="button" id="v-out" aria-label="Zoom out">−</button><span id="v-zoom">100%</span><button type="button" id="v-in" aria-label="Zoom in">+</button></span>
@@ -62,7 +65,7 @@
   // running old cached scripts draws nothing.
   (function () {
     var v = '?v=' + Date.now();
-    ["data/files.js", "text/library.js", "src/model.js", "src/svg.js", "src/charts/radial.js", "src/charts/linear.js", "src/charts/overview.js", "src/report/content.js", "src/report/paginate.js"].forEach(function (src) { document.write('<script src="' + src + v + '"><\/script>'); });
+    ["data/files.js", "text/library.js", "src/model.js", "src/svg.js", "src/charts/radial.js", "src/charts/linear.js", "src/charts/overview.js", "src/cover-art.js", "src/report/content.js", "src/report/paginate.js"].forEach(function (src) { document.write('<script src="' + src + v + '"><\/script>'); });
   })();
 </script>
 <script>
@@ -101,6 +104,8 @@
     $('v-marks').checked = q.get('marks') !== '0';
     $('v-marks').onchange = e => go('marks', e.target.checked ? '' : '0');
     $('v-scales').value = q.get('scales') === 'pair' ? 'pair' : 'single';
+    $('v-cover').value = q.get('cover') === 'template' ? 'template' : '';
+    $('v-cover').onchange = e => go('cover', e.target.value);
     $('v-scales').onchange = e => go('scales', e.target.value === 'pair' ? 'pair' : '');
     $('v-single').onclick = () => { grid = false; applyView(); };
     $('v-grid').onclick = () => { grid = true; applyView(); };
@@ -151,7 +156,14 @@
     const images = ['assets/cover-2026.jpg', 'assets/back-cover.jpg', 'assets/logo-monogram.png'].map(src => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = src; }));
     await Promise.all([document.fonts.load('300 12pt Inter'), document.fonts.load('500 26pt Manrope'), ...images]);
     await document.fonts.ready;
-    const built = T.report.build(data, window.TEIQ_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', extras: q.get('extras') !== '0', scales: q.get('scales') === 'pair' ? 'pair' : 'single', marks: q.get('marks') !== '0' });
+    // the cover drawn from the person's own scores (the default); if the generator cannot run, the template cover
+    let coverImage = null;
+    if (q.get('cover') !== 'template') {
+      $('v-status').textContent = 'Drawing the cover…';
+      try { coverImage = await T.coverArt.render(data, { reportTitle: '360° Report', subtitle: 'Full Form' }); }
+      catch (e) { console.warn('Cover generator unavailable, using the template cover:', e); }
+    }
+    const built = T.report.build(data, window.TEIQ_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', extras: q.get('extras') !== '0', scales: q.get('scales') === 'pair' ? 'pair' : 'single', marks: q.get('marks') !== '0', coverImage });
     document.title = 'TEIQue 360° Report: ' + data.subject.name;
     window.__REPORT_NAME = data.subject.name;
     const r = window.__REPORT = T.report.paginate(built, mount);   // measured at 100%, before any zoom

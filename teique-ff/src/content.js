@@ -80,6 +80,8 @@
         <div class="cv-n" style="font-size:${f(nSize)}pt;margin-top:${f(gap)}pt">${esc(name)}</div></div>
       <div class="cv-cr" style="left:${r.cx}pt;top:${f(crTop)}pt;font-size:${crSize}pt;color:${r.color}">${esc(copyright)}</div>`;
   };
+  // the cover generator's title line for a version: "TEIQue Personal Report • Full Form"
+  F.coverTitles = (data, lib, version) => { const V = lib.versions[F.versionOf(data, lib, version)]; return { reportTitle: V.cover, subtitle: 'Full Form' }; };
   F.build = (data, lib, opt = {}) => {
     const ASSETS = opt.assets || '../teique-360/assets/', COVERS = opt.covers || F.covers;
     const ver = F.versionOf(data, lib, opt.version), V = lib.versions[ver], pg = V.pages, SC = V.scales, heads = lib.card_headings || [];
@@ -103,7 +105,11 @@
 
     // ---- cover: the version's cover from the design system (Petros, 2026-11-28: always the design-system covers),
     // its placeholder name and old copyright replaced by live text (F.cover). Editable covers come later.
-    sections.push({ id: 'cover', kind: 'cover', title: 'Cover', html: F.cover(lib, V.cover_image, V.cover, data.subject.name, fmt(lib.footer.copyright, { year }), COVERS) });
+    // opt.coverImage: the cover drawn from the person's scores by the cover generator (T.coverArt), which then
+    // replaces the design-system cover; it carries its own title, name, date and legal line
+    sections.push({ id: 'cover', kind: 'cover', title: 'Cover', html: opt.coverImage
+      ? `<img class="bg" src="${opt.coverImage}" alt="${esc('TEIQue ' + V.cover + ': ' + data.subject.name)}">`
+      : F.cover(lib, V.cover_image, V.cover, data.subject.name, fmt(lib.footer.copyright, { year }), COVERS) });
 
     if (V.template === 'recruitment') return recruitment();
     if (V.template === 'developmental') return developmental();

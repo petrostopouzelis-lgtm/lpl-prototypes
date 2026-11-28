@@ -28,7 +28,7 @@ The live version is kept in Claude Design on claude.ai. This folder is an export
 | `teique-360/` | TEIQue 360° report: PDF generator, Report Hub (`hub.html`) and the web "View report" page | Report and hub done; waiting on missing report wording from LPL |
 | `teique-ff/` | TEIQue Full Form report generator, on the 360's engine, in five versions (Personal, Corporate, Leadership, Developmental, Recruitment); also in the Report Hub | All five done, wording audited both ways against each 2025 sample; most bands' texts still missing (each sample shows one band per scale) |
 | `user platforms/` | The logged-in account prototypes (coach, managed coach, business, manager). `cursor archive/` holds them as uploaded; `coach account/` is the working copy | Coach account runs, with the TEIQue 360° assignment, results page and wizard step; missing two shared scripts (credits, promotions) |
-| `report-covers/` | Generator for the new report cover illustrations, drawn from each report's scores | Illustration step working; cover layout not started |
+| `report-covers/` | Generator for the new report covers, drawn from each report's scores | Cover layouts working; used by the 360 and Full Form reports and the Report Hub (`teique-360/src/cover-art.js`) |
 
 Add a row for every new project.
 

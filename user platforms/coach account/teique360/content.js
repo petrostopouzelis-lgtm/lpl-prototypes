@@ -59,7 +59,10 @@
     const cd = String(data.report.date || '').split('-'), coverDate = cd.length === 3 ? `${cd[2]}/${cd[1]}/${cd[0]}` : data.report.date || '';
     // a long name gets smaller type so name and date always fit the bar
     const nameLen = String(data.subject.name).length, whoSize = nameLen > 24 ? Math.max(14, Math.round(22 * 24 / nameLen * 10) / 10) : 22;
-    sections.push({ id: 'cover', kind: 'cover', title: 'Cover',
+    // opt.coverImage: the cover drawn from the person's scores by the cover generator (T.coverArt), which then
+    // replaces the template cover; it carries its own title, name, date and legal line
+    if (opt.coverImage) sections.push({ id: 'cover', kind: 'cover', title: 'Cover', html: `<img class="bg" src="${opt.coverImage}" alt="${esc('TEIQue 360° Report: ' + data.subject.name)}">` });
+    else sections.push({ id: 'cover', kind: 'cover', title: 'Cover',
       html: `<img class="bg" src="assets/cover-2026.jpg" alt=""><div class="cr">${esc(fmt(lib.footer.copyright, { year }))}</div>
         <div class="ttl"><div>TEIQ<i>ue</i></div><div>${esc(cv.report || '360° Report')}</div>${formLine ? `<div class="form">${esc(formLine)}</div>` : ''}</div>
         <div class="who" style="font-size:${whoSize}pt"><span>${esc(data.subject.name)}</span>${coverDate ? `<i></i><span>${esc(coverDate)}</span>` : ''}</div>

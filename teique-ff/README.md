@@ -76,7 +76,10 @@ sample's 28 pages.
 - Everything on the pages is the version's sample text, word for word: the text layer for titles, introduction,
   definitions and lead lines; the card pictures (OCR, then proofread line by line against the pictures) for the
   interpretations and the score explanation. `tools/build-library.py` lists every correction made to the OCR.
-- **Covers** (Petros, 2026-11-28): always the design system's report covers. Until the editable covers arrive,
+- **Covers drawn from the scores** (2026-11-28, the default): the cover generator in `../report-covers/` draws each
+  cover from the person's facet scores, with the title line "TEIQue <Version> Report • Full Form", the name and date
+  (via `../teique-360/src/cover-art.js`). `report.html?cover=design` and the hub's Cover option use the picture covers below.
+- **Picture covers** (Petros, 2026-11-28): the design system's report covers. Until the editable covers arrive,
   `tools/clean-covers.py` takes the placeholder name card ("John Smith") and the old copyright line out of them
   (`assets/covers/`, with their positions in `assets/covers/layout.json`), and the report draws a new card in the same
   place (title and the person's name, widening for a long name) and the current copyright line as live text. Next: editable covers, the illustration

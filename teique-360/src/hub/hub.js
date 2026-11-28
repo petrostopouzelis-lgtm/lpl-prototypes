@@ -205,12 +205,21 @@
     await Promise.all([cssReady, assetsReady]);
     if (ticket !== building) return;
     const data = effectiveData();
+    // the cover drawn from the person's own scores by the cover generator (report-covers/); if it cannot run,
+    // the report keeps its picture cover
+    let coverImage = null;
+    if ($('o-cover').value === 'generated') {
+      setStatus('Drawing the cover…');
+      try { coverImage = await T.coverArt.render(data, isFF() ? T.ff.coverTitles(data, window.TEIQ_FF_TEXT, state.ffVersion) : { reportTitle: '360° Report', subtitle: 'Full Form' }); }
+      catch (e) { console.warn('Cover generator unavailable:', e); }
+      if (ticket !== building) return;
+    }
     ffCss.media = isFF() ? 'all' : 'not all';
     const built = isFF()
-      ? T.ff.build(data, window.TEIQ_FF_TEXT, { fill: $('o-fill').value, watermark: $('o-wm').checked, assets: 'assets/', covers: ffCovers, version: state.ffVersion })
+      ? T.ff.build(data, window.TEIQ_FF_TEXT, { fill: $('o-fill').value, watermark: $('o-wm').checked, assets: 'assets/', covers: ffCovers, version: state.ffVersion, coverImage })
       : T.report.build(data, LIB, {
         fill: $('o-fill').value, watermark: $('o-wm').checked, extras: $('o-extras').checked,
-        scales: $('o-scales').value, marks: $('o-marks').checked
+        scales: $('o-scales').value, marks: $('o-marks').checked, coverImage
       });
     mount.innerHTML = '';
     mount.style.setProperty('--zoom', 1);       // measured at full size
@@ -510,7 +519,7 @@
     setReport(next).then(() => document.querySelector(`#rtypes [data-report="${state.report}"]`).focus());
   });
 
-  ['o-fill', 'o-scales', 'o-follows', 'o-min', 'o-extras', 'o-marks', 'o-wm'].forEach(id => { $(id).onchange = refresh; });
+  ['o-fill', 'o-cover', 'o-scales', 'o-follows', 'o-min', 'o-extras', 'o-marks', 'o-wm'].forEach(id => { $(id).onchange = refresh; });
   ['c-format', 'c-scale', 'c-bg'].forEach(id => { $(id).onchange = () => note(''); });
   $('c-types').addEventListener('change', e => { const t = e.target.dataset.type; if (!t) return; e.target.checked ? state.charts.types.add(t) : state.charts.types.delete(t); refresh(); });
   $('c-scales').addEventListener('click', e => {
