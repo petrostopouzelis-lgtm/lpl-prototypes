@@ -165,6 +165,19 @@
     };
     const rotAt = t => rot0 + swirl * Math.pow(1 - t, 1.6);
 
+    // Group rings: each member's ring follows the team outline, pushed out by a gap, and
+    // bulges or dips where that member is above or below the team on each facet. Rings
+    // nest outwards from lowest to highest global score.
+    const memberRings = [];
+    if (group) {
+      const ranked = people.slice().sort((a, b) => a.global - b.global), n = ranked.length;
+      const step = Math.min(0.03, 0.32 / n);
+      ranked.forEach((q, i) => {
+        const own = radiusFn(T.id === 'scanin' ? q.factors : q.facets, detail);
+        memberRings.push(th => outer(th) + 0.07 + step * i + 0.45 * (own(th) - outer(th)));
+      });
+    }
+
     // Same place, same size on every cover: measure the whole drawing at its natural size,
     // then move its centre and scale its radii so its bounding box fits a fixed square
     // (opts.fit × page width) centred on the page. Every point is centre + radius ×
@@ -173,7 +186,7 @@
       let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
       const take = pts => pts.forEach(p => { if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0]; if (p[1] < y0) y0 = p[1]; if (p[1] > y1) y1 = p[1]; });
       for (let i = 1; i <= 60; i++) { const t = i / 60, [fn, R0] = shapeAt(t); take(ring(fn, R0 * Math.min(1, t * 4), Rmax * span, rotAt(t), cx, cy)); }
-      // (group member outlines are decoration around the shape and don't set its size)
+      memberRings.forEach(fn => take(ring(fn, Rmax * core, Rmax * span, rot0, cx, cy))); // a group's rings fit too
       const { W: PW, H: PH } = I();
       const box = PW * (opts.fit != null ? opts.fit : 0.64);
       const kf = box / Math.max(x1 - x0, y1 - y0);
@@ -247,10 +260,33 @@
       if (lines > 0) rings.forEach(([t, pts], i) => { if (i % 2) return; path(o, pts); o.globalCompositeOperation = 'source-over'; o.lineWidth = 0.5 * s; o.strokeStyle = `rgba(255,255,255,${(0.5 * lines).toFixed(3)})`; o.stroke(); });
       o.globalCompositeOperation = 'destination-in'; o.drawImage(colour, 0, 0); // sharp silhouette
       o.globalCompositeOperation = 'source-over';
+      // Group: each member's own outline as a soft ring behind the blob. Three contours
+      // (just inside, on and just outside the outline) are softened together into a band,
+      // in the facet colours at full strength; rings are see-through so members layer up.
+      if (group) {
+        const rl = mk(W2, H2), r2 = rl.getContext('2d'), off = 2.4;
+        const ringConic = () => {
+          const g = r2.createConicGradient(-Math.PI / 2 + rot0, cx * s, cy * s);
+          for (let j = 0; j <= sp.length; j++) {
+            const c = sp[j % sp.length].color, base = mix(I().rgb(c.full), [255, 255, 255], (opts.pastel || 0) * 0.3);
+            g.addColorStop(j / sp.length, css(oklabMix(base, base, 0, 0, vib)));
+          }
+          return g;
+        };
+        const a = Math.max(0.35, Math.min(0.85, 1.6 / Math.sqrt(people.length)));
+        memberRings.forEach(fn => {
+          [[-off, 1.3, 0.55], [0, 2.6, 1], [off, 1.3, 0.55]].forEach(([d, w, al]) => {
+            path(r2, ring(fn, Rmax * core + d, Rmax * span, rot0, cx, cy));
+            r2.lineWidth = w * s; r2.strokeStyle = ringConic(); r2.globalAlpha = a * al; r2.stroke();
+          });
+        });
+        r2.globalAlpha = 1;
+        x.save(); x.filter = `blur(${(1.1 * s).toFixed(2)}px)`; x.drawImage(rl, 0, 0); x.restore();
+      }
       x.drawImage(out, 0, 0);
     }
-    if (group) people.forEach(q => {
-      const pts = ring(radiusFn(T.id === 'scanin' ? q.factors : q.facets, detail), Rmax * core, Rmax * span, rot0, cx, cy);
+    if (group && opts.contourStyle === 'lines') memberRings.forEach(fn => {
+      const pts = ring(fn, Rmax * core, Rmax * span, rot0, cx, cy);
       stroke(pts, conic(0.1, Math.max(0.3, (opts.contourStyle === 'lines' ? 0.8 : 0.6) / Math.sqrt(people.length)), rot0), 0.9);
     });
   }
