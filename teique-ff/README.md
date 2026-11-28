@@ -33,7 +33,7 @@ Page design: Figma file `OABrZx0GBrroCvGFQfj89Z`, page "TEIQue + TSIQue" (frame 
 
 Shared with `../teique-360/` (not copied): the score model and colours (`src/model.js`), the SVG helpers, the charts
 (`src/charts/radial.js`, `linear.js`), the paginator (`src/report/paginate.js`), the page styles (`src/report/report.css`),
-the fonts, the cover template artwork and the back cover. The charts gained a one-score mode for this report
+the fonts and the back cover. The covers are the design system's (`../design-system/assets/report-covers/`). The charts gained a one-score mode for this report
 (`C.wheel(v, {single})`, `C.gauge(v, id, {single})`, `C.summary(v, {single})`); the 360 report draws exactly as before.
 
 The **Report Hub** (`../teique-360/hub.html`) makes this report too: pick "TEIQue Full Form" under Report.
@@ -59,7 +59,7 @@ Scale ids are the 360's: `global`, the factors `wellbeing`, `self_control`, `emo
 
 ## The pages (28, as in the sample)
 
-Cover · Contents · Introduction · Structure of the TEIQue (15-4-1 tree, "Scores" card with three example wheels) ·
+Cover (the version's design-system cover: `personal.png`, `corporate.png`, `leadership.png`) · Contents · Introduction · Structure of the TEIQue (15-4-1 tree, "Scores" card with three example wheels) ·
 Uses of the TEIQue report (15 circles) · Wheel chart and quote · Summary graph · Global Score · each factor page followed by
 its facets · Independent Facets (Adaptability, Self-Motivation) · back cover.
 
@@ -73,9 +73,12 @@ sample's 28 pages.
 - Everything on the pages is the version's sample text, word for word: the text layer for titles, introduction,
   definitions and lead lines; the card pictures (OCR, then proofread line by line against the pictures) for the
   interpretations and the score explanation. `tools/build-library.py` lists every correction made to the OCR.
-- From Figma or the cover template, not the sample: "Your Score", "Your TEIQue Wheel Chart", "Your TEIQue Summary Graph",
+- **Covers** (Petros, 2026-11-28): always the design system's report covers. For now they are used as they are, with
+  the placeholder name "John Smith" and the old copyright line in the picture. Next: editable covers, the illustration
+  without text from Petros, with the name, date and titles as live text added by the generator.
+- From Figma, not the sample: "Your Score", "Your TEIQue Wheel Chart", "Your TEIQue Summary Graph",
   the header "TEIQue Personal" (and, on the same pattern, "TEIQue Corporate", "TEIQue Leadership"; the samples say
-  "TEIQue Report"), the factor titles in the contents ("Well-Being Factor"), the cover's "Full Form".
+  "TEIQue Report"), the factor titles in the contents ("Well-Being Factor"), (the cover's "Full Form" went with the 2026 template cover).
 - Left out because they are only in one of the two: Figma's sign-off under the introduction ("Sincerely, Konstantinos V.
   Petrides", not in the sample) and Figma's structure page title ("The Structure of Trait Emotional Intelligence"; the sample's
   "Structure of the TEIQue" is used). The back cover is the 360's (Figma's "Get to Know Thyself"); the sample's says

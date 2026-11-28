@@ -31,7 +31,7 @@
     el.onload = res; el.onerror = () => { el.remove(); rej(new Error('Could not load ' + src)); };
     document.head.appendChild(el);
   });
-  let ffP = null;
+  let ffP = null, ffCovers = '';   // ffCovers: the design system's report covers, next to wherever teique-ff/ was found
   const loadFF = () => ffP || (ffP = (async () => {
     let base = null;
     for (const b of ['../teique-ff/', 'teique-ff/']) { try { await loadScript(b + 'data/files.js'); base = b; break; } catch (e) { /* try the next place */ } }
@@ -40,6 +40,7 @@
     await loadScript(base + 'text/library.js');
     await loadScript(base + 'src/content.js');
     await new Promise(res => { ffCss.onload = ffCss.onerror = res; ffCss.href = base + 'src/ff.css' + V; });
+    ffCovers = base.replace('teique-ff/', 'design-system/assets/report-covers/');
     return base;
   })().catch(e => { ffP = null; throw e; }));
   const ffView = d => ({ data: d, self: d.self, others: d.self, groups: [], shownGroups: [], responded: 0, gap: () => 0 });
@@ -206,7 +207,7 @@
     const data = effectiveData();
     ffCss.media = isFF() ? 'all' : 'not all';
     const built = isFF()
-      ? T.ff.build(data, window.TEIQ_FF_TEXT, { fill: $('o-fill').value, watermark: $('o-wm').checked, assets: 'assets/', version: state.ffVersion })
+      ? T.ff.build(data, window.TEIQ_FF_TEXT, { fill: $('o-fill').value, watermark: $('o-wm').checked, assets: 'assets/', covers: ffCovers, version: state.ffVersion })
       : T.report.build(data, LIB, {
         fill: $('o-fill').value, watermark: $('o-wm').checked, extras: $('o-extras').checked,
         scales: $('o-scales').value, marks: $('o-marks').checked
@@ -291,6 +292,13 @@
     s.onerror = () => { embedP = null; rej(new Error('Could not load src/hub/embed.js (run tools/build-hub-embed.js).')); };
     document.head.appendChild(s);
   }));
+  let coversP = null;
+  const loadCovers = () => coversP || (coversP = new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = 'src/hub/covers.js' + V;
+    s.onload = () => (window.TEIQ_COVERS ? res(window.TEIQ_COVERS) : rej(new Error('covers file is empty')));
+    s.onerror = () => { coversP = null; rej(new Error('Could not load src/hub/covers.js (run tools/build-hub-embed.js).')); };
+    document.head.appendChild(s);
+  }));
   const fontFaces = E => `@font-face{font-family:'Inter';src:url(data:font/ttf;base64,${E.fonts.Inter}) format('truetype');font-weight:100 900}` +
     `@font-face{font-family:'Manrope';src:url(data:font/ttf;base64,${E.fonts.Manrope}) format('truetype');font-weight:200 800}`;
 
@@ -347,6 +355,11 @@
     const E = await loadEmbed();
     let body = mount.innerHTML;
     Object.keys(E.images).forEach(p => { body = body.split(`src="${p}"`).join(`src="${E.images[p]}"`); });
+    // the Full Form's cover, from the design system: its picture is in src/hub/covers.js, loaded only for this
+    if (isFF()) {
+      const C2 = await loadCovers();
+      Object.keys(C2).forEach(f => { body = body.split(`src="${ffCovers}${f}"`).join(`src="${C2[f]}"`); });
+    }
     const css = (E.reportCss + (isFF() ? '\n' + (E.ffCss || '') : '')).replace(/@font-face\s*{[^}]*}/g, '');
     const html = `<!doctype html>\n<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">` +
       `<title>${esc(reportName())}</title><style>${fontFaces(E)}\n${css}\n.page{-webkit-print-color-adjust:exact;print-color-adjust:exact}</style></head>` +

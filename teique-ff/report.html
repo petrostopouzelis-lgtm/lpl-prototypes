@@ -3,7 +3,8 @@
   TEIQue Full Form report, laid out on A4 pages. This is also the page viewer: on screen it shows every
   page exactly as it goes into the PDF, with a bar to switch the data file and the zoom.
   Printing this page gives the PDF (tools/build-pdf.js does it); the bar never prints.
-  The layout engine, charts, fonts and cover artwork are the 360 report's, loaded from ../teique-360/.
+  The layout engine, charts, fonts and back cover are the 360 report's, loaded from ../teique-360/; the covers
+  are the design system's (../design-system/assets/report-covers/).
   Query options:
     file=<name>       one of the data files in data/ (default: sample-ff)
     version=<id>      the report version, its wording: personal, corporate, leadership (default: the data file's)
@@ -136,7 +137,8 @@
     let data;
     if (q.get('data')) data = await (await fetch(q.get('data'))).json();
     else { await script('data/' + file + '.js?v=' + Date.now()); data = window.TEIQ_FF_FILES[file]; }
-    const images = ['cover-2026.jpg', 'back-cover.jpg', 'logo-monogram.png'].map(src => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = '../teique-360/assets/' + src; }));
+    const cover = T.ff.covers + window.TEIQ_FF_TEXT.versions[T.ff.versionOf(data, window.TEIQ_FF_TEXT, q.get('version'))].cover_image;
+    const images = ['back-cover.jpg', 'logo-monogram.png'].map(src => '../teique-360/assets/' + src).concat(cover).map(src => new Promise(res => { const i = new Image(); i.onload = i.onerror = res; i.src = src; }));
     await Promise.all([document.fonts.load('300 12pt Inter'), document.fonts.load('500 26pt Manrope'), ...images]);
     await document.fonts.ready;
     const built = T.ff.build(data, window.TEIQ_FF_TEXT, { fill: q.get('fill') || 'typical', watermark: q.get('watermark') === '1', version: q.get('version') });

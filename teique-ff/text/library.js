@@ -7,10 +7,6 @@ window.TEIQ_FF_TEXT = {
     "copyright": "© K. V. Petrides {year}. All rights reserved.",
     "legal": "A product of London Psychometric Laboratory Ltd."
   },
-  "cover": {
-    "form": "Full Form",
-    "source": "cover template (teique-360/brief/cover-template-2026-11.pdf: TEIQue / Personal Report / Full Form)"
-  },
   "card_headings": [
     "Possible Positive",
     "Possible Negative"
@@ -20,6 +16,7 @@ window.TEIQ_FF_TEXT = {
       "name": "Personal",
       "cover": "Personal Report",
       "header": "Personal",
+      "cover_image": "personal.png",
       "source": "TEIQue-FF Personal_Counselling Report [SAMPLE].pdf",
       "pages": {
         "intro": {
@@ -314,6 +311,7 @@ window.TEIQ_FF_TEXT = {
       "name": "Corporate",
       "cover": "Corporate Report",
       "header": "Corporate",
+      "cover_image": "corporate.png",
       "source": "TEIQue-FF Corporate Report [SAMPLE].pdf",
       "pages": {
         "intro": {
@@ -613,6 +611,7 @@ window.TEIQ_FF_TEXT = {
       "name": "Leadership",
       "cover": "Leadership Report",
       "header": "Leadership",
+      "cover_image": "leadership.png",
       "source": "TEIQue-FF Leadership Report [SAMPLE].pdf",
       "pages": {
         "intro": {

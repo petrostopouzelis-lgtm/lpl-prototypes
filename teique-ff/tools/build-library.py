@@ -33,11 +33,11 @@ PAGES = {8: 'global', 9: 'wellbeing', 10: 'happiness', 11: 'optimism', 12: 'self
          26: 'adaptability', 27: 'self_motivation'}
 
 VERSIONS = {
-    'personal': {'name': 'Personal', 'cover': 'Personal Report', 'header': 'Personal', 'sample': 'sample-ff.json',
+    'personal': {'name': 'Personal', 'cover': 'Personal Report', 'header': 'Personal', 'sample': 'sample-ff.json', 'cover_image': 'personal.png',
                  'pdf': 'TEIQue-FF Personal_Counselling Report [SAMPLE].pdf'},
-    'corporate': {'name': 'Corporate', 'cover': 'Corporate Report', 'header': 'Corporate', 'sample': 'sample-ff-corporate.json',
+    'corporate': {'name': 'Corporate', 'cover': 'Corporate Report', 'header': 'Corporate', 'sample': 'sample-ff-corporate.json', 'cover_image': 'corporate.png',
                   'pdf': 'TEIQue-FF Corporate Report [SAMPLE].pdf'},
-    'leadership': {'name': 'Leadership', 'cover': 'Leadership Report', 'header': 'Leadership', 'sample': 'sample-ff-leadership.json',
+    'leadership': {'name': 'Leadership', 'cover': 'Leadership Report', 'header': 'Leadership', 'sample': 'sample-ff-leadership.json', 'cover_image': 'leadership.png',
                    'pdf': 'TEIQue-FF Leadership Report [SAMPLE].pdf'},
 }
 
@@ -175,7 +175,7 @@ def build_version(vid, spec):
             raw = re.sub(a, b, raw)
         return [typo(p) for p in raw.split('\n\n')]
 
-    v = dict((k, spec[k]) for k in ('name', 'cover', 'header'))
+    v = dict((k, spec[k]) for k in ('name', 'cover', 'header', 'cover_image'))   # cover_image: in design-system/assets/report-covers/
     v['source'] = spec['pdf']
     pages = v['pages'] = {}
     p3 = titled(3)[0]
@@ -218,8 +218,6 @@ lib = {
     'language': 'en',
     'source': 'TEIQue-FF sample reports (2025), word for word, one version per sample. Built by tools/build-library.py.',
     'footer': {'copyright': '© K. V. Petrides {year}. All rights reserved.', 'legal': 'A product of London Psychometric Laboratory Ltd.'},
-    # Figma-only label (cover template: TEIQue / Personal Report / Full Form)
-    'cover': {'form': 'Full Form', 'source': 'cover template (teique-360/brief/cover-template-2026-11.pdf: TEIQue / Personal Report / Full Form)'},
     'card_headings': CARD_HEADINGS,
     'versions': {vid: build_version(vid, spec) for vid, spec in VERSIONS.items()},
 }

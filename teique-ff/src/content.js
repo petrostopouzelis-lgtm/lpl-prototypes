@@ -58,10 +58,11 @@
   // report.version, else Personal. Each version's pages, definitions and interpretations are in
   // lib.versions[version]; the page design is the same.
   F.versionOf = (data, lib, want) => [want, data && data.report && data.report.version].find(x => x && lib.versions[x]) || 'personal';
-  // opt.assets: where the 360's cover, back cover and logo images are, seen from the page (the Report Hub
-  // sits next to them); opt.fill and opt.watermark as in the 360 report
+  // opt.assets: where the 360's back cover and logo images are, seen from the page (the Report Hub sits next
+  // to them); opt.covers: where the design system's report covers are; opt.fill and opt.watermark as in the 360
+  F.covers = '../design-system/assets/report-covers/';
   F.build = (data, lib, opt = {}) => {
-    const ASSETS = opt.assets || '../teique-360/assets/';
+    const ASSETS = opt.assets || '../teique-360/assets/', COVERS = opt.covers || F.covers;
     const ver = F.versionOf(data, lib, opt.version), V = lib.versions[ver], pg = V.pages, SC = V.scales, heads = lib.card_headings || [];
     const fill = opt.fill || 'typical', st = data.settings || {};
     const year = String(data.report.date || '').slice(0, 4) || new Date().getFullYear();
@@ -81,15 +82,10 @@
       return t ? cardParas(t, heads) : needed(`interpretation for ${T.nameOf(id)} in the ${band.label} band`, 2);
     };
 
-    // ---- cover: the 2026 cover template, as on the 360 report
-    const cv = lib.cover || {};
-    const cd = String(data.report.date || '').split('-'), coverDate = cd.length === 3 ? `${cd[2]}/${cd[1]}/${cd[0]}` : data.report.date || '';
-    const nameLen = String(data.subject.name).length, whoSize = nameLen > 24 ? Math.max(14, Math.round(22 * 24 / nameLen * 10) / 10) : 22;
-    sections.push({ id: 'cover', kind: 'cover', title: 'Cover',
-      html: `<img class="bg" src="${ASSETS}cover-2026.jpg" alt=""><div class="cr">${esc(fmt(lib.footer.copyright, { year }))}</div>
-        <div class="ttl"><div>TEIQ<i>ue</i></div><div>${esc(V.cover)}</div>${cv.form ? `<div class="form">${esc(cv.form)}</div>` : ''}</div>
-        <div class="who" style="font-size:${whoSize}pt"><span>${esc(data.subject.name)}</span>${coverDate ? `<i></i><span>${esc(coverDate)}</span>` : ''}</div>
-        <div class="legal">${esc(lib.footer.legal)}</div>` });
+    // ---- cover: the version's cover from the design system (design-system/assets/report-covers/), as it is,
+    // with its placeholder name and copyright in the picture (Petros, 2026-11-28: always the design-system
+    // covers; editable covers, the illustration with live text, come later)
+    sections.push({ id: 'cover', kind: 'cover', title: 'Cover', html: `<img class="bg" src="${COVERS}${V.cover_image}" alt="${esc('TEIQue ' + V.cover)}">` });
 
     // ---- contents: filled in by the paginator. Entries as in the sample and Figma: Introduction,
     // Wheel Chart, Summary Graphs, Global Score, each factor with its facets, Independent Facets.
