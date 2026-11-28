@@ -194,6 +194,7 @@
       // new centre: the old centre's position relative to the box middle, scaled
       cx = tx + (cx - (x0 + x1) / 2) * kf; cy = ty + (cy - (y0 + y1) / 2) * kf; Rmax *= kf;
       fitted.cx = cx; fitted.cy = cy; fitted.Rmax = Rmax;
+      fitted.diag = { sp, outer, rot0, core, span, boxHalf: box / 2, boxCx: tx, boxCy: ty, n: people.length };
     }
 
     if (opts.contourStyle === 'lines') {
@@ -331,6 +332,89 @@
     });
   }
 
+  // ---------- diagram overlay: the shape as a specimen plate ----------
+  // One ink, hairlines and small type, drawn after the finish so it stays crisp. It shows
+  // NO results: only generic markers (codes, angles, coordinates), structure (number of
+  // facets and factors, report type) and neutral technical marks (crosshair, dial ticks,
+  // registration corners, scale bar). No report wording.
+  function drawDiagram(ctx, T, data, s, F, group, opts) {
+    const { cx, cy, Rmax } = F, D = F.diag, { W: PW, H: PH } = I();
+    const ink = opts.diagramInk || '#1d2b3a', hair = 0.5;
+    const R = th => Rmax * D.core + Rmax * D.span * Math.max(0, Math.min(1.05, D.outer(th - D.rot0)));
+    const P = (th, r) => [cx + r * Math.sin(th), cy - r * Math.cos(th)];
+    const font = (w, px) => `${w} ${px}px Inter, "Helvetica Neue", Arial, sans-serif`;
+    ctx.save(); ctx.scale(s, s);
+    ctx.strokeStyle = ink; ctx.fillStyle = ink; ctx.lineWidth = hair; ctx.lineCap = 'round';
+    try { ctx.letterSpacing = '0.6px'; } catch (e) {}
+    const line = (pts) => { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.stroke(); };
+    const text = (str, x, y, align = 'left', w = 500, px = 5.6) => { ctx.font = font(w, px); ctx.textAlign = align; ctx.textBaseline = 'middle'; ctx.fillText(str, x, y); };
+    const bh = D.boxHalf, bx0 = D.boxCx - bh, bx1 = D.boxCx + bh, by0 = D.boxCy - bh, by1 = D.boxCy + bh;
+
+    // registration corners of the shape's box
+    const c = 9;
+    [[bx0, by0, 1, 1], [bx1, by0, -1, 1], [bx0, by1, 1, -1], [bx1, by1, -1, -1]].forEach(([x, y, dx, dy]) => line([[x + dx * c, y], [x, y], [x, y + dy * c]]));
+
+    // dial: one tick per spoke on a fixed circle, longer at factor boundaries
+    const dialR = bh * 1.1;
+    D.sp.forEach((q, j) => {
+      const prev = D.sp[(j - 1 + D.sp.length) % D.sp.length];
+      const major = T.id !== 'scanin' && prev.fi !== q.fi;
+      const a = q.a + D.rot0, l = major ? 5 : 2.5;
+      line([P(a, dialR), P(a, dialR + l)]);
+    });
+
+    // centre crosshair with the global score
+    line([[cx - 6, cy], [cx - 2, cy]]); line([[cx + 2, cy], [cx + 6, cy]]);
+    line([[cx, cy - 6], [cx, cy - 2]]); line([[cx, cy + 2], [cx, cy + 6]]);
+    ctx.beginPath(); ctx.arc(cx, cy, 3.4, 0, TAU); ctx.stroke();
+    text(`X ${cx.toFixed(1)}  Y ${cy.toFixed(1)}`, cx + 9, cy - 7, 'left', 500, 5.2);
+
+    // callouts: a dot on the outline, a short radial leader, then a horizontal run to a label
+    // markers sit at fixed places (the middle of each factor's spokes; for Scan-In four
+    // evenly spaced domains), so they never point at a high or low score
+    let items;
+    if (T.id === 'scanin') {
+      items = [0, 1, 2, 3].map(k => ({ a: D.sp[Math.round(k * D.sp.length / 4)].a }));
+    } else {
+      items = T.factors.map((f, fi) => { const own = D.sp.filter(q => q.fi === fi); return { a: (own[0].a + own[own.length - 1].a) / 2 }; });
+    }
+    items.forEach((it, i) => it.code = `${T.id === 'scanin' ? 'D' : 'F'}.${String(i + 1).padStart(2, '0')}`);
+    items.forEach(it => {
+      it.th = it.a + D.rot0; const r = R(it.th); it.anchor = P(it.th, r); it.right = Math.sin(it.th) >= 0;
+      // the bend sits a little outside the outline but always inside the frame
+      const k = P(it.th, r + 14);
+      it.knee = [Math.max(bx0 + 4, Math.min(bx1 - 4, k[0])), Math.max(by0 + 4, Math.min(by1 - 4, k[1]))];
+    });
+    [true, false].forEach(side => { // keep labels on each side at least 15pt apart
+      const list = items.filter(i => i.right === side).sort((a, b) => a.knee[1] - b.knee[1]);
+      for (let i = 1; i < list.length; i++) if (list[i].knee[1] - list[i - 1].knee[1] < 15) list[i].knee[1] = list[i - 1].knee[1] + 15;
+    });
+    items.forEach(it => {
+      const lx = it.right ? bx1 + 14 : bx0 - 14;
+      ctx.beginPath(); ctx.arc(it.anchor[0], it.anchor[1], 1.5, 0, TAU); ctx.fill();
+      line([it.anchor, it.knee, [lx, it.knee[1]]]);
+      const tx = lx + (it.right ? 3 : -3), al = it.right ? 'left' : 'right';
+      text(it.code, tx, it.knee[1] - 3.2, al, 600, 5.6);
+      const deg = Math.round(((it.a * 180 / Math.PI) % 360 + 360) % 360);
+      text(`θ ${String(deg).padStart(3, '0')}°`, tx, it.knee[1] + 4.2, al, 400, 5.4);
+    });
+
+    // scale bar: how radius maps to score
+    const sy = by1 + 20, sx1 = bx1, sx0 = sx1 - Math.min(Rmax * D.span, bh * 1.1);
+    line([[sx0, sy], [sx1, sy]]);
+    [0, 0.25, 0.5, 0.75, 1].forEach(t => { const x = sx0 + (sx1 - sx0) * t; line([[x, sy - (t % 0.5 ? 1.5 : 3)], [x, sy]]); });
+    [[0, '0'], [0.5, '50'], [1, '100']].forEach(([t, l]) => text(l, sx0 + (sx1 - sx0) * t, sy + 6, 'center', 400, 5));
+    text('SCORE  ·  RADIUS', sx1, sy - 7, 'right', 500, 5);
+
+    // plate details, bottom left
+    const code = (I().hash([data.theory, data.name, data.date].join('|')) % 0xFFFFF).toString(16).toUpperCase().padStart(5, '0');
+    const structure = T.id === 'scanin' ? `${T.domains.length} DOMAINS` : `${D.sp.length} FACETS  ·  ${T.factors.length} FACTORS`;
+    const kind = group ? `GROUP  ·  N = ${D.n}` : 'INDIVIDUAL';
+    const lines = [`FIG. 01`, T.label.toUpperCase(), structure, kind, `REF ${code}`];
+    lines.forEach((l, i) => text(l, bx0, sy - 8 + i * 7.5, 'left', i ? 400 : 600, 5.2));
+    ctx.restore();
+  }
+
   // Spokes and facet names over the shape, for checking only (not part of the artwork).
   function drawGuide(ctx, T, p, s, cx, cy, Rmax, group) {
     const sp = spokes(T);
@@ -444,5 +528,6 @@
     const fo = shape === 'contours' ? Object.assign({}, opts, { softness: opts.contourStyle === 'lines' ? (opts.softness || 0) * 0.3 : 0 }) : opts;
     ctx.drawImage(X.finish(layer, fo, s), 0, 0);
     if (opts.guide) drawGuide(ctx, T, people[0], s, fitted.cx, fitted.cy, fitted.Rmax, group);
+    if (opts.diagram && shape === 'contours' && fitted.diag) drawDiagram(ctx, T, data, s, fitted, group, opts);
   };
 })(typeof window !== 'undefined' ? window : globalThis);
