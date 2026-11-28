@@ -1,6 +1,6 @@
 # Continue here
 
-**Where it stopped (2026-11-28):** the contour illustration is the chosen direction, with facet spokes and 3D spheres, and three magazine-style cover layouts (`masthead`, `bleed`, `poster`) are built for review. The viewer is published at https://claude.ai/artifact/G1ERB6wRVNkfsLBo8THYmt (rebuild with `python report-covers/viewer/build.py`, publish `viewer/viewer.html`).
+**Where it stopped (2026-11-28):** the contour illustration is the chosen direction, with facet spokes and 3D spheres, and two brand cover layouts (`pill`, `plain`) follow the reference cover's design language (the magazine layouts were rejected as too far from the brand). The viewer is published at https://claude.ai/artifact/G1ERB6wRVNkfsLBo8THYmt (rebuild with `python report-covers/viewer/build.py`, publish `viewer/viewer.html`).
 
 **Files**
 

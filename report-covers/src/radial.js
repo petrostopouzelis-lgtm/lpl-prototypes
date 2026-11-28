@@ -364,7 +364,10 @@
       let lx = cx + dx * lab; const ly = cy + dy * lab;
       lx = dx > 0.15 ? lx : dx < -0.15 ? lx - tw : lx - tw / 2;
       lx = Math.max(6, Math.min(I().W - 6 - tw, lx));
-      ctx.fillStyle = '#6b7380'; ctx.textAlign = 'left'; ctx.fillText(label, lx, ly);
+      // step clear of areas the cover keeps for type (opts.avoid, in points)
+      let lyy = ly;
+      (opts.avoid || []).forEach(r => { if (lx < r.x1 && lx + tw > r.x0 && lyy > r.y0 - 4 && lyy < r.y1 + 4) lyy = r.y1 + 8; });
+      ctx.fillStyle = '#6b7380'; ctx.textAlign = 'left'; ctx.fillText(label, lx, lyy);
     });
     ctx.restore();
 

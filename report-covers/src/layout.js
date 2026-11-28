@@ -2,7 +2,7 @@
 //
 //   await LPLCovers.ready()                         fonts and logo loaded
 //   LPLCovers.renderCover(canvas, data, opts)       whole A4 cover
-//     opts.layout  'masthead' | 'bleed' | 'poster'
+//     opts.layout  'pill' | 'plain'
 //
 // Brand: the design system's fonts (Manrope titles, Inter text), brand blue #259DD5 with
 // the report blue #42A2DA, the orange "ue" accent #E47C2D, and the LPL horizontal logo.
@@ -73,59 +73,47 @@
   }
   const lineOf = d => titleOf(d) + (d.subtitle ? '  ·  ' + d.subtitle : '');
 
-  // Magazine-style layouts: big type, the diagram as the cover subject.
-  // under(): drawn before the art (the art overlaps it); draw(): drawn on top.
+  // Brand layouts, in the design language of the reference cover: copyright at the top,
+  // a large logo, the theory + report title + form as one stacked group in report blue,
+  // the diagram as the subject, the name and date as one group, the product line at the
+  // foot. No black rules.
+  function header(ctx, d, T) {
+    text(ctx, COPYRIGHT(yearOf(d)), W / 2, 22, INTER(300, 9), MUTED, 'center');
+    drawLogo(ctx, 26, 62, 250);
+    // title group: theory wordmark, report title, form, as one block
+    wordmark(ctx, T, 28, 214, 30);
+    text(ctx, titleOf(d), 28, 250, MANROPE(700, 30), RBLUE);
+    if (d.subtitle) text(ctx, d.subtitle, 28, 285, MANROPE(400, 30), RBLUE);
+    text(ctx, PRODUCT, W / 2, 828, INTER(300, 9), MUTED, 'center');
+  }
   const LAYOUTS = {
-    // A giant theory wordmark as the masthead; the diagram overlaps its foot like a cover
-    // subject; the person's name set large at the bottom.
-    masthead: {
-      art: { centreY: 0.585, fit: 0.84 },
-      under(ctx, d, T) { wordmarkToWidth(ctx, T, W / 2, 196, W - 44, 190, 'center'); },
+    // name and date in the design system's blue pill, as on the reference cover
+    pill: {
+      art: { centreY: 0.612, fit: 0.66 }, avoid: [{ x0: 20, y0: 188, x1: 270, y1: 292 }],
       draw(ctx, d, T) {
-        drawLogo(ctx, 24, 24, 104);
-        text(ctx, COPYRIGHT(yearOf(d)), W - 24, 34, INTER(300, 6.5), MUTED, 'right');
-        text(ctx, lineOf(d).toUpperCase(), W - 24, 48, MANROPE(600, 8.5), INK, 'right');
-        hline(ctx, 24, W - 24, 60, INK, 0.6);
-        const nm = wrap2(ctx, d.name || '', f => MANROPE(700, f), 38, W - 200, 18);
-        const yb = 790;
-        nm.lines.forEach((l, i) => text(ctx, l, 24, yb - (nm.lines.length - 1 - i) * (nm.f * 1.05), MANROPE(700, nm.f), INK));
-        hline(ctx, 24, W - 24, 806, INK, 0.6);
-        text(ctx, d.date || '', 24, 820, INTER(400, 8.5), INK);
-        text(ctx, PRODUCT, W - 24, 820, INTER(300, 6.5), MUTED, 'right');
+        header(ctx, d, T);
+        const name = d.name || '', date = d.date || '';
+        const nf = fit(ctx, name, f => MANROPE(400, f), 16, 360, 10);
+        ctx.font = MANROPE(400, nf); const nw = ctx.measureText(name).width;
+        ctx.font = MANROPE(400, nf); const dw = ctx.measureText(date).width;
+        const ph = 40, pw = Math.min(W - 52, nw + dw + 74), px = 26, py = 742;
+        const g = ctx.createLinearGradient(px, 0, px + pw, 0); g.addColorStop(0, BLUE); g.addColorStop(1, '#66BAE2');
+        ctx.save(); ctx.shadowColor = 'rgba(37,157,213,0.3)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 2;
+        ctx.fillStyle = g; ctx.beginPath(); ctx.roundRect(px, py, pw, ph, 14); ctx.fill(); ctx.restore();
+        text(ctx, name, px + 22, py + ph / 2 + 0.5, MANROPE(400, nf), '#fff', 'left', 'middle');
+        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(px + 22 + nw + 14, py + ph / 2, 3.2, 0, Math.PI * 2); ctx.fill();
+        text(ctx, date, px + 22 + nw + 28, py + ph / 2 + 0.5, MANROPE(400, nf), '#fff', 'left', 'middle');
       },
     },
-    // The diagram oversized and running off the right edge; a strong type column on the left.
-    bleed: {
-      art: { centreX: 0.7, centreY: 0.53, fit: 0.98 },
-      under(ctx, d, T) {},
+    // name and date as one plain text group in brand blue
+    plain: {
+      art: { centreY: 0.612, fit: 0.66 }, avoid: [{ x0: 20, y0: 188, x1: 270, y1: 292 }],
       draw(ctx, d, T) {
-        drawLogo(ctx, 28, 28, 112);
-        wordmarkToWidth(ctx, T, 28, 150, 250, 64);
-        const t = titleOf(d).split(' ');
-        t.forEach((w, i) => text(ctx, w, 28, 196 + i * 36, MANROPE(700, 34), INK));
-        if (d.subtitle) text(ctx, d.subtitle, 28, 196 + t.length * 36 - 8, INTER(300, 15), MUTED);
-        const nm = wrap2(ctx, d.name || '', f => MANROPE(700, f), 26, 230, 14);
-        nm.lines.forEach((l, i) => text(ctx, l, 28, 744 + i * (nm.f * 1.1), MANROPE(700, nm.f), INK));
-        text(ctx, d.date || '', 28, 744 + nm.lines.length * (nm.f * 1.1) + 4, INTER(400, 10), MUTED);
-        text(ctx, COPYRIGHT(yearOf(d)), 28, 822, INTER(300, 6.5), MUTED);
-        text(ctx, PRODUCT, 28, 831, INTER(300, 6.5), MUTED);
-      },
-    },
-    // The diagram fills the page; the name runs huge across the foot, the wordmark and report
-    // line sit in a slim top band.
-    poster: {
-      art: { centreY: 0.47, fit: 0.96 },
-      under(ctx, d, T) {},
-      draw(ctx, d, T) {
-        drawLogo(ctx, 24, 24, 100);
-        wordmarkToWidth(ctx, T, W - 24, 52, 160, 30, 'right');
-        text(ctx, lineOf(d), W - 24, 68, MANROPE(600, 9.5), INK, 'right');
-        const nm = wrap2(ctx, d.name || '', f => MANROPE(700, f), 64, W - 48, 22);
-        const yb = 786;
-        nm.lines.forEach((l, i) => text(ctx, l, 24, yb - (nm.lines.length - 1 - i) * (nm.f * 1.02), MANROPE(700, nm.f), BLUE));
-        text(ctx, d.date || '', 24, 812, INTER(500, 9), INK);
-        text(ctx, COPYRIGHT(yearOf(d)), W - 24, 812, INTER(300, 6.5), MUTED, 'right');
-        text(ctx, PRODUCT, W - 24, 822, INTER(300, 6.5), MUTED, 'right');
+        header(ctx, d, T);
+        const name = d.name || '', date = d.date || '';
+        const nm = wrap2(ctx, name, f => MANROPE(600, f), 16, 360, 10);
+        nm.lines.forEach((l, i) => text(ctx, l, 28, 760 + i * (nm.f + 3), MANROPE(600, nm.f), RBLUE));
+        text(ctx, date, 28, 760 + nm.lines.length * (nm.f + 3) + 2, MANROPE(400, 12), RBLUE);
       },
     },
   };
@@ -133,13 +121,13 @@
 
   NS.renderCover = function (canvas, data, opts = {}) {
     const s = opts.scale || 2, T = NS.THEORIES[data.theory] || NS.THEORIES.teique;
-    const L = LAYOUTS[opts.layout] || LAYOUTS.masthead;
+    const L = LAYOUTS[opts.layout] || LAYOUTS.pill;
     canvas.width = Math.round(W * s); canvas.height = Math.round(H * s);
     const ctx = canvas.getContext('2d');
     ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.save(); ctx.scale(s, s); if (L.under) L.under(ctx, data, T); ctx.restore();
     const art = document.createElement('canvas');
-    NS.renderIllustration(art, data, Object.assign({}, opts, L.art, opts.fit != null && opts.keepFit ? { fit: opts.fit } : {}, { scale: s }));
+    NS.renderIllustration(art, data, Object.assign({}, opts, L.art, { avoid: L.avoid || [] }, { scale: s }));
     ctx.drawImage(art, 0, 0);
     ctx.save(); ctx.scale(s, s); L.draw(ctx, data, T); ctx.restore();
   };
