@@ -72,6 +72,7 @@ main{display:flex;flex-direction:column;gap:24px}
       <div class="row plain"><span>Pastel</span><input type="range" id="pastel" min="0" max="100" value="0"><output>0</output></div>
       <div class="row plain" id="vibRow"><span>Vibrance</span><input type="range" id="vibrance" min="0" max="100" value="50"><output>50</output></div>
       <div class="row plain"><span>Grain</span><input type="range" id="grain" min="0" max="100" value="20"><output>20</output></div>
+      <div class="row plain" id="fitRow"><span>Size on page</span><input type="range" id="fit" min="40" max="90" value="64"><output>64</output></div>
       <div class="row plain" id="blueRow"><span>Blue core</span><input type="range" id="blueCore" min="0" max="100" value="50"><output>50</output></div>
       <div class="row plain" id="shadeRow"><span>Shading</span><input type="range" id="shading" min="0" max="100" value="60"><output>60</output></div>
       <div class="row plain" id="linesRow"><span>Line texture</span><input type="range" id="lines" min="0" max="100" value="0"><output>0</output></div>
@@ -632,8 +633,10 @@ main{display:flex;flex-direction:column;gap:24px}
   }
 
   function paintContours(x, T, people, group, opts, s, k) {
-    const { cx, cy, Rmax, P, mixColor, css, mix, mean } = k;
+    let { cx, cy, Rmax } = k;
+    const { P, mixColor, css, mix, mean } = k;
     const sp = spokes(T), detail = opts.detail != null ? opts.detail : 0.8;
+    const fitted = k.fitted || {};
     const rot0 = (opts.variation || 0) * 0.07; // variation turns the chart a little; 0 keeps the first facet at the top
     const core = 0.22, span = 0.78; // radius = Rmax * (core + span * score)
     // conic gradient: each facet's factor colour at its spoke, tinted by step
@@ -673,6 +676,24 @@ main{display:flex;flex-direction:column;gap:24px}
       const u = (t - split) / (1 - split); return [th => inner(th) * innerScale * (1 - u) + outer(th) * u, Rmax * core];
     };
     const rotAt = t => rot0 + swirl * Math.pow(1 - t, 1.6);
+
+    // Same place, same size on every cover: measure the whole drawing at its natural size,
+    // then move its centre and scale its radii so its bounding box fits a fixed square
+    // (opts.fit × page width) centred on the page. Every point is centre + radius ×
+    // direction, so changing the centre and Rmax moves and scales it exactly.
+    {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      const take = pts => pts.forEach(p => { if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0]; if (p[1] < y0) y0 = p[1]; if (p[1] > y1) y1 = p[1]; });
+      for (let i = 1; i <= 60; i++) { const t = i / 60, [fn, R0] = shapeAt(t); take(ring(fn, R0 * Math.min(1, t * 4), Rmax * span, rotAt(t), cx, cy)); }
+      // (group member outlines are decoration around the shape and don't set its size)
+      const { W: PW, H: PH } = I();
+      const box = PW * (opts.fit != null ? opts.fit : 0.64);
+      const kf = box / Math.max(x1 - x0, y1 - y0);
+      const tx = PW / 2, ty = PH * (opts.centreY != null ? opts.centreY : 0.5);
+      // new centre: the old centre's position relative to the box middle, scaled
+      cx = tx + (cx - (x0 + x1) / 2) * kf; cy = ty + (cy - (y0 + y1) / 2) * kf; Rmax *= kf;
+      fitted.cx = cx; fitted.cy = cy; fitted.Rmax = Rmax;
+    }
 
     if (opts.contourStyle === 'lines') {
       const steps = 52;
@@ -790,7 +811,8 @@ main{display:flex;flex-direction:column;gap:24px}
     const Rmax = W * 0.40;
 
     const shape = opts.shape;
-    if (shape === 'contours') { paintContours(x, T, people, group, opts, s, { cx, cy, Rmax, P, mixColor, css, mix, mean }); }
+    const fitted = { cx, cy, Rmax };
+    if (shape === 'contours') { paintContours(x, T, people, group, opts, s, { cx, cy, Rmax, P, mixColor, css, mix, mean, fitted }); }
     else if (shape === 'petals') {
       // One lobe per factor, pointing at that factor's facets, reaching out by its score.
       const list = group ? people : [people[0]];
@@ -857,7 +879,7 @@ main{display:flex;flex-direction:column;gap:24px}
     // contours handle their own softness (filled: inside only, so the edge stays sharp)
     const fo = shape === 'contours' ? Object.assign({}, opts, { softness: opts.contourStyle === 'lines' ? (opts.softness || 0) * 0.3 : 0 }) : opts;
     ctx.drawImage(X.finish(layer, fo, s), 0, 0);
-    if (opts.guide) drawGuide(ctx, T, people[0], s, cx, cy, Rmax, group);
+    if (opts.guide) drawGuide(ctx, T, people[0], s, fitted.cx, fitted.cy, fitted.Rmax, group);
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -906,7 +928,7 @@ const $ = id => document.getElementById(id);
 const state = { contourStyle: 'filled', shape: 'contours', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
 const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours', contourStyle: state.contourStyle, lines: $('lines').value / 100, blueCore: $('blueCore').value / 100, shading: $('shading').value / 100, vibrance: $('vibrance').value / 100 });
+const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours', contourStyle: state.contourStyle, lines: $('lines').value / 100, blueCore: $('blueCore').value / 100, shading: $('shading').value / 100, vibrance: $('vibrance').value / 100, fit: $('fit').value / 100 });
 
 function seg(id, key) {
   $(id).addEventListener('click', e => {
@@ -930,7 +952,7 @@ function setData(d) {
 function syncVis() {
   $('detailRow').hidden = state.shape === 'ribbon';
   $('guideRow').hidden = state.shape !== 'contours';
-  $('styleBox').hidden = state.shape !== 'contours';
+  $('styleBox').hidden = $('fitRow').hidden = state.shape !== 'contours';
   $('linesRow').hidden = $('blueRow').hidden = $('shadeRow').hidden = $('vibRow').hidden = state.shape !== 'contours' || state.contourStyle !== 'filled';
   $('modeBox').hidden = state.theory === 'scanin' || state.shape === 'contours' || (state.type === 'group' && state.shape !== 'petals');
 }
@@ -984,7 +1006,7 @@ function buildScores() {
   refreshDerived();
 }
 
-['softness', 'grain', 'pastel', 'detail', 'lines', 'blueCore', 'shading', 'vibrance', 'variation'].forEach(id => {
+['softness', 'grain', 'pastel', 'detail', 'lines', 'blueCore', 'shading', 'vibrance', 'fit', 'variation'].forEach(id => {
   const el = $(id); el.addEventListener('input', () => { el.nextElementSibling.value = el.value; renderMain(); });
   el.addEventListener('change', renderGrid);
 });
@@ -1055,6 +1077,7 @@ function explainRadial(T, people) {
   if (T.id === 'scanin' && state.shape === 'blob') r.push(['Inner shape', 'importance per domain, in orange']);
   if (state.shape !== 'contours') r.push(['Size', 'the global score; the outline\'s shape comes from how the scores differ from the person\'s own average']);
   if (group) r.push(['Group', state.shape === 'contours' ? 'members nested from lowest to highest global score, each blending into the next' : 'one translucent outline per member, overlaid']);
+  if (state.shape === 'contours') r.push(['Size and place', `always centred on the page, scaled so its widest side is ${$('fit').value}% of the page width`]);
   r.push(['Detail', state.shape === 'contours' ? 'at 100 the outline passes exactly through every score; lower is smoother' : 'how closely the outline follows single scores (more harmonics)']);
   $('why').innerHTML = r.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
   $('themeNote').innerHTML = noteFor(T);
@@ -1073,7 +1096,7 @@ function renderGrid() {
 function renderAll() { renderMain(); renderGrid(); }
 // ---- saved settings: shape, style and every finish slider, kept in the page's db
 // (settings/finish) so they load for everyone who opens it, and Claude can read them.
-const SLIDERS = ['softness', 'pastel', 'vibrance', 'grain', 'shading', 'blueCore', 'lines', 'detail', 'variation'];
+const SLIDERS = ['softness', 'pastel', 'vibrance', 'grain', 'shading', 'blueCore', 'lines', 'detail', 'fit', 'variation'];
 const SEGS = ['shape', 'contourStyle', 'colorMode'];
 function currentSettings() {
   const o = {}; SLIDERS.forEach(id => o[id] = +$(id).value); SEGS.forEach(k => o[k] = state[k]); return o;

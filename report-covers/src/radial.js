@@ -117,8 +117,10 @@
   }
 
   function paintContours(x, T, people, group, opts, s, k) {
-    const { cx, cy, Rmax, P, mixColor, css, mix, mean } = k;
+    let { cx, cy, Rmax } = k;
+    const { P, mixColor, css, mix, mean } = k;
     const sp = spokes(T), detail = opts.detail != null ? opts.detail : 0.8;
+    const fitted = k.fitted || {};
     const rot0 = (opts.variation || 0) * 0.07; // variation turns the chart a little; 0 keeps the first facet at the top
     const core = 0.22, span = 0.78; // radius = Rmax * (core + span * score)
     // conic gradient: each facet's factor colour at its spoke, tinted by step
@@ -158,6 +160,24 @@
       const u = (t - split) / (1 - split); return [th => inner(th) * innerScale * (1 - u) + outer(th) * u, Rmax * core];
     };
     const rotAt = t => rot0 + swirl * Math.pow(1 - t, 1.6);
+
+    // Same place, same size on every cover: measure the whole drawing at its natural size,
+    // then move its centre and scale its radii so its bounding box fits a fixed square
+    // (opts.fit × page width) centred on the page. Every point is centre + radius ×
+    // direction, so changing the centre and Rmax moves and scales it exactly.
+    {
+      let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+      const take = pts => pts.forEach(p => { if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0]; if (p[1] < y0) y0 = p[1]; if (p[1] > y1) y1 = p[1]; });
+      for (let i = 1; i <= 60; i++) { const t = i / 60, [fn, R0] = shapeAt(t); take(ring(fn, R0 * Math.min(1, t * 4), Rmax * span, rotAt(t), cx, cy)); }
+      // (group member outlines are decoration around the shape and don't set its size)
+      const { W: PW, H: PH } = I();
+      const box = PW * (opts.fit != null ? opts.fit : 0.64);
+      const kf = box / Math.max(x1 - x0, y1 - y0);
+      const tx = PW / 2, ty = PH * (opts.centreY != null ? opts.centreY : 0.5);
+      // new centre: the old centre's position relative to the box middle, scaled
+      cx = tx + (cx - (x0 + x1) / 2) * kf; cy = ty + (cy - (y0 + y1) / 2) * kf; Rmax *= kf;
+      fitted.cx = cx; fitted.cy = cy; fitted.Rmax = Rmax;
+    }
 
     if (opts.contourStyle === 'lines') {
       const steps = 52;
@@ -275,7 +295,8 @@
     const Rmax = W * 0.40;
 
     const shape = opts.shape;
-    if (shape === 'contours') { paintContours(x, T, people, group, opts, s, { cx, cy, Rmax, P, mixColor, css, mix, mean }); }
+    const fitted = { cx, cy, Rmax };
+    if (shape === 'contours') { paintContours(x, T, people, group, opts, s, { cx, cy, Rmax, P, mixColor, css, mix, mean, fitted }); }
     else if (shape === 'petals') {
       // One lobe per factor, pointing at that factor's facets, reaching out by its score.
       const list = group ? people : [people[0]];
@@ -342,6 +363,6 @@
     // contours handle their own softness (filled: inside only, so the edge stays sharp)
     const fo = shape === 'contours' ? Object.assign({}, opts, { softness: opts.contourStyle === 'lines' ? (opts.softness || 0) * 0.3 : 0 }) : opts;
     ctx.drawImage(X.finish(layer, fo, s), 0, 0);
-    if (opts.guide) drawGuide(ctx, T, people[0], s, cx, cy, Rmax, group);
+    if (opts.guide) drawGuide(ctx, T, people[0], s, fitted.cx, fitted.cy, fitted.Rmax, group);
   };
 })(typeof window !== 'undefined' ? window : globalThis);

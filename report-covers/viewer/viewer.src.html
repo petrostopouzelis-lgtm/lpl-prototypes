@@ -72,6 +72,7 @@ main{display:flex;flex-direction:column;gap:24px}
       <div class="row plain"><span>Pastel</span><input type="range" id="pastel" min="0" max="100" value="0"><output>0</output></div>
       <div class="row plain" id="vibRow"><span>Vibrance</span><input type="range" id="vibrance" min="0" max="100" value="50"><output>50</output></div>
       <div class="row plain"><span>Grain</span><input type="range" id="grain" min="0" max="100" value="20"><output>20</output></div>
+      <div class="row plain" id="fitRow"><span>Size on page</span><input type="range" id="fit" min="40" max="90" value="64"><output>64</output></div>
       <div class="row plain" id="blueRow"><span>Blue core</span><input type="range" id="blueCore" min="0" max="100" value="50"><output>50</output></div>
       <div class="row plain" id="shadeRow"><span>Shading</span><input type="range" id="shading" min="0" max="100" value="60"><output>60</output></div>
       <div class="row plain" id="linesRow"><span>Line texture</span><input type="range" id="lines" min="0" max="100" value="0"><output>0</output></div>
@@ -105,7 +106,7 @@ const $ = id => document.getElementById(id);
 const state = { contourStyle: 'filled', shape: 'contours', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
 const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours', contourStyle: state.contourStyle, lines: $('lines').value / 100, blueCore: $('blueCore').value / 100, shading: $('shading').value / 100, vibrance: $('vibrance').value / 100 });
+const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours', contourStyle: state.contourStyle, lines: $('lines').value / 100, blueCore: $('blueCore').value / 100, shading: $('shading').value / 100, vibrance: $('vibrance').value / 100, fit: $('fit').value / 100 });
 
 function seg(id, key) {
   $(id).addEventListener('click', e => {
@@ -129,7 +130,7 @@ function setData(d) {
 function syncVis() {
   $('detailRow').hidden = state.shape === 'ribbon';
   $('guideRow').hidden = state.shape !== 'contours';
-  $('styleBox').hidden = state.shape !== 'contours';
+  $('styleBox').hidden = $('fitRow').hidden = state.shape !== 'contours';
   $('linesRow').hidden = $('blueRow').hidden = $('shadeRow').hidden = $('vibRow').hidden = state.shape !== 'contours' || state.contourStyle !== 'filled';
   $('modeBox').hidden = state.theory === 'scanin' || state.shape === 'contours' || (state.type === 'group' && state.shape !== 'petals');
 }
@@ -183,7 +184,7 @@ function buildScores() {
   refreshDerived();
 }
 
-['softness', 'grain', 'pastel', 'detail', 'lines', 'blueCore', 'shading', 'vibrance', 'variation'].forEach(id => {
+['softness', 'grain', 'pastel', 'detail', 'lines', 'blueCore', 'shading', 'vibrance', 'fit', 'variation'].forEach(id => {
   const el = $(id); el.addEventListener('input', () => { el.nextElementSibling.value = el.value; renderMain(); });
   el.addEventListener('change', renderGrid);
 });
@@ -254,6 +255,7 @@ function explainRadial(T, people) {
   if (T.id === 'scanin' && state.shape === 'blob') r.push(['Inner shape', 'importance per domain, in orange']);
   if (state.shape !== 'contours') r.push(['Size', 'the global score; the outline\'s shape comes from how the scores differ from the person\'s own average']);
   if (group) r.push(['Group', state.shape === 'contours' ? 'members nested from lowest to highest global score, each blending into the next' : 'one translucent outline per member, overlaid']);
+  if (state.shape === 'contours') r.push(['Size and place', `always centred on the page, scaled so its widest side is ${$('fit').value}% of the page width`]);
   r.push(['Detail', state.shape === 'contours' ? 'at 100 the outline passes exactly through every score; lower is smoother' : 'how closely the outline follows single scores (more harmonics)']);
   $('why').innerHTML = r.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
   $('themeNote').innerHTML = noteFor(T);
@@ -272,7 +274,7 @@ function renderGrid() {
 function renderAll() { renderMain(); renderGrid(); }
 // ---- saved settings: shape, style and every finish slider, kept in the page's db
 // (settings/finish) so they load for everyone who opens it, and Claude can read them.
-const SLIDERS = ['softness', 'pastel', 'vibrance', 'grain', 'shading', 'blueCore', 'lines', 'detail', 'variation'];
+const SLIDERS = ['softness', 'pastel', 'vibrance', 'grain', 'shading', 'blueCore', 'lines', 'detail', 'fit', 'variation'];
 const SEGS = ['shape', 'contourStyle', 'colorMode'];
 function currentSettings() {
   const o = {}; SLIDERS.forEach(id => o[id] = +$(id).value); SEGS.forEach(k => o[k] = state[k]); return o;
