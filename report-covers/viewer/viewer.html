@@ -799,6 +799,7 @@ function seg(id, key) {
     const b = e.target.closest('button'); if (!b) return;
     [...$(id).children].forEach(x => x.classList.toggle('on', x === b));
     state[key] = b.dataset.v;
+    if (key === 'shape') buildScores();
     if (key !== 'colorMode' && key !== 'shape') newData();
     syncVis();
     renderAll();
@@ -836,7 +837,7 @@ function personRows(T, p, more = true) {
     T.domains.forEach(d => h += row(d, T.scales.importance.color.full, p.importance[d], v => p.importance[d] = v));
     return h + `</details>`;
   }
-  h += `<span class="lab">Factor scores <span class="note">bend the curve, top two set the colours</span></span>`;
+  h += `<span class="lab">Factor scores <span class="note">${state.shape === 'contours' ? 'move all of that factor\'s facets' : 'bend the curve, top two set the colours'}</span></span>`;
   T.factors.forEach(f => h += row(f.name, f.color.full, p.factors[f.id], v => {
     const old = p.factors[f.id]; p.factors[f.id] = v;
     f.facets.forEach(n => p.facets[n] = Math.max(1, Math.min(99, p.facets[n] + v - old)));
