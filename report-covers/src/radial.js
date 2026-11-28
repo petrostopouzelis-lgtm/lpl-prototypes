@@ -384,9 +384,19 @@
         const R = opts.safe, inside = b => b.x0 >= R.x0 && b.x1 <= R.x1 && b.y0 >= R.y0 && b.y1 <= R.y1;
         for (let e = Math.hypot(I().W, I().H); e > S.reach + 10; e -= 1) if (inside(place(e))) { end = e; break; }
       }
+      let b = place(end), bleed = false;
+      if (opts.safe && opts.bleedX && Math.abs(dx) > 1e-6) {
+        // spokes that leave the free area through its sides run to the page edge; the
+        // label sits just above the line by the edge
+        const ex = dx > 0 ? I().W : 0, te = (ex - cx) / dx, ye = cy + dy * te;
+        if (ye >= opts.safe.y0 && ye <= opts.safe.y1) {
+          bleed = true; end = te;
+          const lx0 = dx > 0 ? I().W - 8 - tw : 8, mid = lx0 + tw / 2, ly0 = cy + dy * (mid - cx) / dx - 5;
+          b = { x: lx0, y: ly0 };
+        }
+      }
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + dx * end, cy + dy * end); ctx.stroke();
-      const b = place(end);
-      let lx = Math.max(6, Math.min(I().W - 6 - tw, b.x)), lyy = b.y;
+      let lx = bleed ? b.x : Math.max(6, Math.min(I().W - 6 - tw, b.x)), lyy = b.y;
       (opts.avoid || []).forEach(r => { if (lx < r.x1 && lx + tw > r.x0 && lyy > r.y0 - 4 && lyy < r.y1 + 4) lyy = r.y1 + 8; });
       ctx.fillStyle = '#6b7380'; ctx.textAlign = 'left'; ctx.fillText(label, lx, lyy);
     });

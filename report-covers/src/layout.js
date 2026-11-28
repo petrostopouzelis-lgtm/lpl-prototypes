@@ -76,23 +76,29 @@
   // Brand layouts, centred on one axis: logo and title group at the top, the diagram in the
   // middle (its spokes reach out to fill the free area), the name and date as one group,
   // and all legal lines together at the foot. No black rules.
-  const SAFE = { x0: 70, y0: 236, x1: W - 70, y1: 700 };   // free area for the diagram and its labels
+  const SAFE = { x0: 70, y0: 214, x1: W - 70, y1: 700 };   // free area for the diagram and its labels
   const ART = { centreY: (SAFE.y0 + SAFE.y1) / 2 / H, fit: 0.46 };
   function header(ctx, d, T) {
-    drawLogo(ctx, W / 2, 38, 230, 'center');
-    wordmark(ctx, T, W / 2, 148, 30, 'center');
-    // report title and form on one line, separated by a small blue gradient circle
-    const t = titleOf(d), f = d.subtitle || '', px = 24, gap = 14, r = 4;
-    ctx.font = MANROPE(700, px); const tw = ctx.measureText(t).width;
-    ctx.font = MANROPE(400, px); const fw = f ? ctx.measureText(f).width : 0;
-    const total = tw + (f ? gap * 2 + r * 2 + fw : 0), x0 = W / 2 - total / 2, y = 186;
-    text(ctx, t, x0, y, MANROPE(700, px), RBLUE);
-    if (f) {
-      const ccx = x0 + tw + gap + r, ccy = y - px * 0.34;
-      const g = ctx.createLinearGradient(ccx - r, ccy - r, ccx + r, ccy + r); g.addColorStop(0, BLUE); g.addColorStop(1, '#66BAE2');
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ccx, ccy, r, 0, Math.PI * 2); ctx.fill();
-      text(ctx, f, ccx + r + gap, y, MANROPE(400, px), RBLUE);
-    }
+    drawLogo(ctx, W / 2, 34, 300, 'center');
+    // one line: wordmark • report title • form, separated by small blue gradient circles
+    const px = 24, gap = 13, r = 4, y = 170;
+    const parts = [{ wm: true }, { t: titleOf(d), w: 700 }].concat(d.subtitle ? [{ t: d.subtitle, w: 400 }] : []);
+    parts.forEach(p => {
+      if (p.wm) { p.width = T.wordmark.reduce((a, q) => { ctx.font = MANROPE(700, q === '™' ? px * 0.5 : px); return a + ctx.measureText(q).width; }, 0); }
+      else { ctx.font = MANROPE(p.w, px); p.width = ctx.measureText(p.t).width; }
+    });
+    const sep = gap * 2 + r * 2;
+    let x = W / 2 - (parts.reduce((a, p) => a + p.width, 0) + sep * (parts.length - 1)) / 2;
+    parts.forEach((p, i) => {
+      if (i) {
+        const ccx = x + gap + r, ccy = y - px * 0.34;
+        const g = ctx.createLinearGradient(ccx - r, ccy - r, ccx + r, ccy + r); g.addColorStop(0, BLUE); g.addColorStop(1, '#66BAE2');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ccx, ccy, r, 0, Math.PI * 2); ctx.fill();
+        x += sep;
+      }
+      if (p.wm) wordmark(ctx, T, x, y, px); else text(ctx, p.t, x, y, MANROPE(p.w, px), RBLUE);
+      x += p.width;
+    });
   }
   function legal(ctx, d) {
     text(ctx, COPYRIGHT(yearOf(d)) + '   ·   ' + PRODUCT, W / 2, 820, INTER(300, 8), MUTED, 'center');
@@ -135,7 +141,7 @@
     ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.save(); ctx.scale(s, s); if (L.under) L.under(ctx, data, T); ctx.restore();
     const art = document.createElement('canvas');
-    NS.renderIllustration(art, data, Object.assign({}, opts, L.art, { avoid: L.avoid || [], safe: L.safe }, { scale: s }));
+    NS.renderIllustration(art, data, Object.assign({}, opts, L.art, { avoid: L.avoid || [], safe: L.safe, bleedX: true }, { scale: s }));
     ctx.drawImage(art, 0, 0);
     ctx.save(); ctx.scale(s, s); L.draw(ctx, data, T); ctx.restore();
   };
