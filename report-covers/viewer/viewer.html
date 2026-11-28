@@ -56,6 +56,7 @@ main{display:flex;flex-direction:column;gap:24px}
 <div class="wrap">
   <aside class="panel">
     <div><h1>Cover illustration generator</h1><p class="sub">Report cover artwork drawn from scores. A4 portrait. All people are made up.</p></div>
+    <div><span class="lab">Shape</span><div class="seg" id="shape"><button data-v="ribbon" class="on">Ribbon</button><button data-v="blob">Blob</button><button data-v="petals">Petals</button><button data-v="contours">Contours</button></div></div>
     <div><span class="lab">Theory</span><div class="seg" id="theory"><button data-v="teique" class="on">TEIQue</button><button data-v="tsique">TSIQue</button><button data-v="scanin">Scan-In</button></div></div>
     <div><span class="lab">Report</span><div class="seg" id="type"><button data-v="individual" class="on">Individual</button><button data-v="group">Group</button></div></div>
     <div id="membersBox" hidden><span class="lab">Group members</span><div class="row plain"><span>Members</span><input type="range" id="members" min="2" max="20" value="6"><output id="membersOut">6</output></div></div>
@@ -65,6 +66,7 @@ main{display:flex;flex-direction:column;gap:24px}
       <div class="row plain"><span>Softness</span><input type="range" id="softness" min="0" max="100" value="70"><output>70</output></div>
       <div class="row plain"><span>Pastel</span><input type="range" id="pastel" min="0" max="100" value="40"><output>40</output></div>
       <div class="row plain"><span>Grain</span><input type="range" id="grain" min="0" max="100" value="20"><output>20</output></div>
+      <div class="row plain" id="detailRow" hidden><span>Detail</span><input type="range" id="detail" min="0" max="100" value="50"><output>50</output></div>
       <div class="row plain"><span>Variation</span><input type="range" id="variation" min="0" max="20" value="0"><output>0</output></div>
     </div>
     <div class="btns"><button class="btn" id="random">New sample person</button><button class="btn ghost" id="reset">Reset scores</button></div>
@@ -441,18 +443,9 @@ main{display:flex;flex-direction:column;gap:24px}
   }
   const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 
-  // Draws the illustration into ctx at scale s (pixels per point).
-  function paintIllustration(ctx, data, opts, s) {
-    opts = Object.assign({ softness: 0.7, grain: 0.2, pastel: 0.4, variation: 0, colorMode: 'pair' }, opts);
-    const w = Math.round(W * s), h = Math.round(H * s);
-    const ribbons = layout(data, opts);
-    const layer = mk(w, h), lx = layer.getContext('2d');
-    const one = mk(w, h), ox = one.getContext('2d');
-    ribbons.forEach(rb => {
-      ox.clearRect(0, 0, w, h); drawRibbon(ox, rb, s, opts.pastel);
-      lx.globalAlpha = rb.alpha; lx.drawImage(one, 0, 0); lx.globalAlpha = 1;
-    });
-    // soft, blended finish like the rasterised reference
+  // Soft, blended finish like the rasterised reference: blur, glow and grain on the shape only.
+  function finish(layer, opts, s) {
+    const w = layer.width, h = layer.height;
     const out = mk(w, h), x = out.getContext('2d');
     const soft = clamp(opts.softness, 0, 1);
     if (soft > 0) {
@@ -466,13 +459,198 @@ main{display:flex;flex-direction:column;gap:24px}
       const k = Math.max(1, s / 1.5); pat.setTransform(new DOMMatrix([k, 0, 0, k, 0, 0]));
       x.fillStyle = pat; x.fillRect(0, 0, w, h); x.restore();
     }
-    ctx.drawImage(out, 0, 0);
+    return out;
+  }
+
+  // Draws the illustration into ctx at scale s (pixels per point).
+  function paintIllustration(ctx, data, opts, s) {
+    opts = Object.assign({ softness: 0.7, grain: 0.2, pastel: 0.4, variation: 0, colorMode: 'pair' }, opts);
+    if (opts.shape && opts.shape !== 'ribbon' && NS.paintRadial) return NS.paintRadial(ctx, data, opts, s);
+    const w = Math.round(W * s), h = Math.round(H * s);
+    const ribbons = layout(data, opts);
+    const layer = mk(w, h), lx = layer.getContext('2d');
+    const one = mk(w, h), ox = one.getContext('2d');
+    ribbons.forEach(rb => {
+      ox.clearRect(0, 0, w, h); drawRibbon(ox, rb, s, opts.pastel);
+      lx.globalAlpha = rb.alpha; lx.drawImage(one, 0, 0); lx.globalAlpha = 1;
+    });
+    ctx.drawImage(finish(layer, opts, s), 0, 0);
   }
 
   function size(canvas, s) { canvas.width = Math.round(W * s); canvas.height = Math.round(H * s); return canvas.getContext('2d'); }
   NS.renderIllustration = (canvas, data, opts = {}) => { const s = opts.scale || 2; paintIllustration(size(canvas, s), data, opts, s); };
   NS.PAGE = { W, H };
-  NS._internal = { normalise, topPair, layout, hash, rng };
+  NS._internal = { normalise, topPair, layout, hash, rng, finish, mk, rgb, mix, css, clamp, lerp, smooth, mean, mixColor, W, H };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+// Radial shapes: a centred, contained blob drawn like a radial chart.
+//
+// Scores sit around a circle (facets for TEIQue and TSIQue, life domains for
+// Scan-In), each pushing the outline outwards. The outline is smoothed with a
+// few Fourier harmonics so it reads as one organic shape, not a spiky radar.
+//   opts.shape   'blob'      one filled shape, coloured around its rim by factor
+//                'petals'    one translucent lobe per factor, overlapping
+//                'contours'  thin outlines blending from a small core out to the score shape
+//   opts.detail  0..1, how closely the outline follows individual scores
+// A group report overlays one outline per member around a shared centre.
+(function (root) {
+  const NS = root.LPLCovers = root.LPLCovers || {};
+  const TAU = Math.PI * 2, M = 360; // samples around the outline
+
+  function I() { return NS._internal; }
+
+  // Smooth periodic profile through values evenly spaced around the circle, 0..1.
+  function fourier(vals, H) {
+    const m = vals.length, a = [], b = [];
+    const a0 = vals.reduce((s, v) => s + v, 0) / m;
+    for (let h = 1; h <= H; h++) {
+      let c = 0, d = 0;
+      vals.forEach((v, j) => { const t = TAU * j / m; c += v * Math.cos(h * t); d += v * Math.sin(h * t); });
+      a.push(2 * c / m); b.push(2 * d / m);
+    }
+    return th => { let f = a0; for (let h = 1; h <= H; h++) f += a[h - 1] * Math.cos(h * th) + b[h - 1] * Math.sin(h * th); return f; };
+  }
+
+  // What goes around the circle, and the colour of each position.
+  function series(T, p) {
+    if (T.id === 'scanin') return { values: p.factors, colors: p.factors.map(() => T.scales.belief.color), inner: p.facets };
+    const colors = [];
+    T.factors.forEach(f => f.facets.forEach(() => colors.push(f.color)));
+    if (T.independent) T.independent.facets.forEach(() => colors.push(T.independent.color));
+    return { values: p.facets, colors };
+  }
+
+  // Outline points for one set of values.
+  function outline(vals, o) {
+    const { clamp } = I();
+    const H = Math.max(2, Math.round(2 + o.detail * Math.min(6, Math.floor(vals.length / 2) - 1)));
+    // the profile's shape drives the outline; its level is left to the global score (size)
+    const m = vals.reduce((a, b) => a + b, 0) / vals.length;
+    const f = fourier(o.keepLevel ? vals : vals.map(v => clamp(v - m + 0.62, 0, 1)), H);
+    const pts = [];
+    for (let i = 0; i < M; i++) {
+      const th = TAU * i / M;
+      const wob = 0.035 * Math.sin(3 * th + o.ph1) + 0.025 * Math.sin(5 * th + o.ph2);
+      const r = o.R * clamp(o.floor + (1 - o.floor) * f(th - o.rot) + wob, 0.12, 1.08);
+      pts.push([o.cx + r * Math.cos(th - Math.PI / 2), o.cy + r * Math.sin(th - Math.PI / 2), r, th]);
+    }
+    return pts;
+  }
+
+  function pathOf(ctx, pts, s) {
+    ctx.beginPath();
+    pts.forEach((p, i) => i ? ctx.lineTo(p[0] * s, p[1] * s) : ctx.moveTo(p[0] * s, p[1] * s));
+    ctx.closePath();
+  }
+
+  NS.paintRadial = function (ctx, data, opts, s) {
+    const X = I(), { W, H, rgb, mix, css, mean, mixColor } = X;
+    const { T, people } = X.normalise(data);
+    if (!people.length) return;
+    const r = X.rng(X.hash([data.theory, data.name, data.date, opts.variation || 0, opts.shape, JSON.stringify(people.map(p => [p.factors, p.facets, p.global]))].join('|')) % 4294967296);
+    const w = Math.round(W * s), h = Math.round(H * s);
+    const layer = X.mk(w, h), x = layer.getContext('2d');
+    const group = data.type === 'group' && people.length > 1;
+    const cx = W / 2, cy = H * (opts.centreY != null ? opts.centreY : 0.5);
+    const detail = opts.detail != null ? opts.detail : 0.5;
+    const pastel = opts.pastel || 0;
+    const tint = (hex, k) => mix(rgb(hex), [255, 255, 255], k);
+    const P = c => ({ full: tint(c.full, pastel * 0.55), light: tint(c.light, pastel * 0.6) });
+    const rot = r() * TAU, ph1 = r() * TAU, ph2 = r() * TAU;
+    const team = people[0].factors.map((_, i) => mean(people.map(p => p.factors[i])));
+    const [ca, cb] = X.topPair(T, group ? team : people[0].factors);
+    const base = { cx, cy, rot, ph1, ph2, detail };
+    const Rmax = W * 0.40;
+
+    const shape = opts.shape;
+    if (shape === 'contours') {
+      // Each line is a step of a blend from a small core to the score outline;
+      // the angle turns a little per step, so higher global scores swirl more.
+      const outers = group ? people.slice().sort((a, b) => a.global - b.global) : [people[0]];
+      const steps = group ? Math.max(3, Math.round(36 / outers.length)) : 36;
+      const g = group ? mean(people.map(p => p.global)) : people[0].global;
+      const swirl = 0.25 + 0.9 * g;
+      const coreVals = series(T, people[0]).values.map(() => 0.5);
+      outers.forEach((p, k) => {
+        const vals = series(T, p).values;
+        const inner = k === 0 ? coreVals : series(T, outers[k - 1]).values;
+        const innerR = k === 0 ? 0.12 : (0.55 + 0.45 * outers[k - 1].global) * (0.5 + 0.5 * (k) / outers.length);
+        const outerR = group ? (0.55 + 0.45 * p.global) * (0.5 + 0.5 * (k + 1) / outers.length) : 0.82 + 0.18 * p.global;
+        for (let i = 0; i < steps; i++) {
+          const t = (i + 1) / steps, tt = (k + t) / outers.length;
+          const v = vals.map((vv, j) => inner[j] + (vv - inner[j]) * t);
+          const pts = outline(v, Object.assign({}, base, { R: Rmax * (innerR + (outerR - innerR) * t), floor: 0.45, rot: rot + swirl * tt * 1.2 }));
+          const c = mixColor(ca, cb, tt), cc = P(c);
+          pathOf(x, pts, s);
+          x.lineWidth = (0.6 + 0.8 * tt) * s; x.strokeStyle = css(mix(cc.full, cc.light, 0.25), 0.55 + 0.4 * tt); x.stroke();
+        }
+      });
+    } else if (shape === 'petals') {
+      // One lobe per factor, pointing at that factor's facets, reaching out by its score.
+      const list = group ? people : [people[0]];
+      list.forEach((p, pi) => {
+        const ser = series(T, p);
+        const groups = T.id === 'scanin'
+          ? [{ color: T.scales.belief.color, idx: ser.values.map((_, j) => j), score: mean(p.factors) }, { color: T.scales.importance.color, idx: ser.values.map((_, j) => j), score: mean(p.facets), inner: true }]
+          : (() => { let k = 0; const out = T.factors.map((f, fi) => { const idx = f.facets.map(() => k++); return { color: f.color, idx, score: p.factors[fi] }; }); return out; })();
+        const order = groups.map((gr, i) => i).sort((a, b) => groups[b].score - groups[a].score);
+        order.forEach((gi, rank) => {
+          const gr = groups[gi];
+          let color = gr.color;
+          if (opts.colorMode !== 'all' && T.id !== 'scanin') color = mixColor(ca, cb, order.length > 1 ? rank / (order.length - 1) : 0);
+          const vals = ser.values.map((v, j) => {
+            if (gr.inner) return 0.25 + 0.5 * p.facets[j];
+            const on = gr.idx.includes(j);
+            return on ? 0.35 + 0.65 * v : 0;
+          });
+          const pts = outline(vals, Object.assign({}, base, { R: Rmax * (group ? 0.7 + 0.3 * p.global : 0.85 + 0.15 * p.global), floor: 0.04, keepLevel: true, detail: Math.min(1, detail + 0.3) }));
+          const cc = P(color);
+          const grad = x.createRadialGradient(cx * s, cy * s, 0, cx * s, cy * s, Rmax * s);
+          grad.addColorStop(0, css(cc.light, 0.15)); grad.addColorStop(0.55, css(cc.light, 0.6)); grad.addColorStop(1, css(cc.full, 0.95));
+          pathOf(x, pts, s);
+          x.globalAlpha = group ? Math.max(0.12, 0.6 / Math.sqrt(list.length)) : 0.7;
+          x.fillStyle = grad; x.fill(); x.globalAlpha = 1;
+        });
+      });
+    } else {
+      // blob: filled shape, rim coloured by the factor of the facet under it, pale core
+      const list = group ? people.slice().sort((a, b) => b.global - a.global) : [people[0]];
+      list.forEach((p, pi) => {
+        const ser = series(T, p);
+        const R = Rmax * (group ? 0.55 + 0.45 * p.global : 0.82 + 0.18 * p.global);
+        const pts = outline(ser.values, Object.assign({}, base, { R, floor: 0.4 }));
+        const conic = x.createConicGradient(rot - Math.PI / 2, cx * s, cy * s);
+        const n = ser.values.length;
+        const colAt = j => {
+          if (T.id === 'scanin') return P(T.scales.belief.color);
+          if (opts.colorMode === 'all') return P(ser.colors[j]);
+          const fi = T.factors.findIndex(f => f.color === ser.colors[j]);
+          const sc = fi < 0 ? mean(p.factors) : p.factors[fi];
+          const ia = T.factors.findIndex(f => f.color === ca);
+          return P(mixColor(ca, cb, X.clamp((p.factors[ia] - sc) * 3, 0, 1)));
+        };
+        for (let j = 0; j <= n; j++) conic.addColorStop(j / n, css(colAt(j % n).full));
+        pathOf(x, pts, s);
+        x.globalAlpha = group ? Math.max(0.1, 0.5 / Math.sqrt(list.length)) : 1;
+        x.fillStyle = conic; x.fill();
+        // pale core fading out to the coloured rim
+        const core = x.createRadialGradient(cx * s, cy * s, 0, cx * s, cy * s, R * s);
+        core.addColorStop(0, 'rgba(255,255,255,0.92)'); core.addColorStop(0.45, 'rgba(255,255,255,0.55)'); core.addColorStop(1, 'rgba(255,255,255,0)');
+        x.fillStyle = core; x.fill();
+        x.globalAlpha = 1;
+        if (ser.inner) { // Scan-In: importance as an inner blob
+          const ip = outline(ser.inner, Object.assign({}, base, { R: R * 0.62, floor: 0.35, rot: rot + 0.4 }));
+          const ig = x.createRadialGradient(cx * s, cy * s, 0, cx * s, cy * s, R * 0.62 * s);
+          const oc = P(T.scales.importance.color);
+          ig.addColorStop(0, css(oc.light, 0.2)); ig.addColorStop(1, css(oc.full, 0.85));
+          pathOf(x, ip, s); x.fillStyle = ig; x.fill();
+        }
+      });
+    }
+    // thin contour lines would dissolve under the full blur
+    const fo = shape === 'contours' ? Object.assign({}, opts, { softness: (opts.softness || 0) * 0.3 }) : opts;
+    ctx.drawImage(X.finish(layer, fo, s), 0, 0);
+  };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 // Made-up sample data for trying the generator. No real participants.
@@ -517,26 +695,28 @@ main{display:flex;flex-direction:column;gap:24px}
 {
 const L = window.LPLCovers;
 const $ = id => document.getElementById(id);
-const state = { theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
+const state = { shape: 'ribbon', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
 const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode });
+const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100 });
 
 function seg(id, key) {
   $(id).addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     [...$(id).children].forEach(x => x.classList.toggle('on', x === b));
     state[key] = b.dataset.v;
-    if (key !== 'colorMode') newData();
+    if (key !== 'colorMode' && key !== 'shape') newData();
+    $('detailRow').hidden = state.shape === 'ribbon';
+    $('modeBox').hidden = state.theory === 'scanin' || (state.type === 'group' && state.shape !== 'petals');
     renderAll();
   });
 }
-seg('theory', 'theory'); seg('type', 'type'); seg('colorMode', 'colorMode');
+seg('shape', 'shape'); seg('theory', 'theory'); seg('type', 'type'); seg('colorMode', 'colorMode');
 
 function setData(d) {
   state.data = d; state.original = clone(d);
   $('membersBox').hidden = state.type !== 'group';
-  $('modeBox').hidden = state.type === 'group' || state.theory === 'scanin';
+  $('modeBox').hidden = state.theory === 'scanin' || (state.type === 'group' && state.shape !== 'petals');
   buildScores();
 }
 function newData() { setData(L.sample(state.theory, state.type, state.members, state.seed * 7919 + 13)); }
@@ -589,7 +769,7 @@ function buildScores() {
   binds.forEach(b => b());
 }
 
-['softness', 'grain', 'pastel', 'variation'].forEach(id => {
+['softness', 'grain', 'pastel', 'detail', 'variation'].forEach(id => {
   const el = $(id); el.addEventListener('input', () => { el.nextElementSibling.value = el.value; renderMain(); });
   el.addEventListener('change', renderGrid);
 });
@@ -604,6 +784,7 @@ function renderMain() { cancelAnimationFrame(raf); raf = requestAnimationFrame((
 const sw = c => `<span class="sw" style="background:${c.full}"></span>`;
 function explain() {
   const T = L.THEORIES[state.theory], { people } = L._internal.normalise(state.data), pct = v => Math.round(v * 100), r = [];
+  if (state.shape !== 'ribbon') { explainRadial(T, people); return; }
   if (state.type === 'group') {
     const team = people[0].factors.map((_, i) => people.reduce((s, p) => s + p.factors[i], 0) / people.length);
     const [a, b] = L._internal.topPair(T, team);
@@ -627,6 +808,22 @@ function explain() {
     r.push(['Twists and width', `${esc(T.global.name)} ${pct(p.global)}: higher twists more and runs wider`]);
   }
   r.push(['Unique to the report', 'small variations seeded by name, date and scores']);
+  $('why').innerHTML = r.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
+  $('themeNote').innerHTML = T.proposed ? `<b>Proposed colours.</b> The design system only defines factor colours for TEIQue; ${esc(T.label)}'s are picked from the same palette and need confirming.` : 'Colours: the design system\'s TEIQue factor palette.';
+}
+
+function explainRadial(T, people) {
+  const r = [], around = T.id === 'scanin' ? 'belief per life domain' : `the ${people[0].facets.length} facet scores, in factor order`;
+  const group = state.type === 'group';
+  r.push(['Layout', 'a radial chart: scores sit around a circle and push the outline outwards, smoothed into one shape']);
+  r.push(['Around the circle', around]);
+  if (state.shape === 'blob') r.push(['Colours', state.colorMode === 'all' && T.id !== 'scanin' ? 'the rim takes the colour of the factor under it; pale core' : 'the rim blends between the two highest factors; pale core']);
+  if (state.shape === 'petals') r.push(['Petals', 'one lobe per factor, reaching out by its score' + (state.colorMode === 'all' ? ', in factor colours' : ', coloured from the top factor to the second')]);
+  if (state.shape === 'contours') r.push(['Lines', 'steps of a blend from a small round core to the score outline, coloured from the top factor to the second; higher global scores swirl more']);
+  if (T.id === 'scanin' && state.shape === 'blob') r.push(['Inner shape', 'importance per domain, in orange']);
+  r.push(['Size', 'the global score; the outline\'s shape comes from how the scores differ from the person\'s own average']);
+  if (group) r.push(['Group', state.shape === 'contours' ? 'members nested from lowest to highest global score, each blending into the next' : 'one translucent outline per member, overlaid']);
+  r.push(['Detail', 'how closely the outline follows single scores (more harmonics)']);
   $('why').innerHTML = r.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
   $('themeNote').innerHTML = T.proposed ? `<b>Proposed colours.</b> The design system only defines factor colours for TEIQue; ${esc(T.label)}'s are picked from the same palette and need confirming.` : 'Colours: the design system\'s TEIQue factor palette.';
 }

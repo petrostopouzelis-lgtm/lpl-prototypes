@@ -291,18 +291,9 @@
   }
   const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
 
-  // Draws the illustration into ctx at scale s (pixels per point).
-  function paintIllustration(ctx, data, opts, s) {
-    opts = Object.assign({ softness: 0.7, grain: 0.2, pastel: 0.4, variation: 0, colorMode: 'pair' }, opts);
-    const w = Math.round(W * s), h = Math.round(H * s);
-    const ribbons = layout(data, opts);
-    const layer = mk(w, h), lx = layer.getContext('2d');
-    const one = mk(w, h), ox = one.getContext('2d');
-    ribbons.forEach(rb => {
-      ox.clearRect(0, 0, w, h); drawRibbon(ox, rb, s, opts.pastel);
-      lx.globalAlpha = rb.alpha; lx.drawImage(one, 0, 0); lx.globalAlpha = 1;
-    });
-    // soft, blended finish like the rasterised reference
+  // Soft, blended finish like the rasterised reference: blur, glow and grain on the shape only.
+  function finish(layer, opts, s) {
+    const w = layer.width, h = layer.height;
     const out = mk(w, h), x = out.getContext('2d');
     const soft = clamp(opts.softness, 0, 1);
     if (soft > 0) {
@@ -316,11 +307,26 @@
       const k = Math.max(1, s / 1.5); pat.setTransform(new DOMMatrix([k, 0, 0, k, 0, 0]));
       x.fillStyle = pat; x.fillRect(0, 0, w, h); x.restore();
     }
-    ctx.drawImage(out, 0, 0);
+    return out;
+  }
+
+  // Draws the illustration into ctx at scale s (pixels per point).
+  function paintIllustration(ctx, data, opts, s) {
+    opts = Object.assign({ softness: 0.7, grain: 0.2, pastel: 0.4, variation: 0, colorMode: 'pair' }, opts);
+    if (opts.shape && opts.shape !== 'ribbon' && NS.paintRadial) return NS.paintRadial(ctx, data, opts, s);
+    const w = Math.round(W * s), h = Math.round(H * s);
+    const ribbons = layout(data, opts);
+    const layer = mk(w, h), lx = layer.getContext('2d');
+    const one = mk(w, h), ox = one.getContext('2d');
+    ribbons.forEach(rb => {
+      ox.clearRect(0, 0, w, h); drawRibbon(ox, rb, s, opts.pastel);
+      lx.globalAlpha = rb.alpha; lx.drawImage(one, 0, 0); lx.globalAlpha = 1;
+    });
+    ctx.drawImage(finish(layer, opts, s), 0, 0);
   }
 
   function size(canvas, s) { canvas.width = Math.round(W * s); canvas.height = Math.round(H * s); return canvas.getContext('2d'); }
   NS.renderIllustration = (canvas, data, opts = {}) => { const s = opts.scale || 2; paintIllustration(size(canvas, s), data, opts, s); };
   NS.PAGE = { W, H };
-  NS._internal = { normalise, topPair, layout, hash, rng };
+  NS._internal = { normalise, topPair, layout, hash, rng, finish, mk, rgb, mix, css, clamp, lerp, smooth, mean, mixColor, W, H };
 })(typeof window !== 'undefined' ? window : globalThis);

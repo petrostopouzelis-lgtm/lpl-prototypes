@@ -4,7 +4,7 @@
 from pathlib import Path
 
 here = Path(__file__).parent
-engine = '\n'.join((here.parent / 'src' / f).read_text(encoding='utf-8') for f in ['theories.js', 'cover.js', 'samples.js'])
+engine = '\n'.join((here.parent / 'src' / f).read_text(encoding='utf-8') for f in ['theories.js', 'cover.js', 'radial.js', 'samples.js'])
 page = (here / 'viewer.src.html').read_text(encoding='utf-8').replace('/*__ENGINE__*/', engine)
 (here / 'viewer.html').write_text(page, encoding='utf-8')
 print('wrote', here / 'viewer.html')

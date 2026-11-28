@@ -53,6 +53,14 @@ Scan-In people carry `belief` and `importance` maps keyed by domain instead of `
 | Group report | One sheet made of thin lanes, one per member, that twist together. Colours blend across the lanes from the team's top factor to its second. Each lane swells where its member scores high. |
 | Name, date and scores | Seed small variations, so similar profiles still get different covers. The same data always gives the same picture. |
 
+**Radial shapes** (`src/radial.js`, picked with `opts.shape`): a centred, contained blob drawn like a radial chart, after the radial charts at bklit.com. Facet scores (Scan-In: belief per domain) sit around a circle and push the outline outwards; a few Fourier harmonics smooth it into one organic shape (`opts.detail` sets how many). The outline's shape comes from how the scores differ from the person's own average; its size from the global score.
+
+| Shape | What it looks like |
+|---|---|
+| `blob` | One filled shape, rim coloured by factor (or blended between the top two), pale core. Scan-In adds importance as an inner orange blob. |
+| `petals` | One translucent lobe per factor, reaching out by its score. |
+| `contours` | Thin outlines stepping from a small round core to the score outline, like the reference's blend steps, coloured top factor to second; higher global scores swirl more. Groups nest members from lowest to highest global score. |
+
 **Colours, option "Every factor"** (individual TEIQue and TSIQue): one lane per factor, each in its factor colour, lane width set by the factor score. More colourful; shown as an alternative to the two-colour default.
 
 **Finish:** softness (blur and feathering, like the rasterised reference), pastel (lifts the colours toward white) and grain (fine noise on the shape only). Variation picks another seeded variant of the same data.
