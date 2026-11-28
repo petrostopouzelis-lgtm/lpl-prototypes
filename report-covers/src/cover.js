@@ -318,7 +318,9 @@
 
   // Draws the illustration into ctx at scale s (pixels per point).
   function paintIllustration(ctx, data, opts, s) {
-    opts = Object.assign({ softness: 0.7, grain: 0.2, pastel: 0.4, variation: 0, colorMode: 'pair' }, opts);
+    // base defaults < the saved preset for the shape (if any) < what the caller passes
+    const preset = (opts.shape === 'contours' && NS.CONTOUR_PRESET) || {};
+    opts = Object.assign({ softness: 0.7, grain: 0.2, pastel: 0.4, variation: 0, colorMode: 'pair' }, preset, opts);
     if (opts.shape && opts.shape !== 'ribbon' && NS.paintRadial) return NS.paintRadial(ctx, data, opts, s);
     const w = Math.round(W * s), h = Math.round(H * s);
     const ribbons = layout(data, opts);

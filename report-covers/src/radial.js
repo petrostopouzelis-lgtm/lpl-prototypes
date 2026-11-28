@@ -13,6 +13,10 @@
   const TAU = Math.PI * 2, M = 360; // samples around the outline
 
   function I() { return NS._internal; }
+
+  // Default finish for blended contours, as saved by the user in the viewer (2026-11-28).
+  NS.CONTOUR_PRESET = { contourStyle: 'filled', softness: 0.70, pastel: 0.86, vibrance: 0.52, grain: 0.33,
+    shading: 0.60, blueCore: 0.50, lines: 0.66, detail: 0.53, fit: 0.64, variation: 0 };
   const smoothstep = (a, b, v) => { const t = Math.max(0, Math.min(1, (v - a) / (b - a))); return t * t * (3 - 2 * t); };
 
   // Mix two sRGB colours ([r,g,b] 0..255) in OKLab, t = share of b; lift adds lightness.
