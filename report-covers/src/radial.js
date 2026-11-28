@@ -13,6 +13,26 @@
   const TAU = Math.PI * 2, M = 360; // samples around the outline
 
   function I() { return NS._internal; }
+  const smoothstep = (a, b, v) => { const t = Math.max(0, Math.min(1, (v - a) / (b - a))); return t * t * (3 - 2 * t); };
+
+  // Mix two sRGB colours ([r,g,b] 0..255) in OKLab, t = share of b; lift adds lightness.
+  function toLab(c) {
+    const f = v => { v /= 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); };
+    const [r, g, b] = c.map(f);
+    const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+    const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+    const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+    return [0.2104542553 * l + 0.7936177850 * m - 0.0040720468 * s, 1.9779984951 * l - 2.4285922050 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.8086757660 * s];
+  }
+  function fromLab([L, A, B]) {
+    const l = (L + 0.3963377774 * A + 0.2158037573 * B) ** 3, m = (L - 0.1055613458 * A - 0.0638541728 * B) ** 3, s = (L - 0.0894841775 * A - 1.2914855480 * B) ** 3;
+    const g = v => { v = v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055; return Math.round(Math.max(0, Math.min(1, v)) * 255); };
+    return [g(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s), g(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s), g(-0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s)];
+  }
+  function oklabMix(a, b, t, lift = 0) {
+    const A = toLab(a), B = toLab(b);
+    return fromLab([A[0] + (B[0] - A[0]) * t + lift, A[1] + (B[1] - A[1]) * t, A[2] + (B[2] - A[2]) * t]);
+  }
 
   // Smooth periodic profile through values evenly spaced around the circle, 0..1.
   function fourier(vals, H) {
@@ -132,17 +152,47 @@
     const inner = radiusFn(innerVals, detail), outer = radiusFn(outerVals, detail);
     const g = avg('global');
     const swirl = 0.25 + 1.1 * g; // inner lines turn; the outermost line sits exactly on the spokes
-    const steps = 52, split = 0.5, innerScale = T.id === 'scanin' ? 0.7 : 0.8;
-    for (let i = 1; i <= steps; i++) {
-      const t = i / steps, rot = rot0 + swirl * Math.pow(1 - t, 1.6);
-      let fn, R0;
-      if (t <= split) { const u = Math.pow(t / split, 0.9); fn = th => inner(th) * innerScale * u; R0 = Rmax * core * Math.min(1, u * 1.6); }
-      else { const u = (t - split) / (1 - split); fn = th => inner(th) * innerScale * (1 - u) + outer(th) * u; R0 = Rmax * core; }
-      stroke(ring(fn, R0, Rmax * span, rot, cx, cy), conic(0.5 * (1 - t), 0.5 + 0.45 * t, rot), 0.35 + 0.65 * t * (group ? 0.7 : 1));
+    const split = 0.5, innerScale = T.id === 'scanin' ? 0.7 : 0.8;
+    const shapeAt = t => { // outline function and inner radius for blend step t (0 = core, 1 = outer outline)
+      if (t <= split) { const u = Math.pow(t / split, 0.9); return [th => inner(th) * innerScale * u, Rmax * core * Math.min(1, u * 1.6)]; }
+      const u = (t - split) / (1 - split); return [th => inner(th) * innerScale * (1 - u) + outer(th) * u, Rmax * core];
+    };
+    const rotAt = t => rot0 + swirl * Math.pow(1 - t, 1.6);
+
+    if (opts.contourStyle === 'lines') {
+      const steps = 52;
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps, rot = rotAt(t), [fn, R0] = shapeAt(t);
+        stroke(ring(fn, R0, Rmax * span, rot, cx, cy), conic(0.5 * (1 - t), 0.5 + 0.45 * t, rot), 0.35 + 0.65 * t * (group ? 0.7 : 1));
+      }
+    } else {
+      // Filled: the blend steps are stacked as solid layers, outermost first, so they melt
+      // into one organic shape. The core is LPL blue, fading out into the score colours:
+      // the scores coming out of the lab. Colours are mixed in OKLab so the fades stay clean.
+      const blue = P({ full: '#259DD5', light: '#66BAE2' }).full;
+      const steps = 90, lines = opts.lines != null ? opts.lines : 0.15;
+      const fill = (pts) => { x.beginPath(); pts.forEach((p, i) => i ? x.lineTo(p[0] * s, p[1] * s) : x.moveTo(p[0] * s, p[1] * s)); x.closePath(); };
+      for (let i = steps; i >= 1; i--) {
+        const t = i / steps, rot = rotAt(t), [fn, R0] = shapeAt(t);
+        const pts = ring(fn, R0 * Math.min(1, t * 4), Rmax * span, rot, cx, cy);
+        const b = Math.pow(1 - smoothstep(0.0, 0.62, t), 1.7) * (opts.blueCore != null ? opts.blueCore * 2 : 1); // how blue this layer is
+        const g = x.createConicGradient(-Math.PI / 2 + rot, cx * s, cy * s);
+        for (let j = 0; j <= sp.length; j++) {
+          const c = P(sp[j % sp.length].color).full;
+          g.addColorStop(j / sp.length, css(oklabMix(c, blue, Math.min(1, b), 0.06 * Math.sin(Math.PI * Math.min(1, b)))));
+        }
+        fill(pts); x.fillStyle = g; x.fill();
+        if (lines > 0 && i % 2 === 0) { x.lineWidth = 0.5 * s; x.strokeStyle = `rgba(255,255,255,${(0.5 * lines).toFixed(3)})`; x.stroke(); }
+      }
+      // the very centre: a small blue core so no white shows
+      const coreR = Rmax * core * 0.5;
+      const cg = x.createRadialGradient(cx * s, cy * s, 0, cx * s, cy * s, coreR * s);
+      cg.addColorStop(0, css(blue)); cg.addColorStop(1, css(blue, 0));
+      x.beginPath(); x.arc(cx * s, cy * s, coreR * s, 0, TAU); x.fillStyle = cg; x.fill();
     }
     if (group) people.forEach(q => {
       const pts = ring(radiusFn(T.id === 'scanin' ? q.factors : q.facets, detail), Rmax * core, Rmax * span, rot0, cx, cy);
-      stroke(pts, conic(0.1, Math.max(0.35, 0.8 / Math.sqrt(people.length)), rot0), 0.9);
+      stroke(pts, conic(0.1, Math.max(0.3, (opts.contourStyle === 'lines' ? 0.8 : 0.6) / Math.sqrt(people.length)), rot0), 0.9);
     });
   }
 
@@ -254,7 +304,7 @@
       });
     }
     // thin contour lines would dissolve under the full blur
-    const fo = shape === 'contours' ? Object.assign({}, opts, { softness: (opts.softness || 0) * 0.3 }) : opts;
+    const fo = shape === 'contours' && opts.contourStyle === 'lines' ? Object.assign({}, opts, { softness: (opts.softness || 0) * 0.3 }) : opts;
     ctx.drawImage(X.finish(layer, fo, s), 0, 0);
     if (opts.guide) drawGuide(ctx, T, people[0], s, cx, cy, Rmax, group);
   };

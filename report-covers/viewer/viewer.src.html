@@ -57,6 +57,7 @@ main{display:flex;flex-direction:column;gap:24px}
   <aside class="panel">
     <div><h1>Cover illustration generator</h1><p class="sub">Report cover artwork drawn from scores. A4 portrait. All people are made up.</p></div>
     <div><span class="lab">Shape</span><div class="seg" id="shape"><button data-v="contours" class="on">Contours</button><button data-v="blob">Blob</button><button data-v="petals">Petals</button><button data-v="ribbon">Ribbon</button></div></div>
+    <div id="styleBox"><span class="lab">Contour style</span><div class="seg" id="contourStyle"><button data-v="filled" class="on">Blended</button><button data-v="lines">Lines</button></div></div>
     <div><span class="lab">Theory</span><div class="seg" id="theory"><button data-v="teique" class="on">TEIQue</button><button data-v="tsique">TSIQue</button><button data-v="scanin">Scan-In</button></div></div>
     <div><span class="lab">Report</span><div class="seg" id="type"><button data-v="individual" class="on">Individual</button><button data-v="group">Group</button></div></div>
     <div id="membersBox" hidden><span class="lab">Group members</span><div class="row plain"><span>Members</span><input type="range" id="members" min="2" max="20" value="6"><output id="membersOut">6</output></div></div>
@@ -66,6 +67,8 @@ main{display:flex;flex-direction:column;gap:24px}
       <div class="row plain"><span>Softness</span><input type="range" id="softness" min="0" max="100" value="70"><output>70</output></div>
       <div class="row plain"><span>Pastel</span><input type="range" id="pastel" min="0" max="100" value="40"><output>40</output></div>
       <div class="row plain"><span>Grain</span><input type="range" id="grain" min="0" max="100" value="20"><output>20</output></div>
+      <div class="row plain" id="blueRow"><span>Blue core</span><input type="range" id="blueCore" min="0" max="100" value="50"><output>50</output></div>
+      <div class="row plain" id="linesRow"><span>Line texture</span><input type="range" id="lines" min="0" max="100" value="15"><output>15</output></div>
       <div class="row plain" id="detailRow" hidden><span>Detail</span><input type="range" id="detail" min="0" max="100" value="75"><output>75</output></div>
       <div class="row plain"><span>Variation</span><input type="range" id="variation" min="0" max="20" value="0"><output>0</output></div>
     </div>
@@ -92,10 +95,10 @@ main{display:flex;flex-direction:column;gap:24px}
 {
 const L = window.LPLCovers;
 const $ = id => document.getElementById(id);
-const state = { shape: 'contours', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
+const state = { contourStyle: 'filled', shape: 'contours', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
 const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours' });
+const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours', contourStyle: state.contourStyle, lines: $('lines').value / 100, blueCore: $('blueCore').value / 100 });
 
 function seg(id, key) {
   $(id).addEventListener('click', e => {
@@ -103,12 +106,12 @@ function seg(id, key) {
     [...$(id).children].forEach(x => x.classList.toggle('on', x === b));
     state[key] = b.dataset.v;
     if (key === 'shape') buildScores();
-    if (key !== 'colorMode' && key !== 'shape') newData();
+    if (key !== 'colorMode' && key !== 'shape' && key !== 'contourStyle') newData();
     syncVis();
     renderAll();
   });
 }
-seg('shape', 'shape'); seg('theory', 'theory'); seg('type', 'type'); seg('colorMode', 'colorMode');
+seg('shape', 'shape'); seg('contourStyle', 'contourStyle'); seg('theory', 'theory'); seg('type', 'type'); seg('colorMode', 'colorMode');
 
 function setData(d) {
   state.data = d; state.original = clone(d);
@@ -119,6 +122,8 @@ function setData(d) {
 function syncVis() {
   $('detailRow').hidden = state.shape === 'ribbon';
   $('guideRow').hidden = state.shape !== 'contours';
+  $('styleBox').hidden = state.shape !== 'contours';
+  $('linesRow').hidden = $('blueRow').hidden = state.shape !== 'contours' || state.contourStyle !== 'filled';
   $('modeBox').hidden = state.theory === 'scanin' || state.shape === 'contours' || (state.type === 'group' && state.shape !== 'petals');
 }
 function newData() { setData(L.sample(state.theory, state.type, state.members, state.seed * 7919 + 13)); }
@@ -171,7 +176,7 @@ function buildScores() {
   binds.forEach(b => b());
 }
 
-['softness', 'grain', 'pastel', 'detail', 'variation'].forEach(id => {
+['softness', 'grain', 'pastel', 'detail', 'lines', 'blueCore', 'variation'].forEach(id => {
   const el = $(id); el.addEventListener('input', () => { el.nextElementSibling.value = el.value; renderMain(); });
   el.addEventListener('change', renderGrid);
 });
@@ -225,15 +230,17 @@ function explainRadial(T, people) {
   if (state.shape === 'blob') r.push(['Colours', state.colorMode === 'all' && T.id !== 'scanin' ? 'the rim takes the colour of the factor under it; pale core' : 'the rim blends between the two highest factors; pale core']);
   if (state.shape === 'petals') r.push(['Petals', 'one lobe per factor, reaching out by its score' + (state.colorMode === 'all' ? ', in factor colours' : ', coloured from the top factor to the second')]);
   if (state.shape === 'contours') {
+    if (state.contourStyle === 'filled') r.push(['Style', 'the blend steps are stacked as solid layers and softened into one organic shape']);
     if (T.id === 'scanin') {
       r.push(['Spokes', `one fixed spoke per life domain (${T.domains.length}), each in its colour from the Reports Figma file`]);
       r.push(['Lines', 'a blend from a small core to the importance outline (inner lines), then on to the belief outline (outer line)']);
+      if (state.contourStyle === 'filled') r.push(['Colour', 'the core is LPL blue, fading outwards into each domain\'s colour']);
     }
     else {
       r.push(['Spokes', `one fixed spoke per facet, grouped by factor, clockwise from the top: ${T.factors.map(f => sw(f.color) + esc(f.name)).join(', ')}${T.independent ? ', ' + sw(T.independent.color) + 'independent facets' : ''}`]);
       r.push(['Inner lines', 'factor level: each spoke at its factor\'s score, so factors read as broad lobes']);
       r.push(['Outer line', 'facet level: passes through every facet score, so each facet is its own bulge or dip']);
-      r.push(['Colour', 'around the circle each line takes the colour of the factor under it; inner lines paler']);
+      r.push(['Colour', state.contourStyle === 'filled' ? 'the core is LPL blue, fading outwards into the colour of each factor around the circle: the scores coming from the lab' : 'around the circle each line takes the colour of the factor under it; inner lines paler']);
       r.push(['Swirl', 'inner lines turn more with a higher global score; the outer line sits exactly on the spokes']);
     }
   }
