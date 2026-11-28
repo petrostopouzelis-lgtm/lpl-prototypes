@@ -79,7 +79,7 @@ main{display:flex;flex-direction:column;gap:24px}
       <div class="row plain" id="detailRow" hidden><span>Detail</span><input type="range" id="detail" min="0" max="100" value="53"><output>53</output></div>
       <div class="row plain"><span>Variation</span><input type="range" id="variation" min="0" max="20" value="0"><output>0</output></div>
     </div>
-    <label class="row plain" id="diagramRow" style="grid-template-columns:auto 1fr"><input type="checkbox" id="diagram" checked> <span>Diagram overlay (generic markers, no results)</span></label>
+    <label class="row plain" id="diagramRow" style="grid-template-columns:auto 1fr"><input type="checkbox" id="diagram" checked> <span>Facet diagram overlay (spokes, names, markers; no numbers)</span></label>
     <label class="row plain" id="guideRow" hidden style="grid-template-columns:auto 1fr"><input type="checkbox" id="guide"> <span>Show facet spokes and scores (checking only)</span></label>
     <div class="btns"><button class="btn" id="random">New sample person</button><button class="btn ghost" id="reset">Reset scores</button></div>
     <div class="btns"><button class="btn ghost" id="saveSettings">Save settings</button><span class="note" id="saveNote" style="align-self:center"></span></div>
@@ -130,7 +130,8 @@ function setData(d) {
 }
 function syncVis() {
   $('detailRow').hidden = state.shape === 'ribbon';
-  $('guideRow').hidden = $('diagramRow').hidden = state.shape !== 'contours';
+  $('diagramRow').hidden = state.shape !== 'contours';
+  $('guideRow').hidden = true; // superseded by the diagram overlay
   $('styleBox').hidden = $('fitRow').hidden = state.shape !== 'contours';
   $('linesRow').hidden = $('blueRow').hidden = $('shadeRow').hidden = $('vibRow').hidden = state.shape !== 'contours' || state.contourStyle !== 'filled';
   $('modeBox').hidden = state.theory === 'scanin' || state.shape === 'contours' || (state.type === 'group' && state.shape !== 'petals');
