@@ -58,6 +58,119 @@
     ctx.closePath();
   }
 
+
+  // ---------- contours: a radial chart of every facet, drawn as blend steps ----------
+  // Facets sit on fixed spokes, grouped by factor, starting at the top and running
+  // clockwise. The outline passes through each facet's own score (radius = score), so
+  // every facet shows as its own bulge or dip. Lines step from a small core out to
+  // that outline; around the circle each line takes the colour of the facet's factor.
+
+  // Spoke layout: angle (0 = top) and colour for every facet.
+  function spokes(T) {
+    if (T.id === 'scanin') return T.domains.map((d, j) => ({ name: d, a: TAU * j / T.domains.length, color: T.scales.belief.color }));
+    const list = [];
+    T.factors.forEach(f => f.facets.forEach(n => list.push({ name: n, color: f.color })));
+    if (T.independent) T.independent.facets.forEach(n => list.push({ name: n, color: T.independent.color }));
+    return list.map((sp, j) => Object.assign(sp, { a: TAU * j / list.length }));
+  }
+
+  // Radius at angle th through every value, using periodic Catmull-Rom, blended with a
+  // smoother Fourier version by `detail` (1 = passes exactly through each score).
+  function radiusFn(vals, detail) {
+    const m = vals.length, f = fourier(vals, Math.max(2, Math.floor(m / 3)));
+    return th => {
+      const u = ((th / TAU) % 1 + 1) % 1 * m, i = Math.floor(u), t = u - i;
+      const p0 = vals[(i - 1 + m) % m], p1 = vals[i % m], p2 = vals[(i + 1) % m], p3 = vals[(i + 2) % m];
+      const cr = 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+      return detail * cr + (1 - detail) * f(th);
+    };
+  }
+
+  function ring(fn, R0, R1, rot, cx, cy) { // points of one contour, radius R0 + R1*fn(th)
+    const pts = [];
+    for (let i = 0; i < M; i++) {
+      const th = TAU * i / M, r = R0 + R1 * Math.max(0, Math.min(1.05, fn(th - rot)));
+      pts.push([cx + r * Math.sin(th), cy - r * Math.cos(th)]);
+    }
+    return pts;
+  }
+
+  function paintContours(x, T, people, group, opts, s, k) {
+    const { cx, cy, Rmax, P, mixColor, css, mix, mean } = k;
+    const sp = spokes(T), detail = opts.detail != null ? opts.detail : 0.8;
+    const rot0 = (opts.variation || 0) * 0.07; // variation turns the chart a little; 0 keeps the first facet at the top
+    const core = 0.3, span = 0.7; // radius = Rmax * (core + span * score)
+    // conic gradient: each facet's factor colour at its spoke, tinted by step
+    const conic = (tint, alpha, rot) => {
+      const g = x.createConicGradient(-Math.PI / 2 + rot, cx * s, cy * s);
+      for (let j = 0; j <= sp.length; j++) {
+        const c = P(sp[j % sp.length].color);
+        g.addColorStop(j / sp.length, css(mix(c.full, c.light, tint), alpha));
+      }
+      return g;
+    };
+    const stroke = (pts, style, t) => {
+      x.beginPath(); pts.forEach((p, i) => i ? x.lineTo(p[0] * s, p[1] * s) : x.moveTo(p[0] * s, p[1] * s)); x.closePath();
+      x.lineWidth = (0.45 + 0.9 * t) * s; x.strokeStyle = style; x.stroke();
+    };
+
+    if (T.id === 'scanin') {
+      // importance outline inside, belief outline outside, lines fade orange to blue
+      const p = people[0], inner = radiusFn(p.facets, detail), outer = radiusFn(p.factors, detail);
+      // from a small core out to the importance outline (orange), then on to belief (blue)
+      const steps = 44, ci = P(T.scales.importance.color), cb = P(T.scales.belief.color), split = 0.4;
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        let fn, c, R0;
+        if (t <= split) { const u = t / split; fn = th => inner(th) * 0.6 * u; c = mix(ci.light, ci.full, u); R0 = Rmax * core * u; }
+        else { const u = (t - split) / (1 - split); fn = th => inner(th) * 0.6 * (1 - u) + outer(th) * u; c = mix(ci.full, cb.full, u); R0 = Rmax * core; }
+        stroke(ring(fn, R0, Rmax * span, rot0, cx, cy), css(c, 0.4 + 0.55 * t), t);
+      }
+      return;
+    }
+
+    // Group: the blend steps go to the team's average facet scores, and each member's
+    // own facet outline is traced lightly over it.
+    const team = people[0].facets.map((_, j) => mean(people.map(q => q.facets[j])));
+    const g = group ? mean(people.map(q => q.global)) : people[0].global;
+    const swirl = 0.25 + 1.1 * g; // inner lines turn; the outermost line sits exactly on the spokes
+    const target = radiusFn(group ? team : people[0].facets, detail);
+    const steps = 44;
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps, rot = rot0 + swirl * Math.pow(1 - t, 1.6);
+      const pts = ring(th => target(th) * Math.pow(t, 0.9), Rmax * core * Math.min(1, t * 2.5), Rmax * span, rot, cx, cy);
+      stroke(pts, conic(0.75 * (1 - t), 0.4 + 0.55 * t, rot), t * (group ? 0.7 : 1));
+    }
+    if (group) people.forEach(q => {
+      const pts = ring(radiusFn(q.facets, detail), Rmax * core, Rmax * span, rot0, cx, cy);
+      stroke(pts, conic(0.1, Math.max(0.35, 0.8 / Math.sqrt(people.length)), rot0), 0.9);
+    });
+  }
+
+  // Spokes and facet names over the shape, for checking only (not part of the artwork).
+  function drawGuide(ctx, T, p, s, cx, cy, Rmax, group) {
+    const sp = spokes(T);
+    ctx.save(); ctx.scale(s, s);
+    ctx.font = '400 7px Inter, sans-serif'; ctx.textBaseline = 'middle';
+    sp.forEach((q, j) => {
+      const dx = Math.sin(q.a), dy = -Math.cos(q.a);
+      ctx.strokeStyle = 'rgba(0,0,0,0.18)'; ctx.lineWidth = 0.4;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + dx * Rmax * 1.04, cy + dy * Rmax * 1.04); ctx.stroke();
+      const v = T.id === 'scanin' ? p.factors[j] : p.facets[j];
+      if (!group) { // the facet's score as a dot on its spoke
+        const r = Rmax * (0.3 + 0.7 * v); // same mapping as the outline
+        ctx.fillStyle = q.color.full; ctx.beginPath(); ctx.arc(cx + dx * r, cy + dy * r, 1.6, 0, TAU); ctx.fill();
+      }
+      // label kept inside the page
+      const label = q.name + (group ? '' : ' ' + Math.round(v * 100)), tw = ctx.measureText(label).width;
+      let lx = cx + dx * Rmax * 1.08; const ly = cy + dy * Rmax * 1.08;
+      lx = dx > 0.15 ? lx : dx < -0.15 ? lx - tw : lx - tw / 2;
+      lx = Math.max(6, Math.min(I().W - 6 - tw, lx));
+      ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.textAlign = 'left'; ctx.fillText(label, lx, ly);
+    });
+    ctx.restore();
+  }
+
   NS.paintRadial = function (ctx, data, opts, s) {
     const X = I(), { W, H, rgb, mix, css, mean, mixColor } = X;
     const { T, people } = X.normalise(data);
@@ -78,29 +191,8 @@
     const Rmax = W * 0.40;
 
     const shape = opts.shape;
-    if (shape === 'contours') {
-      // Each line is a step of a blend from a small core to the score outline;
-      // the angle turns a little per step, so higher global scores swirl more.
-      const outers = group ? people.slice().sort((a, b) => a.global - b.global) : [people[0]];
-      const steps = group ? Math.max(3, Math.round(36 / outers.length)) : 36;
-      const g = group ? mean(people.map(p => p.global)) : people[0].global;
-      const swirl = 0.25 + 0.9 * g;
-      const coreVals = series(T, people[0]).values.map(() => 0.5);
-      outers.forEach((p, k) => {
-        const vals = series(T, p).values;
-        const inner = k === 0 ? coreVals : series(T, outers[k - 1]).values;
-        const innerR = k === 0 ? 0.12 : (0.55 + 0.45 * outers[k - 1].global) * (0.5 + 0.5 * (k) / outers.length);
-        const outerR = group ? (0.55 + 0.45 * p.global) * (0.5 + 0.5 * (k + 1) / outers.length) : 0.82 + 0.18 * p.global;
-        for (let i = 0; i < steps; i++) {
-          const t = (i + 1) / steps, tt = (k + t) / outers.length;
-          const v = vals.map((vv, j) => inner[j] + (vv - inner[j]) * t);
-          const pts = outline(v, Object.assign({}, base, { R: Rmax * (innerR + (outerR - innerR) * t), floor: 0.45, rot: rot + swirl * tt * 1.2 }));
-          const c = mixColor(ca, cb, tt), cc = P(c);
-          pathOf(x, pts, s);
-          x.lineWidth = (0.6 + 0.8 * tt) * s; x.strokeStyle = css(mix(cc.full, cc.light, 0.25), 0.55 + 0.4 * tt); x.stroke();
-        }
-      });
-    } else if (shape === 'petals') {
+    if (shape === 'contours') { paintContours(x, T, people, group, opts, s, { cx, cy, Rmax, P, mixColor, css, mix, mean }); }
+    else if (shape === 'petals') {
       // One lobe per factor, pointing at that factor's facets, reaching out by its score.
       const list = group ? people : [people[0]];
       list.forEach((p, pi) => {
@@ -165,5 +257,6 @@
     // thin contour lines would dissolve under the full blur
     const fo = shape === 'contours' ? Object.assign({}, opts, { softness: (opts.softness || 0) * 0.3 }) : opts;
     ctx.drawImage(X.finish(layer, fo, s), 0, 0);
+    if (opts.guide) drawGuide(ctx, T, people[0], s, cx, cy, Rmax, group);
   };
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -56,7 +56,7 @@ main{display:flex;flex-direction:column;gap:24px}
 <div class="wrap">
   <aside class="panel">
     <div><h1>Cover illustration generator</h1><p class="sub">Report cover artwork drawn from scores. A4 portrait. All people are made up.</p></div>
-    <div><span class="lab">Shape</span><div class="seg" id="shape"><button data-v="ribbon" class="on">Ribbon</button><button data-v="blob">Blob</button><button data-v="petals">Petals</button><button data-v="contours">Contours</button></div></div>
+    <div><span class="lab">Shape</span><div class="seg" id="shape"><button data-v="contours" class="on">Contours</button><button data-v="blob">Blob</button><button data-v="petals">Petals</button><button data-v="ribbon">Ribbon</button></div></div>
     <div><span class="lab">Theory</span><div class="seg" id="theory"><button data-v="teique" class="on">TEIQue</button><button data-v="tsique">TSIQue</button><button data-v="scanin">Scan-In</button></div></div>
     <div><span class="lab">Report</span><div class="seg" id="type"><button data-v="individual" class="on">Individual</button><button data-v="group">Group</button></div></div>
     <div id="membersBox" hidden><span class="lab">Group members</span><div class="row plain"><span>Members</span><input type="range" id="members" min="2" max="20" value="6"><output id="membersOut">6</output></div></div>
@@ -66,9 +66,10 @@ main{display:flex;flex-direction:column;gap:24px}
       <div class="row plain"><span>Softness</span><input type="range" id="softness" min="0" max="100" value="70"><output>70</output></div>
       <div class="row plain"><span>Pastel</span><input type="range" id="pastel" min="0" max="100" value="40"><output>40</output></div>
       <div class="row plain"><span>Grain</span><input type="range" id="grain" min="0" max="100" value="20"><output>20</output></div>
-      <div class="row plain" id="detailRow" hidden><span>Detail</span><input type="range" id="detail" min="0" max="100" value="50"><output>50</output></div>
+      <div class="row plain" id="detailRow" hidden><span>Detail</span><input type="range" id="detail" min="0" max="100" value="75"><output>75</output></div>
       <div class="row plain"><span>Variation</span><input type="range" id="variation" min="0" max="20" value="0"><output>0</output></div>
     </div>
+    <label class="row plain" id="guideRow" hidden style="grid-template-columns:auto 1fr"><input type="checkbox" id="guide"> <span>Show facet spokes and scores (checking only)</span></label>
     <div class="btns"><button class="btn" id="random">New sample person</button><button class="btn ghost" id="reset">Reset scores</button></div>
     <p class="note" id="themeNote"></p>
   </aside>
@@ -543,6 +544,119 @@ main{display:flex;flex-direction:column;gap:24px}
     ctx.closePath();
   }
 
+
+  // ---------- contours: a radial chart of every facet, drawn as blend steps ----------
+  // Facets sit on fixed spokes, grouped by factor, starting at the top and running
+  // clockwise. The outline passes through each facet's own score (radius = score), so
+  // every facet shows as its own bulge or dip. Lines step from a small core out to
+  // that outline; around the circle each line takes the colour of the facet's factor.
+
+  // Spoke layout: angle (0 = top) and colour for every facet.
+  function spokes(T) {
+    if (T.id === 'scanin') return T.domains.map((d, j) => ({ name: d, a: TAU * j / T.domains.length, color: T.scales.belief.color }));
+    const list = [];
+    T.factors.forEach(f => f.facets.forEach(n => list.push({ name: n, color: f.color })));
+    if (T.independent) T.independent.facets.forEach(n => list.push({ name: n, color: T.independent.color }));
+    return list.map((sp, j) => Object.assign(sp, { a: TAU * j / list.length }));
+  }
+
+  // Radius at angle th through every value, using periodic Catmull-Rom, blended with a
+  // smoother Fourier version by `detail` (1 = passes exactly through each score).
+  function radiusFn(vals, detail) {
+    const m = vals.length, f = fourier(vals, Math.max(2, Math.floor(m / 3)));
+    return th => {
+      const u = ((th / TAU) % 1 + 1) % 1 * m, i = Math.floor(u), t = u - i;
+      const p0 = vals[(i - 1 + m) % m], p1 = vals[i % m], p2 = vals[(i + 1) % m], p3 = vals[(i + 2) % m];
+      const cr = 0.5 * (2 * p1 + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+      return detail * cr + (1 - detail) * f(th);
+    };
+  }
+
+  function ring(fn, R0, R1, rot, cx, cy) { // points of one contour, radius R0 + R1*fn(th)
+    const pts = [];
+    for (let i = 0; i < M; i++) {
+      const th = TAU * i / M, r = R0 + R1 * Math.max(0, Math.min(1.05, fn(th - rot)));
+      pts.push([cx + r * Math.sin(th), cy - r * Math.cos(th)]);
+    }
+    return pts;
+  }
+
+  function paintContours(x, T, people, group, opts, s, k) {
+    const { cx, cy, Rmax, P, mixColor, css, mix, mean } = k;
+    const sp = spokes(T), detail = opts.detail != null ? opts.detail : 0.8;
+    const rot0 = (opts.variation || 0) * 0.07; // variation turns the chart a little; 0 keeps the first facet at the top
+    const core = 0.3, span = 0.7; // radius = Rmax * (core + span * score)
+    // conic gradient: each facet's factor colour at its spoke, tinted by step
+    const conic = (tint, alpha, rot) => {
+      const g = x.createConicGradient(-Math.PI / 2 + rot, cx * s, cy * s);
+      for (let j = 0; j <= sp.length; j++) {
+        const c = P(sp[j % sp.length].color);
+        g.addColorStop(j / sp.length, css(mix(c.full, c.light, tint), alpha));
+      }
+      return g;
+    };
+    const stroke = (pts, style, t) => {
+      x.beginPath(); pts.forEach((p, i) => i ? x.lineTo(p[0] * s, p[1] * s) : x.moveTo(p[0] * s, p[1] * s)); x.closePath();
+      x.lineWidth = (0.45 + 0.9 * t) * s; x.strokeStyle = style; x.stroke();
+    };
+
+    if (T.id === 'scanin') {
+      // importance outline inside, belief outline outside, lines fade orange to blue
+      const p = people[0], inner = radiusFn(p.facets, detail), outer = radiusFn(p.factors, detail);
+      // from a small core out to the importance outline (orange), then on to belief (blue)
+      const steps = 44, ci = P(T.scales.importance.color), cb = P(T.scales.belief.color), split = 0.4;
+      for (let i = 1; i <= steps; i++) {
+        const t = i / steps;
+        let fn, c, R0;
+        if (t <= split) { const u = t / split; fn = th => inner(th) * 0.6 * u; c = mix(ci.light, ci.full, u); R0 = Rmax * core * u; }
+        else { const u = (t - split) / (1 - split); fn = th => inner(th) * 0.6 * (1 - u) + outer(th) * u; c = mix(ci.full, cb.full, u); R0 = Rmax * core; }
+        stroke(ring(fn, R0, Rmax * span, rot0, cx, cy), css(c, 0.4 + 0.55 * t), t);
+      }
+      return;
+    }
+
+    // Group: the blend steps go to the team's average facet scores, and each member's
+    // own facet outline is traced lightly over it.
+    const team = people[0].facets.map((_, j) => mean(people.map(q => q.facets[j])));
+    const g = group ? mean(people.map(q => q.global)) : people[0].global;
+    const swirl = 0.25 + 1.1 * g; // inner lines turn; the outermost line sits exactly on the spokes
+    const target = radiusFn(group ? team : people[0].facets, detail);
+    const steps = 44;
+    for (let i = 1; i <= steps; i++) {
+      const t = i / steps, rot = rot0 + swirl * Math.pow(1 - t, 1.6);
+      const pts = ring(th => target(th) * Math.pow(t, 0.9), Rmax * core * Math.min(1, t * 2.5), Rmax * span, rot, cx, cy);
+      stroke(pts, conic(0.75 * (1 - t), 0.4 + 0.55 * t, rot), t * (group ? 0.7 : 1));
+    }
+    if (group) people.forEach(q => {
+      const pts = ring(radiusFn(q.facets, detail), Rmax * core, Rmax * span, rot0, cx, cy);
+      stroke(pts, conic(0.1, Math.max(0.35, 0.8 / Math.sqrt(people.length)), rot0), 0.9);
+    });
+  }
+
+  // Spokes and facet names over the shape, for checking only (not part of the artwork).
+  function drawGuide(ctx, T, p, s, cx, cy, Rmax, group) {
+    const sp = spokes(T);
+    ctx.save(); ctx.scale(s, s);
+    ctx.font = '400 7px Inter, sans-serif'; ctx.textBaseline = 'middle';
+    sp.forEach((q, j) => {
+      const dx = Math.sin(q.a), dy = -Math.cos(q.a);
+      ctx.strokeStyle = 'rgba(0,0,0,0.18)'; ctx.lineWidth = 0.4;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + dx * Rmax * 1.04, cy + dy * Rmax * 1.04); ctx.stroke();
+      const v = T.id === 'scanin' ? p.factors[j] : p.facets[j];
+      if (!group) { // the facet's score as a dot on its spoke
+        const r = Rmax * (0.3 + 0.7 * v); // same mapping as the outline
+        ctx.fillStyle = q.color.full; ctx.beginPath(); ctx.arc(cx + dx * r, cy + dy * r, 1.6, 0, TAU); ctx.fill();
+      }
+      // label kept inside the page
+      const label = q.name + (group ? '' : ' ' + Math.round(v * 100)), tw = ctx.measureText(label).width;
+      let lx = cx + dx * Rmax * 1.08; const ly = cy + dy * Rmax * 1.08;
+      lx = dx > 0.15 ? lx : dx < -0.15 ? lx - tw : lx - tw / 2;
+      lx = Math.max(6, Math.min(I().W - 6 - tw, lx));
+      ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.textAlign = 'left'; ctx.fillText(label, lx, ly);
+    });
+    ctx.restore();
+  }
+
   NS.paintRadial = function (ctx, data, opts, s) {
     const X = I(), { W, H, rgb, mix, css, mean, mixColor } = X;
     const { T, people } = X.normalise(data);
@@ -563,29 +677,8 @@ main{display:flex;flex-direction:column;gap:24px}
     const Rmax = W * 0.40;
 
     const shape = opts.shape;
-    if (shape === 'contours') {
-      // Each line is a step of a blend from a small core to the score outline;
-      // the angle turns a little per step, so higher global scores swirl more.
-      const outers = group ? people.slice().sort((a, b) => a.global - b.global) : [people[0]];
-      const steps = group ? Math.max(3, Math.round(36 / outers.length)) : 36;
-      const g = group ? mean(people.map(p => p.global)) : people[0].global;
-      const swirl = 0.25 + 0.9 * g;
-      const coreVals = series(T, people[0]).values.map(() => 0.5);
-      outers.forEach((p, k) => {
-        const vals = series(T, p).values;
-        const inner = k === 0 ? coreVals : series(T, outers[k - 1]).values;
-        const innerR = k === 0 ? 0.12 : (0.55 + 0.45 * outers[k - 1].global) * (0.5 + 0.5 * (k) / outers.length);
-        const outerR = group ? (0.55 + 0.45 * p.global) * (0.5 + 0.5 * (k + 1) / outers.length) : 0.82 + 0.18 * p.global;
-        for (let i = 0; i < steps; i++) {
-          const t = (i + 1) / steps, tt = (k + t) / outers.length;
-          const v = vals.map((vv, j) => inner[j] + (vv - inner[j]) * t);
-          const pts = outline(v, Object.assign({}, base, { R: Rmax * (innerR + (outerR - innerR) * t), floor: 0.45, rot: rot + swirl * tt * 1.2 }));
-          const c = mixColor(ca, cb, tt), cc = P(c);
-          pathOf(x, pts, s);
-          x.lineWidth = (0.6 + 0.8 * tt) * s; x.strokeStyle = css(mix(cc.full, cc.light, 0.25), 0.55 + 0.4 * tt); x.stroke();
-        }
-      });
-    } else if (shape === 'petals') {
+    if (shape === 'contours') { paintContours(x, T, people, group, opts, s, { cx, cy, Rmax, P, mixColor, css, mix, mean }); }
+    else if (shape === 'petals') {
       // One lobe per factor, pointing at that factor's facets, reaching out by its score.
       const list = group ? people : [people[0]];
       list.forEach((p, pi) => {
@@ -650,6 +743,7 @@ main{display:flex;flex-direction:column;gap:24px}
     // thin contour lines would dissolve under the full blur
     const fo = shape === 'contours' ? Object.assign({}, opts, { softness: (opts.softness || 0) * 0.3 }) : opts;
     ctx.drawImage(X.finish(layer, fo, s), 0, 0);
+    if (opts.guide) drawGuide(ctx, T, people[0], s, cx, cy, Rmax, group);
   };
 })(typeof window !== 'undefined' ? window : globalThis);
 
@@ -695,10 +789,10 @@ main{display:flex;flex-direction:column;gap:24px}
 {
 const L = window.LPLCovers;
 const $ = id => document.getElementById(id);
-const state = { shape: 'ribbon', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
+const state = { shape: 'contours', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
 const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100 });
+const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours' });
 
 function seg(id, key) {
   $(id).addEventListener('click', e => {
@@ -706,8 +800,7 @@ function seg(id, key) {
     [...$(id).children].forEach(x => x.classList.toggle('on', x === b));
     state[key] = b.dataset.v;
     if (key !== 'colorMode' && key !== 'shape') newData();
-    $('detailRow').hidden = state.shape === 'ribbon';
-    $('modeBox').hidden = state.theory === 'scanin' || (state.type === 'group' && state.shape !== 'petals');
+    syncVis();
     renderAll();
   });
 }
@@ -716,8 +809,13 @@ seg('shape', 'shape'); seg('theory', 'theory'); seg('type', 'type'); seg('colorM
 function setData(d) {
   state.data = d; state.original = clone(d);
   $('membersBox').hidden = state.type !== 'group';
-  $('modeBox').hidden = state.theory === 'scanin' || (state.type === 'group' && state.shape !== 'petals');
+  syncVis();
   buildScores();
+}
+function syncVis() {
+  $('detailRow').hidden = state.shape === 'ribbon';
+  $('guideRow').hidden = state.shape !== 'contours';
+  $('modeBox').hidden = state.theory === 'scanin' || state.shape === 'contours' || (state.type === 'group' && state.shape !== 'petals');
 }
 function newData() { setData(L.sample(state.theory, state.type, state.members, state.seed * 7919 + 13)); }
 
@@ -734,7 +832,7 @@ function personRows(T, p, more = true) {
     h += `<span class="lab">Belief by domain <span class="note">bends the curve</span></span>`;
     T.domains.forEach(d => h += row(d, T.scales.belief.color.full, p.belief[d], v => p.belief[d] = v));
     if (!more) return h;
-    h += `<details><summary>Importance by domain (width along the ribbon)</summary>`;
+    h += `<details><summary>Importance by domain</summary>`;
     T.domains.forEach(d => h += row(d, T.scales.importance.color.full, p.importance[d], v => p.importance[d] = v));
     return h + `</details>`;
   }
@@ -746,7 +844,7 @@ function personRows(T, p, more = true) {
   }));
   h += row(T.global.name, T.global.color.full, p.global, v => p.global = v);
   if (!more) return h;
-  h += `<details><summary>Facet scores (width along the ribbon)</summary>`;
+  h += `<details><summary>Facet scores</summary>`;
   T.factors.forEach(f => f.facets.forEach(n => h += row(n, f.color.light, p.facets[n], v => p.facets[n] = v)));
   if (T.independent) T.independent.facets.forEach(n => h += row(n, T.independent.color.full, p.facets[n], v => p.facets[n] = v));
   return h + `</details>`;
@@ -775,6 +873,7 @@ function buildScores() {
 });
 $('members').addEventListener('input', e => { $('membersOut').value = e.target.value; state.members = +e.target.value; newData(); renderMain(); });
 $('members').addEventListener('change', renderGrid);
+$('guide').addEventListener('change', renderMain);
 $('random').addEventListener('click', () => { state.seed++; newData(); renderAll(); });
 $('reset').addEventListener('click', () => { setData(clone(state.original)); renderMain(); });
 
@@ -819,11 +918,19 @@ function explainRadial(T, people) {
   r.push(['Around the circle', around]);
   if (state.shape === 'blob') r.push(['Colours', state.colorMode === 'all' && T.id !== 'scanin' ? 'the rim takes the colour of the factor under it; pale core' : 'the rim blends between the two highest factors; pale core']);
   if (state.shape === 'petals') r.push(['Petals', 'one lobe per factor, reaching out by its score' + (state.colorMode === 'all' ? ', in factor colours' : ', coloured from the top factor to the second')]);
-  if (state.shape === 'contours') r.push(['Lines', 'steps of a blend from a small round core to the score outline, coloured from the top factor to the second; higher global scores swirl more']);
+  if (state.shape === 'contours') {
+    if (T.id === 'scanin') r.push(['Lines', 'steps of a blend from the importance outline (inside, orange) to the belief outline (outside, blue)']);
+    else {
+      r.push(['Spokes', `one fixed spoke per facet, grouped by factor, clockwise from the top: ${T.factors.map(f => sw(f.color) + esc(f.name)).join(', ')}${T.independent ? ', ' + sw(T.independent.color) + 'independent facets' : ''}`]);
+      r.push(['Outline', 'passes through every facet score: radius = score, so each facet is its own bulge or dip']);
+      r.push(['Colour', 'around the circle each line takes the colour of the factor under it; inner lines paler']);
+      r.push(['Swirl', 'inner lines turn more with a higher global score; the outer line sits exactly on the spokes']);
+    }
+  }
   if (T.id === 'scanin' && state.shape === 'blob') r.push(['Inner shape', 'importance per domain, in orange']);
-  r.push(['Size', 'the global score; the outline\'s shape comes from how the scores differ from the person\'s own average']);
+  if (state.shape !== 'contours') r.push(['Size', 'the global score; the outline\'s shape comes from how the scores differ from the person\'s own average']);
   if (group) r.push(['Group', state.shape === 'contours' ? 'members nested from lowest to highest global score, each blending into the next' : 'one translucent outline per member, overlaid']);
-  r.push(['Detail', 'how closely the outline follows single scores (more harmonics)']);
+  r.push(['Detail', state.shape === 'contours' ? 'at 100 the outline passes exactly through every score; lower is smoother' : 'how closely the outline follows single scores (more harmonics)']);
   $('why').innerHTML = r.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
   $('themeNote').innerHTML = T.proposed ? `<b>Proposed colours.</b> The design system only defines factor colours for TEIQue; ${esc(T.label)}'s are picked from the same palette and need confirming.` : 'Colours: the design system\'s TEIQue factor palette.';
 }

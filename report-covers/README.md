@@ -59,7 +59,7 @@ Scan-In people carry `belief` and `importance` maps keyed by domain instead of `
 |---|---|
 | `blob` | One filled shape, rim coloured by factor (or blended between the top two), pale core. Scan-In adds importance as an inner orange blob. |
 | `petals` | One translucent lobe per factor, reaching out by its score. |
-| `contours` | Thin outlines stepping from a small round core to the score outline, like the reference's blend steps, coloured top factor to second; higher global scores swirl more. Groups nest members from lowest to highest global score. |
+| `contours` | A radial chart of every facet, drawn as blend steps. Each facet has a fixed spoke, grouped by factor, clockwise from the top; the outline passes through each facet's score (radius = 30% + 70% × score), so every facet is its own bulge or dip. Around the circle each line takes its facet's factor colour, inner lines paler. Lines step from a small core to the outline, inner ones turned more for a higher global score. Scan-In: core to importance outline (orange) to belief outline (blue). Groups: blend to the team's average facets, with each member's outline traced lightly. `opts.guide` overlays spokes, labels and score dots for checking. |
 
 **Colours, option "Every factor"** (individual TEIQue and TSIQue): one lane per factor, each in its factor colour, lane width set by the factor score. More colourful; shown as an alternative to the two-colour default.
 
