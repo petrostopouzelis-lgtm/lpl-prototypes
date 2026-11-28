@@ -192,14 +192,9 @@
       const kf = box / Math.max(x1 - x0, y1 - y0);
       const tx = PW / 2, ty = PH * (opts.centreY != null ? opts.centreY : 0.5);
       // new centre: the old centre's position relative to the box middle, scaled
-      if (opts.diagram) {
-        // with the chart overlay, its centre goes at the page centre and the furthest point
-        // of the shape is always box/2 away, so the chart and its labels fit every time
-        const kd = (box / 2) / reach;
-        cx = tx; cy = ty; Rmax *= kd; reach *= kd / kf;
-      } else { cx = tx + (cx - (x0 + x1) / 2) * kf; cy = ty + (cy - (y0 + y1) / 2) * kf; Rmax *= kf; }
+      cx = tx + (cx - (x0 + x1) / 2) * kf; cy = ty + (cy - (y0 + y1) / 2) * kf; Rmax *= kf;
       fitted.cx = cx; fitted.cy = cy; fitted.Rmax = Rmax;
-      fitted.diag = { sp, rot0, core, span, markVals: outerVals, reach: reach * kf }; // reach: furthest point from the centre, after fitting
+      fitted.spokes = { rot0, vals: outerVals, factorVals }; // for the spokes overlay
     }
 
     if (opts.contourStyle === 'lines') {
@@ -337,89 +332,44 @@
     });
   }
 
-  // ---------- diagram overlay: the radial chart drawn over the shape ----------
-  // An extended, styled version of the facet spokes. One ink, hairlines and small type,
-  // drawn after the finish so it stays crisp:
-  //   spokes        one per facet (Scan-In: domain), named at the outer end
-  //   markers       a small hollow circle on each spoke where its score sits
-  //   rings         dashed reference rings at 25, 50, 75 and 100 (those inside the chart)
-  //   factor arcs   a thin arc spanning each factor's spokes, with end ticks
-  // No numeric scores are printed.
-  function drawDiagram(ctx, T, data, s, F, group, opts) {
-    const { cx, cy, Rmax } = F, D = F.diag, { W: PW } = I();
-    const ink = opts.diagramInk || '#1d2b3a';
-    const rad = v => Rmax * (D.core + D.span * v);                 // score -> radius
-    const P = (th, r) => [cx + r * Math.sin(th), cy - r * Math.cos(th)];
-    const font = (w, px) => `${w} ${px}px Inter, "Helvetica Neue", Arial, sans-serif`;
-    ctx.save(); ctx.scale(s, s);
-    ctx.strokeStyle = ink; ctx.fillStyle = ink; ctx.lineWidth = 0.45; ctx.lineCap = 'round';
-    try { ctx.letterSpacing = '0.3px'; } catch (e) {}
-    const line = (a, b) => { ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); };
-
-    // the chart reaches just beyond the shape's furthest point, so it is the same size on
-    // every cover; reference rings beyond that are left out
-    const arcR = D.reach + 5, tipR = D.reach + 10, labR = tipR + 3;
-    const rings = [[0.25, '25'], [0.5, '50'], [0.75, '75'], [1, '100']].filter(([v]) => rad(v) < arcR - 2);
-    ctx.setLineDash([1.2, 2.4]);
-    rings.forEach(([v]) => { ctx.beginPath(); ctx.arc(cx, cy, rad(v), 0, TAU); ctx.stroke(); });
-    ctx.setLineDash([]);
-
-    // spokes, markers, names
-    ctx.font = font(400, 5.4); ctx.textBaseline = 'middle';
-    D.sp.forEach((q, j) => {
-      const th = q.a + D.rot0, v = D.markVals[j];
-      line(P(th, rad(0) * 0.55), P(th, tipR));
-      const m = P(th, rad(v));
-      ctx.save(); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(m[0], m[1], 1.7, 0, TAU); ctx.fill(); ctx.restore();
-      ctx.beginPath(); ctx.arc(m[0], m[1], 1.7, 0, TAU); ctx.stroke();
-      const dx = Math.sin(th), [lx0, ly] = P(th, labR), tw = ctx.measureText(q.name).width;
-      let lx = dx > 0.12 ? lx0 : dx < -0.12 ? lx0 - tw : lx0 - tw / 2;
-      lx = Math.max(8, Math.min(PW - 8 - tw, lx));
-      ctx.textAlign = 'left'; ctx.fillText(q.name, lx, ly + (Math.abs(dx) <= 0.12 ? (Math.cos(th) > 0 ? -2 : 2) : 0));
-    });
-
-    // factor arcs with end ticks (not for Scan-In, which has no factors)
-    if (T.id !== 'scanin') {
-      const step = TAU / D.sp.length;
-      const groups = [];
-      D.sp.forEach((q, j) => { const g = groups[groups.length - 1]; if (g && g.fi === q.fi) g.end = j; else groups.push({ fi: q.fi, start: j, end: j }); });
-      groups.forEach(g => {
-        const a0 = D.sp[g.start].a + D.rot0 - step * 0.38, a1 = D.sp[g.end].a + D.rot0 + step * 0.38;
-        ctx.beginPath(); ctx.arc(cx, cy, arcR, a0 - Math.PI / 2, a1 - Math.PI / 2); ctx.stroke();
-        [a0, a1].forEach(a => line(P(a, arcR - 2), P(a, arcR + 2)));
-      });
-    }
-
-    // scale labels along the gap between the first and last spoke (straight up)
-    ctx.font = font(400, 4.6); ctx.textAlign = 'left';
-    const up = D.rot0 - (TAU / D.sp.length) / 2;
-    rings.forEach(([v, l]) => { const [x, y] = P(up, rad(v)); ctx.fillText(l, x + 1.5, y - 2.5); });
-
-    // a small centre mark
-    line([cx - 3, cy], [cx + 3, cy]); line([cx, cy - 3], [cx, cy + 3]);
-    ctx.restore();
-  }
-
-  // Spokes and facet names over the shape, for checking only (not part of the artwork).
-  function drawGuide(ctx, T, p, s, cx, cy, Rmax, group) {
-    const sp = spokes(T);
+  // Facet spokes over the shape: a thin spoke per facet with its name and score at the end,
+  // and at each score a small 3D sphere in the factor's colour, hovering over the blob.
+  // Sphere size grows a little with the factor score (2.2 to 3.4pt across the range).
+  // Group reports use the team's average scores.
+  function drawGuide(ctx, T, S, s, cx, cy, Rmax) {
+    const sp = spokes(T), { rgb, mix, css } = I();
     ctx.save(); ctx.scale(s, s);
     ctx.font = '400 7px Inter, sans-serif'; ctx.textBaseline = 'middle';
-    sp.forEach((q, j) => {
-      const dx = Math.sin(q.a), dy = -Math.cos(q.a);
+    const at = sp.map((q, j) => {
+      const a = q.a + S.rot0, dx = Math.sin(a), dy = -Math.cos(a), v = S.vals[j];
+      return { q, j, dx, dy, v };
+    });
+    at.forEach(({ q, dx, dy, v }) => {
       ctx.strokeStyle = 'rgba(0,0,0,0.18)'; ctx.lineWidth = 0.4;
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + dx * Rmax * 1.04, cy + dy * Rmax * 1.04); ctx.stroke();
-      const v = T.id === 'scanin' ? p.factors[j] : p.facets[j];
-      if (!group) { // the facet's score as a dot on its spoke
-        const r = Rmax * (0.22 + 0.78 * v); // same mapping as the outline
-        ctx.fillStyle = q.color.full; ctx.beginPath(); ctx.arc(cx + dx * r, cy + dy * r, 1.6, 0, TAU); ctx.fill();
-      }
       // label kept inside the page
-      const label = q.name + (group ? '' : ' ' + Math.round(v * 100)), tw = ctx.measureText(label).width;
+      const label = q.name + ' ' + Math.round(v * 100), tw = ctx.measureText(label).width;
       let lx = cx + dx * Rmax * 1.08; const ly = cy + dy * Rmax * 1.08;
       lx = dx > 0.15 ? lx : dx < -0.15 ? lx - tw : lx - tw / 2;
       lx = Math.max(6, Math.min(I().W - 6 - tw, lx));
       ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.textAlign = 'left'; ctx.fillText(label, lx, ly);
+    });
+    // spheres on top of the spokes
+    at.forEach(({ q, j, dx, dy, v }) => {
+      const r = Rmax * (0.22 + 0.78 * v); // same mapping as the outline
+      const x = cx + dx * r, y = cy + dy * r;
+      const fv = T.id === 'scanin' ? v : (q.fi >= 0 ? S.factorVals[q.fi] : v);
+      const R = 2.2 + 1.2 * fv;
+      const full = rgb(q.color.full), light = rgb(q.color.light);
+      const g = ctx.createRadialGradient(x - R * 0.38, y - R * 0.42, R * 0.08, x, y, R);
+      g.addColorStop(0, css(mix(light, [255, 255, 255], 0.75)));
+      g.addColorStop(0.35, css(mix(full, light, 0.35)));
+      g.addColorStop(0.85, css(full));
+      g.addColorStop(1, css(mix(full, [20, 25, 50], 0.3)));
+      ctx.save();
+      ctx.shadowColor = 'rgba(20,30,60,0.32)'; ctx.shadowBlur = R * 1.6 * s; ctx.shadowOffsetX = R * 0.35 * s; ctx.shadowOffsetY = R * 0.7 * s;
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, R, 0, TAU); ctx.fill();
+      ctx.restore();
     });
     ctx.restore();
   }
@@ -512,7 +462,6 @@
     // contours handle their own softness (filled: inside only, so the edge stays sharp)
     const fo = shape === 'contours' ? Object.assign({}, opts, { softness: opts.contourStyle === 'lines' ? (opts.softness || 0) * 0.3 : 0 }) : opts;
     ctx.drawImage(X.finish(layer, fo, s), 0, 0);
-    if (opts.guide) drawGuide(ctx, T, people[0], s, fitted.cx, fitted.cy, fitted.Rmax, group);
-    if (opts.diagram && shape === 'contours' && fitted.diag) drawDiagram(ctx, T, data, s, fitted, group, opts);
+    if (opts.guide && shape === 'contours' && fitted.spokes) drawGuide(ctx, T, fitted.spokes, s, fitted.cx, fitted.cy, fitted.Rmax);
   };
 })(typeof window !== 'undefined' ? window : globalThis);
