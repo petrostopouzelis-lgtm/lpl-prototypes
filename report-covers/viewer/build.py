@@ -4,7 +4,10 @@
 from pathlib import Path
 
 here = Path(__file__).parent
-engine = '\n'.join((here.parent / 'src' / f).read_text(encoding='utf-8') for f in ['theories.js', 'cover.js', 'radial.js', 'samples.js'])
+import base64
+logo = base64.b64encode((here.parent.parent / 'design-system' / 'assets' / 'logos' / 'lpl-logo-blue-horizontal.webp').read_bytes()).decode()
+engine = '\n'.join((here.parent / 'src' / f).read_text(encoding='utf-8') for f in ['theories.js', 'cover.js', 'radial.js', 'layout.js', 'samples.js'])
+engine += "\nwindow.LPLCovers.LOGO_SRC = 'data:image/webp;base64,%s';\n" % logo
 page = (here / 'viewer.src.html').read_text(encoding='utf-8').replace('/*__ENGINE__*/', engine)
 (here / 'viewer.html').write_text(page, encoding='utf-8')
 print('wrote', here / 'viewer.html')

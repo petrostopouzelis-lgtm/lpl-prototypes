@@ -194,7 +194,7 @@
       // new centre: the old centre's position relative to the box middle, scaled
       cx = tx + (cx - (x0 + x1) / 2) * kf; cy = ty + (cy - (y0 + y1) / 2) * kf; Rmax *= kf;
       fitted.cx = cx; fitted.cy = cy; fitted.Rmax = Rmax;
-      fitted.spokes = { rot0, vals: outerVals, factorVals }; // for the spokes overlay
+      fitted.spokes = { rot0, vals: outerVals, factorVals, reach: reach * kf }; // for the spokes overlay; reach = furthest point from the centre
     }
 
     if (opts.contourStyle === 'lines') {
@@ -332,27 +332,29 @@
     });
   }
 
-  // Facet spokes over the shape: a thin spoke per facet with its name and score at the end,
+  // Facet spokes over the shape: a thin spoke per facet with its name at the end (no scores),
   // and at each score a small 3D sphere in the factor's colour, hovering over the blob.
   // Sphere radius grows with the factor score (3 to 6.6pt across the range).
   // Group reports use the team's average scores.
   function drawGuide(ctx, T, S, s, cx, cy, Rmax, opts = {}) {
     const sp = spokes(T), { rgb, mix, css } = I();
     ctx.save(); ctx.scale(s, s);
-    ctx.font = '400 7px Inter, sans-serif'; ctx.textBaseline = 'middle';
+    ctx.font = '300 6.5px Inter, "Helvetica Neue", Arial, sans-serif'; ctx.textBaseline = 'middle';
     const at = sp.map((q, j) => {
       const a = q.a + S.rot0, dx = Math.sin(a), dy = -Math.cos(a), v = S.vals[j];
       return { q, j, dx, dy, v };
     });
     at.forEach(({ q, dx, dy, v }) => {
       ctx.strokeStyle = 'rgba(0,0,0,0.18)'; ctx.lineWidth = 0.4;
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + dx * Rmax * 1.04, cy + dy * Rmax * 1.04); ctx.stroke();
-      // label kept inside the page
-      const label = q.name + ' ' + Math.round(v * 100), tw = ctx.measureText(label).width;
-      let lx = cx + dx * Rmax * 1.08; const ly = cy + dy * Rmax * 1.08;
+      // spokes stop just beyond the shape's furthest point, so the chart stays compact
+      const end = S.reach + 10, lab = S.reach + 14;
+      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + dx * end, cy + dy * end); ctx.stroke();
+      // facet name only (no score), kept inside the page
+      const label = q.name, tw = ctx.measureText(label).width;
+      let lx = cx + dx * lab; const ly = cy + dy * lab;
       lx = dx > 0.15 ? lx : dx < -0.15 ? lx - tw : lx - tw / 2;
       lx = Math.max(6, Math.min(I().W - 6 - tw, lx));
-      ctx.fillStyle = 'rgba(0,0,0,0.6)'; ctx.textAlign = 'left'; ctx.fillText(label, lx, ly);
+      ctx.fillStyle = '#6b7380'; ctx.textAlign = 'left'; ctx.fillText(label, lx, ly);
     });
     ctx.restore();
 
@@ -370,7 +372,7 @@
     const col = mk(W2, H2), c2 = col.getContext('2d');
     balls.forEach(b => {
       const g = c2.createRadialGradient(b.x - b.R * 0.35, b.y - b.R * 0.4, b.R * 0.05, b.x, b.y, b.R);
-      g.addColorStop(0, css(mix(b.light, [255, 255, 255], 0.55)));
+      g.addColorStop(0, css(mix(b.light, [255, 255, 255], 0.22)));
       g.addColorStop(0.45, css(mix(b.full, b.light, 0.3)));
       g.addColorStop(1, css(b.full));
       c2.fillStyle = g; c2.beginPath(); c2.arc(b.x, b.y, b.R, 0, TAU); c2.fill();
@@ -386,7 +388,7 @@
       rx.fillStyle = '#808080'; rx.fillRect(0, 0, W2, H2);
       balls.forEach(b => {
         const g = rx.createRadialGradient(b.x - b.R * 0.3, b.y - b.R * 0.35, 0, b.x + b.R * 0.1, b.y + b.R * 0.1, b.R * 1.05);
-        g.addColorStop(0, '#d8d8d8'); g.addColorStop(0.5, '#808080'); g.addColorStop(1, '#2a2a2a');
+        g.addColorStop(0, '#a6a6a6'); g.addColorStop(0.5, '#808080'); g.addColorStop(1, '#2a2a2a');
         rx.fillStyle = g; rx.beginPath(); rx.arc(b.x, b.y, b.R, 0, TAU); rx.fill();
         const k = d2.createRadialGradient(b.x - b.R * 0.3, b.y - b.R * 0.35, b.R * 0.5, b.x, b.y, b.R);
         k.addColorStop(0, 'rgba(0,0,0,0)'); k.addColorStop(1, 'rgba(0,0,0,0.9)');
@@ -406,7 +408,7 @@
     o.globalCompositeOperation = 'source-over';
     const fin = I().finish(out, Object.assign({}, opts, { softness: 0 }), s); // same grain
     ctx.save();
-    ctx.shadowColor = 'rgba(25,35,70,0.28)'; ctx.shadowBlur = 5 * s; ctx.shadowOffsetX = 1.4 * s; ctx.shadowOffsetY = 2.6 * s;
+    ctx.shadowColor = 'rgba(25,35,70,0.14)'; ctx.shadowBlur = 3.5 * s; ctx.shadowOffsetX = 0.8 * s; ctx.shadowOffsetY = 1.6 * s;
     ctx.drawImage(fin, 0, 0);
     ctx.restore();
   }
