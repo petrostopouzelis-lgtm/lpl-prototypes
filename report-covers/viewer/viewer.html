@@ -1149,7 +1149,7 @@ main{display:flex;flex-direction:column;gap:24px}
   // middle (its spokes reach out to fill the free area), the name and date as one group,
   // and all legal lines together at the foot. No black rules.
   const SAFE = { x0: 70, y0: 214, x1: W - 70, y1: 700 };   // the side spokes run past x0/x1 to a 28pt page margin   // free area for the diagram and its labels
-  const ART = { centreY: (SAFE.y0 + SAFE.y1) / 2 / H, fit: 0.46 };
+  const ART = { centreY: (SAFE.y0 + SAFE.y1) / 2 / H, fit: 0.58 };
   function header(ctx, d, T) {
     drawLogo(ctx, W / 2, 34, 300, 'center');
     // one line: wordmark • report title • form, separated by small blue gradient circles
