@@ -59,7 +59,7 @@ Scan-In people carry `belief` and `importance` maps keyed by domain instead of `
 |---|---|
 | `blob` | One filled shape, rim coloured by factor (or blended between the top two), pale core. Scan-In adds importance as an inner orange blob. |
 | `petals` | One translucent lobe per factor, reaching out by its score. |
-| `contours` | A radial chart of every facet, drawn as blend steps. Each facet has a fixed spoke, grouped by factor, clockwise from the top; the outline passes through each facet's score (radius = 30% + 70% × score), so every facet is its own bulge or dip. Around the circle each line takes its facet's factor colour, inner lines paler. Lines step from a small core to the outline, inner ones turned more for a higher global score. Scan-In: core to importance outline (orange) to belief outline (blue). Groups: blend to the team's average facets, with each member's outline traced lightly. `opts.guide` overlays spokes, labels and score dots for checking. |
+| `contours` | A radial chart drawn as blend steps. Each facet (Scan-In: life domain) has a fixed spoke, grouped by factor, clockwise from the top; radius = 22% + 78% × score. Lines morph from a small core to an inner outline, then to the outer outline. TEIQue/TSIQue: inner = factor level (each spoke at its factor's score, so factors read as broad lobes), outer = facet level (every facet its own bump). Scan-In: inner = importance, outer = belief. Around the circle each line takes its facet's factor colour (Scan-In: each domain's own colour), inner lines paler and turned more for a higher global score. Groups: team averages, with each member's outline traced lightly. `opts.guide` overlays spokes, labels and score dots for checking. |
 
 **Colours, option "Every factor"** (individual TEIQue and TSIQue): one lane per factor, each in its factor colour, lane width set by the factor score. More colourful; shown as an alternative to the two-colour default.
 
@@ -72,14 +72,15 @@ First working version of the illustration step. Renders all three theories, indi
 ## Decisions
 
 - **Colours come from the design system's factor palette** (`color-facet-*` tokens, mapped as in the "LPL - Reports" Figma file). TEIQue: Well-Being orange, Self-Control yellow, Emotionality green, Sociability purple, independent facets magenta, global red.
-- **TSIQue and Scan-In colours are proposals.** The design system defines factor colours only for TEIQue. Proposed: TSIQue Social cognizing purple, Social acting orange, Social relating green; Scan-In belief brand blue, importance brand orange. All in `src/theories.js`.
+- **Scan-In has 17 life domains, each with its own colour**, taken from the "results graph" frame (node 648:1440) of the LPL - Reports Figma file. The values were sampled from its render; check them against the file's fills if exact values matter.
+- **TSIQue colours are proposals.** The design system defines factor colours only for TEIQue. Proposed: Social cognizing purple, Social acting orange, Social relating green. The ribbon shape's two Scan-In colours (belief blue, importance orange) are also a proposal. All in `src/theories.js`.
 - Twisting is modelled as a real ribbon turning in space (seen slightly from above), so folds read as creases rather than pinch points.
 - Rendered on a canvas, not SVG, because the soft blended finish and grain need raster effects.
 - No titles or logo yet, by request.
 
 ## Open items
 
-- Confirm TSIQue and Scan-In colour mappings, or add them to the design system.
+- Confirm TSIQue colour mappings, or add them to the design system. Confirm the sampled Scan-In domain hex values against Figma.
 - Confirm the TSIQue facet list per factor (taken from the sample report; Social acting is the least certain).
 - Pick between "Top two factors" and "Every factor" colouring for individual reports.
 - Then: add the cover layout (logo, title, name and date bar) over the illustration, matching the reference cover.

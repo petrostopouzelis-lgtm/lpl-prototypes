@@ -17,7 +17,7 @@
       return { name, belief, importance };
     }
     const factors = {}, facets = {};
-    T.factors.forEach(f => { factors[f.id] = around(level, 45 * spread); f.facets.forEach(n => (facets[n] = around(factors[f.id], 20))); });
+    T.factors.forEach(f => { factors[f.id] = around(level, 45 * spread); f.facets.forEach(n => (facets[n] = around(factors[f.id], 32))); });
     if (T.independent) T.independent.facets.forEach(n => (facets[n] = around(level, 30)));
     const vals = Object.values(factors);
     return { name, factors, facets, global: sc(vals.reduce((a, b) => a + b, 0) / vals.length + (r() - 0.5) * 10) };

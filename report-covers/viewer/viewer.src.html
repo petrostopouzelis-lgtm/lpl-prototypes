@@ -134,10 +134,10 @@ function personRows(T, p, more = true) {
   let h = '';
   if (T.id === 'scanin') {
     h += `<span class="lab">Belief by domain <span class="note">bends the curve</span></span>`;
-    T.domains.forEach(d => h += row(d, T.scales.belief.color.full, p.belief[d], v => p.belief[d] = v));
+    T.domains.forEach(d => h += row(d, T.domainColors[d], p.belief[d], v => p.belief[d] = v));
     if (!more) return h;
-    h += `<details><summary>Importance by domain</summary>`;
-    T.domains.forEach(d => h += row(d, T.scales.importance.color.full, p.importance[d], v => p.importance[d] = v));
+    h += `<details${state.shape === 'contours' ? ' open' : ''}><summary>Importance by domain</summary>`;
+    T.domains.forEach(d => h += row(d, T.domainColors[d], p.importance[d], v => p.importance[d] = v));
     return h + `</details>`;
   }
   h += `<span class="lab">Factor scores <span class="note">${state.shape === 'contours' ? 'move all of that factor\'s facets' : 'bend the curve, top two set the colours'}</span></span>`;
@@ -148,7 +148,7 @@ function personRows(T, p, more = true) {
   }));
   h += row(T.global.name, T.global.color.full, p.global, v => p.global = v);
   if (!more) return h;
-  h += `<details><summary>Facet scores</summary>`;
+  h += `<details${state.shape === 'contours' ? ' open' : ''}><summary>Facet scores</summary>`;
   T.factors.forEach(f => f.facets.forEach(n => h += row(n, f.color.light, p.facets[n], v => p.facets[n] = v)));
   if (T.independent) T.independent.facets.forEach(n => h += row(n, T.independent.color.full, p.facets[n], v => p.facets[n] = v));
   return h + `</details>`;
@@ -212,9 +212,11 @@ function explain() {
   }
   r.push(['Unique to the report', 'small variations seeded by name, date and scores']);
   $('why').innerHTML = r.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
-  $('themeNote').innerHTML = T.proposed ? `<b>Proposed colours.</b> The design system only defines factor colours for TEIQue; ${esc(T.label)}'s are picked from the same palette and need confirming.` : 'Colours: the design system\'s TEIQue factor palette.';
+  $('themeNote').innerHTML = noteFor(T);
 }
 
+const noteFor = T => T.proposed ? `<b>Proposed colours.</b> The design system only defines factor colours for TEIQue; ${esc(T.label)}'s are picked from the same palette and need confirming.`
+  : T.id === 'scanin' ? 'Colours: Scan-In domain colours from the Reports Figma file (results graph).' : 'Colours: the design system\'s TEIQue factor palette.';
 function explainRadial(T, people) {
   const r = [], around = T.id === 'scanin' ? 'belief per life domain' : `the ${people[0].facets.length} facet scores, in factor order`;
   const group = state.type === 'group';
@@ -223,10 +225,14 @@ function explainRadial(T, people) {
   if (state.shape === 'blob') r.push(['Colours', state.colorMode === 'all' && T.id !== 'scanin' ? 'the rim takes the colour of the factor under it; pale core' : 'the rim blends between the two highest factors; pale core']);
   if (state.shape === 'petals') r.push(['Petals', 'one lobe per factor, reaching out by its score' + (state.colorMode === 'all' ? ', in factor colours' : ', coloured from the top factor to the second')]);
   if (state.shape === 'contours') {
-    if (T.id === 'scanin') r.push(['Lines', 'steps of a blend from the importance outline (inside, orange) to the belief outline (outside, blue)']);
+    if (T.id === 'scanin') {
+      r.push(['Spokes', `one fixed spoke per life domain (${T.domains.length}), each in its colour from the Reports Figma file`]);
+      r.push(['Lines', 'a blend from a small core to the importance outline (inner lines), then on to the belief outline (outer line)']);
+    }
     else {
       r.push(['Spokes', `one fixed spoke per facet, grouped by factor, clockwise from the top: ${T.factors.map(f => sw(f.color) + esc(f.name)).join(', ')}${T.independent ? ', ' + sw(T.independent.color) + 'independent facets' : ''}`]);
-      r.push(['Outline', 'passes through every facet score: radius = score, so each facet is its own bulge or dip']);
+      r.push(['Inner lines', 'factor level: each spoke at its factor\'s score, so factors read as broad lobes']);
+      r.push(['Outer line', 'facet level: passes through every facet score, so each facet is its own bulge or dip']);
       r.push(['Colour', 'around the circle each line takes the colour of the factor under it; inner lines paler']);
       r.push(['Swirl', 'inner lines turn more with a higher global score; the outer line sits exactly on the spokes']);
     }
@@ -236,7 +242,7 @@ function explainRadial(T, people) {
   if (group) r.push(['Group', state.shape === 'contours' ? 'members nested from lowest to highest global score, each blending into the next' : 'one translucent outline per member, overlaid']);
   r.push(['Detail', state.shape === 'contours' ? 'at 100 the outline passes exactly through every score; lower is smoother' : 'how closely the outline follows single scores (more harmonics)']);
   $('why').innerHTML = r.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
-  $('themeNote').innerHTML = T.proposed ? `<b>Proposed colours.</b> The design system only defines factor colours for TEIQue; ${esc(T.label)}'s are picked from the same palette and need confirming.` : 'Colours: the design system\'s TEIQue factor palette.';
+  $('themeNote').innerHTML = noteFor(T);
 }
 
 function renderGrid() {

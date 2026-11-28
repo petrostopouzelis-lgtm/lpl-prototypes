@@ -94,8 +94,9 @@ main{display:flex;flex-direction:column;gap:24px}
 // Well-Being orange, Self-Control yellow, Emotionality green, Sociability purple,
 // independent facets magenta, global red.
 //
-// TSIQue and Scan-In have NO colour mapping in the design system yet. The choices
-// below are proposals, taken from the same palette, and are marked `proposed: true`.
+// Scan-In domain colours come from the LPL - Reports Figma file (see below).
+// TSIQue has NO colour mapping yet: its choices are proposals from the same palette,
+// marked `proposed: true`.
 // Change them here only; everything else reads from this file.
 (function (root) {
   const C = {
@@ -137,12 +138,24 @@ main{display:flex;flex-direction:column;gap:24px}
       ],
     },
     scanin: {
-      // Scan-In scores every life domain twice: belief and importance. Belief bends
-      // the curve, importance sets its width. The two scales take the two brand colours.
-      id: 'scanin', label: 'Scan-In™', wordmark: ['Scan-', 'In', '™'], proposed: true,
+      // Scan-In scores every life domain twice: belief and importance. Each domain has
+      // its own colour (below). The ribbon shape, which needs just two colours, uses the
+      // two brand colours for the two scales (a proposal).
+      id: 'scanin', label: 'Scan-In™', wordmark: ['Scan-', 'In', '™'],
       global: { name: 'Total belief', color: C.blue },
       scales: { belief: { name: 'Belief', color: C.blue }, importance: { name: 'Importance', color: C.orange } },
-      domains: ['Financial independence', 'Family', 'Health', 'Leisure', 'Appearance', 'Friends', 'Work', 'Spirituality'],
+      // Domains and colours from the "results graph" frame (node 648:1440) in the
+      // LPL - Reports Figma file. Colours were sampled from its render, so check them
+      // against the file's fills if exact values matter.
+      domains: ['Financial independence', 'Family', 'Health', 'Leisure', 'Appearance', 'Friends', 'Work', 'Parenting', 'Age',
+        'Spirituality', 'Relationships', 'Legacy', 'Happiness', 'Motivation', 'Habits', 'Socializing', 'Success'],
+      domainColors: {
+        'Financial independence': '#E6A57A', 'Family': '#9A98CB', 'Health': '#EFC760', 'Leisure': '#67C17F',
+        'Appearance': '#4AADDC', 'Friends': '#3F499B', 'Work': '#DE559F', 'Parenting': '#FDC34C', 'Age': '#A66733',
+        'Spirituality': '#7061AA', 'Relationships': '#5AC1B6', 'Legacy': '#5ABD7E', 'Happiness': '#F5AE9E',
+        'Motivation': '#D6B590', 'Habits': '#B95E8C', 'Socializing': '#BF88B3', 'Success': '#D4E499',
+      },
+      total: '#E74343', // Total Scan-In score
     },
   };
 
@@ -553,10 +566,11 @@ main{display:flex;flex-direction:column;gap:24px}
 
   // Spoke layout: angle (0 = top) and colour for every facet.
   function spokes(T) {
-    if (T.id === 'scanin') return T.domains.map((d, j) => ({ name: d, a: TAU * j / T.domains.length, color: T.scales.belief.color }));
+    const light = hex => { const n = parseInt(hex.slice(1), 16), c = [n >> 16 & 255, n >> 8 & 255, n & 255].map(v => Math.round(v + (255 - v) * 0.4)); return '#' + c.map(v => v.toString(16).padStart(2, '0')).join(''); };
+    if (T.id === 'scanin') return T.domains.map((d, j) => ({ name: d, a: TAU * j / T.domains.length, fi: j, color: { full: T.domainColors[d], light: light(T.domainColors[d]) } }));
     const list = [];
-    T.factors.forEach(f => f.facets.forEach(n => list.push({ name: n, color: f.color })));
-    if (T.independent) T.independent.facets.forEach(n => list.push({ name: n, color: T.independent.color }));
+    T.factors.forEach((f, fi) => f.facets.forEach(n => list.push({ name: n, color: f.color, fi })));
+    if (T.independent) T.independent.facets.forEach(n => list.push({ name: n, color: T.independent.color, fi: -1 }));
     return list.map((sp, j) => Object.assign(sp, { a: TAU * j / list.length }));
   }
 
@@ -585,7 +599,7 @@ main{display:flex;flex-direction:column;gap:24px}
     const { cx, cy, Rmax, P, mixColor, css, mix, mean } = k;
     const sp = spokes(T), detail = opts.detail != null ? opts.detail : 0.8;
     const rot0 = (opts.variation || 0) * 0.07; // variation turns the chart a little; 0 keeps the first facet at the top
-    const core = 0.3, span = 0.7; // radius = Rmax * (core + span * score)
+    const core = 0.22, span = 0.78; // radius = Rmax * (core + span * score)
     // conic gradient: each facet's factor colour at its spoke, tinted by step
     const conic = (tint, alpha, rot) => {
       const g = x.createConicGradient(-Math.PI / 2 + rot, cx * s, cy * s);
@@ -600,35 +614,33 @@ main{display:flex;flex-direction:column;gap:24px}
       x.lineWidth = (0.45 + 0.9 * t) * s; x.strokeStyle = style; x.stroke();
     };
 
-    if (T.id === 'scanin') {
-      // importance outline inside, belief outline outside, lines fade orange to blue
-      const p = people[0], inner = radiusFn(p.facets, detail), outer = radiusFn(p.factors, detail);
-      // from a small core out to the importance outline (orange), then on to belief (blue)
-      const steps = 44, ci = P(T.scales.importance.color), cb = P(T.scales.belief.color), split = 0.4;
-      for (let i = 1; i <= steps; i++) {
-        const t = i / steps;
-        let fn, c, R0;
-        if (t <= split) { const u = t / split; fn = th => inner(th) * 0.6 * u; c = mix(ci.light, ci.full, u); R0 = Rmax * core * u; }
-        else { const u = (t - split) / (1 - split); fn = th => inner(th) * 0.6 * (1 - u) + outer(th) * u; c = mix(ci.full, cb.full, u); R0 = Rmax * core; }
-        stroke(ring(fn, R0, Rmax * span, rot0, cx, cy), css(c, 0.4 + 0.55 * t), t);
-      }
-      return;
+    // Two outlines, and the lines morph from a small core to the inner one, then on to the
+    // outer one. TEIQue/TSIQue: inner = factor level (each spoke at its factor's score, so
+    // factors read as broad lobes), outer = facet level (every facet its own bump).
+    // Scan-In: inner = importance, outer = belief, every domain in its own colour.
+    const avg = (k) => group ? mean(people.map(q => q[k])) : people[0][k];
+    const facetVals = people[0].facets.map((_, j) => group ? mean(people.map(q => q.facets[j])) : people[0].facets[j]);
+    const factorVals = people[0].factors.map((_, i) => group ? mean(people.map(q => q.factors[i])) : people[0].factors[i]);
+    let innerVals, outerVals;
+    if (T.id === 'scanin') { innerVals = facetVals; outerVals = factorVals; }
+    else {
+      const ind = mean(facetVals.filter((_, j) => sp[j].fi < 0)) || mean(factorVals);
+      innerVals = sp.map(q => q.fi >= 0 ? factorVals[q.fi] : ind);
+      outerVals = facetVals;
     }
-
-    // Group: the blend steps go to the team's average facet scores, and each member's
-    // own facet outline is traced lightly over it.
-    const team = people[0].facets.map((_, j) => mean(people.map(q => q.facets[j])));
-    const g = group ? mean(people.map(q => q.global)) : people[0].global;
+    const inner = radiusFn(innerVals, detail), outer = radiusFn(outerVals, detail);
+    const g = avg('global');
     const swirl = 0.25 + 1.1 * g; // inner lines turn; the outermost line sits exactly on the spokes
-    const target = radiusFn(group ? team : people[0].facets, detail);
-    const steps = 44;
+    const steps = 52, split = 0.5, innerScale = T.id === 'scanin' ? 0.7 : 0.8;
     for (let i = 1; i <= steps; i++) {
       const t = i / steps, rot = rot0 + swirl * Math.pow(1 - t, 1.6);
-      const pts = ring(th => target(th) * Math.pow(t, 0.9), Rmax * core * Math.min(1, t * 2.5), Rmax * span, rot, cx, cy);
-      stroke(pts, conic(0.75 * (1 - t), 0.4 + 0.55 * t, rot), t * (group ? 0.7 : 1));
+      let fn, R0;
+      if (t <= split) { const u = Math.pow(t / split, 0.9); fn = th => inner(th) * innerScale * u; R0 = Rmax * core * Math.min(1, u * 1.6); }
+      else { const u = (t - split) / (1 - split); fn = th => inner(th) * innerScale * (1 - u) + outer(th) * u; R0 = Rmax * core; }
+      stroke(ring(fn, R0, Rmax * span, rot, cx, cy), conic(0.5 * (1 - t), 0.5 + 0.45 * t, rot), 0.35 + 0.65 * t * (group ? 0.7 : 1));
     }
     if (group) people.forEach(q => {
-      const pts = ring(radiusFn(q.facets, detail), Rmax * core, Rmax * span, rot0, cx, cy);
+      const pts = ring(radiusFn(T.id === 'scanin' ? q.factors : q.facets, detail), Rmax * core, Rmax * span, rot0, cx, cy);
       stroke(pts, conic(0.1, Math.max(0.35, 0.8 / Math.sqrt(people.length)), rot0), 0.9);
     });
   }
@@ -644,7 +656,7 @@ main{display:flex;flex-direction:column;gap:24px}
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + dx * Rmax * 1.04, cy + dy * Rmax * 1.04); ctx.stroke();
       const v = T.id === 'scanin' ? p.factors[j] : p.facets[j];
       if (!group) { // the facet's score as a dot on its spoke
-        const r = Rmax * (0.3 + 0.7 * v); // same mapping as the outline
+        const r = Rmax * (0.22 + 0.78 * v); // same mapping as the outline
         ctx.fillStyle = q.color.full; ctx.beginPath(); ctx.arc(cx + dx * r, cy + dy * r, 1.6, 0, TAU); ctx.fill();
       }
       // label kept inside the page
@@ -766,7 +778,7 @@ main{display:flex;flex-direction:column;gap:24px}
       return { name, belief, importance };
     }
     const factors = {}, facets = {};
-    T.factors.forEach(f => { factors[f.id] = around(level, 45 * spread); f.facets.forEach(n => (facets[n] = around(factors[f.id], 20))); });
+    T.factors.forEach(f => { factors[f.id] = around(level, 45 * spread); f.facets.forEach(n => (facets[n] = around(factors[f.id], 32))); });
     if (T.independent) T.independent.facets.forEach(n => (facets[n] = around(level, 30)));
     const vals = Object.values(factors);
     return { name, factors, facets, global: sc(vals.reduce((a, b) => a + b, 0) / vals.length + (r() - 0.5) * 10) };
@@ -831,10 +843,10 @@ function personRows(T, p, more = true) {
   let h = '';
   if (T.id === 'scanin') {
     h += `<span class="lab">Belief by domain <span class="note">bends the curve</span></span>`;
-    T.domains.forEach(d => h += row(d, T.scales.belief.color.full, p.belief[d], v => p.belief[d] = v));
+    T.domains.forEach(d => h += row(d, T.domainColors[d], p.belief[d], v => p.belief[d] = v));
     if (!more) return h;
-    h += `<details><summary>Importance by domain</summary>`;
-    T.domains.forEach(d => h += row(d, T.scales.importance.color.full, p.importance[d], v => p.importance[d] = v));
+    h += `<details${state.shape === 'contours' ? ' open' : ''}><summary>Importance by domain</summary>`;
+    T.domains.forEach(d => h += row(d, T.domainColors[d], p.importance[d], v => p.importance[d] = v));
     return h + `</details>`;
   }
   h += `<span class="lab">Factor scores <span class="note">${state.shape === 'contours' ? 'move all of that factor\'s facets' : 'bend the curve, top two set the colours'}</span></span>`;
@@ -845,7 +857,7 @@ function personRows(T, p, more = true) {
   }));
   h += row(T.global.name, T.global.color.full, p.global, v => p.global = v);
   if (!more) return h;
-  h += `<details><summary>Facet scores</summary>`;
+  h += `<details${state.shape === 'contours' ? ' open' : ''}><summary>Facet scores</summary>`;
   T.factors.forEach(f => f.facets.forEach(n => h += row(n, f.color.light, p.facets[n], v => p.facets[n] = v)));
   if (T.independent) T.independent.facets.forEach(n => h += row(n, T.independent.color.full, p.facets[n], v => p.facets[n] = v));
   return h + `</details>`;
@@ -909,9 +921,11 @@ function explain() {
   }
   r.push(['Unique to the report', 'small variations seeded by name, date and scores']);
   $('why').innerHTML = r.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
-  $('themeNote').innerHTML = T.proposed ? `<b>Proposed colours.</b> The design system only defines factor colours for TEIQue; ${esc(T.label)}'s are picked from the same palette and need confirming.` : 'Colours: the design system\'s TEIQue factor palette.';
+  $('themeNote').innerHTML = noteFor(T);
 }
 
+const noteFor = T => T.proposed ? `<b>Proposed colours.</b> The design system only defines factor colours for TEIQue; ${esc(T.label)}'s are picked from the same palette and need confirming.`
+  : T.id === 'scanin' ? 'Colours: Scan-In domain colours from the Reports Figma file (results graph).' : 'Colours: the design system\'s TEIQue factor palette.';
 function explainRadial(T, people) {
   const r = [], around = T.id === 'scanin' ? 'belief per life domain' : `the ${people[0].facets.length} facet scores, in factor order`;
   const group = state.type === 'group';
@@ -920,10 +934,14 @@ function explainRadial(T, people) {
   if (state.shape === 'blob') r.push(['Colours', state.colorMode === 'all' && T.id !== 'scanin' ? 'the rim takes the colour of the factor under it; pale core' : 'the rim blends between the two highest factors; pale core']);
   if (state.shape === 'petals') r.push(['Petals', 'one lobe per factor, reaching out by its score' + (state.colorMode === 'all' ? ', in factor colours' : ', coloured from the top factor to the second')]);
   if (state.shape === 'contours') {
-    if (T.id === 'scanin') r.push(['Lines', 'steps of a blend from the importance outline (inside, orange) to the belief outline (outside, blue)']);
+    if (T.id === 'scanin') {
+      r.push(['Spokes', `one fixed spoke per life domain (${T.domains.length}), each in its colour from the Reports Figma file`]);
+      r.push(['Lines', 'a blend from a small core to the importance outline (inner lines), then on to the belief outline (outer line)']);
+    }
     else {
       r.push(['Spokes', `one fixed spoke per facet, grouped by factor, clockwise from the top: ${T.factors.map(f => sw(f.color) + esc(f.name)).join(', ')}${T.independent ? ', ' + sw(T.independent.color) + 'independent facets' : ''}`]);
-      r.push(['Outline', 'passes through every facet score: radius = score, so each facet is its own bulge or dip']);
+      r.push(['Inner lines', 'factor level: each spoke at its factor\'s score, so factors read as broad lobes']);
+      r.push(['Outer line', 'facet level: passes through every facet score, so each facet is its own bulge or dip']);
       r.push(['Colour', 'around the circle each line takes the colour of the factor under it; inner lines paler']);
       r.push(['Swirl', 'inner lines turn more with a higher global score; the outer line sits exactly on the spokes']);
     }
@@ -933,7 +951,7 @@ function explainRadial(T, people) {
   if (group) r.push(['Group', state.shape === 'contours' ? 'members nested from lowest to highest global score, each blending into the next' : 'one translucent outline per member, overlaid']);
   r.push(['Detail', state.shape === 'contours' ? 'at 100 the outline passes exactly through every score; lower is smoother' : 'how closely the outline follows single scores (more harmonics)']);
   $('why').innerHTML = r.map(x => `<tr><td>${x[0]}</td><td>${x[1]}</td></tr>`).join('');
-  $('themeNote').innerHTML = T.proposed ? `<b>Proposed colours.</b> The design system only defines factor colours for TEIQue; ${esc(T.label)}'s are picked from the same palette and need confirming.` : 'Colours: the design system\'s TEIQue factor palette.';
+  $('themeNote').innerHTML = noteFor(T);
 }
 
 function renderGrid() {

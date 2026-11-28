@@ -67,10 +67,11 @@
 
   // Spoke layout: angle (0 = top) and colour for every facet.
   function spokes(T) {
-    if (T.id === 'scanin') return T.domains.map((d, j) => ({ name: d, a: TAU * j / T.domains.length, color: T.scales.belief.color }));
+    const light = hex => { const n = parseInt(hex.slice(1), 16), c = [n >> 16 & 255, n >> 8 & 255, n & 255].map(v => Math.round(v + (255 - v) * 0.4)); return '#' + c.map(v => v.toString(16).padStart(2, '0')).join(''); };
+    if (T.id === 'scanin') return T.domains.map((d, j) => ({ name: d, a: TAU * j / T.domains.length, fi: j, color: { full: T.domainColors[d], light: light(T.domainColors[d]) } }));
     const list = [];
-    T.factors.forEach(f => f.facets.forEach(n => list.push({ name: n, color: f.color })));
-    if (T.independent) T.independent.facets.forEach(n => list.push({ name: n, color: T.independent.color }));
+    T.factors.forEach((f, fi) => f.facets.forEach(n => list.push({ name: n, color: f.color, fi })));
+    if (T.independent) T.independent.facets.forEach(n => list.push({ name: n, color: T.independent.color, fi: -1 }));
     return list.map((sp, j) => Object.assign(sp, { a: TAU * j / list.length }));
   }
 
@@ -99,7 +100,7 @@
     const { cx, cy, Rmax, P, mixColor, css, mix, mean } = k;
     const sp = spokes(T), detail = opts.detail != null ? opts.detail : 0.8;
     const rot0 = (opts.variation || 0) * 0.07; // variation turns the chart a little; 0 keeps the first facet at the top
-    const core = 0.3, span = 0.7; // radius = Rmax * (core + span * score)
+    const core = 0.22, span = 0.78; // radius = Rmax * (core + span * score)
     // conic gradient: each facet's factor colour at its spoke, tinted by step
     const conic = (tint, alpha, rot) => {
       const g = x.createConicGradient(-Math.PI / 2 + rot, cx * s, cy * s);
@@ -114,35 +115,33 @@
       x.lineWidth = (0.45 + 0.9 * t) * s; x.strokeStyle = style; x.stroke();
     };
 
-    if (T.id === 'scanin') {
-      // importance outline inside, belief outline outside, lines fade orange to blue
-      const p = people[0], inner = radiusFn(p.facets, detail), outer = radiusFn(p.factors, detail);
-      // from a small core out to the importance outline (orange), then on to belief (blue)
-      const steps = 44, ci = P(T.scales.importance.color), cb = P(T.scales.belief.color), split = 0.4;
-      for (let i = 1; i <= steps; i++) {
-        const t = i / steps;
-        let fn, c, R0;
-        if (t <= split) { const u = t / split; fn = th => inner(th) * 0.6 * u; c = mix(ci.light, ci.full, u); R0 = Rmax * core * u; }
-        else { const u = (t - split) / (1 - split); fn = th => inner(th) * 0.6 * (1 - u) + outer(th) * u; c = mix(ci.full, cb.full, u); R0 = Rmax * core; }
-        stroke(ring(fn, R0, Rmax * span, rot0, cx, cy), css(c, 0.4 + 0.55 * t), t);
-      }
-      return;
+    // Two outlines, and the lines morph from a small core to the inner one, then on to the
+    // outer one. TEIQue/TSIQue: inner = factor level (each spoke at its factor's score, so
+    // factors read as broad lobes), outer = facet level (every facet its own bump).
+    // Scan-In: inner = importance, outer = belief, every domain in its own colour.
+    const avg = (k) => group ? mean(people.map(q => q[k])) : people[0][k];
+    const facetVals = people[0].facets.map((_, j) => group ? mean(people.map(q => q.facets[j])) : people[0].facets[j]);
+    const factorVals = people[0].factors.map((_, i) => group ? mean(people.map(q => q.factors[i])) : people[0].factors[i]);
+    let innerVals, outerVals;
+    if (T.id === 'scanin') { innerVals = facetVals; outerVals = factorVals; }
+    else {
+      const ind = mean(facetVals.filter((_, j) => sp[j].fi < 0)) || mean(factorVals);
+      innerVals = sp.map(q => q.fi >= 0 ? factorVals[q.fi] : ind);
+      outerVals = facetVals;
     }
-
-    // Group: the blend steps go to the team's average facet scores, and each member's
-    // own facet outline is traced lightly over it.
-    const team = people[0].facets.map((_, j) => mean(people.map(q => q.facets[j])));
-    const g = group ? mean(people.map(q => q.global)) : people[0].global;
+    const inner = radiusFn(innerVals, detail), outer = radiusFn(outerVals, detail);
+    const g = avg('global');
     const swirl = 0.25 + 1.1 * g; // inner lines turn; the outermost line sits exactly on the spokes
-    const target = radiusFn(group ? team : people[0].facets, detail);
-    const steps = 44;
+    const steps = 52, split = 0.5, innerScale = T.id === 'scanin' ? 0.7 : 0.8;
     for (let i = 1; i <= steps; i++) {
       const t = i / steps, rot = rot0 + swirl * Math.pow(1 - t, 1.6);
-      const pts = ring(th => target(th) * Math.pow(t, 0.9), Rmax * core * Math.min(1, t * 2.5), Rmax * span, rot, cx, cy);
-      stroke(pts, conic(0.75 * (1 - t), 0.4 + 0.55 * t, rot), t * (group ? 0.7 : 1));
+      let fn, R0;
+      if (t <= split) { const u = Math.pow(t / split, 0.9); fn = th => inner(th) * innerScale * u; R0 = Rmax * core * Math.min(1, u * 1.6); }
+      else { const u = (t - split) / (1 - split); fn = th => inner(th) * innerScale * (1 - u) + outer(th) * u; R0 = Rmax * core; }
+      stroke(ring(fn, R0, Rmax * span, rot, cx, cy), conic(0.5 * (1 - t), 0.5 + 0.45 * t, rot), 0.35 + 0.65 * t * (group ? 0.7 : 1));
     }
     if (group) people.forEach(q => {
-      const pts = ring(radiusFn(q.facets, detail), Rmax * core, Rmax * span, rot0, cx, cy);
+      const pts = ring(radiusFn(T.id === 'scanin' ? q.factors : q.facets, detail), Rmax * core, Rmax * span, rot0, cx, cy);
       stroke(pts, conic(0.1, Math.max(0.35, 0.8 / Math.sqrt(people.length)), rot0), 0.9);
     });
   }
@@ -158,7 +157,7 @@
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + dx * Rmax * 1.04, cy + dy * Rmax * 1.04); ctx.stroke();
       const v = T.id === 'scanin' ? p.factors[j] : p.facets[j];
       if (!group) { // the facet's score as a dot on its spoke
-        const r = Rmax * (0.3 + 0.7 * v); // same mapping as the outline
+        const r = Rmax * (0.22 + 0.78 * v); // same mapping as the outline
         ctx.fillStyle = q.color.full; ctx.beginPath(); ctx.arc(cx + dx * r, cy + dy * r, 1.6, 0, TAU); ctx.fill();
       }
       // label kept inside the page

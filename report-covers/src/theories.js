@@ -5,8 +5,9 @@
 // Well-Being orange, Self-Control yellow, Emotionality green, Sociability purple,
 // independent facets magenta, global red.
 //
-// TSIQue and Scan-In have NO colour mapping in the design system yet. The choices
-// below are proposals, taken from the same palette, and are marked `proposed: true`.
+// Scan-In domain colours come from the LPL - Reports Figma file (see below).
+// TSIQue has NO colour mapping yet: its choices are proposals from the same palette,
+// marked `proposed: true`.
 // Change them here only; everything else reads from this file.
 (function (root) {
   const C = {
@@ -48,12 +49,24 @@
       ],
     },
     scanin: {
-      // Scan-In scores every life domain twice: belief and importance. Belief bends
-      // the curve, importance sets its width. The two scales take the two brand colours.
-      id: 'scanin', label: 'Scan-In™', wordmark: ['Scan-', 'In', '™'], proposed: true,
+      // Scan-In scores every life domain twice: belief and importance. Each domain has
+      // its own colour (below). The ribbon shape, which needs just two colours, uses the
+      // two brand colours for the two scales (a proposal).
+      id: 'scanin', label: 'Scan-In™', wordmark: ['Scan-', 'In', '™'],
       global: { name: 'Total belief', color: C.blue },
       scales: { belief: { name: 'Belief', color: C.blue }, importance: { name: 'Importance', color: C.orange } },
-      domains: ['Financial independence', 'Family', 'Health', 'Leisure', 'Appearance', 'Friends', 'Work', 'Spirituality'],
+      // Domains and colours from the "results graph" frame (node 648:1440) in the
+      // LPL - Reports Figma file. Colours were sampled from its render, so check them
+      // against the file's fills if exact values matter.
+      domains: ['Financial independence', 'Family', 'Health', 'Leisure', 'Appearance', 'Friends', 'Work', 'Parenting', 'Age',
+        'Spirituality', 'Relationships', 'Legacy', 'Happiness', 'Motivation', 'Habits', 'Socializing', 'Success'],
+      domainColors: {
+        'Financial independence': '#E6A57A', 'Family': '#9A98CB', 'Health': '#EFC760', 'Leisure': '#67C17F',
+        'Appearance': '#4AADDC', 'Friends': '#3F499B', 'Work': '#DE559F', 'Parenting': '#FDC34C', 'Age': '#A66733',
+        'Spirituality': '#7061AA', 'Relationships': '#5AC1B6', 'Legacy': '#5ABD7E', 'Happiness': '#F5AE9E',
+        'Motivation': '#D6B590', 'Habits': '#B95E8C', 'Socializing': '#BF88B3', 'Success': '#D4E499',
+      },
+      total: '#E74343', // Total Scan-In score
     },
   };
 
