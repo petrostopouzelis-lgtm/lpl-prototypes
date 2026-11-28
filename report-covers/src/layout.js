@@ -73,30 +73,30 @@
   }
   const lineOf = d => titleOf(d) + (d.subtitle ? '  ·  ' + d.subtitle : '');
 
-  // Brand layouts, in the design language of the reference cover: copyright at the top,
-  // a large logo, the theory + report title + form as one stacked group in report blue,
-  // the diagram as the subject, the name and date as one group, the product line at the
-  // foot. No black rules.
+  // Brand layouts, centred on one axis: logo and title group at the top, the diagram in the
+  // middle (its spokes reach out to fill the free area), the name and date as one group,
+  // and all legal lines together at the foot. No black rules.
+  const SAFE = { x0: 22, y0: 232, x1: W - 22, y1: 722 };   // free area for the diagram and its labels
+  const ART = { centreY: (SAFE.y0 + SAFE.y1) / 2 / H, fit: 0.56 };
   function header(ctx, d, T) {
-    text(ctx, COPYRIGHT(yearOf(d)), W / 2, 22, INTER(300, 9), MUTED, 'center');
-    drawLogo(ctx, 26, 62, 250);
-    // title group: theory wordmark, report title, form, as one block
-    wordmark(ctx, T, 28, 214, 30);
-    text(ctx, titleOf(d), 28, 250, MANROPE(700, 30), RBLUE);
-    if (d.subtitle) text(ctx, d.subtitle, 28, 285, MANROPE(400, 30), RBLUE);
-    text(ctx, PRODUCT, W / 2, 828, INTER(300, 9), MUTED, 'center');
+    drawLogo(ctx, W / 2, 38, 230, 'center');
+    wordmark(ctx, T, W / 2, 148, 30, 'center');
+    text(ctx, titleOf(d), W / 2, 182, MANROPE(700, 26), RBLUE, 'center');
+    if (d.subtitle) text(ctx, d.subtitle, W / 2, 212, MANROPE(400, 22), RBLUE, 'center');
+  }
+  function legal(ctx, d) {
+    text(ctx, COPYRIGHT(yearOf(d)), W / 2, 812, INTER(300, 8), MUTED, 'center');
+    text(ctx, PRODUCT, W / 2, 825, INTER(300, 8), MUTED, 'center');
   }
   const LAYOUTS = {
-    // name and date in the design system's blue pill, as on the reference cover
     pill: {
-      art: { centreY: 0.612, fit: 0.66 }, avoid: [{ x0: 20, y0: 188, x1: 270, y1: 292 }],
+      art: ART, safe: SAFE,
       draw(ctx, d, T) {
-        header(ctx, d, T);
+        header(ctx, d, T); legal(ctx, d);
         const name = d.name || '', date = d.date || '';
-        const nf = fit(ctx, name, f => MANROPE(400, f), 16, 360, 10);
-        ctx.font = MANROPE(400, nf); const nw = ctx.measureText(name).width;
-        ctx.font = MANROPE(400, nf); const dw = ctx.measureText(date).width;
-        const ph = 40, pw = Math.min(W - 52, nw + dw + 74), px = 26, py = 742;
+        const nf = fit(ctx, name, f => MANROPE(400, f), 16, 380, 10);
+        ctx.font = MANROPE(400, nf); const nw = ctx.measureText(name).width, dw = ctx.measureText(date).width;
+        const ph = 40, pw = nw + dw + 74, px = W / 2 - pw / 2, py = 742;
         const g = ctx.createLinearGradient(px, 0, px + pw, 0); g.addColorStop(0, BLUE); g.addColorStop(1, '#66BAE2');
         ctx.save(); ctx.shadowColor = 'rgba(37,157,213,0.3)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 2;
         ctx.fillStyle = g; ctx.beginPath(); ctx.roundRect(px, py, pw, ph, 14); ctx.fill(); ctx.restore();
@@ -105,15 +105,14 @@
         text(ctx, date, px + 22 + nw + 28, py + ph / 2 + 0.5, MANROPE(400, nf), '#fff', 'left', 'middle');
       },
     },
-    // name and date as one plain text group in brand blue
     plain: {
-      art: { centreY: 0.612, fit: 0.66 }, avoid: [{ x0: 20, y0: 188, x1: 270, y1: 292 }],
+      art: ART, safe: SAFE,
       draw(ctx, d, T) {
-        header(ctx, d, T);
-        const name = d.name || '', date = d.date || '';
-        const nm = wrap2(ctx, name, f => MANROPE(600, f), 16, 360, 10);
-        nm.lines.forEach((l, i) => text(ctx, l, 28, 760 + i * (nm.f + 3), MANROPE(600, nm.f), RBLUE));
-        text(ctx, date, 28, 760 + nm.lines.length * (nm.f + 3) + 2, MANROPE(400, 12), RBLUE);
+        header(ctx, d, T); legal(ctx, d);
+        const nm = wrap2(ctx, d.name || '', f => MANROPE(600, f), 18, 420, 11);
+        const y0 = nm.lines.length > 1 ? 748 : 758;
+        nm.lines.forEach((l, i) => text(ctx, l, W / 2, y0 + i * (nm.f + 3), MANROPE(600, nm.f), RBLUE, 'center'));
+        text(ctx, d.date || '', W / 2, y0 + nm.lines.length * (nm.f + 3) + 2, MANROPE(400, 12), RBLUE, 'center');
       },
     },
   };
@@ -127,7 +126,7 @@
     ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.save(); ctx.scale(s, s); if (L.under) L.under(ctx, data, T); ctx.restore();
     const art = document.createElement('canvas');
-    NS.renderIllustration(art, data, Object.assign({}, opts, L.art, { avoid: L.avoid || [] }, { scale: s }));
+    NS.renderIllustration(art, data, Object.assign({}, opts, L.art, { avoid: L.avoid || [], safe: L.safe }, { scale: s }));
     ctx.drawImage(art, 0, 0);
     ctx.save(); ctx.scale(s, s); L.draw(ctx, data, T); ctx.restore();
   };

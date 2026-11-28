@@ -357,15 +357,21 @@
     at.forEach(({ q, dx, dy, v }) => {
       ctx.strokeStyle = 'rgba(0,0,0,0.18)'; ctx.lineWidth = 0.4;
       // spokes stop just beyond the shape's furthest point, so the chart stays compact
-      const end = S.reach + 10, lab = S.reach + 14;
+      const label = q.name, tw = ctx.measureText(label).width, th = 7;
+      const place = e => { // label box for a spoke ending at radius e
+        const lab = e + 4; let x = cx + dx * lab; const y = cy + dy * lab;
+        x = dx > 0.15 ? x : dx < -0.15 ? x - tw : x - tw / 2;
+        return { x, y, x0: x, x1: x + tw, y0: y - th / 2 - (dy < -0.9 ? 3 : 0), y1: y + th / 2 + (dy > 0.9 ? 3 : 0) };
+      };
+      let end = S.reach + 10;
+      if (opts.safe) {
+        // spokes reach as far as they can while the label stays inside the free area
+        const R = opts.safe, inside = b => b.x0 >= R.x0 && b.x1 <= R.x1 && b.y0 >= R.y0 && b.y1 <= R.y1;
+        for (let e = Math.hypot(I().W, I().H); e > S.reach + 10; e -= 1) if (inside(place(e))) { end = e; break; }
+      }
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(cx + dx * end, cy + dy * end); ctx.stroke();
-      // facet name only (no score), kept inside the page
-      const label = q.name, tw = ctx.measureText(label).width;
-      let lx = cx + dx * lab; const ly = cy + dy * lab;
-      lx = dx > 0.15 ? lx : dx < -0.15 ? lx - tw : lx - tw / 2;
-      lx = Math.max(6, Math.min(I().W - 6 - tw, lx));
-      // step clear of areas the cover keeps for type (opts.avoid, in points)
-      let lyy = ly;
+      const b = place(end);
+      let lx = Math.max(6, Math.min(I().W - 6 - tw, b.x)), lyy = b.y;
       (opts.avoid || []).forEach(r => { if (lx < r.x1 && lx + tw > r.x0 && lyy > r.y0 - 4 && lyy < r.y1 + 4) lyy = r.y1 + 8; });
       ctx.fillStyle = '#6b7380'; ctx.textAlign = 'left'; ctx.fillText(label, lx, lyy);
     });
