@@ -175,7 +175,7 @@ def build_version(vid, spec):
             raw = re.sub(a, b, raw)
         return [typo(p) for p in raw.split('\n\n')]
 
-    v = dict((k, spec[k]) for k in ('name', 'cover', 'header', 'cover_image'))   # cover_image: in design-system/assets/report-covers/
+    v = dict((k, spec[k]) for k in ('name', 'cover', 'header', 'cover_image'))   # cover_image: assets/covers/ (the design-system cover without its name and copyright)
     v['source'] = spec['pdf']
     pages = v['pages'] = {}
     p3 = titled(3)[0]
@@ -219,6 +219,8 @@ lib = {
     'source': 'TEIQue-FF sample reports (2025), word for word, one version per sample. Built by tools/build-library.py.',
     'footer': {'copyright': '© K. V. Petrides {year}. All rights reserved.', 'legal': 'A product of London Psychometric Laboratory Ltd.'},
     'card_headings': CARD_HEADINGS,
+    # where the live text goes on each cover (assets/covers/layout.json, made by tools/clean-covers.py)
+    'covers': json.load(open(os.path.join(ROOT, 'assets', 'covers', 'layout.json'), encoding='utf-8')),
     'versions': {vid: build_version(vid, spec) for vid, spec in VERSIONS.items()},
 }
 

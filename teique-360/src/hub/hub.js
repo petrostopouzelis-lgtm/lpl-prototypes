@@ -31,7 +31,7 @@
     el.onload = res; el.onerror = () => { el.remove(); rej(new Error('Could not load ' + src)); };
     document.head.appendChild(el);
   });
-  let ffP = null, ffCovers = '';   // ffCovers: the design system's report covers, next to wherever teique-ff/ was found
+  let ffP = null, ffCovers = '';   // ffCovers: the Full Form's covers (teique-ff/assets/covers/), wherever teique-ff/ was found
   const loadFF = () => ffP || (ffP = (async () => {
     let base = null;
     for (const b of ['../teique-ff/', 'teique-ff/']) { try { await loadScript(b + 'data/files.js'); base = b; break; } catch (e) { /* try the next place */ } }
@@ -40,7 +40,7 @@
     await loadScript(base + 'text/library.js');
     await loadScript(base + 'src/content.js');
     await new Promise(res => { ffCss.onload = ffCss.onerror = res; ffCss.href = base + 'src/ff.css' + V; });
-    ffCovers = base.replace('teique-ff/', 'design-system/assets/report-covers/');
+    ffCovers = base + 'assets/covers/';
     return base;
   })().catch(e => { ffP = null; throw e; }));
   const ffView = d => ({ data: d, self: d.self, others: d.self, groups: [], shownGroups: [], responded: 0, gap: () => 0 });

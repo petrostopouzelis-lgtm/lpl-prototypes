@@ -60,7 +60,26 @@
   F.versionOf = (data, lib, want) => [want, data && data.report && data.report.version].find(x => x && lib.versions[x]) || 'personal';
   // opt.assets: where the 360's back cover and logo images are, seen from the page (the Report Hub sits next
   // to them); opt.covers: where the design system's report covers are; opt.fill and opt.watermark as in the 360
-  F.covers = '../design-system/assets/report-covers/';
+  F.covers = 'assets/covers/';
+  // A cover: the design system's cover picture without its name card and copyright (tools/clean-covers.py), with a
+  // new card in the same place (the report title, the first word in the cover's accent colour, and the person's
+  // name; it widens for a long name) and the current copyright line. Positions come from lib.covers.
+  F.cover = (lib, image, title, name, copyright, base) => {
+    const L = lib.covers[image.replace(/\.png$/, '')], c = L.card, r = L.copyright;
+    const [first, ...rest] = String(title).split(' ');
+    // type sizes from the measured cap heights (Inter's cap height is 0.727 of its size; the name's "J" dips a
+    // little below the baseline, so it measures 0.70), checked against the width of the original lines; a line
+    // set at line-height 1 has its cap top 0.137 em and its baseline 0.864 em below the line's top
+    const tSize = c.title_cap / 0.727, nSize = c.name_cap / 0.70, f = v => Math.round(v * 10) / 10;
+    const tTop = c.title_cap_top - c.y - 0.137 * tSize, nTop = c.name_baseline - c.y - 0.864 * nSize, gap = nTop - tTop - tSize;
+    // copyright: 13pt (the original line's width); its measured bottom is the parentheses', 0.19 em below the baseline
+    const crSize = 13, crTop = r.bottom - (0.19 + 0.864) * crSize;
+    return `<img class="bg" src="${base}${image}" alt="">
+      <div class="cv-card" style="top:${c.y}pt;min-width:${c.w}pt;height:${c.h}pt;padding-top:${f(tTop)}pt">
+        <div class="cv-t" style="font-size:${f(tSize)}pt"><b style="color:${c.accent}">${esc(first)}</b> ${esc(rest.join(' '))}</div>
+        <div class="cv-n" style="font-size:${f(nSize)}pt;margin-top:${f(gap)}pt">${esc(name)}</div></div>
+      <div class="cv-cr" style="left:${r.cx}pt;top:${f(crTop)}pt;font-size:${crSize}pt;color:${r.color}">${esc(copyright)}</div>`;
+  };
   F.build = (data, lib, opt = {}) => {
     const ASSETS = opt.assets || '../teique-360/assets/', COVERS = opt.covers || F.covers;
     const ver = F.versionOf(data, lib, opt.version), V = lib.versions[ver], pg = V.pages, SC = V.scales, heads = lib.card_headings || [];
@@ -82,10 +101,9 @@
       return t ? cardParas(t, heads) : needed(`interpretation for ${T.nameOf(id)} in the ${band.label} band`, 2);
     };
 
-    // ---- cover: the version's cover from the design system (design-system/assets/report-covers/), as it is,
-    // with its placeholder name and copyright in the picture (Petros, 2026-11-28: always the design-system
-    // covers; editable covers, the illustration with live text, come later)
-    sections.push({ id: 'cover', kind: 'cover', title: 'Cover', html: `<img class="bg" src="${COVERS}${V.cover_image}" alt="${esc('TEIQue ' + V.cover)}">` });
+    // ---- cover: the version's cover from the design system (Petros, 2026-11-28: always the design-system covers),
+    // its placeholder name and old copyright replaced by live text (F.cover). Editable covers come later.
+    sections.push({ id: 'cover', kind: 'cover', title: 'Cover', html: F.cover(lib, V.cover_image, V.cover, data.subject.name, fmt(lib.footer.copyright, { year }), COVERS) });
 
     // ---- contents: filled in by the paginator. Entries as in the sample and Figma: Introduction,
     // Wheel Chart, Summary Graphs, Global Score, each factor with its facets, Independent Facets.

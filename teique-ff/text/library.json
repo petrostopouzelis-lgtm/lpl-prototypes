@@ -10,6 +10,108 @@
     "Possible Positive",
     "Possible Negative"
   ],
+  "covers": {
+    "personal": {
+      "image": "personal.png",
+      "card": {
+        "x": 190.8,
+        "y": 317.1,
+        "w": 213.6,
+        "h": 74.9,
+        "title_cap_top": 332.2,
+        "title_cap": 15.9,
+        "name_baseline": 374.7,
+        "name_cap": 12.2,
+        "accent": "#249DD6"
+      },
+      "copyright": {
+        "cx": 297.3,
+        "top": 823.3,
+        "bottom": 835.0,
+        "color": "#F8D8BF"
+      }
+    },
+    "corporate": {
+      "image": "corporate.png",
+      "card": {
+        "x": 190.8,
+        "y": 317.1,
+        "w": 213.6,
+        "h": 74.9,
+        "title_cap_top": 332.2,
+        "title_cap": 15.9,
+        "name_baseline": 374.7,
+        "name_cap": 12.2,
+        "accent": "#249DD6"
+      },
+      "copyright": {
+        "cx": 297.5,
+        "top": 821.8,
+        "bottom": 838.4,
+        "color": "#C5C6D8"
+      }
+    },
+    "leadership": {
+      "image": "leadership.png",
+      "card": {
+        "x": 188.4,
+        "y": 317.1,
+        "w": 218.7,
+        "h": 74.9,
+        "title_cap_top": 332.0,
+        "title_cap": 16.1,
+        "name_baseline": 374.7,
+        "name_cap": 12.2,
+        "accent": "#249DD6"
+      },
+      "copyright": {
+        "cx": 398.7,
+        "top": 823.3,
+        "bottom": 835.0,
+        "color": "#BDBEC0"
+      }
+    },
+    "developmental": {
+      "image": "developmental.png",
+      "card": {
+        "x": 167.8,
+        "y": 307.0,
+        "w": 259.7,
+        "h": 74.9,
+        "title_cap_top": 322.1,
+        "title_cap": 15.9,
+        "name_baseline": 364.6,
+        "name_cap": 12.2,
+        "accent": "#249DD6"
+      },
+      "copyright": {
+        "cx": 297.3,
+        "top": 824.7,
+        "bottom": 836.5,
+        "color": "#C5C6C8"
+      }
+    },
+    "recruitment": {
+      "image": "recruitment.png",
+      "card": {
+        "x": 182.7,
+        "y": 317.1,
+        "w": 229.9,
+        "h": 74.9,
+        "title_cap_top": 331.7,
+        "title_cap": 16.3,
+        "name_baseline": 374.7,
+        "name_cap": 12.2,
+        "accent": "#E38645"
+      },
+      "copyright": {
+        "cx": 297.5,
+        "top": 821.8,
+        "bottom": 838.4,
+        "color": "#D5C6C8"
+      }
+    }
+  },
   "versions": {
     "personal": {
       "name": "Personal",

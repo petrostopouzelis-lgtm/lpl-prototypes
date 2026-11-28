@@ -29,6 +29,7 @@ Page design: Figma file `OABrZx0GBrroCvGFQfj89Z`, page "TEIQue + TSIQue" (frame 
 | `tools/audit-text.py` | Checks a built PDF against its version's sample, both ways (see below) |
 | `tools/build-library.py` | Makes `text/library.json` from `reference/`, with every proofreading correction listed |
 | `tools/extract-sample.py`, `tools/ocr-cards.py` | How `reference/` was made (pypdf; RapidOCR for the cards). Needed again for the other versions |
+| `tools/clean-covers.py` | Makes `assets/covers/` from the design system's covers: name card and copyright taken out, positions recorded |
 | `tools/wrap-json.js` | After adding or editing a data file: writes the `data/*.js` scripts and `data/files.js` |
 
 Shared with `../teique-360/` (not copied): the score model and colours (`src/model.js`), the SVG helpers, the charts
@@ -73,8 +74,10 @@ sample's 28 pages.
 - Everything on the pages is the version's sample text, word for word: the text layer for titles, introduction,
   definitions and lead lines; the card pictures (OCR, then proofread line by line against the pictures) for the
   interpretations and the score explanation. `tools/build-library.py` lists every correction made to the OCR.
-- **Covers** (Petros, 2026-11-28): always the design system's report covers. For now they are used as they are, with
-  the placeholder name "John Smith" and the old copyright line in the picture. Next: editable covers, the illustration
+- **Covers** (Petros, 2026-11-28): always the design system's report covers. Until the editable covers arrive,
+  `tools/clean-covers.py` takes the placeholder name card ("John Smith") and the old copyright line out of them
+  (`assets/covers/`, with their positions in `assets/covers/layout.json`), and the report draws a new card in the same
+  place (title and the person's name, widening for a long name) and the current copyright line as live text. Next: editable covers, the illustration
   without text from Petros, with the name, date and titles as live text added by the generator.
 - From Figma, not the sample: "Your Score", "Your TEIQue Wheel Chart", "Your TEIQue Summary Graph",
   the header "TEIQue Personal" (and, on the same pattern, "TEIQue Corporate", "TEIQue Leadership"; the samples say

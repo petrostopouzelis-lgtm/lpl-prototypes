@@ -33,3 +33,11 @@ h1.title.second { margin-top: 6pt; }
 .quote { margin: 0; text-align: center; }
 .quote blockquote { margin: 0; font: italic 300 12pt/16pt Inter, sans-serif; }
 .quote figcaption { margin-top: 8pt; font: 500 11pt/14pt Inter, sans-serif; }
+
+/* cover: the new name card and copyright line on the design-system cover (positions set by F.cover) */
+.cover .cv-card { position: absolute; left: 50%; transform: translateX(-50%); padding: 0 20pt; background: #fff; border-radius: 11pt;
+  box-shadow: 0 2pt 13pt rgba(0, 0, 0, .12); text-align: center; white-space: nowrap; font-family: Inter, sans-serif; color: #1F1F1F; }
+.cover .cv-t { line-height: 1; font-weight: 200; }
+.cover .cv-t b { font-weight: 400; }
+.cover .cv-n { line-height: 1; font-weight: 200; }
+.cover .cv-cr { position: absolute; transform: translateX(-50%); line-height: 1; font-weight: 250; font-family: Inter, sans-serif; white-space: nowrap; }
