@@ -27,6 +27,10 @@ h1{font-size:22px;line-height:1.15;margin:0;color:var(--blue);letter-spacing:-.0
 .row .dot{width:10px;height:10px;border-radius:50%}
 .row output{text-align:right;font-variant-numeric:tabular-nums}
 .row.plain{grid-template-columns:minmax(0,1fr) 140px 26px}
+.fhead,.derived{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:8px;align-items:center;font:600 13px Manrope,sans-serif;margin:10px 0 2px}
+.derived{grid-template-columns:minmax(0,1fr) auto;padding:8px 10px;border-radius:10px;background:var(--track);margin-top:0}
+.fhead b,.derived b{font-variant-numeric:tabular-nums;font-weight:700}
+.fhead .dot{width:10px;height:10px;border-radius:50%}
 input[type=range]{width:100%;accent-color:var(--blue);margin:0}
 details{border-top:1px solid var(--rule);padding-top:8px;margin-top:6px}
 summary{cursor:pointer;font-size:13px;font-weight:500;padding:4px 0}
@@ -65,7 +69,8 @@ main{display:flex;flex-direction:column;gap:24px}
     <div id="scores"></div>
     <div><span class="lab">Finish</span>
       <div class="row plain"><span>Softness</span><input type="range" id="softness" min="0" max="100" value="70"><output>70</output></div>
-      <div class="row plain"><span>Pastel</span><input type="range" id="pastel" min="0" max="100" value="40"><output>40</output></div>
+      <div class="row plain"><span>Pastel</span><input type="range" id="pastel" min="0" max="100" value="0"><output>0</output></div>
+      <div class="row plain" id="vibRow"><span>Vibrance</span><input type="range" id="vibrance" min="0" max="100" value="50"><output>50</output></div>
       <div class="row plain"><span>Grain</span><input type="range" id="grain" min="0" max="100" value="20"><output>20</output></div>
       <div class="row plain" id="blueRow"><span>Blue core</span><input type="range" id="blueCore" min="0" max="100" value="50"><output>50</output></div>
       <div class="row plain" id="shadeRow"><span>Shading</span><input type="range" id="shading" min="0" max="100" value="60"><output>60</output></div>
@@ -99,7 +104,7 @@ const $ = id => document.getElementById(id);
 const state = { contourStyle: 'filled', shape: 'contours', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
 const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours', contourStyle: state.contourStyle, lines: $('lines').value / 100, blueCore: $('blueCore').value / 100, shading: $('shading').value / 100 });
+const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours', contourStyle: state.contourStyle, lines: $('lines').value / 100, blueCore: $('blueCore').value / 100, shading: $('shading').value / 100, vibrance: $('vibrance').value / 100 });
 
 function seg(id, key) {
   $(id).addEventListener('click', e => {
@@ -124,7 +129,7 @@ function syncVis() {
   $('detailRow').hidden = state.shape === 'ribbon';
   $('guideRow').hidden = state.shape !== 'contours';
   $('styleBox').hidden = state.shape !== 'contours';
-  $('linesRow').hidden = $('blueRow').hidden = $('shadeRow').hidden = state.shape !== 'contours' || state.contourStyle !== 'filled';
+  $('linesRow').hidden = $('blueRow').hidden = $('shadeRow').hidden = $('vibRow').hidden = state.shape !== 'contours' || state.contourStyle !== 'filled';
   $('modeBox').hidden = state.theory === 'scanin' || state.shape === 'contours' || (state.type === 'group' && state.shape !== 'petals');
 }
 function newData() { setData(L.sample(state.theory, state.type, state.members, state.seed * 7919 + 13)); }
@@ -136,48 +141,48 @@ function row(name, color, val, set) {
   binds.push(() => { const el = $(id); el.addEventListener('input', () => { el.nextElementSibling.value = el.value; set(+el.value); renderMain(); }); });
   return `<div class="row"><span class="dot" style="background:${color}"></span><span>${esc(name)}</span><input type="range" id="${id}" min="1" max="99" value="${val}" aria-label="${esc(name)}"><output>${val}</output></div>`;
 }
-function personRows(T, p, more = true) {
+// Facet scores are the inputs. Factor and global scores are worked out from them
+// (mean of the facets) and shown read-only beside each factor heading.
+function personRows(T, p, pi = 0) {
   let h = '';
   if (T.id === 'scanin') {
-    h += `<span class="lab">Belief by domain <span class="note">bends the curve</span></span>`;
+    h += `<span class="lab">Belief by domain</span>`;
     T.domains.forEach(d => h += row(d, T.domainColors[d], p.belief[d], v => p.belief[d] = v));
-    if (!more) return h;
-    h += `<details${state.shape === 'contours' ? ' open' : ''}><summary>Importance by domain</summary>`;
+    h += `<span class="lab" style="margin-top:10px">Importance by domain</span>`;
     T.domains.forEach(d => h += row(d, T.domainColors[d], p.importance[d], v => p.importance[d] = v));
-    return h + `</details>`;
+    return h;
   }
-  h += `<span class="lab">Factor scores <span class="note">${state.shape === 'contours' ? 'move all of that factor\'s facets' : 'bend the curve, top two set the colours'}</span></span>`;
-  T.factors.forEach(f => h += row(f.name, f.color.full, p.factors[f.id], v => {
-    const old = p.factors[f.id]; p.factors[f.id] = v;
-    f.facets.forEach(n => p.facets[n] = Math.max(1, Math.min(99, p.facets[n] + v - old)));
-    syncFacets(p);
-  }));
-  h += row(T.global.name, T.global.color.full, p.global, v => p.global = v);
-  if (!more) return h;
-  h += `<details${state.shape === 'contours' ? ' open' : ''}><summary>Facet scores</summary>`;
-  T.factors.forEach(f => f.facets.forEach(n => h += row(n, f.color.light, p.facets[n], v => p.facets[n] = v)));
-  if (T.independent) T.independent.facets.forEach(n => h += row(n, T.independent.color.full, p.facets[n], v => p.facets[n] = v));
-  return h + `</details>`;
+  h += `<div class="derived"><span>${esc(T.global.name)}</span><b data-p="${pi}" data-f="g">–</b></div>`;
+  T.factors.forEach((f, fi) => {
+    h += `<div class="fhead"><span class="dot" style="background:${f.color.full}"></span><span>${esc(f.name)}</span><b data-p="${pi}" data-f="${fi}">–</b></div>`;
+    f.facets.forEach(n => h += row(n, f.color.full, p.facets[n], v => p.facets[n] = v));
+  });
+  if (T.independent) {
+    h += `<div class="fhead"><span class="dot" style="background:${T.independent.color.full}"></span><span>${esc(T.independent.name)}</span><b></b></div>`;
+    T.independent.facets.forEach(n => h += row(n, T.independent.color.full, p.facets[n], v => p.facets[n] = v));
+  }
+  return h;
 }
-// moving a factor drags its facets with it; keep their sliders in step
-function syncFacets(p) {
-  document.querySelectorAll('#scores input[aria-label]').forEach(el => {
-    const n = el.getAttribute('aria-label');
-    if (p.facets && p.facets[n] != null && el.closest('details')) { el.value = p.facets[n]; el.nextElementSibling.value = p.facets[n]; }
+function refreshDerived() {
+  const { people } = L._internal.normalise(state.data);
+  document.querySelectorAll('#scores b[data-p]').forEach(el => {
+    const q = people[+el.dataset.p]; if (!q) return;
+    el.textContent = Math.round(100 * (el.dataset.f === 'g' ? q.global : q.factors[+el.dataset.f]));
   });
 }
 function buildScores() {
   const T = L.THEORIES[state.theory], d = state.data; binds.length = 0;
   let h = '';
   if (state.type === 'group') {
-    h += `<span class="lab">Members' scores</span><p class="note">Open a member to change their scores.</p>`;
-    d.people.forEach((p, i) => h += `<details><summary>${i + 1}. ${esc(p.name)}</summary>${personRows(T, p, false)}</details>`);
+    h += `<span class="lab">Members' scores</span><p class="note">Open a member to change their ${T.id === 'scanin' ? 'domain' : 'facet'} scores.</p>`;
+    d.people.forEach((p, i) => h += `<details><summary>${i + 1}. ${esc(p.name)}</summary>${personRows(T, p, i)}</details>`);
   } else h = personRows(T, d.people[0]);
-  $('scores').innerHTML = h;
+  $('scores').innerHTML = (T.id === 'scanin' || state.type === 'group' ? '' : `<span class="lab">Scores <span class="note">move the facets; factor and global scores follow (mean of facets)</span></span>`) + h;
   binds.forEach(b => b());
+  refreshDerived();
 }
 
-['softness', 'grain', 'pastel', 'detail', 'lines', 'blueCore', 'shading', 'variation'].forEach(id => {
+['softness', 'grain', 'pastel', 'detail', 'lines', 'blueCore', 'shading', 'vibrance', 'variation'].forEach(id => {
   const el = $(id); el.addEventListener('input', () => { el.nextElementSibling.value = el.value; renderMain(); });
   el.addEventListener('change', renderGrid);
 });
@@ -188,7 +193,7 @@ $('random').addEventListener('click', () => { state.seed++; newData(); renderAll
 $('reset').addEventListener('click', () => { setData(clone(state.original)); renderMain(); });
 
 let raf = 0;
-function renderMain() { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { L.renderIllustration($('main'), state.data, Object.assign(opts(), { scale: 2 })); explain(); }); }
+function renderMain() { refreshDerived(); cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { L.renderIllustration($('main'), state.data, Object.assign(opts(), { scale: 2 })); explain(); }); }
 
 const sw = c => `<span class="sw" style="background:${c.full}"></span>`;
 function explain() {
@@ -231,7 +236,7 @@ function explainRadial(T, people) {
   if (state.shape === 'blob') r.push(['Colours', state.colorMode === 'all' && T.id !== 'scanin' ? 'the rim takes the colour of the factor under it; pale core' : 'the rim blends between the two highest factors; pale core']);
   if (state.shape === 'petals') r.push(['Petals', 'one lobe per factor, reaching out by its score' + (state.colorMode === 'all' ? ', in factor colours' : ', coloured from the top factor to the second')]);
   if (state.shape === 'contours') {
-    if (state.contourStyle === 'filled') { r.push(['Style', 'the blend steps are stacked as solid layers; colours blend inside while the outline stays sharp']); r.push(['Shading', 'darker where the contour lines bunch together, lighter where they spread out, lit from the top left: a 3D relief of the scores']); }
+    if (state.contourStyle === 'filled') { r.push(['Style', 'the blend steps are stacked as solid layers; colours blend inside while the outline stays sharp']); r.push(['Shading', 'a grey relief map, darker where the contour lines bunch together, lit from the top left, blended in soft-light so the colours stay clean']); }
     if (T.id === 'scanin') {
       r.push(['Spokes', `one fixed spoke per life domain (${T.domains.length}), each in its colour from the Reports Figma file`]);
       r.push(['Lines', 'a blend from a small core to the importance outline (inner lines), then on to the belief outline (outer line)']);

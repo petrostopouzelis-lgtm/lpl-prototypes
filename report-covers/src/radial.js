@@ -29,9 +29,9 @@
     const g = v => { v = v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055; return Math.round(Math.max(0, Math.min(1, v)) * 255); };
     return [g(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s), g(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s), g(-0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s)];
   }
-  function oklabMix(a, b, t, lift = 0) {
+  function oklabMix(a, b, t, lift = 0, chroma = 1) {
     const A = toLab(a), B = toLab(b);
-    return fromLab([A[0] + (B[0] - A[0]) * t + lift, A[1] + (B[1] - A[1]) * t, A[2] + (B[2] - A[2]) * t]);
+    return fromLab([A[0] + (B[0] - A[0]) * t + lift, (A[1] + (B[1] - A[1]) * t) * chroma, (A[2] + (B[2] - A[2]) * t) * chroma]);
   }
 
   // Smooth periodic profile through values evenly spaced around the circle, 0..1.
@@ -171,6 +171,7 @@
       // the scores coming out of the lab. Colours are mixed in OKLab so the fades stay clean.
       const blue = P({ full: '#259DD5', light: '#66BAE2' }).full;
       const steps = 90, lines = opts.lines != null ? opts.lines : 0;
+      const vib = 1 + 0.6 * (opts.vibrance != null ? opts.vibrance : 0.5); // chroma boost in OKLab
       const W2 = x.canvas.width, H2 = x.canvas.height, mk = I().mk;
       const colour = mk(W2, H2), cx2 = colour.getContext('2d');   // the layered colours
       const dens = mk(W2, H2), dx2 = dens.getContext('2d');       // greyscale: where the lines bunch up
@@ -184,11 +185,11 @@
         const g = cx2.createConicGradient(-Math.PI / 2 + rot, cx * s, cy * s);
         for (let j = 0; j <= sp.length; j++) {
           const c = P(sp[j % sp.length].color).full;
-          g.addColorStop(j / sp.length, css(oklabMix(c, blue, Math.min(1, b), 0.06 * Math.sin(Math.PI * Math.min(1, b)))));
+          g.addColorStop(j / sp.length, css(oklabMix(c, blue, Math.min(1, b), 0.06 * Math.sin(Math.PI * Math.min(1, b)), vib)));
         }
         path(cx2, pts); cx2.fillStyle = g; cx2.fill();
         // every step leaves a faint dark line on the density map; close lines add up
-        if (t > 0.12) { path(dx2, pts); dx2.lineWidth = 1.6 * s; dx2.strokeStyle = `rgba(38,30,92,${(0.08 * smoothstep(0.12, 0.3, t)).toFixed(3)})`; dx2.stroke(); } // deep indigo: richer than black shadows
+        if (t > 0.12) { path(dx2, pts); dx2.lineWidth = 1.6 * s; dx2.strokeStyle = `rgba(0,0,0,${(0.09 * smoothstep(0.12, 0.3, t)).toFixed(3)})`; dx2.stroke(); }
       }
       // blue centre so no white shows
       const coreR = Rmax * core * 0.5, cg = cx2.createRadialGradient(cx * s, cy * s, 0, cx * s, cy * s, coreR * s);
@@ -203,15 +204,20 @@
       // 2. shading from line density: dark where lines bunch (steep), light where they spread
       const shade = Math.max(0, Math.min(1, opts.shading != null ? opts.shading : 0.6));
       if (shade > 0) {
+          // A neutral grey relief map: mid grey changes nothing; darker (lines bunched, and
+        // the side away from the light) deepens the colour, lighter brightens it. Blended
+        // with soft-light, so hue and saturation survive instead of going muddy.
         const sm = mk(W2, H2), sx = sm.getContext('2d');
         sx.filter = `blur(${(2.2 * s).toFixed(2)}px)`; sx.drawImage(dens, 0, 0); sx.filter = 'none';
-        o.globalCompositeOperation = 'multiply'; o.globalAlpha = Math.min(1, shade * 1.6); o.drawImage(sm, 0, 0);
-        // highlight: the same map, inverted and nudged towards a light from the top left
-        const hl = mk(W2, H2), hx = hl.getContext('2d');
+        const hl = mk(W2, H2), hx = hl.getContext('2d'); // the same map in white, for highlights
         hx.drawImage(sm, 0, 0); hx.globalCompositeOperation = 'source-in'; hx.fillStyle = '#fff'; hx.fillRect(0, 0, W2, H2);
-        const d = 2.2 * s;
-        o.globalCompositeOperation = 'screen'; o.globalAlpha = 0.9 * shade; o.drawImage(hl, -d, -d);
-        o.globalCompositeOperation = 'multiply'; o.globalAlpha = 0.5 * shade; o.drawImage(sm, d, d);
+        const rel = mk(W2, H2), rx = rel.getContext('2d'), d = 2.4 * s;
+        rx.fillStyle = '#808080'; rx.fillRect(0, 0, W2, H2);
+        rx.globalAlpha = 1; rx.drawImage(sm, d * 0.5, d * 0.5);   // shadow, cast down-right
+        rx.globalAlpha = 0.9; rx.drawImage(hl, -d, -d);          // highlight, towards the light
+        rx.globalAlpha = 0.6; rx.drawImage(sm, d, d);
+        o.globalCompositeOperation = 'soft-light';
+        for (let pass = shade; pass > 0; pass -= 0.5) { o.globalAlpha = Math.min(1, pass * 2); o.drawImage(rel, 0, 0); }
         o.globalAlpha = 1;
       }
       if (lines > 0) rings.forEach(([t, pts], i) => { if (i % 2) return; path(o, pts); o.globalCompositeOperation = 'source-over'; o.lineWidth = 0.5 * s; o.strokeStyle = `rgba(255,255,255,${(0.5 * lines).toFixed(3)})`; o.stroke(); });

@@ -51,14 +51,20 @@
         const importance = T.domains.map(d => pct((p.importance || {})[d]));
         return { name: p.name, factors: belief, facets: importance, global: p.global != null ? pct(p.global) : mean(belief), raw: p };
       }
-      const factors = T.factors.map(f => pct((p.factors || {})[f.id]));
+      // Factor and global scores come from the facets: a factor is the mean of its facets,
+      // the global score the mean of all facets. Given factor scores are used only for a
+      // factor whose facets are all missing.
       const facetNames = T.factors.flatMap(f => f.facets).concat(T.independent ? T.independent.facets : []);
       const facets = facetNames.map(n => (p.facets && p.facets[n] != null) ? pct(p.facets[n]) : null);
-      // a facet left out takes its factor's score
       let k = 0;
+      const factors = T.factors.map(f => {
+        const own = f.facets.map(() => facets[k++]).filter(v => v != null);
+        return own.length ? mean(own) : pct((p.factors || {})[f.id]);
+      });
+      k = 0; // a facet left out takes its factor's score
       T.factors.forEach((f, fi) => f.facets.forEach(() => { if (facets[k] == null) facets[k] = factors[fi]; k++; }));
       for (; k < facets.length; k++) if (facets[k] == null) facets[k] = mean(factors);
-      return { name: p.name, factors, facets, global: p.global != null ? pct(p.global) : mean(factors), raw: p };
+      return { name: p.name, factors, facets, global: mean(facets), raw: p };
     });
     return { T, people };
   }

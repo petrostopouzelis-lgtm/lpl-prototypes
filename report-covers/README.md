@@ -35,11 +35,10 @@ LPLCovers.renderIllustration(canvas, data, { scale: 300 / 72, softness: 0.7, gra
 
 ```js
 { theory: 'teique', type: 'individual', name: 'Jane Doe', date: '22/10/2026',
-  people: [{ factors: { wellbeing: 72, self_control: 48, emotionality: 81, sociability: 55 },
-             facets: { Happiness: 70, Optimism: 66, /* … */ }, global: 64 }] }
+  people: [{ facets: { Happiness: 70, Optimism: 66, /* … every facet */ } }] }
 ```
 
-Scan-In people carry `belief` and `importance` maps keyed by domain instead of `factors` and `facets`. A group report has one entry in `people` per member.
+Only facet scores are inputs: each factor score is the mean of its facets and the global score the mean of all facets (a given factor score is used only if all its facets are missing). Scan-In people carry `belief` and `importance` maps keyed by domain instead. A group report has one entry in `people` per member.
 
 ## How scores become a shape
 
@@ -61,7 +60,7 @@ Scan-In people carry `belief` and `importance` maps keyed by domain instead of `
 | `petals` | One translucent lobe per factor, reaching out by its score. |
 | `contours` | A radial chart drawn as blend steps. Each facet (Scan-In: life domain) has a fixed spoke, grouped by factor, clockwise from the top; radius = 22% + 78% × score. Lines morph from a small core to an inner outline, then to the outer outline. TEIQue/TSIQue: inner = factor level (each spoke at its factor's score, so factors read as broad lobes), outer = facet level (every facet its own bump). Scan-In: inner = importance, outer = belief. Around the circle each line takes its facet's factor colour (Scan-In: each domain's own colour), inner lines paler and turned more for a higher global score. Groups: team averages, with each member's outline traced lightly. `opts.guide` overlays spokes, labels and score dots for checking. |
 
-**Contour style** (`opts.contourStyle`): `filled` (default) stacks the blend steps as solid layers, outermost first, and softens them into one organic shape. The core is LPL blue (`#259DD5`), fading outwards into the score colours, to symbolise the scores coming from the lab; colours are mixed in OKLab so the fades stay clean. `opts.blueCore` (0..1, default 0.5) sets how far the blue reaches; `opts.lines` adds a faint white line texture. Softness blurs the colours inside only; the result is cut back to the sharp silhouette so the edge stays crisp. `opts.shading` (default 0.6) adds 3D relief: every step leaves a faint indigo line on a greyscale density map, so it darkens where lines bunch together; the map is multiplied over the colours, with an offset highlight and shadow lit from the top left. `lines` draws the steps as thin lines instead.
+**Contour style** (`opts.contourStyle`): `filled` (default) stacks the blend steps as solid layers, outermost first, and softens them into one organic shape. The core is LPL blue (`#259DD5`), fading outwards into the score colours, to symbolise the scores coming from the lab; colours are mixed in OKLab so the fades stay clean. `opts.blueCore` (0..1, default 0.5) sets how far the blue reaches; `opts.lines` adds a faint white line texture. Softness blurs the colours inside only; the result is cut back to the sharp silhouette so the edge stays crisp. `opts.shading` (default 0.6) adds 3D relief: every step leaves a faint line on a density map, so it darkens where lines bunch together. That becomes a neutral grey relief map (mid grey = no change, with an offset highlight and shadow lit from the top left), blended in soft-light so hue and saturation survive. `opts.vibrance` (default 0.5) boosts colour saturation in OKLab; pastel defaults to 0. `lines` draws the steps as thin lines instead.
 
 **Colours, option "Every factor"** (individual TEIQue and TSIQue): one lane per factor, each in its factor colour, lane width set by the factor score. More colourful; shown as an alternative to the two-colour default.
 
