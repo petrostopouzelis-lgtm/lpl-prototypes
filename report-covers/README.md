@@ -23,6 +23,8 @@ Then go to `http://localhost:8000/report-covers/`.
 - The **Compare** grid shows twelve made-up people with the same settings, to judge range and balance.
 - **Download PNG (300 dpi)** saves the illustration at 2480 × 3508 px with a transparent background.
 
+**Quick viewer:** `viewer/viewer.html` is the same generator as one self-contained page (engine pasted in), for sharing or publishing. Edit `viewer/viewer.src.html` and run `python report-covers/viewer/build.py` to rebuild it after changing `src/`.
+
 From code:
 
 ```js
