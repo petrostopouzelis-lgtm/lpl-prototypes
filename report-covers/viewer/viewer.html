@@ -1138,8 +1138,8 @@ main{display:flex;flex-direction:column;gap:24px}
   // Brand layouts, centred on one axis: logo and title group at the top, the diagram in the
   // middle (its spokes reach out to fill the free area), the name and date as one group,
   // and all legal lines together at the foot. No black rules.
-  const SAFE = { x0: 22, y0: 208, x1: W - 22, y1: 722 };   // free area for the diagram and its labels
-  const ART = { centreY: (SAFE.y0 + SAFE.y1) / 2 / H, fit: 0.56 };
+  const SAFE = { x0: 70, y0: 236, x1: W - 70, y1: 700 };   // free area for the diagram and its labels
+  const ART = { centreY: (SAFE.y0 + SAFE.y1) / 2 / H, fit: 0.46 };
   function header(ctx, d, T) {
     drawLogo(ctx, W / 2, 38, 230, 'center');
     wordmark(ctx, T, W / 2, 148, 30, 'center');
@@ -1157,8 +1157,7 @@ main{display:flex;flex-direction:column;gap:24px}
     }
   }
   function legal(ctx, d) {
-    text(ctx, COPYRIGHT(yearOf(d)), W / 2, 812, INTER(300, 8), MUTED, 'center');
-    text(ctx, PRODUCT, W / 2, 825, INTER(300, 8), MUTED, 'center');
+    text(ctx, COPYRIGHT(yearOf(d)) + '   ·   ' + PRODUCT, W / 2, 820, INTER(300, 8), MUTED, 'center');
   }
   const LAYOUTS = {
     pill: {
