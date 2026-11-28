@@ -226,7 +226,7 @@
         }
         path(cx2, pts); cx2.fillStyle = g; cx2.fill();
         // every step leaves a faint dark line on the density map; close lines add up
-        if (t > 0.12) { path(dx2, pts); dx2.lineWidth = 1.6 * s; dx2.strokeStyle = `rgba(0,0,0,${(0.09 * smoothstep(0.12, 0.3, t)).toFixed(3)})`; dx2.stroke(); }
+        if (t > 0.12) { path(dx2, pts); dx2.lineWidth = 2.2 * s; dx2.strokeStyle = `rgba(0,0,0,${(0.13 * smoothstep(0.1, 0.28, t)).toFixed(3)})`; dx2.stroke(); }
       }
       // blue centre so no white shows
       const coreR = Rmax * core * 0.5, cg = cx2.createRadialGradient(cx * s, cy * s, 0, cx * s, cy * s, coreR * s);
@@ -245,43 +245,77 @@
         // the side away from the light) deepens the colour, lighter brightens it. Blended
         // with soft-light, so hue and saturation survive instead of going muddy.
         const sm = mk(W2, H2), sx = sm.getContext('2d');
-        sx.filter = `blur(${(2.2 * s).toFixed(2)}px)`; sx.drawImage(dens, 0, 0); sx.filter = 'none';
+        sx.filter = `blur(${(3.6 * s).toFixed(2)}px)`; sx.drawImage(dens, 0, 0); sx.filter = 'none';
         const hl = mk(W2, H2), hx = hl.getContext('2d'); // the same map in white, for highlights
         hx.drawImage(sm, 0, 0); hx.globalCompositeOperation = 'source-in'; hx.fillStyle = '#fff'; hx.fillRect(0, 0, W2, H2);
-        const rel = mk(W2, H2), rx = rel.getContext('2d'), d = 2.4 * s;
+        const rel = mk(W2, H2), rx = rel.getContext('2d'), d = 3.4 * s;
         rx.fillStyle = '#808080'; rx.fillRect(0, 0, W2, H2);
         rx.globalAlpha = 1; rx.drawImage(sm, d * 0.5, d * 0.5);   // shadow, cast down-right
         rx.globalAlpha = 0.9; rx.drawImage(hl, -d, -d);          // highlight, towards the light
-        rx.globalAlpha = 0.6; rx.drawImage(sm, d, d);
+        rx.globalAlpha = 0.85; rx.drawImage(sm, d, d);
+        rx.globalAlpha = 0.5; rx.drawImage(sm, d * 2, d * 2);   // a longer, fainter fall-off
         o.globalCompositeOperation = 'soft-light';
         for (let pass = shade; pass > 0; pass -= 0.5) { o.globalAlpha = Math.min(1, pass * 2); o.drawImage(rel, 0, 0); }
         o.globalAlpha = 1;
+        // Coloured shadow: a darker, richer copy of the shape's own colours, shown only where
+        // the lines bunch (and a little down-right of it). Darkens without going grey.
+        const dk = mk(W2, H2), dk2 = dk.getContext('2d');
+        dk2.filter = 'brightness(0.62) saturate(1.35)'; dk2.drawImage(out, 0, 0); dk2.filter = 'none';
+        const sh = mk(W2, H2), sh2 = sh.getContext('2d');
+        sh2.drawImage(sm, d * 0.6, d * 0.6); sh2.globalAlpha = 0.7; sh2.drawImage(sm, d * 1.6, d * 1.6); sh2.globalAlpha = 1;
+        dk2.globalCompositeOperation = 'destination-in'; dk2.drawImage(sh, 0, 0);
+        o.globalCompositeOperation = 'source-over'; o.globalAlpha = Math.min(1, shade * 1.5);
+        o.drawImage(dk, 0, 0); o.drawImage(dk, 0, 0); o.globalAlpha = 1;
       }
       if (lines > 0) rings.forEach(([t, pts], i) => { if (i % 2) return; path(o, pts); o.globalCompositeOperation = 'source-over'; o.lineWidth = 0.5 * s; o.strokeStyle = `rgba(255,255,255,${(0.5 * lines).toFixed(3)})`; o.stroke(); });
       o.globalCompositeOperation = 'destination-in'; o.drawImage(colour, 0, 0); // sharp silhouette
       o.globalCompositeOperation = 'source-over';
-      // Group: each member's own outline as a soft ring behind the blob. Three contours
-      // (just inside, on and just outside the outline) are softened together into a band,
-      // in the facet colours at full strength; rings are see-through so members layer up.
+      // Group: each member is a ring behind the shape: a solid band with a sharp edge, in
+      // the facet colours at full strength, shaded like the shape (darker at its edges,
+      // highlight from the top left, soft-light) so it reads as a rounded tube.
       if (group) {
-        const rl = mk(W2, H2), r2 = rl.getContext('2d'), off = 2.4;
+        const half = Math.max(2.2, Math.min(4.5, 26 / people.length));   // band half-width, pt
+        const band = mk(W2, H2), b2 = band.getContext('2d');   // colours
+        const edge = mk(W2, H2), e2 = edge.getContext('2d');   // edges, for the relief
+        const bandPath = (c, fn) => { // outer contour, then inner contour: filled even-odd = a band
+          const o1 = ring(fn, Rmax * core + half, Rmax * span, rot0, cx, cy), i1 = ring(fn, Rmax * core - half, Rmax * span, rot0, cx, cy);
+          c.beginPath();
+          o1.forEach((p, i) => i ? c.lineTo(p[0] * s, p[1] * s) : c.moveTo(p[0] * s, p[1] * s)); c.closePath();
+          i1.forEach((p, i) => i ? c.lineTo(p[0] * s, p[1] * s) : c.moveTo(p[0] * s, p[1] * s)); c.closePath();
+          return [o1, i1];
+        };
         const ringConic = () => {
-          const g = r2.createConicGradient(-Math.PI / 2 + rot0, cx * s, cy * s);
+          const g = b2.createConicGradient(-Math.PI / 2 + rot0, cx * s, cy * s);
           for (let j = 0; j <= sp.length; j++) {
             const c = sp[j % sp.length].color, base = mix(I().rgb(c.full), [255, 255, 255], (opts.pastel || 0) * 0.3);
             g.addColorStop(j / sp.length, css(oklabMix(base, base, 0, 0, vib)));
           }
           return g;
         };
-        const a = Math.max(0.35, Math.min(0.85, 1.6 / Math.sqrt(people.length)));
         memberRings.forEach(fn => {
-          [[-off, 1.3, 0.55], [0, 2.6, 1], [off, 1.3, 0.55]].forEach(([d, w, al]) => {
-            path(r2, ring(fn, Rmax * core + d, Rmax * span, rot0, cx, cy));
-            r2.lineWidth = w * s; r2.strokeStyle = ringConic(); r2.globalAlpha = a * al; r2.stroke();
-          });
+          const [o1, i1] = bandPath(b2, fn);
+          b2.fillStyle = ringConic(); b2.fill('evenodd');
+          [o1, i1].forEach(pts => { path(e2, pts); e2.lineWidth = 1.2 * s; e2.strokeStyle = 'rgba(0,0,0,0.55)'; e2.stroke(); });
         });
-        r2.globalAlpha = 1;
-        x.save(); x.filter = `blur(${(1.1 * s).toFixed(2)}px)`; x.drawImage(rl, 0, 0); x.restore();
+        if (shade > 0) {
+          const es = mk(W2, H2), ex = es.getContext('2d');
+          ex.filter = `blur(${(half * 0.9 * s).toFixed(2)}px)`; ex.drawImage(edge, 0, 0); ex.filter = 'none';
+          const eh = mk(W2, H2), hx2 = eh.getContext('2d');
+          hx2.drawImage(es, 0, 0); hx2.globalCompositeOperation = 'source-in'; hx2.fillStyle = '#fff'; hx2.fillRect(0, 0, W2, H2);
+          const rr = mk(W2, H2), q2 = rr.getContext('2d'), dd = half * 0.6 * s;
+          q2.fillStyle = '#808080'; q2.fillRect(0, 0, W2, H2);
+          q2.drawImage(es, dd * 0.5, dd * 0.5);
+          q2.globalAlpha = 0.9; q2.drawImage(eh, -dd, -dd); q2.globalAlpha = 1;
+          b2.globalCompositeOperation = 'soft-light';
+          for (let pass = shade; pass > 0; pass -= 0.5) { b2.globalAlpha = Math.min(1, pass * 2); b2.drawImage(rr, 0, 0); }
+          b2.globalAlpha = 1;
+          // sharp silhouette: keep only the bands
+          const mask = mk(W2, H2), m2 = mask.getContext('2d');
+          memberRings.forEach(fn => { bandPath(m2, fn); m2.fillStyle = '#000'; m2.fill('evenodd'); });
+          b2.globalCompositeOperation = 'destination-in'; b2.drawImage(mask, 0, 0);
+          b2.globalCompositeOperation = 'source-over';
+        }
+        x.drawImage(band, 0, 0);
       }
       x.drawImage(out, 0, 0);
     }
