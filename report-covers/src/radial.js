@@ -174,7 +174,9 @@
       const step = Math.min(0.03, 0.32 / n);
       ranked.forEach((q, i) => {
         const own = radiusFn(T.id === 'scanin' ? q.factors : q.facets, detail);
-        memberRings.push(th => outer(th) + 0.07 + step * i + 0.45 * (own(th) - outer(th)));
+        const fn = th => outer(th) + 0.07 + step * i + 0.45 * (own(th) - outer(th));
+        fn.dev = th => own(th) - outer(th); // how far this member is above (+) or below (-) the team here
+        memberRings.push(fn);
       });
     }
 
@@ -190,7 +192,7 @@
       const { W: PW, H: PH } = I();
       const box = PW * (opts.fit != null ? opts.fit : 0.64);
       const kf = box / Math.max(x1 - x0, y1 - y0);
-      const tx = PW / 2, ty = PH * (opts.centreY != null ? opts.centreY : 0.5);
+      const tx = PW * (opts.centreX != null ? opts.centreX : 0.5), ty = PH * (opts.centreY != null ? opts.centreY : 0.5);
       // new centre: the old centre's position relative to the box middle, scaled
       cx = tx + (cx - (x0 + x1) / 2) * kf; cy = ty + (cy - (y0 + y1) / 2) * kf; Rmax *= kf;
       fitted.cx = cx; fitted.cy = cy; fitted.Rmax = Rmax;
@@ -287,7 +289,15 @@
         const band = mk(W2, H2), b2 = band.getContext('2d');
         const pathAt = (c, fn, d) => path(c, ring(fn, Rmax * core + d, Rmax * span, rot0, cx, cy));
         const bandPath = (c, fn) => { // outer contour, then inner: filled even-odd = a band
-          const o1 = ring(fn, Rmax * core + half, Rmax * span, rot0, cx, cy), i1 = ring(fn, Rmax * core - half, Rmax * span, rot0, cx, cy);
+          // the band's thickness varies along the ring: thicker where this member scores
+          // above the team, thinner where below
+          const o1 = [], i1 = [];
+          for (let k = 0; k < M; k++) {
+            const th = TAU * k / M, base = Rmax * core + Rmax * span * Math.max(0, Math.min(1.05, fn(th - rot0)));
+            const h = half * Math.max(0.3, Math.min(1.9, 0.85 + 3 * (fn.dev ? fn.dev(th - rot0) : 0)));
+            o1.push([cx + (base + h) * Math.sin(th), cy - (base + h) * Math.cos(th)]);
+            i1.push([cx + (base - h) * Math.sin(th), cy - (base - h) * Math.cos(th)]);
+          }
           c.beginPath();
           o1.forEach((p, i) => i ? c.lineTo(p[0] * s, p[1] * s) : c.moveTo(p[0] * s, p[1] * s)); c.closePath();
           i1.forEach((p, i) => i ? c.lineTo(p[0] * s, p[1] * s) : c.moveTo(p[0] * s, p[1] * s)); c.closePath();
@@ -363,7 +373,7 @@
     // coloured shadow, grain, and a drop shadow. Size grows with the factor score.
     const W2 = ctx.canvas.width, H2 = ctx.canvas.height, mk = I().mk;
     const pastel = opts.pastel || 0, vib = 1 + 0.6 * (opts.vibrance != null ? opts.vibrance : 0.5);
-    const tone = c => oklabMix(mix(rgb(c), [255, 255, 255], pastel * 0.55), [0, 0, 0], 0, 0, vib);
+    const tone = c => oklabMix(mix(rgb(c), [255, 255, 255], 0.12 + pastel * 0.6), [0, 0, 0], 0, 0, vib); // a touch lighter than the shape
     const balls = at.map(({ q, dx, dy, v }) => {
       const r = Rmax * (0.22 + 0.78 * v);
       const fv = T.id === 'scanin' ? v : (q.fi >= 0 ? S.factorVals[q.fi] : v);
@@ -372,7 +382,7 @@
     const col = mk(W2, H2), c2 = col.getContext('2d');
     balls.forEach(b => {
       const g = c2.createRadialGradient(b.x - b.R * 0.35, b.y - b.R * 0.4, b.R * 0.05, b.x, b.y, b.R);
-      g.addColorStop(0, css(mix(b.light, [255, 255, 255], 0.22)));
+      g.addColorStop(0, css(mix(b.light, [255, 255, 255], 0.32)));
       g.addColorStop(0.45, css(mix(b.full, b.light, 0.3)));
       g.addColorStop(1, css(b.full));
       c2.fillStyle = g; c2.beginPath(); c2.arc(b.x, b.y, b.R, 0, TAU); c2.fill();

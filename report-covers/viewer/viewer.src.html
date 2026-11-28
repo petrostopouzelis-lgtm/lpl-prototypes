@@ -60,7 +60,7 @@ main{display:flex;flex-direction:column;gap:24px}
 <div class="wrap">
   <aside class="panel">
     <div><h1>Cover illustration generator</h1><p class="sub">Report cover artwork drawn from scores. A4 portrait. All people are made up.</p></div>
-    <div><span class="lab">Cover</span><div class="seg" id="layout"><button data-v="none">Art only</button><button data-v="plate" class="on">Plate</button><button data-v="axis">Axis</button><button data-v="grid">Grid</button></div></div>
+    <div><span class="lab">Cover</span><div class="seg" id="layout"><button data-v="none">Art only</button><button data-v="masthead" class="on">Masthead</button><button data-v="bleed">Bleed</button><button data-v="poster">Poster</button></div></div>
     <div class="row plain" style="grid-template-columns:52px minmax(0,1fr)"><span>Name</span><input id="nameIn" type="text" style="font:inherit;padding:6px 8px;border:1px solid var(--rule);border-radius:8px;background:transparent;color:inherit"></div>
     <div class="row plain" style="grid-template-columns:52px minmax(0,1fr)"><span>Date</span><input id="dateIn" type="text" style="font:inherit;padding:6px 8px;border:1px solid var(--rule);border-radius:8px;background:transparent;color:inherit"></div>
     <div><span class="lab">Shape</span><div class="seg" id="shape"><button data-v="contours" class="on">Contours</button><button data-v="blob">Blob</button><button data-v="petals">Petals</button><button data-v="ribbon">Ribbon</button></div></div>
@@ -106,7 +106,7 @@ main{display:flex;flex-direction:column;gap:24px}
 {
 const L = window.LPLCovers;
 const $ = id => document.getElementById(id);
-const state = { layout: 'plate', contourStyle: 'filled', shape: 'contours', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
+const state = { layout: 'masthead', contourStyle: 'filled', shape: 'contours', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
 const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours', contourStyle: state.contourStyle, lines: $('lines').value / 100, blueCore: $('blueCore').value / 100, shading: $('shading').value / 100, vibrance: $('vibrance').value / 100, fit: $('fit').value / 100 });
