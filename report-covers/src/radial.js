@@ -388,10 +388,10 @@
       if (opts.safe && opts.bleedX && Math.abs(dx) > 1e-6) {
         // spokes that leave the free area through its sides run to the page edge; the
         // label sits just above the line by the edge
-        const ex = dx > 0 ? I().W : 0, te = (ex - cx) / dx, ye = cy + dy * te;
+        const mg = opts.margin != null ? opts.margin : 28, ex = dx > 0 ? I().W - mg : mg, te = (ex - cx) / dx, ye = cy + dy * te;
         if (ye >= opts.safe.y0 && ye <= opts.safe.y1) {
           bleed = true; end = te;
-          const lx0 = dx > 0 ? I().W - 8 - tw : 8, mid = lx0 + tw / 2, ly0 = cy + dy * (mid - cx) / dx - 5;
+          const lx0 = dx > 0 ? I().W - mg - tw : mg, mid = lx0 + tw / 2, ly0 = cy + dy * (mid - cx) / dx - 5;
           b = { x: lx0, y: ly0 };
         }
       }

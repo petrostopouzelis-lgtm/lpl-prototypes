@@ -76,7 +76,7 @@
   // Brand layouts, centred on one axis: logo and title group at the top, the diagram in the
   // middle (its spokes reach out to fill the free area), the name and date as one group,
   // and all legal lines together at the foot. No black rules.
-  const SAFE = { x0: 70, y0: 214, x1: W - 70, y1: 700 };   // free area for the diagram and its labels
+  const SAFE = { x0: 70, y0: 214, x1: W - 70, y1: 700 };   // the side spokes run past x0/x1 to a 28pt page margin   // free area for the diagram and its labels
   const ART = { centreY: (SAFE.y0 + SAFE.y1) / 2 / H, fit: 0.46 };
   function header(ctx, d, T) {
     drawLogo(ctx, W / 2, 34, 300, 'center');
@@ -88,9 +88,10 @@
       else { ctx.font = MANROPE(p.w, px); p.width = ctx.measureText(p.t).width; }
     });
     const sep = gap * 2 + r * 2;
-    let x = W / 2 - (parts.reduce((a, p) => a + p.width, 0) + sep * (parts.length - 1)) / 2;
+    let x = W / 2 - (parts.reduce((a, p) => a + p.width, 0) + px * 0.3 + sep * (parts.length - 2)) / 2;
     parts.forEach((p, i) => {
-      if (i) {
+      if (i === 1) x += px * 0.3; // wordmark and report title read as one phrase
+      else if (i) {
         const ccx = x + gap + r, ccy = y - px * 0.34;
         const g = ctx.createLinearGradient(ccx - r, ccy - r, ccx + r, ccy + r); g.addColorStop(0, BLUE); g.addColorStop(1, '#66BAE2');
         ctx.fillStyle = g; ctx.beginPath(); ctx.arc(ccx, ccy, r, 0, Math.PI * 2); ctx.fill();
