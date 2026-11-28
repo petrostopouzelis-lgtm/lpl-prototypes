@@ -80,6 +80,7 @@ main{display:flex;flex-direction:column;gap:24px}
     </div>
     <label class="row plain" id="guideRow" hidden style="grid-template-columns:auto 1fr"><input type="checkbox" id="guide"> <span>Show facet spokes and scores (checking only)</span></label>
     <div class="btns"><button class="btn" id="random">New sample person</button><button class="btn ghost" id="reset">Reset scores</button></div>
+    <div class="btns"><button class="btn ghost" id="saveSettings">Save settings</button><span class="note" id="saveNote" style="align-self:center"></span></div>
     <p class="note" id="themeNote"></p>
   </aside>
 
@@ -269,6 +270,35 @@ function renderGrid() {
   }
 }
 function renderAll() { renderMain(); renderGrid(); }
+// ---- saved settings: shape, style and every finish slider, kept in the page's db
+// (settings/finish) so they load for everyone who opens it, and Claude can read them.
+const SLIDERS = ['softness', 'pastel', 'vibrance', 'grain', 'shading', 'blueCore', 'lines', 'detail', 'variation'];
+const SEGS = ['shape', 'contourStyle', 'colorMode'];
+function currentSettings() {
+  const o = {}; SLIDERS.forEach(id => o[id] = +$(id).value); SEGS.forEach(k => o[k] = state[k]); return o;
+}
+function applySettings(o) {
+  if (!o) return;
+  SLIDERS.forEach(id => { if (typeof o[id] === 'number') { $(id).value = o[id]; $(id).nextElementSibling.value = o[id]; } });
+  SEGS.forEach(k => { if (typeof o[k] === 'string' && $(k).querySelector(`[data-v="${o[k]}"]`)) { state[k] = o[k]; [...$(k).children].forEach(b => b.classList.toggle('on', b.dataset.v === o[k])); } });
+  syncVis(); buildScores(); renderAll();
+}
+let dbRef = null;
+$('saveSettings').addEventListener('click', async () => {
+  const note = $('saveNote');
+  if (!dbRef) { note.textContent = 'Saving needs the published page, signed in.'; return; }
+  note.textContent = 'Saving…';
+  try { await dbRef.doc('settings/finish').set(Object.assign(currentSettings(), { savedAt: new Date().toISOString() })); note.textContent = 'Saved. These load whenever the page opens.'; }
+  catch (e) { note.textContent = 'Could not save (' + (e && e.code || 'error') + ').'; }
+});
 newData(); renderAll();
+(async () => {
+  try {
+    const db = await window.claude?.use?.('db'); if (!db) return;
+    dbRef = db;
+    const snap = await db.doc('settings/finish').get();
+    if (snap.exists) { applySettings(snap.data()); $('saveNote').textContent = 'Loaded saved settings.'; }
+  } catch (e) { /* render with defaults */ }
+})();
 }
 </script>
