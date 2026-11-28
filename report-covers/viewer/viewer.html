@@ -796,12 +796,11 @@ main{display:flex;flex-direction:column;gap:24px}
       x.drawImage(out, 0, 0);
       x.restore();
 
-      // Group: each member is a ring on top of the shape: a solid band with a sharp edge, in
-      // the facet colours at full strength, shaded as a rounded tube (dark edges, a light
-      // line along the top-left of the band, soft-light + overlay), each with its own light
-      // drop shadow so rings separate from the shape and from each other.
+      // Group: each member is a thin ring on top of the shape: a solid band with a sharp
+      // edge, in the facet colours at full strength, each with its own light drop shadow
+      // so rings separate from the shape and from each other.
       if (group) {
-        const half = Math.max(2.2, Math.min(4.5, 26 / people.length));   // band half-width, pt
+        const half = Math.max(1.1, Math.min(2.2, 13 / people.length));   // band half-width, pt
         const band = mk(W2, H2), b2 = band.getContext('2d');
         const pathAt = (c, fn, d) => path(c, ring(fn, Rmax * core + d, Rmax * span, rot0, cx, cy));
         const bandPath = (c, fn) => { // outer contour, then inner: filled even-odd = a band
@@ -819,7 +818,7 @@ main{display:flex;flex-direction:column;gap:24px}
           return g;
         };
         memberRings.forEach(fn => { bandPath(b2, fn); b2.fillStyle = ringConic(b2); b2.fill('evenodd'); });
-        if (shade > 0) { // tube relief, built on mid grey
+        if (false) { // tube relief (switched off: rings are flat colour with a drop shadow)
           const rr = mk(W2, H2), q2 = rr.getContext('2d');
           q2.fillStyle = '#808080'; q2.fillRect(0, 0, W2, H2);
           const lit = mk(W2, H2), l2 = lit.getContext('2d');
