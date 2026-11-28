@@ -68,7 +68,8 @@ main{display:flex;flex-direction:column;gap:24px}
       <div class="row plain"><span>Pastel</span><input type="range" id="pastel" min="0" max="100" value="40"><output>40</output></div>
       <div class="row plain"><span>Grain</span><input type="range" id="grain" min="0" max="100" value="20"><output>20</output></div>
       <div class="row plain" id="blueRow"><span>Blue core</span><input type="range" id="blueCore" min="0" max="100" value="50"><output>50</output></div>
-      <div class="row plain" id="linesRow"><span>Line texture</span><input type="range" id="lines" min="0" max="100" value="15"><output>15</output></div>
+      <div class="row plain" id="shadeRow"><span>Shading</span><input type="range" id="shading" min="0" max="100" value="60"><output>60</output></div>
+      <div class="row plain" id="linesRow"><span>Line texture</span><input type="range" id="lines" min="0" max="100" value="0"><output>0</output></div>
       <div class="row plain" id="detailRow" hidden><span>Detail</span><input type="range" id="detail" min="0" max="100" value="75"><output>75</output></div>
       <div class="row plain"><span>Variation</span><input type="range" id="variation" min="0" max="20" value="0"><output>0</output></div>
     </div>
@@ -98,7 +99,7 @@ const $ = id => document.getElementById(id);
 const state = { contourStyle: 'filled', shape: 'contours', theory: 'teique', type: 'individual', members: 6, colorMode: 'pair', seed: 1, data: null, original: null };
 const clone = o => JSON.parse(JSON.stringify(o));
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours', contourStyle: state.contourStyle, lines: $('lines').value / 100, blueCore: $('blueCore').value / 100 });
+const opts = () => ({ softness: $('softness').value / 100, grain: $('grain').value / 100, pastel: $('pastel').value / 100, variation: +$('variation').value, colorMode: state.colorMode, shape: state.shape, detail: $('detail').value / 100, guide: $('guide').checked && state.shape === 'contours', contourStyle: state.contourStyle, lines: $('lines').value / 100, blueCore: $('blueCore').value / 100, shading: $('shading').value / 100 });
 
 function seg(id, key) {
   $(id).addEventListener('click', e => {
@@ -123,7 +124,7 @@ function syncVis() {
   $('detailRow').hidden = state.shape === 'ribbon';
   $('guideRow').hidden = state.shape !== 'contours';
   $('styleBox').hidden = state.shape !== 'contours';
-  $('linesRow').hidden = $('blueRow').hidden = state.shape !== 'contours' || state.contourStyle !== 'filled';
+  $('linesRow').hidden = $('blueRow').hidden = $('shadeRow').hidden = state.shape !== 'contours' || state.contourStyle !== 'filled';
   $('modeBox').hidden = state.theory === 'scanin' || state.shape === 'contours' || (state.type === 'group' && state.shape !== 'petals');
 }
 function newData() { setData(L.sample(state.theory, state.type, state.members, state.seed * 7919 + 13)); }
@@ -176,7 +177,7 @@ function buildScores() {
   binds.forEach(b => b());
 }
 
-['softness', 'grain', 'pastel', 'detail', 'lines', 'blueCore', 'variation'].forEach(id => {
+['softness', 'grain', 'pastel', 'detail', 'lines', 'blueCore', 'shading', 'variation'].forEach(id => {
   const el = $(id); el.addEventListener('input', () => { el.nextElementSibling.value = el.value; renderMain(); });
   el.addEventListener('change', renderGrid);
 });
@@ -230,7 +231,7 @@ function explainRadial(T, people) {
   if (state.shape === 'blob') r.push(['Colours', state.colorMode === 'all' && T.id !== 'scanin' ? 'the rim takes the colour of the factor under it; pale core' : 'the rim blends between the two highest factors; pale core']);
   if (state.shape === 'petals') r.push(['Petals', 'one lobe per factor, reaching out by its score' + (state.colorMode === 'all' ? ', in factor colours' : ', coloured from the top factor to the second')]);
   if (state.shape === 'contours') {
-    if (state.contourStyle === 'filled') r.push(['Style', 'the blend steps are stacked as solid layers and softened into one organic shape']);
+    if (state.contourStyle === 'filled') { r.push(['Style', 'the blend steps are stacked as solid layers; colours blend inside while the outline stays sharp']); r.push(['Shading', 'darker where the contour lines bunch together, lighter where they spread out, lit from the top left: a 3D relief of the scores']); }
     if (T.id === 'scanin') {
       r.push(['Spokes', `one fixed spoke per life domain (${T.domains.length}), each in its colour from the Reports Figma file`]);
       r.push(['Lines', 'a blend from a small core to the importance outline (inner lines), then on to the belief outline (outer line)']);

@@ -170,25 +170,54 @@
       // into one organic shape. The core is LPL blue, fading out into the score colours:
       // the scores coming out of the lab. Colours are mixed in OKLab so the fades stay clean.
       const blue = P({ full: '#259DD5', light: '#66BAE2' }).full;
-      const steps = 90, lines = opts.lines != null ? opts.lines : 0.15;
-      const fill = (pts) => { x.beginPath(); pts.forEach((p, i) => i ? x.lineTo(p[0] * s, p[1] * s) : x.moveTo(p[0] * s, p[1] * s)); x.closePath(); };
+      const steps = 90, lines = opts.lines != null ? opts.lines : 0;
+      const W2 = x.canvas.width, H2 = x.canvas.height, mk = I().mk;
+      const colour = mk(W2, H2), cx2 = colour.getContext('2d');   // the layered colours
+      const dens = mk(W2, H2), dx2 = dens.getContext('2d');       // greyscale: where the lines bunch up
+      const path = (c, pts) => { c.beginPath(); pts.forEach((p, i) => i ? c.lineTo(p[0] * s, p[1] * s) : c.moveTo(p[0] * s, p[1] * s)); c.closePath(); };
+      const rings = [];
       for (let i = steps; i >= 1; i--) {
         const t = i / steps, rot = rotAt(t), [fn, R0] = shapeAt(t);
         const pts = ring(fn, R0 * Math.min(1, t * 4), Rmax * span, rot, cx, cy);
+        rings.push([t, pts]);
         const b = Math.pow(1 - smoothstep(0.0, 0.62, t), 1.7) * (opts.blueCore != null ? opts.blueCore * 2 : 1); // how blue this layer is
-        const g = x.createConicGradient(-Math.PI / 2 + rot, cx * s, cy * s);
+        const g = cx2.createConicGradient(-Math.PI / 2 + rot, cx * s, cy * s);
         for (let j = 0; j <= sp.length; j++) {
           const c = P(sp[j % sp.length].color).full;
           g.addColorStop(j / sp.length, css(oklabMix(c, blue, Math.min(1, b), 0.06 * Math.sin(Math.PI * Math.min(1, b)))));
         }
-        fill(pts); x.fillStyle = g; x.fill();
-        if (lines > 0 && i % 2 === 0) { x.lineWidth = 0.5 * s; x.strokeStyle = `rgba(255,255,255,${(0.5 * lines).toFixed(3)})`; x.stroke(); }
+        path(cx2, pts); cx2.fillStyle = g; cx2.fill();
+        // every step leaves a faint dark line on the density map; close lines add up
+        if (t > 0.12) { path(dx2, pts); dx2.lineWidth = 1.6 * s; dx2.strokeStyle = `rgba(38,30,92,${(0.08 * smoothstep(0.12, 0.3, t)).toFixed(3)})`; dx2.stroke(); } // deep indigo: richer than black shadows
       }
-      // the very centre: a small blue core so no white shows
-      const coreR = Rmax * core * 0.5;
-      const cg = x.createRadialGradient(cx * s, cy * s, 0, cx * s, cy * s, coreR * s);
+      // blue centre so no white shows
+      const coreR = Rmax * core * 0.5, cg = cx2.createRadialGradient(cx * s, cy * s, 0, cx * s, cy * s, coreR * s);
       cg.addColorStop(0, css(blue)); cg.addColorStop(1, css(blue, 0));
-      x.beginPath(); x.arc(cx * s, cy * s, coreR * s, 0, TAU); x.fillStyle = cg; x.fill();
+      cx2.beginPath(); cx2.arc(cx * s, cy * s, coreR * s, 0, TAU); cx2.fillStyle = cg; cx2.fill();
+
+      // 1. colours blend inside, but the outline stays sharp: blur, then cut back to the shape
+      const soft = Math.max(0, Math.min(1, opts.softness != null ? opts.softness : 0.7));
+      const out = mk(W2, H2), o = out.getContext('2d');
+      o.filter = `blur(${(7 * soft * s).toFixed(2)}px)`; o.drawImage(colour, 0, 0); o.filter = 'none';
+      o.globalCompositeOperation = 'destination-over'; o.drawImage(colour, 0, 0); // fills the blur's faded rim
+      // 2. shading from line density: dark where lines bunch (steep), light where they spread
+      const shade = Math.max(0, Math.min(1, opts.shading != null ? opts.shading : 0.6));
+      if (shade > 0) {
+        const sm = mk(W2, H2), sx = sm.getContext('2d');
+        sx.filter = `blur(${(2.2 * s).toFixed(2)}px)`; sx.drawImage(dens, 0, 0); sx.filter = 'none';
+        o.globalCompositeOperation = 'multiply'; o.globalAlpha = Math.min(1, shade * 1.6); o.drawImage(sm, 0, 0);
+        // highlight: the same map, inverted and nudged towards a light from the top left
+        const hl = mk(W2, H2), hx = hl.getContext('2d');
+        hx.drawImage(sm, 0, 0); hx.globalCompositeOperation = 'source-in'; hx.fillStyle = '#fff'; hx.fillRect(0, 0, W2, H2);
+        const d = 2.2 * s;
+        o.globalCompositeOperation = 'screen'; o.globalAlpha = 0.9 * shade; o.drawImage(hl, -d, -d);
+        o.globalCompositeOperation = 'multiply'; o.globalAlpha = 0.5 * shade; o.drawImage(sm, d, d);
+        o.globalAlpha = 1;
+      }
+      if (lines > 0) rings.forEach(([t, pts], i) => { if (i % 2) return; path(o, pts); o.globalCompositeOperation = 'source-over'; o.lineWidth = 0.5 * s; o.strokeStyle = `rgba(255,255,255,${(0.5 * lines).toFixed(3)})`; o.stroke(); });
+      o.globalCompositeOperation = 'destination-in'; o.drawImage(colour, 0, 0); // sharp silhouette
+      o.globalCompositeOperation = 'source-over';
+      x.drawImage(out, 0, 0);
     }
     if (group) people.forEach(q => {
       const pts = ring(radiusFn(T.id === 'scanin' ? q.factors : q.facets, detail), Rmax * core, Rmax * span, rot0, cx, cy);
@@ -304,7 +333,8 @@
       });
     }
     // thin contour lines would dissolve under the full blur
-    const fo = shape === 'contours' && opts.contourStyle === 'lines' ? Object.assign({}, opts, { softness: (opts.softness || 0) * 0.3 }) : opts;
+    // contours handle their own softness (filled: inside only, so the edge stays sharp)
+    const fo = shape === 'contours' ? Object.assign({}, opts, { softness: opts.contourStyle === 'lines' ? (opts.softness || 0) * 0.3 : 0 }) : opts;
     ctx.drawImage(X.finish(layer, fo, s), 0, 0);
     if (opts.guide) drawGuide(ctx, T, people[0], s, cx, cy, Rmax, group);
   };
