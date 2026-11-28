@@ -27,8 +27,8 @@
   const FILLER = 'This paragraph stands in for text that has not been written yet, so that the page shows a realistic amount of copy and the layout can be judged. It will be replaced by the approved wording for this score.';
 
   // The structure diagram: the 15-4-1 tree (sample page 4, Figma 238:1481).
-  const tree = top => `<div class="tree"><div class="chip top">${esc(top)}</div><div class="cols">${T.GROUPS.map(g =>
-    `<div class="col" style="--f:${g.fill};--l:${g.light}"><div class="chip">${esc(g.name)}</div>${g.facets.map(f => `<div class="chip f">${esc(T.nameOf(f))}</div>`).join('')}</div>`).join('')}</div></div>`;
+  const tree = top => `<div class="tree"><div class="chip top" style="--on:${T.colourCard({ fill: '#42A2DA', light: '#6FB9E4' }).color}">${esc(top)}</div><div class="cols">${T.GROUPS.map(g =>
+    `<div class="col" style="--f:${g.fill};--l:${g.light};--on:${T.colourCard(g).color}"><div class="chip">${esc(g.name)}</div>${g.facets.map(f => `<div class="chip f">${esc(T.nameOf(f))}</div>`).join('')}</div>`).join('')}</div></div>`;
 
   // The uses of the report: overlapping circles in rows of 4, 5 and 6, blue and orange in turn
   // (sample page 5, Figma 238:1515).
@@ -182,7 +182,7 @@
       const row = (id, heading, fill) => {
         const g = id === 'global' ? T.GLOBAL : T.groupOf(id);
         return `<div class="rrow can-tighten" style="--c:${g.text};--f:${g.fill}"><div class="rwheel chart">${C.gauge(v, id, { single: true })}</div>
-          <div class="rbody">${heading ? `<h5 class="rh">${esc(heading)}</h5>` : ''}<div class="rcard${fill ? ' fill' : ''}">${card(id)}</div></div></div>`;
+          <div class="rbody">${heading ? `<h5 class="rh">${esc(heading)}</h5>` : ''}<div class="rcard${fill ? ' fill' : ''}"${fill ? ` style="${T.colourCard(g).style}"` : ''}>${card(id)}</div></div></div>`;
       };
       sections.push({ id: 'toc', kind: 'contents', title: ct.title, color: T.BLUE, headHtml: head(ct.title) });
       add('intro', pg.intro.title, T.BLUE, [head(pg.intro.title), `<div>${pg.intro.paragraphs.map(t => P(t)).join('')}</div>`,

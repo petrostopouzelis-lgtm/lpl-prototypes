@@ -48,6 +48,18 @@
   T.RULE = '#E3E5E9';
   T.BLUE = '#42A2DA';
 
+  // Coloured cards (Petros, 2026-11-28): the factor's gradient at full opacity, full colour at the top to the light
+  // colour at the bottom (as the Figma bars), with white text unless contrast says otherwise. The text is white when
+  // white reaches 3:1 against the middle of the gradient (WCAG's minimum for large or bold text; card text on colour
+  // is set at weight 500), dark ink otherwise.
+  T.luminance = hex => { const c = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16) / 255).map(x => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+  T.contrast = (a, b) => { const x = T.luminance(a), y = T.luminance(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+  T.mix = (a, b, t) => '#' + [1, 3, 5].map(i => Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t).toString(16).padStart(2, '0')).join('');
+  T.colourCard = g => {
+    const ink = T.contrast('#ffffff', T.mix(g.fill, g.light, 0.5)) >= 3 ? '#ffffff' : T.INK;
+    return { background: `linear-gradient(180deg, ${g.fill}, ${g.light})`, color: ink, style: `background:linear-gradient(180deg, ${g.fill}, ${g.light});color:${ink}` };
+  };
+
   // How "you" (the self score) is coloured in the petal chart and the score wheel.
   // Others always wear the factor colour. You wear a variation of that same colour, so every
   // mark still belongs to its factor (Petros, 2026-11-11: no unrelated grey).

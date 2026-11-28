@@ -90,11 +90,11 @@ h1.title .added { vertical-align: middle; margin-left: 12pt; position: relative;
 
 /* structure diagram */
 .tree { display: flex; flex-direction: column; align-items: center; gap: 12pt; }
-.chip { border-radius: 8pt; color: #fff; font: 600 8.5pt/10.5pt Manrope, sans-serif; text-align: center; padding: 6pt 6pt; background: linear-gradient(180deg, var(--l), var(--f)); }
+.chip { border-radius: 8pt; color: var(--on, #fff); font: 600 8.5pt/10.5pt Manrope, sans-serif; text-align: center; padding: 6pt 6pt; background: linear-gradient(180deg, var(--l), var(--f)); }
 .tree .top { --f: #42A2DA; --l: #6FB9E4; padding: 7pt 16pt; }
 .tree .cols { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8pt; width: 100%; align-items: start; }
 .tree .col { display: flex; flex-direction: column; gap: 6pt; }
-.tree .col .chip.f { font-weight: 500; opacity: .88; }
+.tree .col .chip.f { font-weight: 500; }
 .read { display: flex; gap: 18pt; align-items: center; }
 .read .gauge { width: 132pt; flex: none; }
 
@@ -171,9 +171,13 @@ p.note.mid { text-align: center; font-style: italic; }
 
 /* low scorers / high scorers */
 .scorers { display: grid; grid-template-columns: 1fr 1fr; gap: 14pt; align-items: stretch; }
-.scorers .card { padding: 14pt 15pt; background: color-mix(in srgb, var(--c) 9%, #fff); }
+.scorers .card { padding: 14pt 15pt; }
+/* a coloured card: gradient and text colour set inline (T.colourCard); its text a little heavier for contrast */
+.card.colour { box-shadow: none; }
+.card.colour p { font-weight: 500; }
+.card.colour b { color: inherit; }
 .scorers p { font-size: 12pt; line-height: 15.5pt; text-align: left; hyphens: manual; }
-.scorers b { color: var(--c); }
+.scorers .card:not(.colour) b { color: var(--c); }
 .scorers b, .dev b { font-weight: 600; }
 .dev-head { margin-bottom: 10pt; }
 

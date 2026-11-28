@@ -58,6 +58,7 @@ The whole site's design system is in `../design-system/`.
 11. **Additions are tagged** (Petros, 2026-11-14): only what is wholly new compared with the 2010 report carries a small "+ Added" tag (the three extra pages, the raters cards, the score wheel on each factor and facet page); redrawn 2010 charts such as the petal chart are not tagged. The tags are on by default for review and must be switched off for a finished report. `AUDIT-2010.md` has the full wording audit.
 12. **The report's name is "TEIQue 360°"**, with the degree sign (Petros, 2026-11-14). Use it wherever the name is shown.
 13. **Contents page** after the cover (Petros, 2026-11-14).
+14. **Coloured cards** (Petros, 2026-11-28): always the factor's gradient fill at full opacity (full colour at the top to the light colour at the bottom), with white text unless contrast says otherwise. `T.colourCard(g)` in `src/model.js` gives the fill and the text colour: white when it reaches 3:1 against the middle of the gradient (red, purple), dark ink otherwise (orange, yellow, green, the independent facets' pink). Used for the low/high scorers cards, the Full Form's Recruitment factor cards, the structure-tree chips and the factor chips; never a pale tint.
 
 ## Current state
 

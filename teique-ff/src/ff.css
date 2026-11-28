@@ -49,7 +49,8 @@ h1.title.second { margin-top: 6pt; }
 .rrow .rbody { flex: 1; min-width: 0; }
 .rrow h5.rh { font: 700 11pt/14pt Inter, sans-serif; color: var(--c); margin: 0 0 6pt; }
 .rcard { background: #fff; border-radius: 12pt; padding: 12pt 14pt; box-shadow: 0 0 10pt rgba(0, 0, 0, .12); }
-.rcard.fill { background: color-mix(in srgb, var(--f) 55%, #fff); box-shadow: none; }
+.rcard.fill { box-shadow: none; }   /* coloured card: gradient and text colour inline (T.colourCard) */
+.rcard.fill p.rline { font-weight: 500; }
 .rcard p.rline { font-size: 10.5pt; line-height: 13.5pt; text-align: left; hyphens: manual; margin: 0; }
 .rcard p.rline + p.rline { margin-top: 3pt; }
 .rcard p.rline.bul { padding-left: 9pt; text-indent: -9pt; margin-top: 1pt; }

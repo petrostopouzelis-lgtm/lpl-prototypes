@@ -140,9 +140,10 @@
             .rl { display: grid; grid-template-columns: 170px 1fr; gap: 12px; font-size: 14px; }
 
             .scorers { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; align-items: stretch; }
-            .scorers .card { background: color-mix(in srgb, var(--c) 9%, #fff); border-color: transparent; }
-            .scorers p { font-size: 14px; }
-            .scorers b { color: var(--c); }
+            /* coloured cards: the factor gradient and text colour are set inline (TEIQ.colourCard) */
+            .scorers .card { border-color: transparent; box-shadow: none; }
+            .scorers p { font-size: 14px; font-weight: 500; }
+            .scorers b { color: inherit; }
             .scorers b, .dev b { font-weight: 600; }
 
             .cols3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }

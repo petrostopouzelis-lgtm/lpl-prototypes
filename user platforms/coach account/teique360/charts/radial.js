@@ -22,9 +22,12 @@
   //   E  petal with a core: the petal is others, a slim bar down its middle is you
   //   F  petal with a score chip: the petal is others, a white chip is you
   //   G  petals with a profile line: the petals are others, a line through 15 points is you
+  // opt.single: one score per facet (TEIQue report): a whole petal for the person's own score, one number
+  // per facet, the Global score in the hub, no legend.
   C.wheel = (v, opt = {}) => {
-    const variant = 'DEFG'.includes(opt.variant) ? opt.variant : 'D';   // D picked by Petros, 2026-11-11
-    const W = 600, H = 640, cx = 300, cy = 300;
+    const single = !!opt.single;
+    const variant = single ? 'S' : 'DEFG'.includes(opt.variant) ? opt.variant : 'D';   // D picked by Petros, 2026-11-11
+    const W = 600, H = single ? 600 : 640, cx = 300, cy = 300;
     const R = { hub: 46, p0: 52, p1: 204, lab0: 206, lab1: 257, fac1: 293 };
     const step = 360 / T.FACET_ORDER.length, rOf = s => T.lin(s, R.p0, R.p1);
     const uid = S.id('wheel');
@@ -46,9 +49,9 @@
     const pts = [];
     T.FACET_ORDER.forEach((id, i) => {
       const g = T.groupOf(id), Y = T.youStyle(opt.you, g), a0 = i * step, a1 = a0 + step, mid = a0 + step / 2, flip = mid > 90 && mid < 270;
-      const self = v.self[id], oth = v.others[id], grad = `url(#${uid}-p-${g.id})`, yGrad = `url(#${uid}-y-${g.id})`;
+      const self = v.self[id], oth = single ? self : v.others[id], grad = `url(#${uid}-p-${g.id})`, yGrad = `url(#${uid}-y-${g.id})`;
       const rO = Math.max(rOf(oth), R.p0 + 8), rS = Math.max(rOf(self), R.p0 + 8);
-      const tip = `${T.nameOf(id)}: others ${oth}, you ${self}`;
+      const tip = single ? `${T.nameOf(id)}: ${self}` : `${T.nameOf(id)}: others ${oth}, you ${self}`;
       const edge = Y.hollow ? { stroke: Y.edge, 'stroke-width': 1.5 } : {};
       // sector dividers: solid in the label ring, dashed in the petal zone
       const d0 = S.pt(cx, cy, R.p0, a0), d1 = S.pt(cx, cy, R.p1, a0), d2 = S.pt(cx, cy, R.lab1, a0);
@@ -92,7 +95,7 @@
       lines.forEach((ln, k) => {
         labels += `<text font-family="${S.FONT_T}" font-size="9.8" font-weight="600" fill="${g.text}" dominant-baseline="central"><textPath href="#${arcAt(radii[k], 'n' + k)}" startOffset="50%" text-anchor="middle">${S.esc(ln)}</textPath></text>`;
       });
-      labels += `<text font-family="${S.FONT_B}" font-size="9.6" font-weight="700" dominant-baseline="central"><textPath href="#${arcAt(radii[lines.length], 'v')}" startOffset="50%" text-anchor="middle"><tspan fill="${g.text}">${oth}</tspan><tspan fill="#B7B6B7" font-weight="400"> | </tspan><tspan fill="${Y.text}">${self}</tspan></textPath></text>`;
+      labels += `<text font-family="${S.FONT_B}" font-size="9.6" font-weight="700" dominant-baseline="central"><textPath href="#${arcAt(radii[lines.length], 'v')}" startOffset="50%" text-anchor="middle">${single ? `<tspan fill="${g.text}">${self}</tspan>` : `<tspan fill="${g.text}">${oth}</tspan><tspan fill="#B7B6B7" font-weight="400"> | </tspan><tspan fill="${Y.text}">${self}</tspan>`}</textPath></text>`;
     });
 
     if (variant === 'G') {
@@ -124,9 +127,14 @@
     const YG = T.youStyle(opt.you, T.GLOBAL);
     const hubRow = (y, name, val, col) => S.text(cx - 2, y, name, { 'text-anchor': 'end', 'font-size': 9, 'font-weight': 700, fill: col }) +
       `<text x="${cx + 2}" y="${y}" font-family="${S.FONT_T}" font-size="15.5" font-weight="700" fill="${col}">${val}<tspan font-size="9" font-weight="500">%</tspan></text>`;
-    const hub = S.el('circle', { cx, cy, r: R.hub, fill: '#fff', filter: `url(#${uid}-sh)` }) +
+    const hub = single
+      ? S.el('circle', { cx, cy, r: R.hub, fill: '#fff', filter: `url(#${uid}-sh)` }) +
+        `<text x="${cx}" y="${cy + 5}" text-anchor="middle" font-family="${S.FONT_T}" font-size="22" font-weight="700" fill="${T.INK}">${v.self.global}<tspan font-size="13" font-weight="500">%</tspan></text>` +
+        S.text(cx, cy + 20, 'Global Score', { 'text-anchor': 'middle', 'font-size': 7.5, 'font-weight': 600, fill: T.MUTED })
+      : S.el('circle', { cx, cy, r: R.hub, fill: '#fff', filter: `url(#${uid}-sh)` }) +
       S.text(cx, cy - 22, 'GLOBAL', { 'text-anchor': 'middle', 'font-size': 7, 'font-weight': 700, fill: T.MUTED, 'letter-spacing': 0.7 }) +
       hubRow(cy - 2, 'Others', v.others.global, T.GLOBAL.text) + hubRow(cy + 17, 'You', v.self.global, YG.text);
+    if (single) return S.root(W, H, `<defs>${defs}</defs>${ring}${grid}${dividers}${petals}${bands}${labels}${hub}`, opt.label || 'TEIQue wheel chart');
 
     // legend: both swatches run through the five factor colours, each drawn the way this variant draws it
     const tO = opt.legendOthers || "Others' average", tY = opt.legendYou || 'How you rated yourself', wO = S.tw(tO, 11.5);
@@ -150,10 +158,11 @@
   //      both scores sit in the centre at the same size (Petros, 2026-11-14)
   //   E  ring with a core: the ring is others, a stripe along its middle is you
   //   F  ring with a score chip: the ring is others, a white chip sitting on it is you
+  //   S  (opt.single) one score: the Figma score wheel, a single ring with the score in the centre (TEIQue report)
   // opt.compact: no band labels and a tighter frame, for the small wheel next to each scale's strip.
   C.gauge = (v, id, opt = {}) => {
     // D picked by Petros, 2026-11-11
-    const variant = 'DEF'.includes(opt.variant) ? opt.variant : 'D', g = id === 'global' ? T.GLOBAL : T.groupOf(id), Y = T.youStyle(opt.you, g);
+    const variant = opt.single ? 'S' : 'DEF'.includes(opt.variant) ? opt.variant : 'D', g = id === 'global' ? T.GLOBAL : T.groupOf(id), Y = T.youStyle(opt.you, g);
     const self = v.self[id], oth = v.others[id];
     const compact = !!opt.compact, W = compact ? 196 : 240, H = W, cx = W / 2, cy = compact ? 98 : 116, uid = S.id('gauge');
     const ang = s => T.clamp(s, 0, 100) * 3.6, aS = ang(self), aO = ang(oth);
@@ -162,7 +171,9 @@
     let body = S.el('circle', { cx, cy, r: (rIn + rOut) / 2, fill: 'none', stroke: '#fff', 'stroke-width': rOut - rIn, filter: `url(#${uid}-sh)` });
     const dividers = (r0, r1) => [108, 252].map(d => { const p0 = S.pt(cx, cy, r0, d), p1 = S.pt(cx, cy, r1, d); return S.el('line', { x1: n(p0[0]), y1: n(p0[1]), x2: n(p1[0]), y2: n(p1[1]), stroke: '#fff', 'stroke-width': 1.3 }) + S.el('line', { x1: n(p0[0]), y1: n(p0[1]), x2: n(p1[0]), y2: n(p1[1]), stroke: '#00000014', 'stroke-width': 0.5 }); }).join('');
 
-    if (variant === 'D') {
+    if (variant === 'S') {
+      body += S.arcGrad(cx, cy, rIn, rOut, 0, Math.max(aS, 0.5), g.light, g.fill) + dividers(rIn, rOut);
+    } else if (variant === 'D') {
       // two rings, 17 wide each, 5 apart: others 75 to 92, you 53 to 70
       const track = (r0, r1) => S.el('circle', { cx, cy, r: (r0 + r1) / 2, fill: 'none', stroke: '#F1F2F4', 'stroke-width': r1 - r0 });
       body += track(75, rOut) + track(rIn, 70);
@@ -182,11 +193,13 @@
       const e = S.pt(cx, cy, (rIn + rOut) / 2, aS);
       body += chip(e[0], e[1], 14.5, Y, self, 12);
     }
-    body += S.el('title', {}, `${T.nameOf(id)}: others ${oth}, you ${self}`);
+    body += S.el('title', {}, variant === 'S' ? `${T.nameOf(id)}: ${self}` : `${T.nameOf(id)}: others ${oth}, you ${self}`);
 
     // centre. D: both scores at the same size, each in its ring's colour. E and F: others is the
     // headline number, you sits beneath it.
-    if (variant === 'D') {
+    if (variant === 'S') {
+      body += `<text x="${cx}" y="${cy + 11}" text-anchor="middle" font-family="${S.FONT_T}" font-size="30" font-weight="600" fill="${g.text}">${self}<tspan font-weight="400">%</tspan></text>`;
+    } else if (variant === 'D') {
       const row = (y, name, val, col) => S.text(cx - 3, y, name, { 'text-anchor': 'end', 'font-size': 13, 'font-weight': 700, fill: col }) +
         `<text x="${cx + 3}" y="${y}" font-family="${S.FONT_T}" font-size="22" font-weight="700" fill="${col}">${val}<tspan font-size="12.5" font-weight="500">%</tspan></text>`;
       body += row(cy - 5, 'Others', oth, g.text) + row(cy + 20, 'You', self, Y.text);
@@ -195,7 +208,8 @@
       body += `<text x="${cx}" y="${cy + 9}" text-anchor="middle" font-family="${S.FONT_T}" font-size="28" font-weight="600" fill="${g.text}">${oth}<tspan font-weight="300">%</tspan></text>`;
       body += S.text(cx, cy + 25, `You ${self}%`, { 'text-anchor': 'middle', 'font-size': 11.5, 'font-weight': 700, fill: Y.text, 'font-family': S.FONT_B });
     }
-    if (compact) return S.root(W, H, `<defs>${defs}</defs>${body}`, `${T.nameOf(id)} score wheel: others ${oth}, you ${self}`);
+    const label = variant === 'S' ? `${T.nameOf(id)} score wheel: ${self}` : `${T.nameOf(id)} score wheel: others ${oth}, you ${self}`;
+    if (compact) return S.root(W, H, `<defs>${defs}</defs>${body}`, label);
 
     // band labels, placed as in Figma
     const rl = 108, lo = S.pt(cx, cy, rl, 60), hi = S.pt(cx, cy, rl, 300);
@@ -203,7 +217,7 @@
     body += S.el('text', Object.assign({ transform: `translate(${n(lo[0])} ${n(lo[1])}) rotate(60)`, 'font-family': S.FONT_T, dy: 3 }, lab), 'Low');
     body += S.el('text', Object.assign({ transform: `translate(${n(hi[0])} ${n(hi[1])}) rotate(-60)`, 'font-family': S.FONT_T, dy: 3 }, lab), 'High');
     body += S.text(cx, cy + rl + 8, 'Average', lab);
-    return S.root(W, H, `<defs>${defs}</defs>${body}`, `${T.nameOf(id)} score wheel: others ${oth}, you ${self}`);
+    return S.root(W, H, `<defs>${defs}</defs>${body}`, label);
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = T;

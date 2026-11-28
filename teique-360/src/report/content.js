@@ -47,7 +47,9 @@
       return t ? paras(t) : needed(`interpretation for ${T.nameOf(id)} in the ${band.label} band`, 2);
     };
     const scorers = id => {
-      const sc = lib.scales[id], box = t => `<div class="card"><p>${esc(t).replace(/^((?:Low|High) Scorers)/, '<b>$1</b>')}</p></div>`;
+      // coloured cards: the factor's gradient with white text where contrast allows (T.colourCard)
+      const g = id === 'global' ? T.GLOBAL : T.groupOf(id), cc = T.colourCard(g);
+      const sc = lib.scales[id], box = t => `<div class="card colour" style="${cc.style}"><p>${esc(t).replace(/^((?:Low|High) Scorers)/, '<b>$1</b>')}</p></div>`;
       return sc.low_scorers || sc.high_scorers ? `<div class="scorers">${sc.low_scorers ? box(sc.low_scorers) : ''}${sc.high_scorers ? box(sc.high_scorers) : ''}</div>` : '';
     };
 
@@ -81,7 +83,7 @@
     ]);
 
     // ---- what the TEIQue measures
-    const fmap = `<div class="fmap">${T.GROUPS.map(g => `<div class="grp" style="--f:${g.fill};--l:${g.light}"><div class="chip">${esc(g.name)}</div><div class="rows">${g.facets.map(f =>
+    const fmap = `<div class="fmap">${T.GROUPS.map(g => `<div class="grp" style="--f:${g.fill};--l:${g.light};--on:${T.colourCard(g).color}"><div class="chip">${esc(g.name)}</div><div class="rows">${g.facets.map(f =>
       `<div class="r"><div class="chip f">${esc(T.nameOf(f))}</div><span>${esc(lib.scales[f].short || '')}</span></div>`).join('')}</div></div>`).join('')}</div>`;
     add('measures', pg.measures.title, T.BLUE, [
       head(pg.section_intro, pg.measures.title),
