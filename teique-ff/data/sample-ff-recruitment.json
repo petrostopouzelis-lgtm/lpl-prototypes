@@ -1,0 +1,40 @@
+{
+  "schema": "teique-ff/1",
+  "report": {
+    "form": "TEIQue-FF",
+    "version": "recruitment",
+    "language": "en",
+    "norm": "UK",
+    "date": "2025-11-21",
+    "id": "SAMPLE-FF-RECRUITMENT",
+    "sample": true
+  },
+  "subject": {
+    "name": "Joe Smith"
+  },
+  "settings": {
+    "watermark": false
+  },
+  "self": {
+    "global": 9,
+    "wellbeing": 24,
+    "happiness": 18,
+    "optimism": 50,
+    "self_esteem": 24,
+    "self_control": 16,
+    "emotion_regulation": 25,
+    "impulse_control": 10,
+    "stress_management": 25,
+    "emotionality": 7,
+    "empathy": 4,
+    "emotion_perception": 23,
+    "emotion_expression": 9,
+    "relationships": 13,
+    "sociability": 14,
+    "emotion_management": 6,
+    "assertiveness": 37,
+    "social_awareness": 16,
+    "adaptability": 8,
+    "self_motivation": 4
+  }
+}

@@ -16,7 +16,8 @@ import json, os, re, sys
 from pypdf import PdfReader
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SAMPLES = {'personal': 'sample-ff', 'corporate': 'sample-ff-corporate', 'leadership': 'sample-ff-leadership'}
+SAMPLES = {'personal': 'sample-ff', 'corporate': 'sample-ff-corporate', 'leadership': 'sample-ff-leadership',
+           'developmental': 'sample-ff-developmental', 'recruitment': 'sample-ff-recruitment'}
 args = sys.argv[1:]
 ver = args[0] if args and args[0] in SAMPLES else 'personal'
 pdf = next((a for a in args if a.endswith('.pdf')), os.path.join(ROOT, 'out', SAMPLES[ver] + '.pdf'))
@@ -40,14 +41,31 @@ for page in layer['pages']:
         t = b['text']
         if t in SKIP or t == 'Page' or t.isdigit() or t.startswith('©'):
             continue
-        # the wheel and the summary graph (pages 6 and 7): the charts' own labels, drawn by the report's charts;
-        # only the quote under the wheel is wording
-        if page['page'] in (6, 7) and not ('Medium' in b['font'] and b['size'] > 9):
+        # the wheel and the summary graph: the charts' own labels, drawn by the report's charts; only the quote
+        # under the wheel is wording
+        charts = {'developmental': (4, 5), 'recruitment': (4,)}.get(ver, (6, 7))
+        if page['page'] in charts and not ('Medium' in b['font'] and b['size'] > 9):
+            continue
+        # Developmental: the sample prints factor names in capitals ("WELL-BEING"); the report uses Figma's titles
+        if ver == 'developmental' and t.isupper() and 'Medium' in b['font']:
             continue
         sample_blocks.append((page['page'], t))
-cards = [(sid, band, t) for sid, s in V['scales'].items() for band, t in s['interpretation'].items() if t]
-cards += [('structure', 'scores', t) for t in V['pages']['structure']['scores']]
-cards += [('uses', 'item', t) for t in V['pages']['uses']['items']]
+def flat(o):
+    """Every string inside a library entry."""
+    if isinstance(o, str): return [o] if o.strip() else []
+    if isinstance(o, list): return [x for i in o for x in flat(i)]
+    if isinstance(o, dict): return [x for k, i in o.items() if k not in ('source', 'flag', 'title_source') for x in flat(i)]
+    return []
+if ver == 'recruitment':
+    # the sample's own cards, as transcribed (the report builds the opening sentence and the average text itself)
+    rc = json.load(open(os.path.join(ROOT, 'reference/recruitment-cards.json'), encoding='utf-8'))['cards']
+    cards = [(sid, 'card', p) for sid, c in rc.items() for p in c['paragraphs']]
+elif ver == 'developmental':
+    cards = [(sid, band, p) for sid, s in V['scales'].items() for band, t in s['interpretation'].items() if t for p in flat(t)]
+else:
+    cards = [(sid, band, t) for sid, s in V['scales'].items() for band, t in s['interpretation'].items() if t]
+    cards += [('structure', 'scores', t) for t in V['pages']['structure']['scores']]
+    cards += [('uses', 'item', t) for t in V['pages']['uses']['items']]
 
 missing = [(p, t) for p, t in sample_blocks if key(t) not in built]
 missing += [(f'{sid}/{band}', para) for sid, band, t in cards for para in t.split('\n\n') if key(para) not in built]
@@ -61,13 +79,13 @@ rest = built
 for t in sorted([t for _, t in sample_blocks] + [p for _, _, t in cards for p in t.split('\n\n')], key=len, reverse=True):
     rest = rest.replace(key(t), ' ')
 # words from the Figma frames and the cover template (listed in text/library.json with their source)
-FIGMA = ['TEIQue ' + V['header'], 'YourScore', 'YourTEIQueWheelChart', 'YourTEIQueSummaryGraph', 'Contents', V['cover'], 'FullForm',
+FIGMA = ['TEIQue ' + V['header'], 'Auxiliary Facets', 'YourScore', 'YourTEIQueWheelChart', 'YourTEIQueSummaryGraph', 'Contents', V['cover'], 'FullForm',
          'WellBeingFactor', 'SelfControlFactor', 'EmotionalityFactor', 'SociabilityFactor', 'TraitEmotionalIntelligence']
 # labels that are not sample sentences: running header and footer, scale names, band names, numbers
-names = ['Global Score', 'Well-Being', 'Self-Control', 'Emotionality', 'Sociability', 'Independent Facets'] + [s['title'] for s in V['scales'].values()]
+names = ['Global Score', 'Well-Being', 'Self-Control', 'Emotionality', 'Sociability', 'Independent Facets'] + [s['title'] for s in V['scales'].values() if 'title' in s]
 names += [s['title'] for s in lib['versions']['personal']['scales'].values()]   # the charts' labels use the plain scale names
 ct = V['pages']['contents']   # the sample's contents page is a picture: its entries are copied in the library
-labels = FIGMA + names + [ct[k] for k in ('intro', 'wheel', 'summary', 'global', 'independent')] + [f"TEIQue {V['cover']} Full Form"]
+labels = FIGMA + names + flat(ct) + [f"TEIQue {V['cover']} Full Form"]
 labels += lib['footer']['copyright'].split('{year}') + [lib['footer']['legal'], 'Low', 'Average', 'High', 'page']
 labels += [json.load(open(os.path.join(ROOT, 'data', d), encoding='utf-8'))['subject']['name'] for d in os.listdir(os.path.join(ROOT, 'data')) if d.endswith('.json')]
 rest = re.sub(r'\d+', ' ', rest)

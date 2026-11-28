@@ -1,0 +1,40 @@
+{
+  "schema": "teique-ff/1",
+  "report": {
+    "form": "TEIQue-FF",
+    "version": "developmental",
+    "language": "en",
+    "norm": "UK",
+    "date": "2025-11-21",
+    "id": "SAMPLE-FF-DEVELOPMENTAL",
+    "sample": true
+  },
+  "subject": {
+    "name": "George Tsingkas"
+  },
+  "settings": {
+    "watermark": false
+  },
+  "self": {
+    "global": 96,
+    "wellbeing": 96,
+    "happiness": 99,
+    "optimism": 90,
+    "self_esteem": 95,
+    "self_control": 74,
+    "emotion_regulation": 63,
+    "impulse_control": 46,
+    "stress_management": 96,
+    "emotionality": 96,
+    "empathy": 93,
+    "emotion_perception": 98,
+    "emotion_expression": 96,
+    "relationships": 72,
+    "sociability": 99,
+    "emotion_management": 97,
+    "assertiveness": 98,
+    "social_awareness": 94,
+    "adaptability": 78,
+    "self_motivation": 94
+  }
+}

@@ -1,6 +1,10 @@
 """Reads the text cards of a 2025 TEIQue sample report, which are pictures, not text.
 
-    python teique-ff/tools/ocr-cards.py <report.pdf> <out.json> [--ocrlib <dir>]
+    python teique-ff/tools/ocr-cards.py <report.pdf> <out.json> [--ocrlib <dir>] [--rgb]
+
+--rgb: the cards hold their text in the colour picture, not in the transparency mask (the Recruitment
+report's cards: dark text on white, white text on colour). The text is then read from how far each pixel
+is from the card's own colour.
 
 In the samples, each white text card (the interpretation on a scale page, development cards...) is an
 image whose transparency mask holds the text shapes. For every large image on every page this script
@@ -12,6 +16,9 @@ El -> EI). The result must still be checked against the page by eye before it go
 import json, os, re, subprocess, sys, tempfile
 
 args = sys.argv[1:]
+RGB = '--rgb' in args
+if RGB:
+    args.remove('--rgb')
 if '--ocrlib' in args:
     i = args.index('--ocrlib'); sys.path.insert(0, args[i + 1]); del args[i:i + 2]
 src, out = args[0], args[1]
@@ -140,7 +147,17 @@ def main():
         for x in files:
             im = Image.open(os.path.join(tmp, x))
             if im.mode == 'L' and im.width > 1500 and im.height > 300:
-                paras = read(os.path.join(tmp, x))
+                path = os.path.join(tmp, x)
+                if RGB:
+                    # the colour picture is the image just before its mask: text = distance from the card colour
+                    n = int(x.split('-')[1].split('.')[0])
+                    rgb = np.asarray(Image.open(os.path.join(tmp, f'p{page:02d}-{n - 1:03d}.png')).convert('RGB')).astype(int)
+                    inside = np.asarray(im) > 200
+                    bg = np.median(rgb[inside], axis=0)
+                    dist = np.abs(rgb - bg).max(axis=2) * inside
+                    path = os.path.join(tmp, f'text-{x}')
+                    Image.fromarray(np.clip(dist * 1.3, 0, 255).astype(np.uint8)).save(path)
+                paras = read(path)
                 if paras:
                     cards.append(paras)
         pages[page] = cards
@@ -151,7 +168,7 @@ def main():
     for i, r in enumerate(REVIEW):
         m = Image.open(r['mask']).convert('L')
         ImageOps.invert(m.crop((0, max(0, r['top'] - 8), m.width, min(m.height, r['bottom'] + 8)))).save(os.path.join(rev_dir, f'{i:03d}.png'))
-        r['image'] = f'{i:03d}.png'; r['page'] = int(os.path.basename(r['mask'])[1:3]); del r['mask']
+        r['image'] = f'{i:03d}.png'; r['page'] = int(os.path.basename(r['mask']).replace('text-', '')[1:3]); del r['mask']
     json.dump({'source': os.path.basename(src), 'pages': {str(k): v for k, v in pages.items()}, 'review': REVIEW}, open(out, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     print(len(REVIEW), 'lines to check by eye in', rev_dir)
 

@@ -1,0 +1,649 @@
+{
+ "source": "TEIQue-FF Recruitment Report [SAMPLE].pdf",
+ "pages": [
+  {
+   "page": 1,
+   "blocks": [
+    {
+     "text": "Recruitment",
+     "top": 498.6,
+     "x": 196.7,
+     "font": "Inter-Medium",
+     "size": 20.8
+    },
+    {
+     "text": "Report",
+     "top": 498.6,
+     "x": 331.5,
+     "font": "Inter-ExtraLightBETA",
+     "size": 20.8
+    },
+    {
+     "text": "Joe Smith",
+     "top": 481.2,
+     "x": 265.7,
+     "font": "Inter-ThinBETA",
+     "size": 12.8
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "blocks": [
+    {
+     "text": "Page",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.8
+    },
+    {
+     "text": "2",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-LightBETA",
+     "size": 8.8
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 9.6,
+     "x": 204.8,
+     "font": "Inter-LightBETA",
+     "size": 8.0
+    }
+   ]
+  },
+  {
+   "page": 3,
+   "blocks": [
+    {
+     "text": "How to Read the TEIQue Recruitment Report",
+     "top": 738.9,
+     "x": 48.1,
+     "font": "Inter-Medium",
+     "size": 20.8
+    },
+    {
+     "text": "Unlike other TEIQue reports, the TEIQue Recruitment report has been written from the perspective of HR specialists and recruiting organizations (recruiter), rather than that of the respondent (candidate). The report should take about 15 minutes to process, although, with usage and experience, this time commitment will be significantly reduced.",
+     "top": 706.5,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "This report should be used in conjunction with other information to evaluate person-job fit, which is the degree of alignment between the candidate’s personality and the job content.All TEIQue profiles have advantages and disadvantages, but not all TEIQue profiles are suitable for all jobs. The psychological characteristics tapped by the TEIQue interact with the context and characteristics of particular job roles.As a skilled professional consultant, you are called to bring your acumen and experience to bear on the evaluation of this information and its relevance to the recruitment (or development) process as a whole.",
+     "top": 654.8,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "The potentials and recommendations presented in these reports are not to be construed as certainties and inevitabilities, but rather as aids to your expert judgment and as suggestions for exploration with candidates.Their purpose is to initiate, guide, and enrich interviews and professional exchanges.The reports should not be used as cut-off criteria for mechanical or automated decision-making.",
+     "top": 567.7,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "In the TEIQue Recruitment report, scores are classified into seven (rather than three) categories in order to provide more nuance and finer support to decision-making: 1-15% very low, 16-30% low, 31-40% low-average, 41-60% average, 61-70% high-average, 71-85% high, 86-99% very high.In general, the possible desirable and undesirable implications listed under the high and low scores of each TEIQue factor and facet will be more accentuated for scores that are very high or very low.",
+     "top": 504.0,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "As regards average scores (31-70%), these are less likely to exert marked influence on behavior, compared to high and low scores (and, especially, compared to very high and very low scores).The descriptions for average scores will typically represent some combination of the descriptions for high and low scores on the relevant facet.For reasons of space, and to facilitate due focus on extreme scores, these descriptions have not been included in the Recruitment report.However, if required, they can be found in the “TEIQue score interpretation” slides in the introductory TEIQue accreditation course under section “TEIQue: Principles of interpretation and case studies” .Note that for high-stakes assessments and high-level appointments, I recommend considering at least one full TEIQue report (Standard, Developmental, or Leadership) in addition to the Recruitment report.",
+     "top": 428.9,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "I trust that you will find the TEIQue Recruitment report a useful addition to your current recruitment processes and that it will help you arrive at optimal decisions for all concerned.I also hope that through your personal engagement with these reports, you – as a conscious recruiter – will be able to discover deeper actualities about your own true Self.",
+     "top": 307.6,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "Sincerely,",
+     "top": 207.8,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "Konstantinos V. Petrides",
+     "top": 183.8,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "psychometriclab.com",
+     "top": 161.6,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "Page",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.8
+    },
+    {
+     "text": "3",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-LightBETA",
+     "size": 8.8
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 9.6,
+     "x": 204.8,
+     "font": "Inter-LightBETA",
+     "size": 8.0
+    }
+   ]
+  },
+  {
+   "page": 4,
+   "blocks": [
+    {
+     "text": "Low Average High",
+     "top": 725.7,
+     "x": 262.9,
+     "font": "LiberationSans",
+     "size": 9.6
+    },
+    {
+     "text": "1 30 70 99",
+     "top": 715.5,
+     "x": 214.4,
+     "font": "LiberationSans",
+     "size": 8.8
+    },
+    {
+     "text": "Global score",
+     "top": 695.7,
+     "x": 48.1,
+     "font": "LiberationSans-Bold",
+     "size": 11.2
+    },
+    {
+     "text": "Well-being",
+     "top": 651.2,
+     "x": 48.1,
+     "font": "LiberationSans-Bold",
+     "size": 11.2
+    },
+    {
+     "text": "Happiness",
+     "top": 631.4,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Optimism",
+     "top": 613.4,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Self-Esteem",
+     "top": 595.3,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Self-Control",
+     "top": 553.3,
+     "x": 48.1,
+     "font": "LiberationSans-Bold",
+     "size": 11.2
+    },
+    {
+     "text": "Emotion Regulation",
+     "top": 533.5,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Impulse Control",
+     "top": 515.4,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Stress Management",
+     "top": 497.4,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Emotionality",
+     "top": 454.8,
+     "x": 48.1,
+     "font": "LiberationSans-Bold",
+     "size": 11.2
+    },
+    {
+     "text": "Empathy",
+     "top": 434.9,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Emotion Perception",
+     "top": 416.9,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Emotion Expression",
+     "top": 398.9,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Relationships",
+     "top": 380.9,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Sociability",
+     "top": 338.8,
+     "x": 48.1,
+     "font": "LiberationSans-Bold",
+     "size": 11.2
+    },
+    {
+     "text": "Emotion Management",
+     "top": 319.0,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Assertiveness",
+     "top": 301.0,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Social Awareness",
+     "top": 282.9,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Adaptability",
+     "top": 242.1,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Self-Motivation",
+     "top": 224.1,
+     "x": 48.1,
+     "font": "LiberationSans",
+     "size": 10.0
+    },
+    {
+     "text": "Page",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.8
+    },
+    {
+     "text": "4",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-LightBETA",
+     "size": 8.8
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 9.6,
+     "x": 204.8,
+     "font": "Inter-LightBETA",
+     "size": 8.0
+    }
+   ]
+  },
+  {
+   "page": 5,
+   "blocks": [
+    {
+     "text": "Global Trait EI",
+     "top": 702.9,
+     "x": 48.1,
+     "font": "Inter-Medium",
+     "size": 20.8
+    },
+    {
+     "text": "The Global trait EI score provides a snapshot of general emotional functioning – how confident one is in their emotional abili- ties and how comfortable they feel in their emotional world.",
+     "top": 670.4,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "Auxiliary Facets",
+     "top": 468.6,
+     "x": 48.1,
+     "font": "Inter-Medium",
+     "size": 20.8
+    },
+    {
+     "text": "Adaptability",
+     "top": 434.9,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Self-Motivation",
+     "top": 290.7,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Page",
+     "top": 28.8,
+     "x": 281.7,
+     "font": "Inter-ThinBETA",
+     "size": 8.8
+    },
+    {
+     "text": "5",
+     "top": 28.8,
+     "x": 281.7,
+     "font": "Inter-LightBETA",
+     "size": 8.8
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 9.6,
+     "x": 204.8,
+     "font": "Inter-LightBETA",
+     "size": 8.0
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "blocks": [
+    {
+     "text": "Well-Being Factor",
+     "top": 738.9,
+     "x": 48.1,
+     "font": "Inter-Medium",
+     "size": 20.8
+    },
+    {
+     "text": "The Well-being factor reflects the common core of the three facets it comprises, i.e., Happiness, Optimism, and Self-esteem.",
+     "top": 706.5,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "Happiness",
+     "top": 532.3,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Optimism",
+     "top": 382.1,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Self-esteem",
+     "top": 231.9,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Page",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.8
+    },
+    {
+     "text": "6",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-LightBETA",
+     "size": 8.8
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 9.6,
+     "x": 204.8,
+     "font": "Inter-LightBETA",
+     "size": 8.0
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "blocks": [
+    {
+     "text": "Self-Control Factor",
+     "top": 738.9,
+     "x": 48.1,
+     "font": "Inter-Medium",
+     "size": 20.8
+    },
+    {
+     "text": "The Self-control factor essentially reflects the common, overlapping core of the three facets it comprises, i.e., Emotion regulation, Impulse control, and Stress management.",
+     "top": 706.5,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "Emotion regulation",
+     "top": 532.3,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Impulse control",
+     "top": 382.1,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Stress Management",
+     "top": 231.9,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Page",
+     "top": 28.8,
+     "x": 281.9,
+     "font": "Inter-ThinBETA",
+     "size": 8.8
+    },
+    {
+     "text": "7",
+     "top": 28.8,
+     "x": 281.9,
+     "font": "Inter-LightBETA",
+     "size": 8.8
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 9.6,
+     "x": 204.8,
+     "font": "Inter-LightBETA",
+     "size": 8.0
+    }
+   ]
+  },
+  {
+   "page": 8,
+   "blocks": [
+    {
+     "text": "Emotionality Factor",
+     "top": 738.9,
+     "x": 48.1,
+     "font": "Inter-Medium",
+     "size": 20.8
+    },
+    {
+     "text": "The Emotionality factor essentially reflects the common, overlapping core of the four facets it comprises, i.e., Emotion expression, Emotion perception, Empathy, and Relationships.",
+     "top": 718.5,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "Emotion Perception",
+     "top": 556.3,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Emotion Expression",
+     "top": 418.1,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Empathy",
+     "top": 279.9,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Relationships",
+     "top": 141.7,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Page",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.8
+    },
+    {
+     "text": "8",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-LightBETA",
+     "size": 8.8
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 9.6,
+     "x": 204.8,
+     "font": "Inter-LightBETA",
+     "size": 8.0
+    }
+   ]
+  },
+  {
+   "page": 9,
+   "blocks": [
+    {
+     "text": "Sociability Factor",
+     "top": 738.9,
+     "x": 48.1,
+     "font": "Inter-Medium",
+     "size": 20.8
+    },
+    {
+     "text": "The Sociability factor essentially reflects the common, overlapping core of the three facets it comprises, i.e., Assertiveness, Emotion management, and Social awareness.",
+     "top": 706.5,
+     "x": 48.1,
+     "font": "Inter-LightBETA",
+     "size": 9.6
+    },
+    {
+     "text": "Assertiveness",
+     "top": 532.3,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Emotion Management",
+     "top": 382.1,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Social Awareness",
+     "top": 231.9,
+     "x": 198.0,
+     "font": "Inter-Bold",
+     "size": 10.8
+    },
+    {
+     "text": "Page",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.8
+    },
+    {
+     "text": "9",
+     "top": 28.8,
+     "x": 281.6,
+     "font": "Inter-LightBETA",
+     "size": 8.8
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 9.6,
+     "x": 204.8,
+     "font": "Inter-LightBETA",
+     "size": 8.0
+    }
+   ]
+  },
+  {
+   "page": 10,
+   "blocks": []
+  }
+ ]
+}

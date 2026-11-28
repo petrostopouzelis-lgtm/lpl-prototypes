@@ -78,7 +78,7 @@ input[type=number] { background-image: none; padding-right: 11px; }
 .seg button small { display: block; font-weight: 400; font-size: 11.5px; }
 .seg button[aria-pressed=true] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(20, 40, 60, .14); }
 /* the Full Form's versions (Personal, Corporate, Leadership...): one button each, as many columns as versions */
-.seg.vers { grid-template-columns: repeat(var(--n, 3), 1fr); margin-top: 0; }
+.seg.vers { grid-template-columns: repeat(3, 1fr); margin-top: 0; }
 .seg.vers button[aria-checked=true] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(20, 40, 60, .14); }
 .group-title .gt-note { margin-left: 8px; font: 500 11.5px var(--body); letter-spacing: 0; text-transform: none; color: var(--faint); }
 #ff-version .group-title { margin-top: 14px; }
@@ -200,7 +200,7 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
             <span class="dot"></span><div><b>TEIQ<i>ue</i> 360°</b><span>Self and rater scores, full form · A4</span></div>
           </button>
           <button type="button" class="rtype" role="radio" aria-checked="false" data-report="ff">
-            <span class="dot"></span><div><b>TEIQ<i>ue</i> Full Form</b><span>Personal report: one person's scores · A4</span></div>
+            <span class="dot"></span><div><b>TEIQ<i>ue</i> Full Form</b><span>One person's scores · five versions · A4</span></div>
           </button>
         </div>
         <div id="ff-version" hidden>
@@ -242,7 +242,7 @@ details.fmt code { font: 500 11.5px/1 ui-monospace, Consolas, monospace; color: 
           <summary>What the data file holds</summary>
           <ul>
             <li><code>subject</code>: the person's name.</li>
-            <li><code>report</code>: date, form (<code>TEIQue-FF</code>), version (<code>personal</code>, <code>corporate</code> or <code>leadership</code>; the Version buttons above can change it), norm and participant ID.</li>
+            <li><code>report</code>: date, form (<code>TEIQue-FF</code>), version (<code>personal</code>, <code>corporate</code>, <code>leadership</code>, <code>developmental</code> or <code>recruitment</code>; the Version buttons above can change it), norm and participant ID.</li>
             <li><code>self</code>: the 20 scores (Global, 4 factors, 15 facets), as percentiles 1 to 99.</li>
             <li>Optional: <code>settings</code> (<code>watermark</code>).</li>
           </ul>

@@ -105,6 +105,9 @@
     // its placeholder name and old copyright replaced by live text (F.cover). Editable covers come later.
     sections.push({ id: 'cover', kind: 'cover', title: 'Cover', html: F.cover(lib, V.cover_image, V.cover, data.subject.name, fmt(lib.footer.copyright, { year }), COVERS) });
 
+    if (V.template === 'recruitment') return recruitment();
+    if (V.template === 'developmental') return developmental();
+
     // ---- contents: filled in by the paginator. Entries as in the sample and Figma: Introduction,
     // Wheel Chart, Summary Graphs, Global Score, each factor with its facets, Independent Facets.
     const ct = pg.contents;
@@ -148,15 +151,94 @@
       }
     });
 
-    sections.push({ id: 'back', kind: 'back', title: 'Back cover', html: `<img class="bg" src="${ASSETS}back-cover.jpg" alt="">` });
+    return finish();
 
-    return {
+    // ---- the end of every version: back cover, running header and footer
+    function finish() {
+      sections.push({ id: 'back', kind: 'back', title: 'Back cover', html: `<img class="bg" src="${ASSETS}back-cover.jpg" alt="">` });
+      return {
       sections,
       version: ver,
       meta: { product: `TEIQ<i>ue</i> ${esc(V.header)}`, name: data.subject.name, date: data.report.date, copyright: fmt(lib.footer.copyright, { year }),
         logo: ASSETS + 'logo-monogram.png', tocSubNumbers: false,
         watermark: !!st.watermark || opt.watermark, watermarkText: 'London Psychometric Laboratory Sample' }
-    };
+      };
+    }
+
+    // ---- Recruitment (its own template, sample "TEIQue-FF Recruitment Report"): introduction, summary graph,
+    // Global Trait EI with the auxiliary facets, then one page per factor with all its facets. Each scale is a row:
+    // a small score wheel beside a card (factor cards in the factor's colour). Seven score levels (V.levels).
+    function recruitment() {
+      const ct = pg.contents, levelOf = s => V.levels.find(l => s >= l.min && s <= l.max) || V.levels[0];
+      const isAvg = l => ['low_average', 'average', 'high_average'].includes(l.id);
+      const line = t => `<p class="${t.startsWith('•') ? 'rline bul' : 'rline'}">${esc(t)}</p>`;
+      const card = id => {
+        const sc = SC[id], lv = levelOf(data.self[id]), own = sc.interpretation[lv.id] || [];
+        const open = line(fmt(V.opening, { name: sc.card_name, level: lv.label }));
+        if (own.length) return open + own.map(line).join('');
+        if (isAvg(lv)) return open + line(fmt(V.average_text, { name: sc.card_name }));
+        return open + needed(`interpretation for ${T.nameOf(id)} at the ${lv.label} level`, 1);
+      };
+      const row = (id, heading, fill) => {
+        const g = id === 'global' ? T.GLOBAL : T.groupOf(id);
+        return `<div class="rrow can-tighten" style="--c:${g.text};--f:${g.fill}"><div class="rwheel chart">${C.gauge(v, id, { single: true })}</div>
+          <div class="rbody">${heading ? `<h5 class="rh">${esc(heading)}</h5>` : ''}<div class="rcard${fill ? ' fill' : ''}">${card(id)}</div></div></div>`;
+      };
+      sections.push({ id: 'toc', kind: 'contents', title: ct.title, color: T.BLUE, headHtml: head(ct.title) });
+      add('intro', pg.intro.title, T.BLUE, [head(pg.intro.title), `<div>${pg.intro.paragraphs.map(t => P(t)).join('')}</div>`,
+        `<div class="signoff">${pg.intro.signoff.map(t => P(t)).join('')}</div>`], { tocTitle: ct.intro });
+      add('summary', pg.summary.title, T.BLUE, [head(pg.summary.title), `<div class="chart">${C.summary(v, { single: true, width: 540, label: 'TEIQue summary graph' })}</div>`], { tocTitle: ct.summary });
+      add('global', pg.global.title, T.GLOBAL.text, [head(pg.global.title), P(pg.global.lead), row('global', '', true)], { tocTitle: ct.global, mergeNext: true });
+      const ind = T.GROUPS.find(g => !g.scored);
+      add('auxiliary', pg.auxiliary.title, ind.text, [head(pg.auxiliary.title, 'second')].concat(pg.auxiliary.facets.map((f, i) => row(f, pg.auxiliary.headings[i]))),
+        { tocTitle: ct.auxiliary, tocSubs: ct.subs.auxiliary.map(title => ({ title })) });
+      pg.factors.forEach(fp => {
+        const g = T.groupOf(fp.id);
+        add(fp.id, fp.title, g.text, [head(fp.title), P(fp.lead), row(fp.id, '', true)].concat(fp.facets.map(f => row(f, SC[f].heading))),
+          { tocTitle: ct.factors[fp.id], tocSubs: ct.subs[fp.id].map(title => ({ title })) });
+      });
+      return finish();
+    }
+
+    // ---- Developmental (its own template, sample "TEIQue-FF Developmental Report", Figma 442:695 to 442:837):
+    // introduction, wheel chart, summary graph, then each factor (a paragraph beside its score wheel, a card of
+    // pointers) followed by its facets (the facet name beside its score wheel, then headed cards).
+    function developmental() {
+      const ct = pg.contents;
+      const textFor = id => (SC[id].interpretation || {})[T.bandOf(data.self[id]).id];
+      const gauge = id => `<div class="gauge chart">${C.gauge(v, id, { single: true })}</div>`;
+      const factorPage = id => {
+        const t = textFor(id), band = T.bandOf(data.self[id]);
+        if (!t) return [`<div class="dev-top factor"><h1 class="title">${brand(SC[id].title)}</h1>${gauge(id)}</div>`,
+          { html: `<div><div class="card">${needed(`development pointers for ${T.nameOf(id)} in the ${band.label} band`, 2)}</div></div>`, split: '.card' }];
+        return [head(SC[id].title), `<div class="row"><div class="txt">${P(t.intro)}</div>${gauge(id)}</div>`,
+          { html: `<div><div class="card dev-list"><ul>${t.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul></div></div>`, split: 'ul' }];
+      };
+      const facetPage = id => {
+        const t = textFor(id), band = T.bandOf(data.self[id]);
+        const top = `<div class="dev-top"><h1 class="title">${brand(SC[id].title)}</h1>${gauge(id)}</div>`;
+        if (!t) return [top, { html: `<div><div class="card">${needed(`development suggestions for ${T.nameOf(id)} in the ${band.label} band`, 2)}</div></div>`, split: '.card' }];
+        return [top, t.intro ? `<div class="card">${paras(t.intro)}</div>` : '']
+          .concat(t.sections.map(x => ({ html: `<div class="dev-sec"><h5 class="caps">${esc(x.heading)}</h5><div class="card">${x.paragraphs.map(q => P(q)).join('')}</div></div>`, split: '.card' })));
+      };
+      sections.push({ id: 'toc', kind: 'contents', title: ct.title, color: T.BLUE, headHtml: head(ct.title) });
+      add('intro', pg.intro.title, T.BLUE, [head(pg.intro.title), `<div>${pg.intro.paragraphs.map(t => P(t)).join('')}</div>`,
+        `<div class="signoff">${pg.intro.signoff.map(t => P(t)).join('')}</div>`], { tocTitle: ct.intro });
+      add('wheel', pg.wheel.title, T.BLUE, [head(pg.wheel.title), `<div class="chart wheel-chart">${C.wheel(v, { single: true, label: 'TEIQue wheel chart' })}</div>`,
+        `<figure class="quote"><blockquote>${esc(pg.wheel.quote)}</blockquote><figcaption>${esc(pg.wheel.quote_by)}</figcaption></figure>`], { tocTitle: ct.wheel });
+      add('summary', pg.summary.title, T.BLUE, [head(pg.summary.title), `<div class="chart">${C.summary(v, { single: true, width: 540, label: 'TEIQue summary graph' })}</div>`], { tocTitle: ct.summary });
+      T.GROUPS.forEach(g => {
+        if (g.scored) {
+          add(g.id, SC[g.id].title, g.text, factorPage(g.id), { tocTitle: T.nameOf(g.id) });
+          g.facets.forEach(f => add(f, SC[f].title, g.text, facetPage(f), { parent: g.id }));
+        } else {
+          const [first, ...rest] = g.facets;
+          add(g.id, ct.independent, g.text, facetPage(first), { tocSubs: [{ title: SC[first].title }] });
+          rest.forEach(f => add(f, SC[f].title, g.text, facetPage(f), { parent: g.id }));
+        }
+      });
+      return finish();
+    }
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = T;

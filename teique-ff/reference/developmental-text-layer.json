@@ -1,0 +1,1230 @@
+{
+ "source": "TEIQue-FF Developmental Report [SAMPLE].pdf",
+ "pages": [
+  {
+   "page": 1,
+   "blocks": [
+    {
+     "text": "Developmental",
+     "top": 527.2,
+     "x": 188.1,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Report",
+     "top": 527.2,
+     "x": 343.4,
+     "font": "Inter-ExtraLightBETA",
+     "size": 19.8
+    },
+    {
+     "text": "George Tsingkas",
+     "top": 510.6,
+     "x": 247.4,
+     "font": "Inter-ThinBETA",
+     "size": 12.2
+    }
+   ]
+  },
+  {
+   "page": 2,
+   "blocks": [
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 282.5,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "2",
+     "top": 69.3,
+     "x": 282.5,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 3,
+   "blocks": [
+    {
+     "text": "Introduction to your TEIQue Developmental Report",
+     "top": 721.3,
+     "x": 83.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "This is a very special set of reports that I have written to help you act on your trait emotional intelligence (trait EI) profile. The profile is fully explained in the standard TEIQue reports (of which there are two versions: personal/counseling and corporate). Thorough as these reports are, they focus primarily on describing your emotional world without due attention to how the scores can be managed or even altered in the longer term.",
+     "top": 661.3,
+     "x": 60.5,
+     "font": "Inter-LightBETA",
+     "size": 9.1
+    },
+    {
+     "text": "Managing your personality is much more realistic than trying to change it, at least during the early stages of personality development and inner engineering. Longer term efforts can lead to permanent changes as, of course, can abrupt or unexpected life events. In any case, a significant question naturally arises from becoming aware of your trait EI profile and that is “What now”? This is precisely the question that the Developmental reports will help you to answer.",
+     "top": 595.1,
+     "x": 60.5,
+     "font": "Inter-LightBETA",
+     "size": 9.1
+    },
+    {
+     "text": "All TEIQue profiles potentially have advantages and disadvantages. The Developmental reports focus firmly on the latter, addressing possible limitations in the underlying personality as alluded to by the corresponding TEIQue profile. Inevitably (for reasons of space), there is little mention of the profile’s strengths. It must be understood at the outset that these reports are not intended for purposes of self-verification or to reinforce existing presumptions or complacencies. Rather, they highlight potential threats and blind spots in the personality sphere with a view to bringing them to the individual’s conscious awareness. From there, they can be tackled using a range of practical tools and remedies presented in the reports.",
+     "top": 518.0,
+     "x": 60.5,
+     "font": "Inter-LightBETA",
+     "size": 9.1
+    },
+    {
+     "text": "To be sure, neither personality management nor (much less) desirable personality change can come about without conscious and consistent effort on your part. No one can undertake this task on your behalf, but it can be made more effective and efficient under direction. I have written these reports over a period of more than 10 years, drawing on deep (in many cases, perennial) knowledge pertaining to matters of human psychology and existence.",
+     "top": 418.7,
+     "x": 60.5,
+     "font": "Inter-LightBETA",
+     "size": 9.1
+    },
+    {
+     "text": "The body of work that I continue to make available definitively surpasses all prevailing models, tools, and standards of mundane psychology. I trust that you will be able to benefit from it.",
+     "top": 352.5,
+     "x": 60.5,
+     "font": "Inter-LightBETA",
+     "size": 9.1
+    },
+    {
+     "text": "Konstantinos V. Petrides",
+     "top": 319.4,
+     "x": 60.5,
+     "font": "Inter-LightBETA",
+     "size": 9.1
+    },
+    {
+     "text": "Professor of Psychology and Psychometrics",
+     "top": 297.1,
+     "x": 60.5,
+     "font": "Inter-LightBETA",
+     "size": 9.1
+    },
+    {
+     "text": "www.psychometriclab.com",
+     "top": 276.0,
+     "x": 60.5,
+     "font": "Inter-LightBETA",
+     "size": 8.0
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 282.4,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "3",
+     "top": 69.3,
+     "x": 282.4,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 4,
+   "blocks": [
+    {
+     "text": "“Your perceptions create your reality and your self-perceptions create yourself.”",
+     "top": 177.2,
+     "x": 88.6,
+     "font": "Inter-Medium",
+     "size": 9.9
+    },
+    {
+     "text": "Konstantinos V. Petrides",
+     "top": 142.4,
+     "x": 234.2,
+     "font": "Inter-Medium",
+     "size": 9.9
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 282.4,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "4",
+     "top": 69.3,
+     "x": 282.4,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 5,
+   "blocks": [
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 282.5,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "5",
+     "top": 69.3,
+     "x": 282.5,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 6,
+   "blocks": [
+    {
+     "text": "WELL-BEING",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 282.5,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "6",
+     "top": 69.3,
+     "x": 282.5,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 7,
+   "blocks": [
+    {
+     "text": "Happiness",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 282.7,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "7",
+     "top": 69.3,
+     "x": 282.7,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 8,
+   "blocks": [
+    {
+     "text": "Happiness",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 282.5,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "8",
+     "top": 69.3,
+     "x": 282.5,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 9,
+   "blocks": [
+    {
+     "text": "Optimism",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 282.5,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "9",
+     "top": 69.3,
+     "x": 282.5,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 10,
+   "blocks": [
+    {
+     "text": "Optimism",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "10",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 11,
+   "blocks": [
+    {
+     "text": "Self-Esteem",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 281.0,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "11",
+     "top": 69.3,
+     "x": 281.0,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 12,
+   "blocks": [
+    {
+     "text": "Self-Esteem",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "12",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 13,
+   "blocks": [
+    {
+     "text": "SELF-CONTROL",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "13",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 14,
+   "blocks": [
+    {
+     "text": "Emotion Regulation",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "14",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 15,
+   "blocks": [
+    {
+     "text": "Emotion Regulation",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Impulse Control",
+     "top": 296.0,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.4,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "15",
+     "top": 69.3,
+     "x": 280.4,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 16,
+   "blocks": [
+    {
+     "text": "Impulse Control",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "16",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 17,
+   "blocks": [
+    {
+     "text": "Impulse Control",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Stress Management",
+     "top": 562.6,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.5,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "17",
+     "top": 69.3,
+     "x": 280.5,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 18,
+   "blocks": [
+    {
+     "text": "Stress Management",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "18",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 19,
+   "blocks": [
+    {
+     "text": "EMOTIONALITY",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Empathy",
+     "top": 352.5,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "19",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 20,
+   "blocks": [
+    {
+     "text": "Empathy",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Emotion Perception",
+     "top": 317.7,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "20",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 21,
+   "blocks": [
+    {
+     "text": "Emotion Perception",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "21",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 22,
+   "blocks": [
+    {
+     "text": "Emotion Expression",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "22",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 23,
+   "blocks": [
+    {
+     "text": "Emotion Expression",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "23",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 24,
+   "blocks": [
+    {
+     "text": "Relationships",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "24",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 25,
+   "blocks": [
+    {
+     "text": "Relationships",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.7,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "25",
+     "top": 69.3,
+     "x": 279.7,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 26,
+   "blocks": [
+    {
+     "text": "SOCIABILITY",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "26",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 27,
+   "blocks": [
+    {
+     "text": "Emotion Management",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.8,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "27",
+     "top": 69.3,
+     "x": 279.8,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 28,
+   "blocks": [
+    {
+     "text": "Assertiveness",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "28",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 29,
+   "blocks": [
+    {
+     "text": "Social Awareness",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "29",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 30,
+   "blocks": [
+    {
+     "text": "Social Awareness",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "30",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 31,
+   "blocks": [
+    {
+     "text": "Adaptability",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "31",
+     "top": 69.3,
+     "x": 280.3,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 32,
+   "blocks": [
+    {
+     "text": "Adaptability",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Self-Motivation",
+     "top": 284.6,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "32",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 33,
+   "blocks": [
+    {
+     "text": "Self-Motivation",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.5,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "33",
+     "top": 69.3,
+     "x": 279.5,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 34,
+   "blocks": [
+    {
+     "text": "Self-Motivation",
+     "top": 721.3,
+     "x": 60.5,
+     "font": "Inter-Medium",
+     "size": 19.8
+    },
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.5,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "34",
+     "top": 69.3,
+     "x": 279.5,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  },
+  {
+   "page": 35,
+   "blocks": [
+    {
+     "text": "Page",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-ThinBETA",
+     "size": 8.4
+    },
+    {
+     "text": "35",
+     "top": 69.3,
+     "x": 279.6,
+     "font": "Inter-LightBETA",
+     "size": 8.4
+    },
+    {
+     "text": "© K. V. Petrides 2025. All rights reserved.",
+     "top": 51.1,
+     "x": 209.4,
+     "font": "Inter-LightBETA",
+     "size": 7.6
+    }
+   ]
+  }
+ ]
+}

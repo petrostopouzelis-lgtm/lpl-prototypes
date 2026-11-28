@@ -8,6 +8,8 @@ The TEIQue Full Form (TEIQue-FF) report generator, built on the TEIQue 360° rep
 | `personal` | `TEIQue-FF Personal_Counselling Report [SAMPLE].pdf` | (the base) |
 | `corporate` | `TEIQue-FF Corporate Report [SAMPLE].pdf` | Introduction, Scores card, a "Factor and Facets" text above the uses, a lead line on every facet page, definitions, interpretations |
 | `leadership` | `TEIQue-FF Leadership Report [SAMPLE].pdf` | Introduction, structure paragraph, a third Scores paragraph, definitions, interpretations in "Possible Positive" / "Possible Negative" parts, "Emotion Perception (self and others)" |
+| `developmental` | `TEIQue-FF Developmental Report [SAMPLE].pdf` | **Its own template** (Figma 442:695 to 442:837): introduction, wheel, summary, then each factor (a paragraph beside the wheel, a card of pointers) and each facet (name beside the wheel, then headed suggestion cards). 34 pages for the sample (the sample has 35: here every facet starts a page, as in Figma) |
+| `recruitment` | `TEIQue-FF Recruitment Report [SAMPLE].pdf` | **Its own template** (Figma 273:1469): introduction, summary, Global Trait EI with the auxiliary facets, then one page per factor with all its facets, a small wheel per row. **Seven score levels** (1–15 very low … 86–99 very high, from its introduction); the opening sentence ("The Happiness score is low.") is built from the level; average levels without their own text get the sample's standard average sentence. 10 pages, as the sample |
 
 Pick the version in the page viewer's **Version** menu (`report.html?version=corporate`), with the **Version** buttons
 in the Report Hub, with `--version=` on the PDF builder, or in the data file (`report.version`).
@@ -96,5 +98,10 @@ sample's 28 pages.
    71-100% = High", which agrees. Confirm.
 3. **Errors in the samples, copied as printed** (`flag` in the library): Leadership's Emotion Regulation page has an
    Emotion Management definition; Leadership's Emotion Management definition has "feelings.How" with no space.
-4. Next: the reports with their own templates (Developmental, Recruitment, and the others in the samples folder).
+4. Developmental and Recruitment, errors in the samples copied as printed (`flag` in the library): Developmental "should be
+   allowed to overshadow" (Social Awareness, probably "should not"), "not always easy recognize", "Be especially weary"; Recruitment's
+   average cards use "see the introduction on p. XX" and the Optimism card's average sentence is broken.
+5. Developmental and Recruitment: the sample has text for one band (Developmental) or one level (Recruitment) per scale, so
+   38 of 57 and 121 of 140 texts are missing (the Recruitment average levels are covered by the standard sentence).
+6. Next: the remaining reports in the samples folder (Short Form, TSIQue, team and group reports...).
    Each needs its sample read with `extract-sample.py` and `ocr-cards.py`, then proofread.

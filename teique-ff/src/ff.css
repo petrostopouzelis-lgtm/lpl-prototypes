@@ -41,3 +41,31 @@ h1.title.second { margin-top: 6pt; }
 .cover .cv-t b { font-weight: 400; }
 .cover .cv-n { line-height: 1; font-weight: 200; }
 .cover .cv-cr { position: absolute; transform: translateX(-50%); line-height: 1; font-weight: 250; font-family: Inter, sans-serif; white-space: nowrap; }
+
+/* Recruitment: a row per scale, a small score wheel beside its card (factor cards in the factor's colour) */
+.signoff p { margin: 0; text-align: left; }
+.rrow { display: flex; gap: 16pt; align-items: center; }
+.rrow .rwheel { width: 92pt; flex: none; }
+.rrow .rbody { flex: 1; min-width: 0; }
+.rrow h5.rh { font: 700 11pt/14pt Inter, sans-serif; color: var(--c); margin: 0 0 6pt; }
+.rcard { background: #fff; border-radius: 12pt; padding: 12pt 14pt; box-shadow: 0 0 10pt rgba(0, 0, 0, .12); }
+.rcard.fill { background: color-mix(in srgb, var(--f) 55%, #fff); box-shadow: none; }
+.rcard p.rline { font-size: 10.5pt; line-height: 13.5pt; text-align: left; hyphens: manual; margin: 0; }
+.rcard p.rline + p.rline { margin-top: 3pt; }
+.rcard p.rline.bul { padding-left: 9pt; text-indent: -9pt; margin-top: 1pt; }
+.rcard .needed { margin: 6pt 0 0; }
+/* a factor page with four facets (Emotionality) tightens its rows to stay on one page, as in the sample */
+.page.tight .rrow .rwheel { width: 80pt; }
+.page.tight .rrow h5.rh { margin-bottom: 4pt; }
+.page.tight .rcard { padding: 9pt 13pt; }
+.page.tight .rcard p.rline { font-size: 10pt; line-height: 12.6pt; }
+
+/* Developmental (Figma 442:695 to 442:837): factor pointers as a list; facet name beside its wheel; headed cards */
+.dev-list ul { margin: 0; padding-left: 14pt; }
+.dev-list li { font: 300 11pt/14pt Inter, sans-serif; text-align: justify; }
+.dev-list li + li { margin-top: 7pt; }
+.dev-top { display: flex; align-items: center; justify-content: space-between; gap: 20pt; padding-left: 40pt; }
+.dev-top .gauge { width: 132pt; flex: none; }
+.dev-sec h5.caps { font: 600 10pt/13pt Inter, sans-serif; letter-spacing: .02em; margin: 0 0 6pt; }
+.dev-sec .card p { font-size: 11pt; line-height: 14pt; }
+.dev-top.factor { padding-left: 0; }

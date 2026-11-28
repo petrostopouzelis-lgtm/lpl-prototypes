@@ -1005,6 +1005,1235 @@
           "source": "sample page 27; interpretation for a score of 98 (high band)"
         }
       }
+    },
+    "developmental": {
+      "name": "Developmental",
+      "cover": "Developmental Report",
+      "header": "Developmental",
+      "cover_image": "developmental.png",
+      "template": "developmental",
+      "source": "TEIQue-FF Developmental Report [SAMPLE].pdf",
+      "pages": {
+        "intro": {
+          "title": "Introduction to your TEIQue Developmental Report",
+          "paragraphs": [
+            "This is a very special set of reports that I have written to help you act on your trait emotional intelligence (trait EI) profile. The profile is fully explained in the standard TEIQue reports (of which there are two versions: personal/counseling and corporate). Thorough as these reports are, they focus primarily on describing your emotional world without due attention to how the scores can be managed or even altered in the longer term.",
+            "Managing your personality is much more realistic than trying to change it, at least during the early stages of personality development and inner engineering. Longer term efforts can lead to permanent changes as, of course, can abrupt or unexpected life events. In any case, a significant question naturally arises from becoming aware of your trait EI profile and that is “What now”? This is precisely the question that the Developmental reports will help you to answer.",
+            "All TEIQue profiles potentially have advantages and disadvantages. The Developmental reports focus firmly on the latter, addressing possible limitations in the underlying personality as alluded to by the corresponding TEIQue profile. Inevitably (for reasons of space), there is little mention of the profile’s strengths. It must be understood at the outset that these reports are not intended for purposes of self-verification or to reinforce existing presumptions or complacencies. Rather, they highlight potential threats and blind spots in the personality sphere with a view to bringing them to the individual’s conscious awareness. From there, they can be tackled using a range of practical tools and remedies presented in the reports.",
+            "To be sure, neither personality management nor (much less) desirable personality change can come about without conscious and consistent effort on your part. No one can undertake this task on your behalf, but it can be made more effective and efficient under direction. I have written these reports over a period of more than 10 years, drawing on deep (in many cases, perennial) knowledge pertaining to matters of human psychology and existence.",
+            "The body of work that I continue to make available definitively surpasses all prevailing models, tools, and standards of mundane psychology. I trust that you will be able to benefit from it."
+          ],
+          "signoff": [
+            "Konstantinos V. Petrides",
+            "Professor of Psychology and Psychometrics",
+            "www.psychometriclab.com"
+          ]
+        },
+        "wheel": {
+          "title": "Your TEIQue Wheel Chart",
+          "quote": "“Your perceptions create your reality and your self-perceptions create yourself.”",
+          "quote_by": "Konstantinos V. Petrides",
+          "title_source": "Figma (the sample page has no title); contents entry: Wheel Chart"
+        },
+        "summary": {
+          "title": "Your TEIQue Summary Graph",
+          "title_source": "Figma (the sample page has no title); contents entry: Summary Graphs"
+        },
+        "contents": {
+          "title": "Contents",
+          "intro": "Introduction",
+          "wheel": "Wheel Chart",
+          "summary": "Summary Graphs",
+          "independent": "Independent Facets"
+        }
+      },
+      "scales": {
+        "wellbeing": {
+          "title": "Well-Being Factor",
+          "title_source": "Figma Developmental factor frame (the sample prints the factor name in capitals: WELL-BEING)",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "The Well-being factor of the TEIQue comprises the facets of Happiness, Optimism, and Self-esteem. You have scored within the high range, which means that you are more satisfied with yourself in this area than most people. As with all TEIQue scores, this one is linked to potential advantages as well as potential disadvantages. The pointers listed below focus on the latter. They may be helpful for managing high scores on TEIQue Well-being.",
+              "bullets": [
+                "Be careful not to express positive feelings insensitively or in inappropriate contexts.",
+                "A strong focus on positive emotions can make you less attentive to the external environment or lead to the development of unrealistic expectations. Be especially weary if your high Well-being is the result of favorable external circumstances.",
+                "While you should be aware of your strengths, it is also important to remain cognizant of the areas where you need improvement. Alas, many of those may lie outside of conscious awareness.",
+                "Learn to distinguish between confidence and over-confidence as well as to identify and evaluate the true sources of your confidence.",
+                "Beware of any tendencies towards self-absorption and narcissism. Cultivate humility as a path to freedom from a need for praise or admiration.",
+                "Whenever possible, ask others to provide feedback on your ideas and performance and be prepared to act on such feedback."
+              ]
+            }
+          },
+          "source": "sample page 6, transcribed; score 96 (high band)",
+          "flag": "The sample says \"Be especially weary\" (for \"wary\"). Copied as printed."
+        },
+        "self_control": {
+          "title": "Self-Control Factor",
+          "title_source": "Figma Developmental factor frame (the sample prints the factor name in capitals: SELF-CONTROL)",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "The Self-control factor of the TEIQue comprises the facets of Emotion regulation, Impulse control, and Stress management. You have scored within the high range, which means that you are more satisfied with yourself in this area than most people. As with all TEIQue scores, this one is linked to potential advantages as well as potential disadvantages. The pointers listed below focus on the latter. They may be helpful for managing high scores on TEIQue Self-control.",
+              "bullets": [
+                "Feelings are transient and neither bad nor good, so they should not be suppressed. Both ‘negative’ and ‘positive’ feelings provide clues about situations.",
+                "Excessive emotional control may lead others to perceive you as aloof and cold. Learn to express sensitivity and empathy to others, which may require you to enlarge your emotional vocabulary.",
+                "Excessive impulse control can deprive you of positive experiences, stifle your spontaneity, and allow rigidity to set in.",
+                "Hunches and impulses, when authentic, can improve decision-making and facilitate action when time or information is in short supply.",
+                "Moderate stress levels have been shown to facilitate good performance (so-called “Eustress”).",
+                "Avoid judging those who lack your self-control skills."
+              ]
+            }
+          },
+          "source": "sample page 13, transcribed; score 74 (high band)"
+        },
+        "emotionality": {
+          "title": "Emotionality Factor",
+          "title_source": "Figma Developmental factor frame (the sample prints the factor name in capitals: EMOTIONALITY)",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "The Emotionality factor of the TEIQue comprises the facets of Emotion perception, Emotion expression, Empathy, and Relationships. You have scored within the high range, which means that you are more satisfied with yourself in this area than most people. As with all TEIQue scores, this one is linked to potential advantages as well as potential disadvantages. The pointers listed below focus on the latter. They may be helpful for managing high scores on TEIQue Emotionality.",
+              "bullets": [
+                "Do not get caught into a world of feelings and moods, but rather understand it as a significant layer and move deeper into the human psyche.",
+                "Avoid reaching conclusions about other people’s feelings without corroborating evidence.",
+                "Carefully consider the context before expressing your emotions. Certain contexts call for highly specific channels of expression and others for none (e.g., state or business negotiations).",
+                "Be mindful that personal relationships may interfere with your duties (personal or professional) and that you may unwittingly become dependent on them."
+              ]
+            }
+          },
+          "source": "sample page 19, transcribed; score 96 (high band)"
+        },
+        "sociability": {
+          "title": "Sociability Factor",
+          "title_source": "Figma Developmental factor frame (the sample prints the factor name in capitals: SOCIABILITY)",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "The Sociability factor of the TEIQue comprises the facets of Assertiveness, Emotion management, and Social awareness. You have scored within the high range, which means that you are more satisfied with yourself in this area than most people. As with all TEIQue scores, this one is linked to potential advantages as well as potential disadvantages. The pointers listed below focus on the latter. They may be helpful for managing high scores on TEIQue Sociability.",
+              "bullets": [
+                "If assertiveness is an important aspect of how you relate to other people, you must be very careful that it does not veer into aggression or whimsical behavior. Note that getting what you want by recklessly coercing or exploiting others can create, sustain, or enhance crises in the subconscious mind. Overassertiveness needs to be pointed out by others – it cannot be detected through personal efforts.",
+                "A talent for Sociability, when effectively applied, can eventually make other people dependent on you. This would entail difficulties and threats both for you and for them.",
+                "Avoid using Sociability to invade other people’s privacy or manipulate them. It is important for you to be fully clear about your intentions prior to putting such talents and skills to use.",
+                "Be careful that your socializing is not happening at the expense of your duties and responsibilities. Make sure you allow adequate time for solitary reflection.",
+                "High Sociability could alienate introverts from you and you from them. You should overcome any tendencies to associate exclusively with the extraverted."
+              ]
+            }
+          },
+          "source": "sample page 26, transcribed; score 99 (high band)"
+        },
+        "happiness": {
+          "title": "Happiness",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "INAPPROPRIATE CONTEXT",
+                  "paragraphs": [
+                    "Happy people may express cheerfulness at unsuitable times, such as when others encounter loss, disappointment, or suffering. Because you naturally tend to be in good spirits, you should be careful not to give the impression that you are insensitive to others’ feelings or predicaments.",
+                    "Carefully evaluating situations and people could help you express your emotions appropriately. When others are distressed or unhappy, expressing sympathy for their situation signifies that you are receptive to their needs. Restraining cheer when others are preoccupied with their personal problems demonstrates your thoughtfulness. Similarly, it is prudent to check your happiness if you have achieved success where others have not. This conveys humility and indicates that you can contain your emotions out of respect for others’ feelings."
+                  ]
+                },
+                {
+                  "heading": "AVOIDANCE OF LESS HAPPY OTHERS",
+                  "paragraphs": [
+                    "There are always going to be people who are less cheerful than you tend to be. You may feel that they affect you negatively and may thus try to avoid them.",
+                    "Interactions within the professional environment –teamwork– as well as in some personal contexts frequently require us to relate to a range of people. While it is sometimes advisable to avoid negative others, this could be perceived as discourteous or offensive. In contrast, being open to and listening to them may prove helpful and even enriching. In turn, such receptivity can inspire and motivate these people to adopt a more cheerful attitude, and they may then come to thank or admire you for your joyful nature. The ability to raise others’ spirits is highly desirable."
+                  ]
+                },
+                {
+                  "heading": "HAPPINESS VERSUS CARELESSNESS",
+                  "paragraphs": [
+                    "Some may interpret casual happiness as a sign of inattentiveness that could lead to errors or inadequacies. You might be seen as carefree because you do not take matters seriously enough or tend to get distracted by your own thoughts. Similarly, your cheerfulness might be taken as a sign that you have not adequately understood the situation or as disregard for the circumstances.",
+                    "A strong focus on goals and achievements would make it clear to others that your happiness does not entail irresponsibility. Take care to assure people that you are aware of and on top of significant issues at the workplace and in your personal life. Sharing with others the causes of your happiness may generate empathy and help avoid misunderstandings."
+                  ]
+                },
+                {
+                  "heading": "AVOIDANCE OF NEGATIVE EMOTIONS OR SITUATIONS",
+                  "paragraphs": [
+                    "Excessive happiness may act as a defense against the painful aspects of life.",
+                    "Life serves positive experiences as well as adversities. When confronted with a negative situation, such as illness, death, or loss, so-called “negative” emotions are appropriate responses that need to be accepted and experienced, rather than suppressed. These emotions help us move through a natural process. Important, negative experiences can offer valuable insights without diminishing your overall happiness. For example, negative feelings may allow you to gain accurate perspective on issues that ultimately help you achieve goals. Practice viewing negative events not as sources of unhappiness, but as opportunities to learn, develop new skills, and grow."
+                  ]
+                },
+                {
+                  "heading": "MISSING THREATS OR SIGNS OF DANGER",
+                  "paragraphs": [
+                    "Happiness may hinder you from noticing warning signs in your environment. If you disregard potential threats, you may find yourself unprepared and vulnerable.",
+                    "A strong focus on positive emotions can make you less attentive to your external surroundings. You may have to train yourself to notice your environment and the events occurring within it. You may also need to make a conscious effort to explore and remain mindful of possible negative consequences unfolding around you. This will sharpen your situational awareness and overall preparedness."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [7, 8]; score 99 (high band)"
+        },
+        "optimism": {
+          "title": "Optimism",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "RECOGNIZING PROBLEMS",
+                  "paragraphs": [
+                    "Natural optimism may lead you to focus heavily on positive aspects of your environment.",
+                    "While a hopeful attitude is generally beneficial, an exclusive focus on the positive may prevent you from recognizing potential problems or warning signs in the environment or in your own behavior. This can leave you unprotected and vulnerable. Realism requires taking into account not only the positive, but also the negative aspects and consequences of situations. A realistic attitude may not come naturally to you and perhaps needs to be gradually developed through practice. Such an attitude, when established, will aid your decision-making and shelter you in turbulent times."
+                  ]
+                },
+                {
+                  "heading": "HOW OTHERS SEE YOU",
+                  "paragraphs": [
+                    "If you focus exclusively on the positive aspects of situations, people may perceive you as unrealistic or superficial. High optimism may lead others to develop the impression that you do not take matters seriously.",
+                    "Show interest in both the positive and negative aspects inherent in situations. For example, if proposing or evaluating a major initiative at work, an accompanying SWOT analysis would indicate your readiness to consider all contingencies. Similarly, in discussions with colleagues or friends, enquiring about the challenging aspects of situations shows that you will not suppress the so-called “negative”."
+                  ]
+                },
+                {
+                  "heading": "AVOIDANCE OF PESSIMISTS",
+                  "paragraphs": [
+                    "Your natural optimism may inadvertently lead you to ignore or avoid less optimistic people. This might be interpreted as a sign of arrogance or as implicit criticism of others.",
+                    "Making an effort to interact with people of diverse persuasions will promote a more balanced outlook. If approached with a gloomy assessment or idea, give it serious consideration, rather than discard it out of hand. When possible, motivating pessimistic people through your inherently positive outlook can help you gain their support and them to transform their negativity."
+                  ]
+                },
+                {
+                  "heading": "HIGH EXPECTATIONS",
+                  "paragraphs": [
+                    "High optimism may fuel irrational expectations and trigger unrealistic decisions or actions. Eventually, these lead to disappointment and perhaps underperformance.",
+                    "Your optimism may lead you to make unrealistic promises, so it is important to be cautious in setting expectations, especially when they involve others. You could end up being blamed if problems occur—regardless of responsibility. This holds true in all situations (personal as well as professional), where a range of possible outcomes (positive as well as negative) ought to be contemplated."
+                  ]
+                },
+                {
+                  "heading": "OVER-CONFIDENCE",
+                  "paragraphs": [
+                    "Excessive optimism can make you overconfident in your abilities and temper your eagerness for self-improvement. It may also cause you to detach from situations, hoping that matters will improve of their own accord.",
+                    "To maintain a growth perspective with regard to your capabilities and future, keep reminding yourself that you can always improve through further learning and practice. Recall past situations where your judgements proved over-enthusiastic to prevent optimism from mutating into complacency."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [9, 10]; score 90 (high band)"
+        },
+        "self_esteem": {
+          "title": "Self-Esteem",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "COMPLACENCY LIMITS OPPORTUNITIES",
+                  "paragraphs": [
+                    "High self-esteem can veer into a state of complacency that leads to errors or reduced interest in self-improvement.",
+                    "You may have achieved a great deal, but life always offers opportunities to learn and improve. Seek out new challenges that will lead you to acquire new skills and remind you that learning is rewarding. For example, if you are an expert in your line of work, perhaps take on more responsibilities; outside of work, start a hobby or a sport. Remain open to or even seek feedback from others and act on it. The main aim is to avoid falling into a sense of stasis."
+                  ]
+                },
+                {
+                  "heading": "PERCEPTIONS OF ARROGANCE",
+                  "paragraphs": [
+                    "High self-esteem could be perceived by others as conceit or arrogance. If people come under the impression that you believe yourself superior to them, they may become uncomfortable around you or even resent you.",
+                    "Showing concern for other people can help you avoid such potentialities. Enquire about their interests and listen to their ideas. Make it clear that you are open and accessible, and that you welcome their comments, feedback, and participation. Empathy and, especially, sympathy for others can transform any perceptions of arrogance into perceptions of confidence."
+                  ]
+                },
+                {
+                  "heading": "DIFFICULTY TAKING CRITICISM",
+                  "paragraphs": [
+                    "Occasionally, people with high self-esteem find it difficult to accept feedback or criticism (even constructive). They may feel that their self-image is threatened and react defensively.",
+                    "While it is important to be aware of your strengths, it is also crucial to be objective about the areas where you need improvement. Feedback from others is crucial, since their perspectives and input provide insights that allow us to see a more complete and realistic picture of personal strengths and development needs. Train yourself to listen without comment when receiving feedback. Take time to think over what has been said before you respond. This will allow you to control any irritation and to use all that you have heard or learned in order to improve yourself and your performance."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [11, 12]; score 95 (high band)"
+        },
+        "emotion_regulation": {
+          "title": "Emotion Regulation",
+          "interpretation": {
+            "low": null,
+            "average": {
+              "intro": "You have scored within the average range on the Emotion regulation facet, which suggests that there are times when you can handle your emotions confidently and other times when your usual coping skills and techniques are not serving you as well as you would like. The first two sections below concern the former periods and the next two sections concern the latter periods.",
+              "sections": [
+                {
+                  "heading": "REPRESSION OF FEELINGS",
+                  "paragraphs": [
+                    "Over-control of emotions may lead to repression and, eventually, to impairments in the awareness of feelings.",
+                    "Feelings are neither bad nor good. Both ‘negative’ and ‘positive’ feelings provide clues about situations. For instance, if you allow yourself to feel angry, this may prompt you to look for a solution to the situation that caused the anger, or to remove yourself from it altogether. While you may fear that certain emotions are potentially destructive, management—rather than repression—is the way to deal with them. Do not entertain the notion that emotions are only for the soft, the weak, and the sentimental."
+                  ]
+                },
+                {
+                  "heading": "PERCEPTION OF COLDNESS OR INSINCERITY",
+                  "paragraphs": [
+                    "Excessive emotional control may lead others to see you as aloof or cold. As a result, people may to feel uncomfortable around you. In addition, the excessive control of emotions might convey to others a sense that you are insincere or unwilling to express your true feelings.",
+                    "To avoid such problems, try to express sensitivity and sympathy to others. While benefiting from the ability to remain calm in tense situations, seek out contexts where it is feasible to experience and express feelings. Practice communicating your feelings both verbally and through facial expressions and gestures. Emotions are a major channel of communication giving other people the means to understand you better and appreciate your sincerity."
+                  ]
+                },
+                {
+                  "heading": "DISREGARDING THE CONTEXT",
+                  "paragraphs": [
+                    "If you are prone to becoming overwhelmed by emotions, you must at least remain aware of your surroundings. The unguarded display of emotions is considered unacceptable in certain settings, for instance, corporate environments.",
+                    "Try to maintain simultaneous awareness of your emotions as well as of what is considered acceptable regarding their display in different social and professional environments. For example, in some workplaces, emotional display is tolerated, while in others it is seen as disruptive or a sign of weakness. In all cases, emotional outbursts are to be avoided. To this end, you need to build the awareness to notice their onset and also acquire the psychological tools to restrain it."
+                  ]
+                },
+                {
+                  "heading": "MISPLACED BLAME",
+                  "paragraphs": [
+                    "If you tend to vent emotions as they arise, you may inadvertently blame people who have little to do with the causes of your feelings. Emotional eruptions could be very damaging to your relationships.",
+                    "Contain emotional displays to the appropriate context. For example, if you have a hard day at work, do not take out your frustration to your family members. There is an all too common tendency to suppress feelings when we are dealing with the more powerful (e.g., our bosses) and then take everything out in outbursts on the weak (e.g., our children). It is, therefore, important to determine the true cause of your feelings and confine your reactions to the original context."
+                  ]
+                }
+              ]
+            },
+            "high": null
+          },
+          "source": "sample pages [14, 15]; score 63 (average band)"
+        },
+        "impulse_control": {
+          "title": "Impulse Control",
+          "interpretation": {
+            "low": null,
+            "average": {
+              "intro": "You have scored within the average range on the Impulsiveness facet, which suggests that there are times when you act in a calculated and intentional fashion and other periods when you act on impulse. The first two sections below concern the former times and the next two sections concern the latter periods.",
+              "sections": [
+                {
+                  "heading": "IMPULSES AS HUNCHES",
+                  "paragraphs": [
+                    "Sometimes, impulses are spurred by intuition, which is ahead of the rational thought process. Hunches, when authentic, can improve decision-making and enable effective action when time is short. In such situations, repressing impulses will be counterproductive or even downright dangerous.",
+                    "Learn to discern and respect your intuition and ideally integrate it into your decision-making. This will help you in situations that force decisions based on ambiguous or incomplete information. Perfectionism and excessive reflection can become counterproductive. Experiment with spontaneous action in social situations or last-minute plans with friends and family."
+                  ]
+                },
+                {
+                  "heading": "DELAYING ACTION",
+                  "paragraphs": [
+                    "Habitual control may lead to delayed action or decision-making. As a result, others may eventually perceive you as over-methodical, indecisive or procrastinating.",
+                    "Reflecting on your strategies, options, and steps is certainly sensible. However, you must ensure that you put your plans into practice. Set deadlines for yourself and take timely action. If you find it difficult to meet deadlines, break down goals into smaller, more manageable, chunks. It may also be beneficial to observe or spend time around impulsive people as a counterweight to your deliberative nature."
+                  ]
+                },
+                {
+                  "heading": "DANGERS OF ACTING RASHLY",
+                  "paragraphs": [
+                    "Acting without considering the risks may expose yourself and others to danger. While hasty action can sometimes help you exploit windows of opportunity, it can also have adverse consequences.",
+                    "Take time to consider the advantages and disadvantages of a given course of action. Carrying out an analysis of risks and costs versus opportunities and benefits can increase the hit rate of your decisions. It may also be beneficial to spend time around deliberative people to observe their decision-making style."
+                  ]
+                },
+                {
+                  "heading": "IDENTIFYING POSITIVE IMPULSES",
+                  "paragraphs": [
+                    "Instinctive action may be prompted by a passing mood state or by a strong underlying intuition. Distinguishing between impulses as unthinking reactions and impulses as shrewd hunches is crucial.",
+                    "In most situations, it should be possible to take a moment to examine your feelings before acting. Think about past experiences when you felt similarly, considering whether the actions they produced were ultimately productive. To help distinguish between helpful and unhelpful impulses, you can maintain a diary as a route to improved self-understanding and self-awareness."
+                  ]
+                }
+              ]
+            },
+            "high": null
+          },
+          "source": "sample pages [15, 16, 17]; score 46 (average band)",
+          "flag": "The average-range opening calls the facet \"Impulsiveness\". Copied as printed."
+        },
+        "stress_management": {
+          "title": "Stress Management",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "STRESS REPRESSION",
+                  "paragraphs": [
+                    "You might believe you are managing stress when, in fact, you are repressing it.",
+                    "Stress management that relies on repression or avoidance will eventually produce the opposite effects. In addition, containing stress to the point where you lose awareness of it can make you apathetic. It is important to be able to distinguish between stress management and stress repression and to learn to apply techniques that promote the former. Among those techniques are relaxation, deep breathing exercises, meditation, and keeping a journal."
+                  ]
+                },
+                {
+                  "heading": "DEALING WITH STRESSED OTHERS",
+                  "paragraphs": [
+                    "Many people have difficulty controlling their stress levels. If, in contrast, you find it easy to handle stress, you may judge overstressed others as overly vulnerable or even inept. You may feel uncomfortable around them, fearing that they will disturb or let you down.",
+                    "Stress is pervasive in the modern workplace and people naturally respond to it in different ways. Being cognizant of potential stress signals and of effective coping strategies will be helpful not only for your own self, but also for others who may consult or even confide in you."
+                  ]
+                },
+                {
+                  "heading": "BENEFITS OF STRESS",
+                  "paragraphs": [
+                    "Moderate stress levels have been shown to facilitate performance and achievement (so-called “eustress”). Attempting to eliminate stress from your life could cut your drive to succeed or self-improve.",
+                    "New challenges or responsibilities may enhance your personal and professional development. Do not turn down such opportunities just to avoid getting stressed. Remain active, even if certain areas of your life create tension. Indeed, moderate levels of stress may spur you to improve your circumstances."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [17, 18]; score 96 (high band)"
+        },
+        "empathy": {
+          "title": "Empathy",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "DOOR TO EXPLOITATION",
+                  "paragraphs": [
+                    "Your emotional sensitivity means that some people might attempt to manipulate you by appealing to your altruistic feelings.",
+                    "The ability to empathize with others is a very powerful management device. However, you may occasionally have to clarify that understanding someone’s position does not necessarily imply that you agree with it. Empathy is not tantamount to approval, and you should not allow it to develop into a channel through which others can manipulate you."
+                  ]
+                },
+                {
+                  "heading": "EXCESSIVE FOCUS ON INDIVIDUALS",
+                  "paragraphs": [
+                    "Emotional sensitivity may lead you to focus on individuals and their perspectives at the expense of your personal and team goals. The mission of a group may sometimes require that individual interests be subordinated to it.",
+                    "Keep in mind key team goals and the steps necessary to achieve them. Setting mutual objectives can promote group cohesion. When appropriate, help team members recognize the rewards of subordinating their personal interests to the interests of the team. You likely have strong compassion for individuals, but you should remain aware that the priorities of the group must sometimes take precedence in order to achieve shared objectives. Make yourself available to discuss personal dilemmas in a suitable context and time."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [20]; score 93 (high band)"
+        },
+        "emotion_perception": {
+          "title": "Emotion Perception",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "EXCESSIVE INTROSPECTION",
+                  "paragraphs": [
+                    "Your emotional perceptiveness means you could be paying excessive attention to your feelings — an over-focus on your inner world that may distract you from your outer goals and performance.",
+                    "Not all feelings are indicators of underlying facts or significant truths. Emotions flow in a continual stream through consciousness, often with little bearing upon our life course. As a step towards reducing your involvement, observe and categorize your emotions into “temporary, less significant” that should be swiftly transcended and “chronic, important” that require more reflection. An emphasis on action over feelings may help you achieve better balance."
+                  ]
+                },
+                {
+                  "heading": "OVER-FOCUS ON OTHERS’ FEELINGS",
+                  "paragraphs": [
+                    "Over-focusing on others’ feelings may distract you from your own goals and performance. It may also lead others to perceive you as invasive.",
+                    "While it is empowering to be able to understand others people’s feelings and motives, this should not be achieved through disproportionate effort or at the expense of other considerations and necessities; rather, it should be spontaneous. Also keep in mind that some people do not respond positively to displays of interest in their lives, which they interpret as discourteous, intrusive, or patronizing."
+                  ]
+                },
+                {
+                  "heading": "OVERCONFIDENT PERCEPTIONS",
+                  "paragraphs": [
+                    "Guard against overconfidence in your ability to understand other people’s inner states.",
+                    "It is extremely hard to know with certainty what others are experiencing. Try to substantiate any hypothesis with concrete evidence, perhaps by tactfully checking your understanding with those concerned. Always remember that feelings—even when you do perceive and interpret them accurately—are not the sole determinants of behavior."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [21]; score 98 (high band)"
+        },
+        "emotion_expression": {
+          "title": "Emotion Expression",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "DISREGARDING SOCIAL CONVENTION",
+                  "paragraphs": [
+                    "Uninhibited emotional expression may breach unwritten display rules. Disregarding such rules and arrangements may leave you isolated.",
+                    "The expression of feelings is better accepted in informal and private contexts, while formal and public situations tend to require a higher degree of restraint and self-censorship. Always take a moment to consider what style of verbal and nonverbal communication would be acceptable in a situation before expressing yourself. If you are uncertain, observe the behavior of others and err on the side of caution. All the above becomes that much more important if you are conducting affairs in cultures that are new to you."
+                  ]
+                },
+                {
+                  "heading": "HOW OTHERS PERCEIVE YOU",
+                  "paragraphs": [
+                    "Expressing feelings too openly may make others—particularly those more reserved—feel uncomfortable. You could then be seen as unpredictable or self-absorbed.",
+                    "Keep an eye on people’s reactions to your emotional expressions. Their comments and body language will provide feedback about the image you are projecting and allow you to adjust it accordingly. Switching your attention to other people will shift your focus onto them and automatically help you fine-tune your own expressivity and deportment without undue exertion or deliberation. This would also counter any hints of self-absorption."
+                  ]
+                },
+                {
+                  "heading": "EXPRESSION OF NEGATIVE FEELINGS",
+                  "paragraphs": [
+                    "Most societies and contexts discourage the expression of negative feelings. Emotions like anger, hostility or aggression will likely offend, hurt or threaten others, who may then view you as unpleasant or dangerous.",
+                    "When a situation or comment spurs angry feelings in you, make it a rule not to react immediately. It is always preferable mentally to count to ten, request a break to compose yourself, or simply walk away. You can then respond, if necessary, under circumstances of your own choice. Positive ways to release chronic anger include physical activities like running, boxing or kicking in a safe environment. Meditation and breathing techniques will help you gain perspective and eventually to master all aspects of your personal expression."
+                  ]
+                },
+                {
+                  "heading": "EXPRESSION OF POSITIVE FEELINGS",
+                  "paragraphs": [
+                    "Uninhibited expression of even positive feelings can adversely affect others. For example, bursts of cheerfulness or optimism may lead them to perceive you as unrealistic or uninformed.",
+                    "When you openly express positive feelings, take some care to explain the reasons behind your enthusiasm. Show consideration for others and sensitivity to their needs. Note that if they are dealing with difficult situations or challenges, positive emotionality may be misinterpreted as insensitive or arrogant. Be especially careful and considerate when in public, the workplace or in cultures and contexts that are new to you."
+                  ]
+                },
+                {
+                  "heading": "POTENTIAL VULNERABILITY",
+                  "paragraphs": [
+                    "Unrestrained emotional expression can leave you exposed; with others knowing much more about you than you know about them.",
+                    "Be familiar with whom you are sharing feelings and avoid sharing personal information wantonly. Reveal only if the people and context merit your trust. In competitive environments, such as some workplaces, it is important to project self-confidence and use the utmost discretion when it comes to imparting information. Making careful decisions regarding when—and to whom—you communicate emotions will help you maintain an expressive nature without divulging details that could harm you."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [22, 23]; score 96 (high band)"
+        },
+        "relationships": {
+          "title": "Relationships",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "RELATIONSHIPS CREATE CONSTRAINTS",
+                  "paragraphs": [
+                    "Relationship maintenance requires time, effort, and attention, which may need to be withheld from work or personal interests. Dealing with multiple affectionate, possibly, conflicting friendships can also bring you under pressure.",
+                    "Take a realistic look at the time required to maintain existing relationships before creating new ones. Establishing a stable balance between relationships and other aspects of your life (e.g., career, quiet time, and leisure) can enhance your sense of wellbeing. If you feel short on time, consider reducing the size of your relationship network—you may find that this relieves stress and unlocks time and energy for other pursuits. Last, you must be prepared to accept that some of your close relationships may prove to be incompatible or a cause of consternation."
+                  ]
+                },
+                {
+                  "heading": "SUPERFICIAL RELATIONSHIPS",
+                  "paragraphs": [
+                    "Relationships vary, some being genuinely deep and others superficial. The latter are more disillusioning than rewarding in the long term.",
+                    "Evaluate the relationships in your life for the level of intimacy, support, and enjoyment they bring to you. You do need to keep in mind, however, that such evaluations may not always lead to correct conclusions because the spectrum of information requiring assessment may not be fully available in the conscious domain. Hence, established relationships can suddenly start breaking down or, as the lyric has it, “How could something once so fine come to feeling this?” Nevertheless, taking stock of your close relationships can help you confirm whether you are investing sufficiently in those that currently seem to require it most."
+                  ]
+                },
+                {
+                  "heading": "DEPENDENCY",
+                  "paragraphs": [
+                    "A need to be amongst certain others may indicate dependency on your part. This could undermine your self-confidence and capacity to function independently.",
+                    "To determine if dependency is a factor in a relationship, check if you are able to function freely without its support. At the simplest level, this will entail monitoring yourself during periods when, for any reason, the relationship becomes unavailable. Perhaps you feel that you cannot manage well without the attention, approval, advice, or even simple presence of certain others. If that appears to be the case or if you tend to seek feedback and advice or reassurance that you are acceptable and correct, resolve to enhance your autonomy, which may require you to deal with withdrawal-like symptoms."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [24, 25]; score 72 (high band)"
+        },
+        "emotion_management": {
+          "title": "Emotion Management",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "PERCEPTION OF MANIPULATION",
+                  "paragraphs": [
+                    "Too much emotion management may project a controlling or even manipulative image that undermines relationships.",
+                    "Consider on the strategies you use to manage the emotions of others, especially from their perspective — perhaps some might be seen as invasive? You should also investigate your motivations for engaging in emotion management – are you doing it for the benefit of others or your own?"
+                  ]
+                },
+                {
+                  "heading": "TIME CONSUMING",
+                  "paragraphs": [
+                    "Managing other people’s emotions can be time-consuming and draining. Sometimes, this energy will be better invested in activities that are more under your control.",
+                    "How much time and effort do you spend trying to motivate or persuade others? Bear in mind that a task-oriented approach can turn out more effective instead. It is also true that a sharp focus on your own affairs may not only prove more productive, but also more inspiring to others through your personal example."
+                  ]
+                },
+                {
+                  "heading": "CREATING DEPENDENCIES",
+                  "paragraphs": [
+                    "Successful emotion management could eventually lead others to become dependent on your encouragement or intervention to meet their challenges.",
+                    "Encourage others to manage their affairs independently, rather than providing specific guidance or solving their problems on their behalf. Use your gift of emotion management to empower others by promoting independence and responsibility in them. “Give a man a fish, and you feed him for a day. Teach a man to fish, and you feed him for a lifetime.”"
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [27]; score 97 (high band)"
+        },
+        "assertiveness": {
+          "title": "Assertiveness",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "SELF-INTEREST AND AGGRESSION",
+                  "paragraphs": [
+                    "Assertiveness can be a useful trait, especially in our professional life. While frequently a sign of strength, high levels of assertiveness may be interpreted as self-interest or lack of concern for others. Similarly, some may construe assertive behaviors as argumentative, domineering, or even aggressive.",
+                    "Assertiveness should be used sparingly and always with sensitivity. Only take a stand on issues that are important to you. Do not make “taking a stand” an aspect of your personality that could eventually make you contrarian and antagonistic. If you are accustomed to holding on to your positions, you may unconsciously underestimate the viewpoints of others and overlook valuable information. Be mindful of the reactions you cause in people and moderate your assertiveness to prevent aggravations. Some people find it difficult to express their opinions and are sensitive to being overlooked. Having a sincere desire for the common good will facilitate acceptance of your ideas, although you must be prepared to compromise when this is warranted."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [28]; score 98 (high band)"
+        },
+        "social_awareness": {
+          "title": "Social Awareness",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "PRIORITIZATION ISSUES",
+                  "paragraphs": [
+                    "You may enjoy socializing to the extent that you neglect important responsibilities and needs for improvement.",
+                    "While being socially aware and engaged is generally advantageous it should be allowed to overshadow other areas of life. Set a reasonable amount of time for socializing and try not to exceed this. Review your personal and professional goals and responsibilities, and duties adequate time to fulfill them. Solitary reflection enhances creativity and inspiration as well as self-knowledge and commitment to personal values. Making time for activities like reading, exercise and, especially, meditation can be hugely rewarding."
+                  ]
+                },
+                {
+                  "heading": "DEPENDENCE",
+                  "paragraphs": [
+                    "Strong extraversion may lead to dependencies. If you become hooked on socializing, then you may feel distressed when required to work or spend time on your own.",
+                    "You might need to regain a sense of autonomy, away from the opinions and presence of others. If so, you ought to actively create the required conditions. Start with short periods of working without breaks for socializing, progressing to longer periods; then, gradually move from work to personal settings. This practice can build confidence in your ability to function with reduced social/external input and mitigate any reliance on others to feel accepted or motivated. When appropriate, resist the urge to request help or support from others. Set your own standards of performance, and evaluate yourself on that basis, rather than relying on feedback."
+                  ]
+                },
+                {
+                  "heading": "SUPERFICIALITY",
+                  "paragraphs": [
+                    "While you are socially aware and able to start associations with ease, these may resemble more superficial acquaintances than friendships.",
+                    "Social skills do not necessarily indicate an ability to form long-term relationships nor are the traits admired at social events or in teamwork the same as those required to maintain friendships. Group situations are often passing interactions calling for adaptation to a specific environment or task. In contrast, intimate relationships develop over time and require tolerance, forgiveness, commitment, and mutual support. A busy social life could interfere with or undermine important aspects of our inner life."
+                  ]
+                },
+                {
+                  "heading": "ALIENATING INTROVERTS",
+                  "paragraphs": [
+                    "Extraversion can overwhelm others, especially the more reticent and introverted.",
+                    "Reserved individuals, or those who are less socially confident, might feel swamped in your presence. Social awareness should not be misconstrued as gregariousness or intrusiveness nor should you allow yourself to develop a preference for associating with extraverts, which may feel easier and more natural to you. Accommodating less sociable people would help you build positive relationships with a broad range of individuals. This can be done by remaining sensitive to those around you and willing to adjust your behavior according to their needs, which occasionally will call for a reserved or quiet manner. If they feel you are considerate of their needs, even introverts will be more likely to embrace your outgoing nature."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [29, 30]; score 94 (high band)",
+          "flag": "The sample says \"it should be allowed to overshadow other areas of life\" (PRIORITIZATION ISSUES), probably meant \"should not\". Copied as printed."
+        },
+        "adaptability": {
+          "title": "Adaptability",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "ACQUIESCENCE & COMPLIANCE",
+                  "paragraphs": [
+                    "High adaptability can turn into a liability, if you are seen as someone who yields readily in order to fit in.",
+                    "Adaptability is a strength, provided it is functional (done in the right way) and adaptive (done for the right reasons). As Jiddu Krishnamurti put it, “It is no measure of health to be well adjusted to a profoundly sick society.” If adaptability veers into acquiescence, others may use you or criticize you as unable to stand up for what is right (for your own or the common good). Do you sometimes prefer to remain silent simply so that you can “go with the flow” even though you have constructive critical feedback to offer? If so, try to overcome this tendency. Fitting in for its own sake can lead to misjudged conformity and passivity. Ask ‘why’ questions to deepen your involvement in discussions and be prepared to stand firm on your core values."
+                  ]
+                },
+                {
+                  "heading": "PERCEPTIONS OF INCONSISTENCY OR INSINCERITY",
+                  "paragraphs": [
+                    "Adaptability that seeks to satisfy a desire to fit in or to appear to fit in (as required in some high-stakes positions) may lead others to view you as inconsistent or insincere.",
+                    "This consideration is especially relevant for people in politics, including company politics. If requirements in your environment change, you need not necessarily change the way you normally think, behave, or interact with people. Holding on to your beliefs can help you retain your personal perspective on a situation. Bear in mind that adaptation is productive and rewarding only when it is sincere and justified. Be careful not to veer into dissimulation in your effort to appear to fit it. Flexibility is a gift not an obligation."
+                  ]
+                },
+                {
+                  "heading": "CHANGE ADDICTION",
+                  "paragraphs": [
+                    "If you find change exciting, you may tend to seek it for its own sake. However, this can be counterproductive to your goals.",
+                    "Helpful routines and habits can provide the stability that allows us to turn our attention and energy to the pursuit of our goals. They can also instill a sense of security and comfort, both of which are conducive to performance. If you cannot do without the stimulation of frequent change, try to be selective about contexts, tasks, and environments. Consider the possible risks and consequences of change not only for yourself but for those around you too. Take note that if you are hoping to accomplish lasting inner (psychological) change through changes to your outer (external) situation, this is the wrong direction of travel."
+                  ]
+                },
+                {
+                  "heading": "LOOKING DOWN ON ROUTINE",
+                  "paragraphs": [
+                    "Be careful not to slap labels on less flexible others (rigid, stiff, boring, predictable, etc.) or to mechanically reject their viewpoints.",
+                    "Withhold your judgment of less flexible others (including, significantly, unexpressed judgmental thoughts). Not only does this have the potential to prevent misunderstandings, but it can also give you a chance to consider situations from multiple angles and balance the urge to pursue change. People may have valid personal reasons to resist change or may have spotted challenges that you are unaware of – acknowledging their concerns can, at the very least, demonstrate open-mindedness on your part."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [31, 32]; score 78 (high band)"
+        },
+        "self_motivation": {
+          "title": "Self-Motivation",
+          "interpretation": {
+            "low": null,
+            "average": null,
+            "high": {
+              "intro": "",
+              "sections": [
+                {
+                  "heading": "BEING CRITICAL OR JUDGEMENTAL",
+                  "paragraphs": [
+                    "High self-motivation may breed a critical attitude toward the work of others, especially if they cannot match your own performance. Such an attitude can damage relationships and undermine team efforts.",
+                    "This is the commonest drawback of a high score on Self-motivation. Individuals differ in their approach to work and the importance they attach to it; some live to work, others work to live, etc. Strike a balance between expectations and compassion when it comes to other people’s performance and personal circumstances. You can show trust in them by allocating responsibilities and delegating work, which will also help contain your own workload."
+                  ]
+                },
+                {
+                  "heading": "CLOSED TO FEEDBACK",
+                  "paragraphs": [
+                    "High self-motivation may lead you to discount feedback on your performance.",
+                    "All of us have possibilities to learn and grow further. Your own work may benefit from the input of someone with a fresh, independent, or simply different viewpoint. Such input often comes from colleagues who are less committed than you and it could be a grave error to discount it on this basis. Being open and responsive to feedback from others can lift your performance further and simultaneously demonstrate that, driven though you may be, you are also modest and accommodative of other people’s suggestions."
+                  ]
+                },
+                {
+                  "heading": "NEGLECT OF LIFE DOMAINS (MONO-DIMENSIONALITY)",
+                  "paragraphs": [
+                    "Self-motivation can over-commit you to a single domain of life at the expense of many others. Work-life imbalance is a common example of this mono-dimensionality.",
+                    "An uncontrollable need for attainment (typically in the work-related arena) is not always easy recognize, not least because it tends to be socially rewarded (unlike most other addictions). Do family and friends complain that you neglect them because of your commitments? If so, you may wish to reflect on your priorities and schedules and perhaps realign your priorities. Time management strategies may have a role to play in this case, although mono-dimensionality is a strategic hazard for the individual, whose impact may not fully transpire until later in life."
+                  ]
+                },
+                {
+                  "heading": "UNREALISTIC EXPECTATIONS OF YOURSELF",
+                  "paragraphs": [
+                    "Self-motivation may lead you to unrealistic expectations of yourself and your performance.",
+                    "Effort certainly feeds into performance, increasing our chances of success. However, it also has the potential to boost our expectations, sometimes inordinately, and lead to setbacks or disappointments down the line. A warning for those with high levels of intrinsic motivation concerns the twofold danger of over-commitment on the one hand, and a presumption that the applications of strict control over our inputs will translate into control over our results, on the other. That is not the case, which is why it is advisable to remain aware of our expectations and keep them in check."
+                  ]
+                }
+              ]
+            }
+          },
+          "source": "sample pages [33, 34]; score 94 (high band)",
+          "flag": "The sample says \"is not always easy recognize\" (NEGLECT OF LIFE DOMAINS). Copied as printed."
+        }
+      }
+    },
+    "recruitment": {
+      "name": "Recruitment",
+      "cover": "Recruitment Report",
+      "header": "Recruitment",
+      "cover_image": "recruitment.png",
+      "template": "recruitment",
+      "source": "TEIQue-FF Recruitment Report [SAMPLE].pdf",
+      "levels": [
+        {
+          "id": "very_low",
+          "label": "very low",
+          "min": 1,
+          "max": 15
+        },
+        {
+          "id": "low",
+          "label": "low",
+          "min": 16,
+          "max": 30
+        },
+        {
+          "id": "low_average",
+          "label": "low average",
+          "min": 31,
+          "max": 40
+        },
+        {
+          "id": "average",
+          "label": "average",
+          "min": 41,
+          "max": 60
+        },
+        {
+          "id": "high_average",
+          "label": "high average",
+          "min": 61,
+          "max": 70
+        },
+        {
+          "id": "high",
+          "label": "high",
+          "min": 71,
+          "max": 85
+        },
+        {
+          "id": "very_high",
+          "label": "very high",
+          "min": 86,
+          "max": 99
+        }
+      ],
+      "opening": "The {name} score is {level}.",
+      "average_text": "Average scores are less likely to exert marked influence on behavior compared to high and low scores. In general, average scores on {name} will involve some combination of the characteristics of high and low scores – see the introduction on p. XX for details.",
+      "average_source": "Recruitment introduction (page 3) and the sample's average cards (Assertiveness, page 9)",
+      "pages": {
+        "intro": {
+          "title": "How to Read the TEIQue Recruitment Report",
+          "paragraphs": [
+            "Unlike other TEIQue reports, the TEIQue Recruitment report has been written from the perspective of HR specialists and recruiting organizations (recruiter), rather than that of the respondent (candidate). The report should take about 15 minutes to process, although, with usage and experience, this time commitment will be significantly reduced.",
+            "This report should be used in conjunction with other information to evaluate person-job fit, which is the degree of alignment between the candidate’s personality and the job content.All TEIQue profiles have advantages and disadvantages, but not all TEIQue profiles are suitable for all jobs. The psychological characteristics tapped by the TEIQue interact with the context and characteristics of particular job roles.As a skilled professional consultant, you are called to bring your acumen and experience to bear on the evaluation of this information and its relevance to the recruitment (or development) process as a whole.",
+            "The potentials and recommendations presented in these reports are not to be construed as certainties and inevitabilities, but rather as aids to your expert judgment and as suggestions for exploration with candidates.Their purpose is to initiate, guide, and enrich interviews and professional exchanges.The reports should not be used as cut-off criteria for mechanical or automated decision-making.",
+            "In the TEIQue Recruitment report, scores are classified into seven (rather than three) categories in order to provide more nuance and finer support to decision-making: 1-15% very low, 16-30% low, 31-40% low-average, 41-60% average, 61-70% high-average, 71-85% high, 86-99% very high.In general, the possible desirable and undesirable implications listed under the high and low scores of each TEIQue factor and facet will be more accentuated for scores that are very high or very low.",
+            "As regards average scores (31-70%), these are less likely to exert marked influence on behavior, compared to high and low scores (and, especially, compared to very high and very low scores).The descriptions for average scores will typically represent some combination of the descriptions for high and low scores on the relevant facet.For reasons of space, and to facilitate due focus on extreme scores, these descriptions have not been included in the Recruitment report.However, if required, they can be found in the “TEIQue score interpretation” slides in the introductory TEIQue accreditation course under section “TEIQue: Principles of interpretation and case studies” .Note that for high-stakes assessments and high-level appointments, I recommend considering at least one full TEIQue report (Standard, Developmental, or Leadership) in addition to the Recruitment report.",
+            "I trust that you will find the TEIQue Recruitment report a useful addition to your current recruitment processes and that it will help you arrive at optimal decisions for all concerned.I also hope that through your personal engagement with these reports, you – as a conscious recruiter – will be able to discover deeper actualities about your own true Self."
+          ],
+          "signoff": [
+            "Sincerely,",
+            "Konstantinos V. Petrides",
+            "psychometriclab.com"
+          ]
+        },
+        "summary": {
+          "title": "Your TEIQue Summary Graph",
+          "title_source": "Figma (the sample page has no title); contents entry: Summary Graphs"
+        },
+        "contents": {
+          "title": "Contents",
+          "intro": "Introduction",
+          "summary": "Summary Graphs",
+          "global": "Global Score",
+          "auxiliary": "Auxiliary facets",
+          "subs": {
+            "auxiliary": [
+              "Adaptability",
+              "Self-motivation"
+            ],
+            "wellbeing": [
+              "Happiness",
+              "Optimism",
+              "Self-Esteem"
+            ],
+            "self_control": [
+              "Emotion Regulation",
+              "Impulse Control",
+              "Stress Management"
+            ],
+            "emotionality": [
+              "Empathy",
+              "Emotion Perception",
+              "Emotion Expression",
+              "Relationships"
+            ],
+            "sociability": [
+              "Emotion Management",
+              "Assertiveness",
+              "Social Awareness"
+            ]
+          },
+          "factors": {
+            "wellbeing": "Well-Being",
+            "self_control": "Self-Control",
+            "emotionality": "Emotionality",
+            "sociability": "Sociability"
+          }
+        },
+        "global": {
+          "title": "Global Trait EI",
+          "lead": "The Global trait EI score provides a snapshot of general emotional functioning – how confident one is in their emotional abili- ties and how comfortable they feel in their emotional world."
+        },
+        "auxiliary": {
+          "title": "Auxiliary Facets",
+          "facets": [
+            "adaptability",
+            "self_motivation"
+          ],
+          "headings": [
+            "Adaptability",
+            "Self-Motivation"
+          ]
+        },
+        "factors": [
+          {
+            "id": "wellbeing",
+            "title": "Well-Being Factor",
+            "lead": "The Well-being factor reflects the common core of the three facets it comprises, i.e., Happiness, Optimism, and Self-esteem.",
+            "facets": [
+              "happiness",
+              "optimism",
+              "self_esteem"
+            ]
+          },
+          {
+            "id": "self_control",
+            "title": "Self-Control Factor",
+            "lead": "The Self-control factor essentially reflects the common, overlapping core of the three facets it comprises, i.e., Emotion regulation, Impulse control, and Stress management.",
+            "facets": [
+              "emotion_regulation",
+              "impulse_control",
+              "stress_management"
+            ]
+          },
+          {
+            "id": "emotionality",
+            "title": "Emotionality Factor",
+            "lead": "The Emotionality factor essentially reflects the common, overlapping core of the four facets it comprises, i.e., Emotion expression, Emotion perception, Empathy, and Relationships.",
+            "facets": [
+              "emotion_perception",
+              "emotion_expression",
+              "empathy",
+              "relationships"
+            ]
+          },
+          {
+            "id": "sociability",
+            "title": "Sociability Factor",
+            "lead": "The Sociability factor essentially reflects the common, overlapping core of the three facets it comprises, i.e., Assertiveness, Emotion management, and Social awareness.",
+            "facets": [
+              "assertiveness",
+              "emotion_management",
+              "social_awareness"
+            ]
+          }
+        ]
+      },
+      "scales": {
+        "global": {
+          "card_name": "Global trait EI",
+          "heading": "",
+          "interpretation": {
+            "very_low": [
+              "Main observations to consider:",
+              "• Overall, feels inadequately confident in their emotional abilities and in the ways they use them to get ahead in life.",
+              "• Lower possibility to be complacent and conceited."
+            ],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 5; card for a score of 9 (very low)",
+          "flag": ""
+        },
+        "wellbeing": {
+          "card_name": "Well-being",
+          "heading": "",
+          "interpretation": {
+            "very_low": [],
+            "low": [
+              "Main observations to consider:",
+              "• Overall, feels not well-adjusted in their life.",
+              "• Lower possibility of being complacent, although probe any evidence of or tendencies to defeatism."
+            ],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 6; card for a score of 24 (low)",
+          "flag": ""
+        },
+        "happiness": {
+          "card_name": "Happiness",
+          "heading": "Happiness",
+          "interpretation": {
+            "very_low": [],
+            "low": [
+              "Possible advantages: More serious or solemn; possibly hungrier for advancement and success.",
+              "Possible disadvantages: Harder to satisfy; tendency to negative attitudes."
+            ],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 6; card for a score of 18 (low)",
+          "flag": ""
+        },
+        "optimism": {
+          "card_name": "Optimism",
+          "heading": "Optimism",
+          "interpretation": {
+            "very_low": [],
+            "low": [],
+            "low_average": [],
+            "average": [
+              "Average scores are less likely to exert marked influence on behavior compared to high and low scores. In general, average scores on XXX will involve some combination of the characteristics of high and low scores Optimism facet – see the introduction on p. XX for details."
+            ],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 6; card for a score of 50 (average)",
+          "flag": "The sample's Optimism card (average) prints a broken form of the average sentence: \"average scores on XXX will involve some combination of the characteristics of high and low scores Optimism facet – see the introduction on p. XX for details\". Kept as printed for the average level; other average scores use the Assertiveness form."
+        },
+        "self_esteem": {
+          "card_name": "Self-esteem",
+          "heading": "Self-esteem",
+          "interpretation": {
+            "very_low": [],
+            "low": [
+              "Possible advantages: More open to feedback and directions; easier to integrate into a team.",
+              "Possible disadvantages: Challenges with leadership and taking initiative; insufficient self-respect that could affect performance."
+            ],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 6; card for a score of 24 (low)",
+          "flag": ""
+        },
+        "self_control": {
+          "card_name": "Self-control",
+          "heading": "",
+          "interpretation": {
+            "very_low": [],
+            "low": [
+              "Main observations to consider:",
+              "• Overall, feels inadequate control over their self and life.",
+              "• Lower possibility of being rigid and stern."
+            ],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 7; card for a score of 16 (low)",
+          "flag": ""
+        },
+        "emotion_regulation": {
+          "card_name": "Emotion regulation",
+          "heading": "Emotion regulation",
+          "interpretation": {
+            "very_low": [],
+            "low": [
+              "Possible advantages: May have preference and aptitude for data-driven or technical positions; less likely to be political and calculating.",
+              "Possible disadvantages: Prone to inappropriate emotional displays; may be “hijacked by emotions”."
+            ],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 7; card for a score of 25 (low)",
+          "flag": ""
+        },
+        "impulse_control": {
+          "card_name": "Impulse control",
+          "heading": "Impulse control",
+          "interpretation": {
+            "very_low": [
+              "Possible advantages: Readier to grasp unexpected opportunities; can take decisions with limited information; perhaps more creative.",
+              "Possible disadvantages: Impetuous; less rigorous decision-making; doesn’t see tasks through to completion."
+            ],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 7; card for a score of 10 (very low)",
+          "flag": ""
+        },
+        "stress_management": {
+          "card_name": "Stress management",
+          "heading": "Stress Management",
+          "interpretation": {
+            "very_low": [],
+            "low": [
+              "Possible advantages: More willing to work as part of a team that shares responsibilities and workloads; less likely to be apathetic; may be able to utilize positive aspects of stress (“eustress”) with training.",
+              "Possible disadvantages: Gets stressed out; stress may adversely affect their performance."
+            ],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 7; card for a score of 25 (low)",
+          "flag": ""
+        },
+        "emotionality": {
+          "card_name": "Emotionality",
+          "heading": "",
+          "interpretation": {
+            "very_low": [
+              "Main observations to consider:",
+              "• Overall, feels inadequate emotional adjustment.",
+              "• Lower possibility of becoming preoccupied with feelings and moods."
+            ],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 8; card for a score of 7 (very low)",
+          "flag": ""
+        },
+        "empathy": {
+          "card_name": "Empathy",
+          "heading": "Empathy",
+          "interpretation": {
+            "very_low": [
+              "Possible advantages: Can drive through an agenda; can implement decisions against resistance.",
+              "Possible disadvantages: Limited perception; single-tracked mind; difficulties in multi-cultural environments."
+            ],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 8; card for a score of 4 (very low)",
+          "flag": ""
+        },
+        "emotion_perception": {
+          "card_name": "Emotion perception",
+          "heading": "Emotion Perception",
+          "interpretation": {
+            "very_low": [],
+            "low": [
+              "Possible advantages: Less likely to prioritize feelings over technical analysis; well-suited for jobs that require an unemotional/technical person.",
+              "Possible disadvantages: Limited ability to read between the lines; may feel confused or unsure about himself or herself; less intuitive."
+            ],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 8; card for a score of 23 (low)",
+          "flag": ""
+        },
+        "emotion_expression": {
+          "card_name": "Emotion expression",
+          "heading": "Emotion Expression",
+          "interpretation": {
+            "very_low": [
+              "Possible advantages: Corporate deportment; more guarded and opaque (cannot be easily “read” or sussed out).",
+              "Possible disadvantages: May be seen as cold and aloof; inhibited and uninspiring."
+            ],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 8; card for a score of 9 (very low)",
+          "flag": ""
+        },
+        "relationships": {
+          "card_name": "Relationships",
+          "heading": "Relationships",
+          "interpretation": {
+            "very_low": [
+              "Possible advantages: Single-minded focus on work and career progression; self-dependent.",
+              "Possible disadvantages: Lack of personal support structures; limited appreciation of the power and possibilities of close relationships; workaholism that might eventually lead to career-stopping breakdowns."
+            ],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 8; card for a score of 13 (very low)",
+          "flag": ""
+        },
+        "sociability": {
+          "card_name": "Sociability",
+          "heading": "",
+          "interpretation": {
+            "very_low": [
+              "Main observations to consider:",
+              "• Overall, feels inadequately confident in their social skills.",
+              "• Lower possibility to be over-extraverted or overbearing in their social interactions."
+            ],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 9; card for a score of 14 (very low)",
+          "flag": ""
+        },
+        "emotion_management": {
+          "card_name": "Emotion management",
+          "heading": "Emotion Management",
+          "interpretation": {
+            "very_low": [
+              "Possible advantages: Minds own business; unlikely to be intrusive or manipulative; does not spend/waste energy trying to influence others.",
+              "Possible disadvantages: Limited managerial and leadership potential; unwilling or unable to deal with people-related problems."
+            ],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 9; card for a score of 6 (very low)",
+          "flag": ""
+        },
+        "assertiveness": {
+          "card_name": "Assertiveness",
+          "heading": "Assertiveness",
+          "interpretation": {
+            "very_low": [],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 9; card for a score of 37 (low average)",
+          "flag": "Average sentence: \"see the introduction on p. XX\" is a placeholder in the sample (the introduction is page 3). Kept as printed."
+        },
+        "social_awareness": {
+          "card_name": "Social awareness",
+          "heading": "Social Awareness",
+          "interpretation": {
+            "very_low": [],
+            "low": [
+              "Possible advantages: Greater focus or task-persistence; more discreet; can work alone.",
+              "Possible disadvantages: Low social confidence; limited reach and networking; possible difficulties with diversity of backgrounds and opinions."
+            ],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 9; card for a score of 16 (low)",
+          "flag": ""
+        },
+        "adaptability": {
+          "card_name": "Adaptability",
+          "heading": "Adaptability",
+          "interpretation": {
+            "very_low": [
+              "Possible advantages: Potential for loyalty, consistency, and commitment; preference for highly structured or routine roles.",
+              "Possible disadvantages: Change-resistant; training-resistant; rigid and closed to persuasion and argumentation."
+            ],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 5; card for a score of 8 (very low)",
+          "flag": ""
+        },
+        "self_motivation": {
+          "card_name": "Self-motivation",
+          "heading": "Self-Motivation",
+          "interpretation": {
+            "very_low": [
+              "Possible advantages: May respond well to extrinsic motivation (bonuses, perks, etc.); will not create disruption by undue competitiveness; can work well as part of a structured team.",
+              "Possible disadvantages: Risk of underperformance, if not managed closely; gives up easily; unfocused."
+            ],
+            "low": [],
+            "low_average": [],
+            "average": [],
+            "high_average": [],
+            "high": [],
+            "very_high": []
+          },
+          "source": "sample page 5; card for a score of 4 (very low)",
+          "flag": ""
+        }
+      }
     }
   }
 }
